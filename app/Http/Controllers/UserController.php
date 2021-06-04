@@ -43,7 +43,7 @@ class UserController extends Controller
         if($status){
             $users = \App\User::where('status', 'Like', "%$status")->get();//paginate(10);
         }
-        return view ('/users.index',['users'=>$users]);
+        return view ('users.index',['users'=>$users,'client'=>$client]);
     }
 
     /**

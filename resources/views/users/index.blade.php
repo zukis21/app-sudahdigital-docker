@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@if(Route::is('users.index'))
+@if(Route::is('users.index',[$client->client_slug]))
 	@section('title') User List @endsection
 	@section('content')
 	@if(session('status'))
@@ -9,7 +9,7 @@
 		</div>
 	@endif
 
-	<form action="{{route('users.index')}}">
+	<form action="{{route('users.index',[$client->client_slug])}}">
 		<div class="row">
 			<!--
 			<div class="col-md-4">

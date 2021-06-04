@@ -81,13 +81,15 @@ Route::get('/admin', function () {
     Route::group(['prefix' => '/{vendor}'], function()  
     {  
         Route::get('/admin', 'HomeController@home_admin')->name('home_admin');
-        
+        Route::get('/users', 'UserController@index')->name('users.index');
     });
-        Route::resource('users','UserController');
+    
         Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
         Route::post('/users/post/change_password', 'changePasswordController@changepassword')->name('post.changepass');
-        
-    
+        //Route::resource('/{vendor}/users','UserController');
+    Route::resource('users', 'UserController')->except([
+        'index'
+    ]);
     Route::get('/ajax/cities/search', 'SalesController@ajaxSearch');
     Route::get('/sales/export', 'SalesController@export')->name('sales.export');
     Route::resource('sales','SalesController');
