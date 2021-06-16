@@ -1,5 +1,5 @@
 @extends('customer.layouts.template-nocart')
-@section('title') Profil @endsection
+@section('title') Kontak @endsection
 @section('content')
 <style>
     @media only screen and (max-width: 411px) {
@@ -34,7 +34,7 @@
                             </div>
                             <div class="col-9 col-md-8">
                                 <p class="contact-tele-name mb-0 mt-2">Telepon</p>
-                                <h5 class="contact-tele-number">‭021-777-000‬</h5>
+                                <h5 class="contact-tele-number">‭{{$client->phone}}‬</h5>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                             </div>
                             <div class="col-9 col-md-8">
                                 <p class="contact-email-name mb-0 mt-2">Email</p>
-                                <h5 class="contact-email">megacool@gmail.com</h5>
+                                <h5 class="contact-email">{{$client->email}}</h5>
                             </div>
                         </div>
                     </div>

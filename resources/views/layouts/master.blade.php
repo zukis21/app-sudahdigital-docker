@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Mega Cool @yield('title')</title>
+    <title>{{Request::session()->get('client_sess')['client_name']}} | @yield('title')</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{ asset('assets/image/LOGO MEGACOOLS_DEFAULT.png')}}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/image'.Request::session()->get('client_sess')['client_image'])}}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="{{asset('bsb/googleapis.css?family=Roboto:400,700&subset=latin,cyrillic-ext')}}" rel="stylesheet" type="text/css">
@@ -44,6 +44,11 @@
     <link href="{{asset('bsb/css/themes/all-themes.css')}}" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <style>
+        .merah{
+            color: #F44336;
+        }
+    </style>
 </head>
 
 <body class="theme-indigo">
@@ -82,9 +87,12 @@
     <nav class="navbar">
         <div class="container-fluid">
             <div class="navbar-header">
+                <a href="#" class="navbar-brand">
+                    <img src="{{ asset('assets/image'.Request::session()->get('client_sess')['client_image'])}}" class="" height="40" style="margin-top:-11px;">
+                </a>
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="#">MEGA COOL</a>
+                <a class="navbar-brand" href="#">{{strtoUpper(Request::session()->get('client_sess')['client_name'])}}</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <!--
@@ -107,7 +115,7 @@
             <div class="user-info">
                 <div class="image">
                     @if(\Auth::user())
-                    <img src="{{asset('storage/'.Auth::user()->avatar)}}" width="48" height="48" alt="User" />
+                    <img src="{{ asset('storage/'.((Auth::user()->avatar !='') ? Auth::user()->avatar : 'image-noprofile.png').'') }}" width="48" height="48" alt="User" />
                     @endif
                 </div>
                 <div class="info-container">
@@ -134,7 +142,7 @@
                                                 &nbsp;Sign Out
                                         </button>
                                     </form>
-                                    <a href="{{route('changepass')}}" class="btn btn-default">
+                                    <a href="{{route('changepass',[$vendor])}}" class="btn btn-default">
                                         &nbsp;<i class="material-icons">settings</i>
                                         &nbsp;Change Password
                                     </a>
@@ -151,7 +159,7 @@
             <div class="menu">
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                    <li class="{{ request()->routeIs('home_admin') ? 'active' : '' }}">
                         <a href="{{route('home')}}">
                             <i class="material-icons">home</i>
                             <span>Home</span>
@@ -167,15 +175,15 @@
                         <ul class="ml-menu">
                             @can('isSuperadmin')
                                 <li class="{{request()->routeIs('users.index') ? 'active' : '' }}">
-                                    <a href="{{route('users.index',[$client->client_slug])}}">List Admin</a>
+                                    <a href="{{route('users.index',[$vendor])}}">Admin List</a>
                                 </li>
                              @endcan
                             <li class="{{request()->routeIs('sales.index') ? 'active' : '' }}">
-                                <a href="{{route('sales.index')}}">List Sales</a>
+                                <a href="{{route('sales.index',[$vendor])}}">Sales List</a>
                             </li>
                             
                             <li class="{{request()->routeIs('spv.index') ? 'active' : '' }}">
-                                <a href="{{route('spv.index')}}">List SPV</a>
+                                <a href="{{route('spv.index',[$vendor])}}">SPV List</a>
                             </li>
                             
                         </ul>
@@ -188,7 +196,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                                <a href="{{route('banner.index')}}">List Slide Banner</a>
+                                <a href="{{route('banner.index',[$vendor])}}">List Slide Banner</a>
                             </li>
                         </ul>
                     </li>
@@ -200,7 +208,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('categories.index') ? 'active' : '' }}">
-                                <a href="{{route('categories.index')}}">Categories</a>
+                                <a href="{{route('categories.index',[$vendor])}}">Categories</a>
                             </li>
                         </ul>
                     </li>
@@ -212,13 +220,13 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
-                                <a href="{{route('products.index')}}">Products</a>
+                                <a href="{{route('products.index',[$vendor])}}">Products</a>
                             </li>
                             <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
-                                <a href="{{route('groups.index')}}">Group</a>
+                                <a href="{{route('groups.index',[$vendor])}}">Group</a>
                             </li>
                             <li class="{{request()->routeIs('paket.index') ? 'active' : '' }}">
-                                <a href="{{route('paket.index')}}">Paket</a>
+                                <a href="{{route('paket.index',[$vendor])}}">Paket</a>
                             </li>
                         </ul>
                     </li>
@@ -230,7 +238,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('customers.index') ? 'active' : '' }}">
-                                <a href="{{route('customers.index')}}">Customers</a>
+                                <a href="{{route('customers.index',[$vendor])}}">Customers</a>
                             </li>
                         </ul>
                     </li>
@@ -243,7 +251,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('orders.index') ? 'active' : '' }}">
-                                <a href="{{route('orders.index')}}">Orders</a>
+                                <a href="{{route('orders.index',[$vendor])}}">Orders</a>
                             </li>
                         </ul>
                     </li>
@@ -254,7 +262,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2021 <a href="javascript:void(0);">Mega Cool</a>
+                    &copy; 2021 <a href="javascript:void(0);">{{Request::session()->get('client_sess')['client_name']}}</a>
                 </div>
                 
             </div>

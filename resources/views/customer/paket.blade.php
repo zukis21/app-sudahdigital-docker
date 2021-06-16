@@ -1,6 +1,6 @@
 @extends('customer.layouts.template')
 @section('title')
-Home    
+Paket   
 @endsection
 @section('content')
 <style>
@@ -101,10 +101,11 @@ Home
                     <nav aria-label="breadcrumb" class="" >
                         <ol class="breadcrumb pt-4 mt-3" style="background-color:#fff !important;">
                             <h2 class="breadcrumb-item">Our</h2>
-                            <h2 class="breadcrumb-item active" aria-current="page">Product</h2>
+                            <h2 class="breadcrumb-item active" aria-current="page">Package</h2>
                         </ol>
                     </nav>
                 </div>
+                <!--
                 <div class="col-4 ">
                     <div id="dropfilter" class="dropfilter dropdown pt-4 mt-3 float-right">
                         <button class="btn filter_category" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Filter</b>
@@ -113,11 +114,12 @@ Home
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="height: auto;max-height: 200px;overflow-x: hidden; border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;">
                             <a class="dropdown-item" href="{{ url('/') }}" style="color: #1A4066;"><b>Semua Produk</b></a>
                             @foreach($categories as $key => $value)
-                                <a class="dropdown-item" href="{{route('home_customer', ['cat'=>$value->id] )}}" style="color: #000;"><b>{{$value->name}}</b></a>
+                                <a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$value->slug] )}}" style="color: #000;"><b>{{$value->name}}</b></a>
                             @endforeach
                         </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
         
@@ -165,6 +167,7 @@ Home
                                                         </div>
                                                         <input type="text" class="form-control" id="src_pkt{{$value->id}}" onkeyup="search_paket('{{$value->id}}')" placeholder="Cari produk paket" style="height:30px;outline:none;"/>
                                                         <input type="hidden" class="form-control" id="src_groupcat{{$value->id}}" value="{{$value->group_cat}}" />
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -684,7 +687,8 @@ Home
                                             ->whereNotNull('bonus_cat')
                                             ->sum('quantity');
                                             $max_tmp = \App\Paket::where('status','=','ACTIVE')
-                                                    ->whereRaw("purchase_quantity = (select max(purchase_quantity) FROM pakets WHERE purchase_quantity <= '$pkt_total')")
+                                                    ->where('client_id','=',$client->id)
+                                                    ->whereRaw("purchase_quantity = (select max(purchase_quantity) FROM pakets WHERE client_id = '$client->id' AND purchase_quantity <= '$pkt_total')")
                                                     ->orderBy('updated_at','DESC')
                                                     ->first();
                                             if($max_tmp != NULL){
@@ -732,6 +736,7 @@ Home
         </div>
     </div>
     
+    <!--cart--->
     <div id="accordion" class="fixed-bottom" style="border-radius:0;z-index: 1;">
         <div class="card" style="border-radius:0;">
             <a role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4" class="collapsed">
@@ -1003,7 +1008,7 @@ Home
                     <div class="container image-logo-confirm">
                         <div class="d-flex justify-content-start mx-auto">
                             <div class="col-md-1" style="z-index: 2">
-                                <img src="{{ asset('assets/image/LOGO MEGACOOLS_DEFAULT.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="LOGO MEGACOOLS_DEFAULT">  
+                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
                             </div>
                         </div>
                     </div>
@@ -1019,8 +1024,9 @@ Home
                                 
                             </div>
                             
-                            <form class="form-inline" method="POST" id="ga_pesan_form" target="_BLANK" action="{{ route('customer.keranjang.pesan') }}">
+                            <form class="form-inline" method="POST" id="ga_pesan_form" target="_BLANK" action="{{ route('customer.keranjang.pesan',[$vendor]) }}">
                                 @csrf
+                                
                                 <div class="col-md-5 px-0 pt-3">
                                     <p class="text-left mb-1" style="color: #1A4066 !important;">Pilih Metode Pembayaran</p>
                                 </div>
@@ -1055,10 +1061,13 @@ Home
                                     </div>
                                 </div>
                                 <div class="col-md-12 px-0 mt-2">
-                                    
-                                
                                     <input type="hidden" id="order_id_pesan" name="id" value="{{$item !==null ? $item->id : ''}}"/>
-                                    <button type="submit" id="ga_pesan" onclick="pesan_wa()" class="btn btn-success float-right btn-preview-order"><i class="fab fa-whatsapp fa-1x" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i>&nbsp;{{__('Pesan Sekarang') }}</button>
+                                    
+                                    <button type="submit" id="ga_pesan" onclick="pesan_wa()" class="btn btn-success float-right btn-preview-order">
+                                        <i class="fab fa-whatsapp fa-1x" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i>
+                                        &nbsp;{{__('Pesan Sekarang') }}
+                                    </button>
+                                    
                                 </div>
                             </form>
                             <button type="submit" onclick="cancel_wa()" class="btn btn-danger btn-preview-cancel"

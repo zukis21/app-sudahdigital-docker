@@ -23,11 +23,13 @@ class AjaxCitySearch extends Controller
         return $store;*/
         $search = $request->get('search');
         $city_id = $request->get('city_id');
+        $client_id =  \Auth::user()->client_id;
         if($city_id == ''){
             if($search == ''){
-                $store = \App\Customer::all();
+                $store = \App\Customer::where('client_id',$client_id)->get();
             }else{
-                $store = \App\Customer::where('store_name','LIKE',"%$search%")
+                $store = \App\Customer::where('client_id',$client_id)
+                        ->where('store_name','LIKE',"%$search%")
                         ->orWhere('store_code','LIKE',"%$search%")->get();
                 //\App\Customer::where('city_id','=',$city_id)
                         //->where('store_name','LIKE',"$search")
@@ -36,9 +38,11 @@ class AjaxCitySearch extends Controller
             }
         }else{
             if($search == ''){
-                $store = \App\Customer::where('city_id',$city_id)->get();
+                $store = \App\Customer::where('client_id',$client_id)
+                        ->where('city_id',$city_id)->get();
             }else{
-                $store = \App\Customer::where('city_id',$city_id)
+                $store = \App\Customer::where('client_id',$client_id)
+                        ->where('city_id',$city_id)
                         ->where('store_name','LIKE',"%$search%")
                         ->orWhere('store_code','LIKE',"%$search%")->get();
                 //\App\Customer::where('city_id','=',$city_id)

@@ -7,7 +7,7 @@
 	</div>
 @endif
 
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		<!--
 		<div class="col-md-3">
@@ -23,34 +23,36 @@
 		-->
 		<div class="col-md-6">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
-				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'products' ? 'active' : ''}}">
-					<a href="{{route('products.index')}}" aria-expanded="true" >All</a>
+				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/products' ? 'active' : ''}}">
+					<a href="{{route('products.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'publish' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'publish'])}}" >PUBLISH</a>
+					<a href="{{route('products.index', [$vendor,'status' =>'publish'])}}" >PUBLISH</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'draft' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'draft'])}}">DRAFT</a>
+					<a href="{{route('products.index', [$vendor,'status' =>'draft'])}}">DRAFT</a>
 				</li>
-				@if($stock_status->stock_status == 'ON')
-					<li role="presentation" class="">
-						<a href="{{route('products.low_stock')}}">LOW STOCK</a>
-					</li>
+				@if($stock_status)
+					@if($stock_status->stock_status == 'ON')
+						<li role="presentation" class="">
+							<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
+						</li>
+					@endif
 				@endif
 				<li role="presentation" class="">
-					<a href="{{route('products.trash')}}" >TRUSH</a>
+					<a href="{{route('products.trash',[$vendor])}}" >TRUSH</a>
 				</li>
 			</ul>
 		</div>
 		<div class="col-md-6">&nbsp;</div>
 		<div class="col-md-12">
 			<div class="demo-switch">
-				<a href="{{route('products.import_products')}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Import</a>&nbsp;
-				<a href="{{route('products.export_all')}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Export</a>&nbsp;
-				<a href="{{route('products.create')}}" class="btn bg-cyan" style="padding:8px;">Create Product</a> &nbsp;
+				<a href="{{route('products.import_products',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Import</a>&nbsp;
+				<a href="{{route('products.export_all',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Export</a>&nbsp;
+				<a href="{{route('products.create',[$vendor])}}" class="btn bg-cyan" style="padding:8px;">Create Product</a> &nbsp;
 				<span class="label label-warning" style="padding:10px;"><label>ON / OFF STOCK</label>
 					<div class="switch">
-						<label>OFF<input id="check_onoff_stock" type="checkbox" {{$stock_status->stock_status == 'ON' ? 'checked' : ''}}><span class="lever"></span>ON</label>
+						<label>OFF<input id="check_onoff_stock" type="checkbox" {{$stock_status && $stock_status->stock_status == 'ON' ? 'checked' : ''}}><span class="lever"></span>ON</label>
 					</div>
 				</span>
 			</div>
@@ -68,7 +70,7 @@
 				<th>Product Name</th>
 				<th>Descritption</th>
 				<th>Category</th>
-				@if($stock_status->stock_status == 'ON')
+				@if($stock_status && $stock_status->stock_status == 'ON')
 					<th>Stock</th>
 					<th>Low Stock Treshold</th>
 				@endif
@@ -132,7 +134,7 @@
 					@endif
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('products.edit',[$p->id])}}"><i class="material-icons">edit</i></a>
+					<a class="btn btn-info btn-xs" href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>
 					<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$p->id}}" style="padding: 4px 8px;"><small>Detail</small></button>
 
@@ -147,7 +149,7 @@
 		                           Delete this product ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('products.destroy',[$p->id])}}" method="POST">
+		                        	<form action="{{route('products.destroy',[$vendor,$p->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

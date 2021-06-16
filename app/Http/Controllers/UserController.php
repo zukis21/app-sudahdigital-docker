@@ -10,40 +10,55 @@ class UserController extends Controller
 {
     
     public function __construct(){
+        
         $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-users')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-users')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
-
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
-        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
-        $users = \App\User::where('roles','!=','SALES')->get();//paginate(10);
+        $users = \App\User::where('roles','!=','SALES')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->get();//paginate(10);
         $filterkeyword = $request->get('keyword');
         $status = $request->get('status');
         if($filterkeyword){
             if($status){
                 $users = \App\User::where('email','LIKE',"%$filterkeyword%")
-                ->where('status', 'LIKE', "%$status%")->get();
+                ->where('client_id',auth()->user()->client_id)
+                ->where('status', 'LIKE', "%$status%")
+                ->get();
                 //->paginate(10);
             }
             else{
-                $users = \App\User::where('email','LIKE',"%$filterkeyword%")->get();//paginate(10);
+                $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+                ->where('client_id','=',auth()->user()->client_id)
+                ->get();//paginate(10);
             }
         }
         if($status){
-            $users = \App\User::where('status', 'Like', "%$status")->get();//paginate(10);
+            $users = \App\User::where('status', 'Like', "%$status")
+            ->where('client_id','=',auth()->user()->client_id)
+            ->get();//paginate(10);
         }
-        return view ('users.index',['users'=>$users,'client'=>$client]);
+        return view ('users.index',['users'=>$users,'vendor'=>$vendor]);
     }
 
     /**
@@ -51,9 +66,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($vendor)
     {
-        return view('users.create');
+        return view('users.create',['vendor'=>$vendor]);
     }
 
     /**
@@ -65,6 +80,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $new_user = new \App\User;
+        $new_user->client_id = $request->get('client_id');
         $new_user->name = $request->get('name');
         $new_user->email = $request->get('email');
         $new_user->password = \Hash::make($request->get('password'));
@@ -77,10 +93,12 @@ class UserController extends Controller
         $new_user->avatar =$file;
         }
         $new_user->save();
+
+        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
         if ( $new_user->save()){
-            return redirect()->route('users.create')->with('status','User Succsessfully Created');
+            return redirect()->route('users.create',[$client->client_slug])->with('status','User Succsessfully Created');
         }else{
-            return redirect()->route('users.create')->with('error','User Not Succsessfully Created');
+            return redirect()->route('users.create',[$client->client_slug])->with('error','User Not Succsessfully Created');
         }
         
        
@@ -105,10 +123,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($vendor, $id)
     {
+        $id = \Crypt::decrypt($id);
         $user = \App\User::findOrFail($id);
-        return view('users.edit',['user'=>$user]);
+        return view('users.edit',['user'=>$user,'vendor'=>$vendor]);
     }
 
     /**
@@ -118,12 +137,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
-        $user =\App\User::findOrFail($id);
+       
+        $user = \App\User::findOrFail($id);
+        //dd($user);
         $user->name = $request->get('name');
-        $user->status = $request->get('status');
-        $user->roles = $request->get('roles');
+        if(auth()->user()->id != $id){
+            $user->status = $request->get('status');
+            $user->roles = $request->get('roles');
+        }
         $user->phone = $request->get('phone');
         $user->address = $request->get('address');
         if($request->file('avatar')){
@@ -135,7 +158,8 @@ class UserController extends Controller
             $user->avatar =$file;
         }
         $user->save();
-        return redirect()->route('users.edit',[$id])->with('status','User Succsessfully Update');
+        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        return redirect()->route('users.edit',[$client->client_slug,\Crypt::encrypt($id)])->with('status','User Succsessfully Update');
     }
     /**
      * Remove the specified resource from storage.
@@ -143,12 +167,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($vendor, $id)
     {
         $user = \App\User::findOrFail($id);
         $user->delete();
-        return redirect()->route('users.index')->with('status','User Succsessfully Delete');
+        //$client=\App\B2b_client::findOrfail(auth()->user()->client_id); 
+        return redirect()->route('users.index',[$vendor])->with('status','User Succsessfully Delete');
     }
 
-    
 }

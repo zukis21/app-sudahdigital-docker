@@ -13,12 +13,19 @@ class CustomerController extends Controller
     public function __construct(){
         $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-customers')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-customers')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
-
     }
     
     /**
@@ -26,16 +33,20 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
-        $customers = \App\Customer::with('users')->with('cities')->where('status','!=','NEW')->orderBy('id','DESC')->get();//paginate(10);
+        $customers = \App\Customer::with('users')->with('cities')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->where('status','!=','NEW')->orderBy('id','DESC')->get();//paginate(10);
         //$filterkeyword = $request->get('keyword');
         $status = $request->get('status');
         
         if($status){
-            $customers = \App\Customer::with('users')->with('cities')->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
+            $customers = \App\Customer::with('users')->with('cities')
+            ->where('client_id','=',auth()->user()->client_id)
+            ->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
         }
-        return view ('customer_store.index',['customers'=>$customers]);
+        return view ('customer_store.index',['customers'=>$customers,'vendor'=>$vendor]);
     }
 
     /**
@@ -43,9 +54,9 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($vendor)
     {
-        return view('customer_store.create');
+        return view('customer_store.create',['vendor'=>$vendor]);
     }
 
     /**
@@ -54,7 +65,7 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $vendor)
     {
         $new_cust = new \App\Customer;
         $new_cust->store_code = $request->get('store_code');
@@ -68,12 +79,13 @@ class CustomerController extends Controller
         $new_cust->address = $request->get('address');
         $new_cust->payment_term = $request->get('payment_term');
         $new_cust->user_id = $request->get('user_id');
+        $new_cust->client_id = $request->get('client_id');
         
         $new_cust->save();
         if ( $new_cust->save()){
-            return redirect()->route('customers.create')->with('status','Customer Succsessfully Created');
+            return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');
         }else{
-            return redirect()->route('customers.create')->with('error','Customer Not Succsessfully Created');
+            return redirect()->route('customers.create',[$vendor])->with('error','Customer Not Succsessfully Created');
         }
     }
 
@@ -94,10 +106,11 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($vendor,$id)
     {
+        $id = \Crypt::decrypt($id);
         $cust = \App\Customer::findOrFail($id);
-        return view('customer_store.edit',['cust' => $cust]);
+        return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor]);
     }
 
     /**
@@ -107,7 +120,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor,$id)
     {
         $cust =\App\Customer::findOrFail($id);
         $cust->store_code = $request->get('store_code');
@@ -122,7 +135,7 @@ class CustomerController extends Controller
         $cust->payment_term = $request->get('payment_term');
         $cust->user_id = $request->get('user_id');
         $cust->save();
-        return redirect()->route('customers.edit',[$id])->with('status','Customer Succsessfully Update');
+        return redirect()->route('customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Customer Succsessfully Update');
     }
 
     /**
@@ -136,70 +149,47 @@ class CustomerController extends Controller
         //
     }
 
-    public function detail($id)
+    public function detail($vendor,$id)
     {
+        $id = \Crypt::decrypt($id);
         $customer = \App\Customer::findOrFail($id);
-        return view('customer_store.detail', ['customer' => $customer]);
+        return view('customer_store.detail', ['customer' => $customer,'vendor'=>$vendor]);
     }
 
-    public function deletePermanent($id){
+    public function deletePermanent($vendor,$id){
 
         $cust = \App\Customer::findOrFail($id);
-        $order_cust = \App\Order::where('customer_id','=',"$cust->id")->count();
-        if($order_cust > 1){
-            return redirect()->route('customers.index')->with('error', 'Cannot be deleted, because this data already exists in orders');
+        //dd($id);
+        $order_cust = \App\Order::where('customer_id','=',"$id")->count();
+        //dd($order_cust);
+        if($order_cust > 0){
+            return redirect()->route('customers.index',[$vendor])->with('error', 'Cannot be deleted, because this data already exists in orders');
         }
         else {
         $cust->forceDelete();
-        return redirect()->route('customers.index')->with('status', 'Customer permanently deleted!');
+        return redirect()->route('customers.index',[$vendor])->with('status', 'Customer permanently deleted!');
         }
 
     }
 
-    public function ajaxSearch(Request $request){
-        $keyword = $request->get('code');
-        $cust = \App\Customer::where('store_code','=',"$keyword")->count();
-        if ($cust > 0) {
-            echo "taken";	
-          }else{
-            echo 'not_taken';
-          }
-    }
-
-    public function ajaxCitySearch(Request $request){
-        $keyword = $request->get('q');
-        $cities = \App\City::where('type','=','Kota')
-                ->where('city_name','LIKE',"%$keyword%")
-                ->orderBy('display_order','ASC')
-                ->orderBy('postal_code','ASC')
-                ->get();
-        return $cities;
-    }
-
-    public function ajaxUserSearch(Request $request){
-        $keyword = $request->get('q');
-        $user = \App\User::where('roles','=','SALES')->where('name','LIKE',"%$keyword%")->get();
-        return $user;
-    }
-
-    public function export() {
+    public function export($vendor) {
         return Excel::download( new CustomerExport(), 'Customers.xlsx') ;
     }
 
-    public function exportCity() {
+    public function exportCity($vendor) {
         return Excel::download( new CitiesExport(), 'City List.xlsx') ;
     }
 
-    public function import(){
-        return view('customer_store.import_customers');
+    public function import($vendor){
+        return view('customer_store.import_customers',['vendor'=>$vendor]);
     }
 
-    public function import_data(Request $request){
+    public function import_data(Request $request, $vendor){
         \Validator::make($request->all(), [
             "file" => "required|mimes:xls,xlsx"
         ])->validate();
             
         $data = Excel::import(new CustomersImport, request()->file('file'));
-        return redirect()->route('customers.import')->with('status', 'File successfully upload');
+        return redirect()->route('customers.import',[$vendor])->with('status', 'File successfully upload');
     }
 }

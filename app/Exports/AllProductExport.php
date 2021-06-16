@@ -15,12 +15,16 @@ class AllProductExport implements FromCollection, WithMapping, WithHeadings
     public function collection()
     {
         //return product::withall();
-        return product::with('categories')->get();
+        return product::with('categories')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->get();
     }
 
     public function map($product) : array {
         $rows = [];
-        $stock_status= \DB::table('product_stock_status')->first();
+        $stock_status= \DB::table('product_stock_status')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->first();
         if($stock_status->stock_status == 'ON'){
             foreach ($product->categories as $p) {
                 array_push($rows,[

@@ -9,11 +9,20 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     public function __construct(){
+        $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-orders')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-orders')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
     }
     /**
@@ -21,21 +30,22 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
         $user =\Auth::user()->roles;
         $id_user =\Auth::user()->id;
-        //dd($user);
+        $client_id = \Auth::user()->client_id;
+        //dd($client_id);
         if($user == 'SUPERVISOR'){
             $status = $request->get('status');
             if($status){
             $stts = strtoupper($status);
-            $orders = \DB::select("SELECT * FROM orders WHERE customer_id IS NOT NULL AND status='$stts' AND EXISTS 
+            $orders = \DB::select("SELECT * FROM orders WHERE client_id = $client_id AND customer_id IS NOT NULL AND status='$stts' AND EXISTS 
                     (SELECT spv_id,sls_id FROM spv_sales WHERE 
                     spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
             }
             else{
-                $orders = \DB::select("SELECT * FROM orders WHERE customer_id IS NOT NULL AND EXISTS 
+                $orders = \DB::select("SELECT * FROM orders WHERE client_id = $client_id AND customer_id IS NOT NULL AND EXISTS 
                 (SELECT spv_id,sls_id FROM spv_sales WHERE 
                 spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
                 //dd($orders);
@@ -44,18 +54,23 @@ class OrderController extends Controller
         else{
             $status = $request->get('status');
             if($status){
-            $orders = \App\Order::with('products')->whereNotNull('customer_id')
+            $orders = \App\Order::with('products')
+            ->where('client_id','=',$client_id)
+            ->whereNotNull('customer_id')
             ->where('status',strtoupper($status))
             ->orderBy('created_at', 'DESC')->get();//paginate(10);
             }
             else{
-                $orders = \App\Order::with('products')->with('customers')->whereNotNull('customer_id')
+                $orders = \App\Order::with('products')
+                ->with('customers')
+                ->where('client_id','=',$client_id)
+                ->whereNotNull('customer_id')
                 ->orderBy('created_at', 'DESC')->get();
             //dd($orders);
             }
         }
         
-        return view('orders.index', ['orders' => $orders]);
+        return view('orders.index', ['orders' => $orders,'vendor'=>$vendor]);
     }
 
     /**
@@ -108,7 +123,7 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
         $order = \App\Order::findOrFail($id);
         $dateNow = date('Y-m-d H:i:s');
@@ -129,7 +144,7 @@ class OrderController extends Controller
         }
         $order->save();
         
-        return redirect()->route('orders.detail', [$order->id])->with('status', 'Order status succesfully updated');
+        return redirect()->route('orders.detail', [$vendor,\Crypt::encrypt($order->id)])->with('status', 'Order status succesfully updated');
     }
 
     /**
@@ -143,8 +158,9 @@ class OrderController extends Controller
         //
     }
 
-    public function detail($id)
+    public function detail($vendor,$id)
     {
+        $id = \Crypt::decrypt($id);
         $order = \App\Order::findOrFail($id);
         $paket_list = \DB::table('order_product')
                 ->join('pakets','pakets.id','=','order_product.paket_id')
@@ -156,10 +172,10 @@ class OrderController extends Controller
                 ->distinct()
                 ->get(['paket_id','group_id']);
                 //dd($paket_list);
-        return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
+        return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list, 'vendor'=>$vendor]);
     }
 
-    public function export_mapping() {
+    public function export_mapping($vendor) {
         return Excel::download( new OrdersExportMapping(), 'Orders.xlsx') ;
     }
 }

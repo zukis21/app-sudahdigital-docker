@@ -42,7 +42,7 @@
                     <nav aria-label="breadcrumb" class="mt-n3">
                         <ol class="breadcrumb px-0 button_breadcrumb" style="background:transparent;">
                             <li class="breadcrumb-profil-name active mt-2 " aria-current="page">{{$user->sales_area}}</li>&nbsp;&nbsp;
-                            <li class="breadcrumb-profil-name " style="color: #000!important;">Mega Cools</li>
+                            <li class="breadcrumb-profil-name " style="color: #000!important;">{{$client->client_name}}</li>
                         </ol>
                     </nav>
                 </div>
@@ -73,7 +73,7 @@
             </button>
             </div>
             <div class="modal-body">
-                <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('profil.update',[$user->id])}}">
+                <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('profil.update',[$vendor,$user->id])}}">
                     @csrf
                     <input type="hidden" name="_method" value="PUT">
                     @if($user->avatar)
@@ -102,7 +102,7 @@
             </button>
             </div>
             <div class="modal-body">
-                <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('profil.update',[$user->id])}}">
+                <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('profil.update',[$vendor,$user->id])}}">
                     @csrf
                     <input type="hidden" name="_method" value="PUT">    
                     <textarea name="profil_desc" rows="4" class="form-control no-resize" placeholder="Bio" autocomplete="off" required></textarea> 

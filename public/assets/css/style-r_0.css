@@ -835,9 +835,23 @@ a.register:hover {
   height: auto;
   background:transparent;
   position:absolute;
-  top:0;
-  right:0;
+  top:20px;
+  right:20px;
   border:none;
+}
+
+@media(max-width: 768px) {
+  #content .dot-content-top-right {
+    top:15px;
+    right:15px;
+  }
+}
+
+@media(max-width: 540px) {
+  #content .dot-content-top-right {
+    top:10px;
+    right:10px;
+  }
 }
 
 .shape-content-bottom-right {

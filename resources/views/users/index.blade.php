@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
-@if(Route::is('users.index',[$client->client_slug]))
-	@section('title') User List @endsection
+@if(Route::is('users.index'))
+	@section('title') Admin List @endsection
 	@section('content')
 	@if(session('status'))
 		<div class="alert alert-success">
@@ -9,7 +9,7 @@
 		</div>
 	@endif
 
-	<form action="{{route('users.index',[$client->client_slug])}}">
+	<form action="{{route('users.index',[$vendor])}}">
 		<div class="row">
 			<!--
 			<div class="col-md-4">
@@ -28,7 +28,7 @@
 			</div>
 			-->
 			<div class="col-md-12">
-				<a href="{{route('users.create')}}" class="btn btn-success pull-right">Create User</a>
+				<a href="{{route('users.create',[$vendor])}}" class="btn btn-success pull-right">Create Admin</a>
 			</div>
 		</div>
 	</form>	
@@ -53,11 +53,8 @@
 					<td>{{$u->name}}</td>
 					
 					<td>{{$u->email}}</td>
-					<td>@if($u->avatar)
-						<img src="{{asset('storage/'.$u->avatar)}}" width="50px" height="50px" />
-						@else
-						N/A
-						@endif
+					<td>
+						<img src="{{ asset('storage/'.(($u->avatar !='') ? $u->avatar : 'image-noprofile.png').'') }}" width="50px" height="50px" />
 					</td>
 					<td>
 						@if(($u->status)=='ACTIVE')
@@ -67,8 +64,10 @@
 						@endif
 					</td>
 					<td>
-						<a class="btn btn-info btn-xs" href="{{route('users.edit',[$u->id])}}"><i class="material-icons">edit</i></a>&nbsp;
-						<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$u->id}}"><i class="material-icons">delete</i></button>&nbsp;
+						<a class="btn btn-info btn-xs" href="{{route('users.edit',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
+						<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$u->id}}" {{Auth::user()->id == $u->id ? 'disabled' : ''}}>
+							<i class="material-icons">delete</i>
+						</button>&nbsp;
 						<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$u->id}}">Detail</button>
 
 						<!-- Modal Delete -->
@@ -82,9 +81,9 @@
 									Delete this user permananetly..? 
 									</div>
 									<div class="modal-footer">
-										<form action="{{route('users.destroy',[$u->id])}}" method="POST">
+										<form action="{{route('users.destroy',[$vendor,$u->id])}}" method="POST">
 											@csrf
-											<input type="hidden" name="_method" value="DELETE">
+											<input type="hidden" name="_method" value="GET">
 											<button type="submit" class="btn btn-link waves-effect">Delete</button>
 											<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
 										</form>
@@ -106,11 +105,9 @@
 									{{$u->name}}
 									<br/>
 									<br/>
-									@if($u->avatar)
-									<img src="{{asset('storage/'.$u->avatar)}}" width="128px"/>
-									@else
-									No Avatar
-									@endif
+									
+									<img src="{{ asset('storage/'.(($u->avatar !='') ? $u->avatar : 'image-noprofile.png').'') }}" width="128px"/>
+									
 									<br/>
 									<br/>
 									<b>UserName:</b>
@@ -158,7 +155,7 @@
 		</div>
 	@endif
 
-	<form action="{{route('sales.index')}}">
+	<form action="{{route('sales.index',[$vendor])}}">
 		<div class="row">
 			<!--
 			<div class="col-md-4">
@@ -177,8 +174,8 @@
 			</div>
 			-->
 			<div class="col-md-12">
-				<a href="{{route('sales.export')}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
-				<a href="{{route('sales.create')}}" class="btn bg-cyan ">Create Sales</a>
+				<a href="{{route('sales.export',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
+				<a href="{{route('sales.create',[$vendor])}}" class="btn bg-cyan ">Create Sales</a>
 			</div>
 		</div>
 	</form>	
@@ -204,11 +201,8 @@
 					<td>{{$u->name}}</td>
 					
 					<td>{{$u->email}}</td>
-					<td>@if($u->avatar)
-						<img src="{{asset('storage/'.$u->avatar)}}" width="50px" height="50px" />
-						@else
-						<img src="{{asset('assets/image/image-noprofile.png')}}" width="50px" height="50px" />
-						@endif
+					<td>
+						<img src="{{ asset('storage/'.(($u->avatar !='') ? $u->avatar : 'image-noprofile.png').'') }}" width="50px" height="50px" />
 					</td>
 					
 					<td>
@@ -222,7 +216,7 @@
 						@endif
 					</td>
 					<td>
-						<a class="btn btn-info btn-xs" href="{{route('sales.edit',[$u->id])}}"><i class="material-icons">edit</i></a>&nbsp;
+						<a class="btn btn-info btn-xs" href="{{route('sales.edit',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
 						<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$u->id}}"><i class="material-icons">delete</i></button>&nbsp;
 						<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$u->id}}">Detail</button>
 
@@ -237,9 +231,9 @@
 									Delete this sales permananetly..? 
 									</div>
 									<div class="modal-footer">
-										<form action="{{route('sales.destroy',[$u->id])}}" method="POST">
+										<form action="{{route('sales.destroy',[$vendor,$u->id])}}" method="POST">
 											@csrf
-											<input type="hidden" name="_method" value="DELETE">
+											<input type="hidden" name="_method" value="GET">
 											<button type="submit" class="btn btn-link waves-effect">Delete</button>
 											<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
 										</form>
@@ -257,11 +251,7 @@
 									</div>
 									<div class="modal-body">
 										<div class="col-md-4" style="margin-top: 20px;">
-											@if($u->avatar)
-												<img src="{{asset('storage/'.$u->avatar)}}" width="128px"/>
-											@else
-												<img src="{{asset('assets/image/image-noprofile.png')}}" width="200px" height="200px" />
-											@endif
+											<img src="{{ asset('storage/'.(($u->avatar !='') ? $u->avatar : 'image-noprofile.png').'') }}" width="128px"/>
 										</div>
 										
 										<div class="col-md-8" style="margin-top: 30px;">
@@ -326,7 +316,7 @@
 		</div>
 	@endif
 
-	<form action="{{route('spv.index')}}">
+	<form action="{{route('spv.index',[$vendor])}}">
 		<div class="row">
 			<!--
 			<div class="col-md-4">
@@ -345,12 +335,12 @@
 			</div>
 			
 			<div class="col-md-12">
-				<a href="{{route('sales.export')}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
-				<a href="{{route('sales.create')}}" class="btn bg-cyan ">Create Sales</a>
+				<a href="{{route('sales.export',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
+				<a href="{{route('sales.create',[$vendor])}}" class="btn bg-cyan ">Create Sales</a>
 			</div>
 			-->
 			<div class="col-md-12">
-				<a href="{{route('spv.create')}}" class="btn btn-success pull-right">Create SPV</a>
+				<a href="{{route('spv.create',[$vendor])}}" class="btn btn-success pull-right">Create SPV</a>
 			</div>
 		</div>
 	</form>	
@@ -403,7 +393,7 @@
 						@endif
 					</td>
 					<td>
-						<a class="btn btn-info btn-xs" href="{{route('spv.edit',[$u->id])}}"><i class="material-icons">edit</i></a>&nbsp;
+						<a class="btn btn-info btn-xs" href="{{route('spv.edit',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
 						<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$u->id}}"><i class="material-icons">delete</i></button>&nbsp;
 						
 						<!-- Modal Delete -->
@@ -417,9 +407,9 @@
 									Delete this supervisor permananetly..? 
 									</div>
 									<div class="modal-footer">
-										<form action="{{route('spv.destroy',[$u->id])}}" method="POST">
+										<form action="{{route('spv.destroy',[$vendor,$u->id])}}" method="POST">
 											@csrf
-											<input type="hidden" name="_method" value="DELETE">
+											<input type="hidden" name="_method" value="GET">
 											<input type="hidden" name="del_id" value="{{$u->id}}">
 											<button type="submit" class="btn btn-link waves-effect">Delete</button>
 											<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>

@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>Mega Cools | @yield('title')</title>
+    <meta id="token" name="csrf-token" content="{{ csrf_token() }}" />
+    <title>{{$client->client_name}} | @yield('title')</title>
 
-    <link rel="icon" href="{{ asset('assets/image/LOGO MEGACOOLS_DEFAULT.png')}}" type="image/x-icon">
+    <link rel="icon" href="{{asset('assets/image'.$client->client_image)}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->
     <link href="//db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style_cools-r_1.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive_cools-r_4.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
@@ -34,6 +34,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-183852861-1"></script>
@@ -910,7 +911,7 @@
                     <div class="container">
                         <div class="d-flex justify-content-center mx-auto">
                             <div class="col-md-2 image-logo-login" style="z-index: 2">
-                            <img src="{{ asset('assets/image/LOGO MEGACOOLS_DEFAULT.png') }}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="LOGO MEGACOOLS_DEFAULT">  
+                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
                             </div>
                         </div>
                     </div>
@@ -920,7 +921,7 @@
                     
                     <div class="row justify-content-center">
                         <div class="col-md-5 login-label" style="z-index: 2">
-                            <form method="POST" action="{{route('session.store')}}">
+                            <form method="POST" action="{{route('session.store',[$vendor])}}">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
                                 <table class="table borderless">
@@ -998,7 +999,7 @@
                     <div class="container content-new-toko">
                         <div class="d-flex justify-content-center mx-auto">
                             <div class="col-md-2 image-logo-login" style="z-index: 2">
-                            <img src="{{ asset('assets/image/LOGO MEGACOOLS_DEFAULT.png') }}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="LOGO MEGACOOLS_DEFAULT">  
+                            <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="image-logo">  
                             </div>
                         </div>
                     </div>
@@ -1126,21 +1127,21 @@
                 </li>
                 -->
                 <li>
-                    <a href="{{$paket != null ? URL::route('home_paket', ['paket'=>strtolower($paket->status)]) : '' }}">Paket</a>
+                    <a href="{{$paket != null ? URL::route('home_paket',[$vendor]) : '' }}">Paket</a>
                 </li>
                 
                 <li>
-                   <a href="{{URL::route('profil.index')}}">Profile</a>
+                   <a href="{{URL::route('profil.index',[$vendor])}}">Profile</a>
                 </li>
                 <li>
-                    <a href="{{URL::route('session.clear')}}">Ubah Lokasi / Toko</a>
+                    <a href="{{URL::route('session.clear',[$vendor])}}">Ubah Lokasi / Toko</a>
                  </li>
                 <li>
-                    <a href="{{URL::route('contact')}}">Kontak Kami</a>
+                    <a href="{{URL::route('contact',[$vendor])}}">Kontak Kami</a>
                 </li>
                 
                 <li>
-                    <a href="{{URL::route('pesanan')}}">Pesanan</a>
+                    <a href="{{URL::route('pesanan',[$vendor])}}">Pesanan</a>
                 </li>
                 
             </ul>
@@ -1182,7 +1183,7 @@
                     <!-- The slideshow -->
                     <div class="carousel-inner">
                         @foreach($banner as $k => $v)
-                            <div class="carousel-item {{$v->position == $banner_active->position ? 'active' : ''}}">
+                            <div class="carousel-item {{$v->position == '1' ? 'active' : ''}}">
                                 <img src="{{asset('storage/'.$v->image)}}" class="w-100 h-100" style="margin-top:-5px;z-index:1;">
                             </div>
                         @endforeach
@@ -1208,7 +1209,7 @@
         <div id="footer">
             <div class="d-flex justify-content-center">
                 <div class="col-md-2">
-                    <img src="{{ asset('assets/image/LOGO MEGACOOLS_DEFAULT.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="logo-gentong"> 
+                    <img src="{{ asset('assets/image'.$client->client_image) }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="image-logo"> 
                 </div>
             </div>
             <br><br>
@@ -1218,10 +1219,22 @@
                    </div>
                 <div class="social-icons">
                     
-                    <a href="#"  target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="#"  target="_blank"><i class="fab fa-instagram "></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-twitter "></i></a>
+                    <a href="{{$client->fb_url != null ? $client->fb_url : '#'}}" 
+                        {{$client->fb_url != null ? 'target="_blank"' : ''}}>
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="{{$client->inst_url != null ? $client->inst_url : '#'}}" 
+                        {{$client->inst_url != null ? 'target="_blank"' : ''}}>
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="{{$client->ytb_url != null ? $client->ytb_url : '#'}}" 
+                        {{$client->ytb_url != null ? 'target="_blank"' : ''}}>
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="{{$client->twt_url != null ? $client->twt_url : '#'}}"
+                        {{$client->twt_url != null ? 'target="_blank"' : ''}}>
+                        <i class="fab fa-twitter"></i>
+                    </a>
                 </div>
             </div>
             <div class="copyright text-center">
@@ -1721,7 +1734,7 @@
             $('.button_minus_pkt').attr('disabled', true);
         });*/
 
-        function btn_code(){
+        /*function btn_code(){
             var voucher_code = document.getElementById("voucher_code").value;
             var x = document.getElementById("desc_code");
             if(voucher_code ==""){
@@ -1807,9 +1820,9 @@
                     }
                 });
             }
-        }
+        }*/
 
-        function reset_promo(){
+        /*function reset_promo(){
             var x = document.getElementById("desc_code");
             $('#loader').removeClass('hidden');
             $.ajax({
@@ -1828,7 +1841,7 @@
                     $('#loader').addClass('hidden')
                 }
             });
-        }
+        }*/
 
         function hanyaAngka(evt) {
             var charCode = (evt.which) ? evt.which : event.keyCode
@@ -1881,7 +1894,7 @@
                             confirmButtonText: "OK",
                             confirmButtonColor: '#4db849'
                             }).then(function(){ 
-                                window.location.href = '{{URL::to('/session/clear')}}';
+                                window.location.href = '{{URL::to('/success/send/order')}}';
                             });
                         }
                     }
@@ -2666,7 +2679,7 @@
                         $('#jumlah_top'+id).val(1);
                         $('#show_top'+id).val(1);
                         $('#productPrice_top'+id).text(price);
-                        if(voucher_code_hide !=""){
+                        /*if(voucher_code_hide !=""){
                             $.ajax({
                                 url : '{{URL::to('/keranjang/apply_code')}}',
                                 type: 'POST',
@@ -2687,7 +2700,7 @@
                                 }
                             });
                         }
-                        else{
+                        else{*/
                             $.ajax({
                                 url : '{{URL::to('/home_cart')}}',
                                 type : 'GET',
@@ -2718,7 +2731,7 @@
                                     $('#loader').addClass('hidden')
                                 }
                             });
-                        }                                
+                        //}                                
                     },
                     
                     error: function (data) {
@@ -2804,6 +2817,7 @@
                         $('#jumlah'+id).val(1);
                         $('#show_'+id).val(1);
                         $('#productPrice'+id).text(price);
+                        /*
                         if(voucher_code_hide !=""){
                             $.ajax({
                                 url : '{{URL::to('/keranjang/apply_code')}}',
@@ -2826,6 +2840,7 @@
                             });
                         }
                         else{
+                            */
                             $.ajax({
                                 url : '{{URL::to('/home_cart')}}',
                                 type : 'GET',
@@ -2856,7 +2871,7 @@
                                     $('#loader').addClass('hidden')
                                 }
                             });
-                        }                                
+                        //}                                
                     },
                     
                     error: function (data) {
@@ -3457,7 +3472,7 @@
                 Swal.fire({
                 title: 'Apakah anda yakin ?',
                 text: "Bonus anda masih tersisa "+sisa+" !",
-                type: 'warning',
+                //type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
@@ -3504,7 +3519,7 @@
                                         Swal.fire({
                                         //title: 'Apakah anda yakin ?',
                                         text: "Paket berhasil dimasukkan keranjang",
-                                        type: 'success',
+                                        //type: 'success',
                                         showCancelButton: false,
                                         confirmButtonColor: '#3085d6',
                                         confirmButtonText: 'Ok',
@@ -3564,7 +3579,7 @@
                                 Swal.fire({
                                 //title: 'Apakah anda yakin ?',
                                 text: "Paket berhasil dimasukkan keranjang",
-                                type: 'success',
+                                //type: 'success',
                                 showCancelButton: false,
                                 confirmButtonColor: '#3085d6',
                                 confirmButtonText: 'Ok',
@@ -3681,7 +3696,7 @@
                                 $('#total_kr_val').val(tot_val);
                                 $('#total_pesan_val').val(tot_val);
                                 $('#total_pesan_val_hide').val(tot_val);
-                                if(voucher_code_hide !=""){
+                                /*if(voucher_code_hide !=""){
                                     $.ajax({
                                         url : '{{URL::to('/keranjang/apply_code')}}',
                                         type: 'POST',
@@ -3702,7 +3717,7 @@
                                         }
                                     });
                                 }
-                                else{
+                                else{*/
                                     $.ajax({
                                         url : '{{URL::to('/home_cart')}}',
                                         type : 'GET',
@@ -3715,7 +3730,7 @@
                                             $('#loader').addClass('hidden')
                                         }
                                     });
-                                }
+                                //}
                             },
                             
                             error: function (data) {
@@ -3811,7 +3826,7 @@
                                 $('#total_pesan_val').val(tot_val);
                                 //$('#total_novoucher_val').val(total_pesan_val_hide);
                                 $('#total_pesan_val_hide').val(tot_val);
-                                if(voucher_code_hide !=""){
+                                /*if(voucher_code_hide !=""){
                                     $.ajax({
                                         url : '{{URL::to('/keranjang/apply_code')}}',
                                         type: 'POST',
@@ -3832,7 +3847,7 @@
                                         }
                                     });
                                 }
-                                else{
+                                else{*/
                                     $.ajax({
                                         url : '{{URL::to('/home_cart')}}',
                                         type : 'GET',
@@ -3846,7 +3861,7 @@
                                             $('#loader').addClass('hidden')
                                         }
                                     });
-                                }
+                                //}
                                 
                             },
                             error: function (data) {
@@ -3892,7 +3907,7 @@
                     //$('#jmlbrg_'+id).val(jumlah);
                     //$('#show_'+id).html(jumlah);
                     //$('#productPrice'+id).text(harga);
-                    if(voucher_code_hide !=""){
+                    /*if(voucher_code_hide !=""){
                         $.ajax({
                             url : '{{URL::to('/keranjang/apply_code')}}',
                             type: 'POST',
@@ -3912,7 +3927,7 @@
                             $('#loader').addClass('hidden')
                             }
                         });
-                    }else{
+                    }else{*/
                             $.ajax({
                                 url : '{{URL::to('/home_cart')}}',
                                 type : 'GET',
@@ -3944,7 +3959,7 @@
                                     $('#loader').addClass('hidden')
                                 }
                             });
-                        }
+                        //}
                     },
                     
                     error: function (data) {
@@ -4367,7 +4382,7 @@
                                 }
                         });
                         $.ajax({
-                            url : '{{URL::to('/preview_order')}}',
+                            url : '{{URL::to('/keranjang/preview_order')}}',
                             type:'POST',
                             data:{
                                 order_id : order_id,
@@ -4379,6 +4394,10 @@
                                 //$("#modalDetilList").modal('show');
                                 $("#my_modal_content").modal('show');
                                 $('#PreviewToko_Produk' ).html(response);
+                                var diswa = $('#dsbl_btn_wa' ).val();
+                                if (diswa.length > 0) {
+                                    $('#ga_pesan').attr("disabled", 'disabled');
+                                }
                                 $('#total_pesan_val').val(total_pesan_val_hide);
                                 $('#order_id_pesan').val(order_id);
                             },
@@ -4528,7 +4547,7 @@
                 }
             });
             $.ajax({
-                url:'{{URL::to('/paket/product_search')}}',
+                url:'{{URL::to('/keranjang/paket/product_search')}}',
                 method:'POST',
                 data:{
                         query:query,
@@ -4555,7 +4574,7 @@
                 }
             });
             $.ajax({
-                url:'{{URL::to('/bonus/product_search')}}',
+                url:'{{URL::to('/keranjang/bonus/product_search')}}',
                 method:'POST',
                 data:{
                         query:query,

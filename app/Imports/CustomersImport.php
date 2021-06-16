@@ -42,7 +42,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
     public function model(array $rows)
     {
         //dd($rows);
-        $cek = Customer::where('store_code','=',$rows['cust_code'])->count();
+        $cek = Customer::where('client_id','=',auth()->user()->client_id)
+                        ->where('store_code','=',$rows['cust_code'])
+                        ->count();
         if($cek > 0){
             $customer = Customer::where('store_code','=',$rows['cust_code'])->first();
             $customer->store_name = $rows['name'];
@@ -97,6 +99,7 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             if(!empty( $rows['sales_rep'])){
                 $customer->user_id = $rows['sales_rep'];
             }
+            $customer->client_id = \Auth::user()->client_id;
             $customer->save();
         }
         /*return new Customer([

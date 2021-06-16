@@ -11,37 +11,52 @@ class SalesController extends Controller
     public function __construct(){
         $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-sales')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-sales')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
-
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
-        $users = \App\User::with('cities')->where('roles','=','SALES')->get();//paginate(10);
+        $users = \App\User::with('cities')->where('roles','=','SALES')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->get();//paginate(10);
         $filterkeyword = $request->get('keyword');
         $status = $request->get('status');
         if($filterkeyword){
             if($status){
                 $users = \App\User::where('email','LIKE',"%$filterkeyword%")
-                ->where('status', 'LIKE', "%$status%")->get();
+                ->where('status', 'LIKE', "%$status%")
+                ->where('client_id',auth()->user()->client_id)
+                ->get();
                 //->paginate(10);
             }
             else{
-                $users = \App\User::where('email','LIKE',"%$filterkeyword%")->get();//paginate(10);
+                $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+                ->where('client_id',auth()->user()->client_id)
+                ->get();//paginate(10);
             }
         }
         if($status){
-            $users = \App\User::where('status', 'Like', "%$status")->get();//paginate(10);
+            $users = \App\User::where('status', 'Like', "%$status")
+            ->where('client_id',auth()->user()->client_id)
+            ->get();//paginate(10);
         }
-        return view ('users.index',['users'=>$users]);
+        return view ('users.index',['users'=>$users,'vendor'=>$vendor]);
     }
 
     /**
@@ -49,9 +64,9 @@ class SalesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($vendor)
     {
-        return view('users.create');
+        return view('users.create',['vendor'=>$vendor]);
     }
 
     /**
@@ -60,9 +75,10 @@ class SalesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $vendor)
     {
         $new_user = new \App\User;
+        $new_user->client_id = $request->get('client_id');
         $new_user->name = $request->get('name');
         $new_user->email = $request->get('email');
         $new_user->password = \Hash::make($request->get('password'));
@@ -74,9 +90,9 @@ class SalesController extends Controller
         
         $new_user->save();
         if ( $new_user->save()){
-            return redirect()->route('sales.create')->with('status','Sales Succsessfully Created');
+            return redirect()->route('sales.create',[$vendor])->with('status','Sales Succsessfully Created');
         }else{
-            return redirect()->route('sales.create')->with('error','Sales Not Succsessfully Created');
+            return redirect()->route('sales.create',[$vendor])->with('error','Sales Not Succsessfully Created');
         }
     }
 
@@ -97,10 +113,11 @@ class SalesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($vendor, $id)
     {
+        $id = \Crypt::decrypt($id);
         $user = \App\User::findOrFail($id);
-        return view('users.edit',['user'=>$user]);
+        return view('users.edit',['user'=>$user,'vendor'=>$vendor]);
     }
 
     /**
@@ -110,7 +127,7 @@ class SalesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
         $user =\App\User::findOrFail($id);
         $user->name = $request->get('name');
@@ -119,7 +136,7 @@ class SalesController extends Controller
         $user->sales_area = $request->get('sales_area');
         $user->status = $request->get('status');
         $user->save();
-        return redirect()->route('sales.edit',[$id])->with('status','Sales Succsessfully Update');
+        return redirect()->route('sales.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Sales Succsessfully Update');
     }
 
     /**
@@ -128,20 +145,14 @@ class SalesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($vendor, $id)
     {
         $user = \App\User::findOrFail($id);
         $user->delete();
-        return redirect()->route('sales.index')->with('status','Sales Succsessfully Delete');
+        return redirect()->route('sales.index',[$vendor])->with('status','Sales Succsessfully Delete');
     }
 
-    public function ajaxSearch(Request $request){
-        $keyword = $request->get('q');
-        $cities = \App\City::where('city_name','LIKE',"%$keyword%")->get();
-        return $cities;
-    }
-
-    public function export() {
+    public function export($vendor) {
         return Excel::download( new SalesExport(), 'Sales_Rep.xlsx') ;
     }
 }

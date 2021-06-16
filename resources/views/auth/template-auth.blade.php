@@ -13,8 +13,8 @@
     <link href="//db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style_cools-r_1.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive_cools-r_4.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_0.css')}}">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
@@ -185,12 +185,12 @@
     <!-- Modal -->
     <div class="modal fade" id="searchModal" role="dialog">
         <div class="modal-dialog">
-        
-            <!-- Modal content-->
+            
+            <!-- Modal content
             <div class="modal-content" style="background: #2779B2">
                 <div class="modal-body">
                     <div class="row justify-content-center">
-                        <form action="{{route('search.index')}}">
+                        <form action="route('search.index')">
                             <div class="input-group">
                                 <div class="input-group-append">
                                         <button class="btn search_botton_navbar" type="submit" id="button-search-addon" style="border-radius: 50%;"><i class="fa fa-search"></i></button>
@@ -202,7 +202,7 @@
                     </div>
                 </div>
             </div>
-        
+            -->
         </div>
     </div>
 

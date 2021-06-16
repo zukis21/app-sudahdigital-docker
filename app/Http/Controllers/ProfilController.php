@@ -5,18 +5,36 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 class ProfilController extends Controller
-{
+{   
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware(function($request, $next){
+            $param = \Route::current()->parameter('vendor');
+            //dd($param);
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            //dd($client->client_slug);
+            if($client->client_slug == $param){
+                
+                //dd(\Request::session()->get('client_sess'));
+                return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
+        });
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($vendor)
     {
         $id=\Auth::user()->id;
-        $paket = \App\Paket::all()->first();//paginate(10);
+        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        $paket = \App\Paket::where('client_id','=',\Auth::user()->client_id)->first();
         $user = \App\User::where('id',$id)->first();
-        return view('customer.profil',['user'=> $user,'paket'=>$paket]);
+        return view('customer.profil',['user'=> $user,'paket'=>$paket,'vendor'=>$vendor,'client'=>$client]);
     }
 
     /**
@@ -69,7 +87,7 @@ class ProfilController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
         $user =\App\User::findOrFail($id);
         if($request->has('avatar')){
@@ -86,7 +104,7 @@ class ProfilController extends Controller
         }
         
         $user->save();
-        return redirect()->route('profil.index',[$id])->with('status','User Succsessfully Update');
+        return redirect()->route('profil.index',[$vendor,$id])->with('status','User Succsessfully Update');
     }
 
     /**

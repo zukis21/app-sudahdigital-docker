@@ -1,6 +1,7 @@
 @extends('layouts.master')
+
 @if(Route::is('users.create'))
-    @section('title') Create User @endsection
+    @section('title') Create Admin @endsection
     @section('content')
 
         @if(session('status'))
@@ -14,8 +15,9 @@
             </div>
         @endif
         <!-- Form Create -->
-        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.store')}}">
+        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.store',[$vendor])}}">
             @csrf
+            <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" name="name" autocomplete="off" required>
@@ -59,14 +61,22 @@
                 <input type="file" name="avatar" class="form-control" id="avatar" autocomplete="off">
                 </div>
             </div>
-
+            <!--
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="email" class="form-control" name="email" autocomplete="off" required>
                     <label class="form-label">Email</label>
                 </div>
             </div>
-
+            -->
+            <div class="form-group form-float">
+                <div class="form-line" id="email_" class="email_">
+                    <input type="email" class="form-control" id="email"  name="email" autocomplete="off" required>
+                    <label class="form-label">Email</label>
+                </div>
+                <small class="err_exist"></small>
+            </div>
+            
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="password" class="form-control {{$errors->first('password') ? "is-invalid" : ""}}" name="password" id="password" required>
@@ -87,7 +97,7 @@
                 </div>
             </div>
                             
-            <button id="btnSubmit" class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
+            <button id="btnSubmit" class="btn btn-primary waves-effect btn-create-user" type="submit">SUBMIT</button>
         </form>
         <!-- #END#  -->		
 
@@ -109,8 +119,9 @@
             </div>
         @endif
         <!-- Form Create -->
-        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('sales.store')}}">
+        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('sales.store',[$vendor])}}">
             @csrf
+            <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" name="name" autocomplete="off" required>
@@ -143,10 +154,11 @@
             -->
             
             <div class="form-group form-float">
-                <div class="form-line">
-                    <input type="email" class="form-control" name="email" autocomplete="off" required>
+                <div class="form-line" id="email_" class="email_">
+                    <input type="email" class="form-control" id="email"  name="email" autocomplete="off" required>
                     <label class="form-label">Email</label>
                 </div>
+                <small class="err_exist"></small>
             </div>
 
 
@@ -204,8 +216,9 @@
             </div>
         @endif
         <!-- Form Create -->
-        <form id="form_validation" class="form_spv" method="POST" enctype="multipart/form-data" action="{{route('spv.store')}}">
+        <form id="form_validation" class="form_spv" method="POST" enctype="multipart/form-data" action="{{route('spv.store',[$vendor])}}">
             @csrf
+            <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" name="name" autocomplete="off" required value="{{old('name') }}">
@@ -250,10 +263,11 @@
             </div>
             
             <div class="form-group form-float">
-                <div class="form-line">
-                    <input type="email" class="form-control" name="email" autocomplete="off" required value="{{old('email') }}">
+                <div class="form-line" id="email_" class="email_">
+                    <input type="email" class="form-control" id="email"  name="email" autocomplete="off" required>
                     <label class="form-label">Email</label>
                 </div>
+                <small class="err_exist"></small>
             </div>
 
             <!--
@@ -296,6 +310,7 @@
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script type="text/javascript">
         
@@ -308,7 +323,34 @@
             }
         });
         */
-        
+        $('document').ready(function(){
+            $('#email, .btn-create-user').on('keyup blur', function(){
+            var email = $('#email').val();
+                $.ajax({
+                    url: '{{URL::to('/ajax/users_email/search')}}',
+                    type: 'get',
+                    data: {
+                        'email' : email,
+                    },
+                    success: function(response){
+                        if (response == 'taken' && email !="" ) {
+                        $('.email_').addClass("focused error");
+                        $('.err_exist').addClass("small").addClass('merah').text('Sorry... Email Already Exists');
+                        $('#btnSubmit').prop('disabled', true);
+                        }else if (response == 'not_taken' && email !="") {
+                        $('.email_').addClass("");
+                        $('.err_exist').addClass("text-primary").removeClass('merah').text('Email Available');
+                        $('#btnSubmit').prop('disabled', false);
+                        }
+                        else if(response == 'not_taken' && email==""){
+                            //$('#email_').siblings("label").text('');
+                            $('.err_exist').text('');
+                        }
+                    }
+                });
+            });
+        });
+
        $(function () {
             $("#btnSubmit").click(function () {
                 var password = $("#password").val();

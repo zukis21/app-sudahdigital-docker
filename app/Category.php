@@ -4,6 +4,7 @@ namespace App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Category extends Model
 {
     use SoftDeletes;
@@ -11,4 +12,10 @@ class Category extends Model
     public function products(){
         return $this->belongsToMany('App\product');
     }
-}
+
+    /*public function getRouteKeyName()
+    //{
+        return 'slug';
+    }*/
+
+} 

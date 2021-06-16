@@ -16,7 +16,10 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
     */
     public function collection()
     {
-        return Order::with('products')->whereNotNull('customer_id')->orderBy('created_at', 'DESC')->get();
+        return Order::with('products')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->whereNotNull('customer_id')
+        ->orderBy('created_at', 'DESC')->get();
     }
 
     public function map($order) : array {

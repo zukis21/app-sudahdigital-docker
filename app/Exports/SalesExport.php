@@ -16,7 +16,10 @@ class SalesExport implements FromCollection, WithMapping, WithHeadings, WithColu
     public function collection()
     {
         //return User::all();
-        return User::where('roles','=','SALES')->get();
+        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        return User::where('roles','=','SALES')
+        ->where('client_id',auth()->user()->client_id)
+        ->get();
     }
 
     public function map($user) : array {

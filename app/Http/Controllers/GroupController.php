@@ -10,38 +10,47 @@ class GroupController extends Controller
     public function __construct(){
         $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-group')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-group')) return $next($request);;
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
-
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
         $status = $request->get('status');
         $keyword = $request->get('keyword') ? $request->get('keyword') : '';
         if($status){
         $groups = \App\Group::with('item_active')
+        ->where('client_id','=',auth()->user()->client_id)
         ->where('group_name','LIKE',"%$keyword%")
         ->where('status',strtoupper($status))->get();//->paginate(10);
-        $products_list = \App\product::with('groups')
-                ->doesntHave('groups')->get();    
+        /*$products_list = \App\product::with('groups')
+                ->doesntHave('groups')->get();*/    
         }
         else
             {
             $groups = \App\Group::with('item_active')
+            ->where('client_id','=',auth()->user()->client_id)
             ->where('group_name','LIKE',"%$keyword%")->get();//->paginate(10);
             //$products_list = \App\product::with('groups')
                 //->doesntHave('groups')->get();
             //dd($products_list);
             }
-        return view('grouppaket.index', ['groups'=> $groups]);
+        return view('grouppaket.index', ['groups'=> $groups,'vendor'=>$vendor]);
     }
 
     /**
@@ -49,12 +58,14 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($vendor)
     {   
         //$products = \App\product::with('groups')
                 //->doesntHave('groups')->get();
-        $products=\App\product::all();
-        return view('grouppaket.create', ['products'=>$products]);
+        $products=\App\product::where('client_id','=',auth()->user()->client_id)
+                ->where('status','=','PUBLISH')
+                ->get();
+        return view('grouppaket.create', ['products'=>$products, 'vendor'=>$vendor]);
     }
 
     /**
@@ -63,9 +74,10 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $vendor)
     {
         $group = new \App\Group;
+        $group->client_id = $request->get('client_id');
         $group->group_name= $request->get('group_name');
         //$new_group->group_image = $request->file('group_image');
         $group->display_name = $request->get('display_name');
@@ -93,7 +105,7 @@ class GroupController extends Controller
         
         if($request->get('save_action') == 'SAVE'){
           return redirect()
-                ->route('groups.create')
+                ->route('groups.create',[$vendor])
                 ->with('status', 'Group paket successfully saved');
         }
 
@@ -116,20 +128,23 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($vendor,$id)
     {
+        $id = \Crypt::decrypt($id);
         $groups = \App\Group::with('products')->findOrfail($id);
         /*$products_list = \App\product::with('groups')
                 ->doesntHave('groups')
                 ->get();*/
-        $products_list = \DB::select("SELECT * FROM products p WHERE   NOT EXISTS
+        $client_prid = \Auth::user()->client_id;
+        $products_list = \DB::select("SELECT * FROM products p WHERE p.client_id = $client_prid AND 
+                                        p.status = 'PUBLISH' AND NOT EXISTS
                                         (
                                             SELECT * FROM  group_product g
                                             WHERE   g.product_id = p.id
                                             AND g.group_id = '$id'
                                         )
                                     ");
-        return view('grouppaket.edit', ['groups' => $groups,'products_list'=>$products_list]);
+        return view('grouppaket.edit', ['groups' => $groups,'products_list'=>$products_list,'vendor'=>$vendor]);
     }
 
     /**
@@ -139,7 +154,7 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
         if($request->get('save_action') == 'ADD'){
             //$group= $request->input('group_id');
@@ -162,7 +177,7 @@ class GroupController extends Controller
                         }
                 }
             }
-            return redirect()->route('groups.edit', [$id])->with('status',
+            return redirect()->route('groups.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
             'Item product successfully add');
         }
         else if($request->get('save_action') == 'DELETE_ITEM')
@@ -176,7 +191,7 @@ class GroupController extends Controller
             }else{
                 $group_paket = \App\group_product::findOrFail($del_id);
                 $group_paket->delete();
-                return redirect()->route('groups.edit', [$id])->with('status',
+                return redirect()->route('groups.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
                 'Item product successfully delete');
             }
         }
@@ -186,7 +201,7 @@ class GroupController extends Controller
             $group_product = \App\group_product::findOrFail($deactive_id);
             $group_product->status = 'INACTIVE';
             $group_product->save();
-            return redirect()->route('groups.edit', [$id])->with('status',
+            return redirect()->route('groups.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
             'Item product successfully deactivate');
         }
         else if($request->get('save_action') == 'ACTIVATE')
@@ -203,7 +218,7 @@ class GroupController extends Controller
             */
             $group_product->status = 'ACTIVE';
             $group_product->save();
-            return redirect()->route('groups.edit', [$id])->with('status',
+            return redirect()->route('groups.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
             'Item product successfully activate');
             
         }else{
@@ -233,7 +248,7 @@ class GroupController extends Controller
                 }
             }
             //$group->save();
-            return redirect()->route('groups.edit', [$id])->with('status_group',
+            return redirect()->route('groups.edit', [$vendor,\Crypt::encrypt($id)])->with('status_group',
             'Group successfully update');
         }
     }
@@ -244,30 +259,34 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($vendor,$id)
     {
         
         //$cek_id = \App\group_product::findOrfail($del_id);
         $cek_exist = \App\order_product::where('group_id','=',$id)->count();
+        //dd($cek_exist);
         if( $cek_exist > 0){
-            return redirect()->route('groups.index')->with('error',
+            return redirect()->route('groups.index',[$vendor])->with('error',
             'Can\'t delete, this group already exist in order');
         }else{
             $group = \App\Group::findOrFail($id);
             $group->delete();
             $group->products()->detach();
-            return redirect()->route('groups.index')->with('status',
+            return redirect()->route('groups.index',[$vendor])->with('status',
             'Group successfully delete');
         }
     }
 
-    public function update_status(Request $request){
+    public function update_status(Request $request, $vendor){
         if($request->get('save_action') == 'ACTIVATE')
         {
             $active_id = $request->input('activate_id');
             $group_product = \App\group_product::where('group_id',$active_id)->get();
             foreach($group_product as $item){
-                $cek = \App\group_product::where('product_id','=',$item->product_id)->where('status','=','ACTIVE')->count();
+                $cek = \App\group_product::where('product_id','=',$item->product_id)
+                        ->where('group_id',$active_id)
+                        ->where('status','=','ACTIVE')->count();
+                        //dd($cek);
                 if($cek == 0 ){
                     $group_product = \App\group_product::where('id',$item->id);
                         $group_product->update([
@@ -279,7 +298,7 @@ class GroupController extends Controller
             $group->status='ACTIVE';
             $group->save();
             
-            return redirect()->route('groups.index')->with('status',
+            return redirect()->route('groups.index',[$vendor])->with('status',
             'Group successfully activate');
         }else{
             $deactive_id = $request->input('deactivate_id');
@@ -293,7 +312,7 @@ class GroupController extends Controller
                 ]);
                 
             }
-            return redirect()->route('groups.index')->with('status_group',
+            return redirect()->route('groups.index',[$vendor])->with('status_group',
             'Group successfully deactivate');
         }
         
@@ -336,13 +355,5 @@ class GroupController extends Controller
         return $groups;
     }
 
-    public function GroupNameSearch(Request $request){
-        $keyword = $request->get('code');
-        $groups = \App\Group::where('group_name','=',"$keyword")->count();
-        if ($groups > 0) {
-            echo "taken";	
-          }else{
-            echo 'not_taken';
-          }
-    }
+    
 }

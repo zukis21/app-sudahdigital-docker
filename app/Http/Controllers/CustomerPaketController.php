@@ -8,10 +8,14 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerPaketController extends Controller
 {
-    public function index($id){   
+    public function __construct(){
+        $this->middleware('auth');
+    }
+    /*public function index($vendor){   
         $id_user = \Auth::user()->id;
-        $banner_active = \App\Banner::orderBy('position', 'ASC')->first();
-        $banner = \App\Banner::orderBy('position', 'ASC')->limit(5)->get();
+        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        $banner = \App\Banner::where('client_id','=',$client_id)
+                ->orderBy('position', 'ASC')->limit(5)->get();
         $categories = \App\Category::all();//paginate(10);
         $paket = \App\Paket::all()->first();//paginate(10);
         //$paket_id = \App\Paket::findOrfail($id);//paginate(10);
@@ -37,7 +41,7 @@ class CustomerPaketController extends Controller
                     AND orders.id = order_product.order_id AND order_product.bonus_cat IS NULL AND
                     order_product.product_id = products.id AND orders.status = 'SUBMIT' 
                     AND orders.user_id = '$id_user' AND orders.customer_id IS NULL ");*/
-        $item = DB::table('orders')
+        /*$item = DB::table('orders')
                     ->where('user_id','=',"$id_user")
                     ->where('orders.status','=','SUBMIT')
                     ->whereNull('orders.customer_id')
@@ -54,8 +58,8 @@ class CustomerPaketController extends Controller
                     ->whereNull('orders.customer_id')
                     ->distinct('order_product.product_id')
                     /*->whereNull('order_product.group_id')*/
-                    ->count();
-        $data=['total_item'=> $total_item, 
+                    //->count();
+        /*$data=['total_item'=> $total_item, 
                 'keranjang'=>$keranjang,
                 'all_product'=>$all_product,
                 'product'=>$product,
@@ -66,20 +70,21 @@ class CustomerPaketController extends Controller
                 'categories'=>$categories,
                 'cat_count'=>$cat_count,
                 'banner'=>$banner,
-                'banner_active'=>$banner_active,
+                //'banner_active'=>$banner_active,
                 //'paket_id'=>$paket_id,
                 'stock_status'=>$stock_status
             ];
        
         return view('customer.paket',$data);
              
-    }
+    }*/
 
     public function simpan(Request $request){ 
         /*$ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
         $id = $ses_id.$clientIP;*/
-        $id_user = \Auth::user()->id; 
+        $id_user = \Auth::user()->id;
+        $client_id = \Auth::user()->client_id; 
         //$id = $request->header('User-Agent'); 
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
@@ -124,6 +129,7 @@ class CustomerPaketController extends Controller
 
             $order = new \App\Order;
             $order->user_id = $id_user;
+            $order->client_id = $client_id;
             //$order->quantity = $quantity;
             $order->invoice_number = date('YmdHis');
             //$order->total_price = 0;
@@ -154,7 +160,8 @@ class CustomerPaketController extends Controller
         /*$ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
         $id = $ses_id.$clientIP;*/
-        $id_user = \Auth::user()->id; 
+        $id_user = \Auth::user()->id;
+        $client_id = \Auth::user()->client_id;
         //$id = $request->header('User-Agent'); 
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
@@ -215,9 +222,11 @@ class CustomerPaketController extends Controller
     }
 
     public function cek_max_qty(Request $request){
+        $client_id = \Auth::user()->client_id;
         $total_qty = $request->get('total_qty');
         $max_tmp = \App\Paket::where('status','=','ACTIVE')
-                 ->whereRaw("purchase_quantity = (select max(purchase_quantity) FROM pakets WHERE purchase_quantity <= '$total_qty')")
+                 ->where('client_id','=',$client_id)
+                 ->whereRaw("purchase_quantity = (select max(purchase_quantity) FROM pakets WHERE client_id = $client_id AND purchase_quantity <= '$total_qty')")
                  ->orderBy('updated_at','DESC')
                  ->first();
         
@@ -384,11 +393,14 @@ class CustomerPaketController extends Controller
     public function search_paket(Request $request){
         
             $output = '';
-            $stock_status= DB::table('product_stock_status')->first();
+            $client_id = \Auth::user()->client_id;
+            $stock_status= DB::table('product_stock_status')
+                            ->where('client_id','=',$client_id)
+                            ->first();
             $info_stock='';
             $dsbld_btn ='';
             $group_id = $request->get('group_id');
-            if($request->get('gr_cat') != ''){
+            if($request->get('gr_cat') != NULL){
                 $gr_cat = $request->get('gr_cat');
             }else{
                 $gr_cat = '';
@@ -396,29 +408,33 @@ class CustomerPaketController extends Controller
             
             $order_id = $request->get('order_id');
             $query = $request->get('query');
-            if($query != '' ){
-                if($gr_cat != ''){
+            if($query != NULL ){
+                if($gr_cat != NULL){
                     $product = \App\product::where('status','=','PUBLISH')
+                    ->where('client_id','=',$client_id)
                     ->where('Product_name','LIKE',"%$query%")
                     //->orWhere('product_','LIKE',"%$query%")
                     ->get();
                 }
                 else{
-                    $product = DB::select("SELECT * FROM products WHERE Product_name LIKE '%$query%' AND 
-                                EXISTS (SELECT group_id,status,product_id FROM group_product WHERE 
-                                group_product.product_id = products.id AND status='ACTIVE' AND group_id='$group_id')");
+                    $product = DB::select("SELECT * FROM products WHERE client_id = $client_id AND 
+                                Product_name LIKE '%$query%' AND EXISTS (SELECT group_id,status,product_id 
+                                FROM group_product WHERE group_product.product_id = products.id AND 
+                                status='ACTIVE' AND group_id='$group_id')");
                 }
             }
             else{
-                if($gr_cat != ''){
-                    $product = \App\product::where('status','=','PUBLISH')->get();
+                if($gr_cat != NULL){
+                    $product = \App\product::where('status','=','PUBLISH')
+                    ->where('client_id','=',$client_id)
+                    ->get();
                 }else{
-                    $product = DB::select("SELECT * FROM products WHERE EXISTS 
+                    $product = DB::select("SELECT * FROM products WHERE client_id = $client_id AND EXISTS 
                                 (SELECT group_id,status,product_id FROM group_product WHERE 
                                 group_product.product_id = products.id AND status='ACTIVE' AND group_id='$group_id')");
                 }
             }
-            if($product !== null ){
+            if($product != null ){
                 $total_row = count($product);
             }
             else{
@@ -426,7 +442,7 @@ class CustomerPaketController extends Controller
             }
             if($total_row > 0){
                 foreach($product as $p_group){
-                    if($order_id != ''){
+                    if($order_id != NULL){
                         $qty_on_paket = \App\Order_paket_temp::where('order_id',$order_id)
                                     ->where('product_id',$p_group->id)
                                     //->where('paket_id',$paket_id->id)
@@ -436,7 +452,7 @@ class CustomerPaketController extends Controller
                             $harga_on_paket = $p_group->price * $qty_on_paket->quantity; 
                         }
                     }
-                    if(($order_id != '') && ($qty_on_paket != NULL)){
+                    if(($order_id != NULL) && ($qty_on_paket != NULL)){
                         $c_orderid_delete =  $order_id;
                         $c_check = 'checked';
                         $c_price = $harga_on_paket;
@@ -538,11 +554,14 @@ class CustomerPaketController extends Controller
     public function search_bonus(Request $request){
         
         $output = '';
-        $stock_status= DB::table('product_stock_status')->first();
+        $client_id = \Auth::user()->client_id;
+        $stock_status= DB::table('product_stock_status')
+                    ->where('client_id','=',$client_id)
+                    ->first();
         $info_stock='';
         $dsbld_btn ='';
         $group_id = $request->get('group_id');
-        if($request->get('gr_cat') != ''){
+        if($request->get('gr_cat') != NULL){
             $gr_cat = $request->get('gr_cat');
         }else{
             $gr_cat = '';
@@ -550,29 +569,32 @@ class CustomerPaketController extends Controller
         
         $order_id = $request->get('order_id');
         $query = $request->get('query');
-        if($query != '' ){
-            if($gr_cat != ''){
+        if($query != NULL ){
+            if($gr_cat != NULL){
                 $product = \App\product::where('status','=','PUBLISH')
+                ->where('client_id','=',$client_id)
                 ->where('Product_name','LIKE',"%$query%")
                 //->orWhere('product_','LIKE',"%$query%")
                 ->get();
             }
             else{
-                $product = DB::select("SELECT * FROM products WHERE Product_name LIKE '%$query%' AND 
+                $product = DB::select("SELECT * FROM products WHERE client_id = '$client_id' AND Product_name LIKE '%$query%' AND 
                             EXISTS (SELECT group_id,status,product_id FROM group_product WHERE 
                             group_product.product_id = products.id AND status='ACTIVE' AND group_id='$group_id')");
             }
         }
         else{
-            if($gr_cat != ''){
-                $product = \App\product::where('status','=','PUBLISH')->get();
+            if($gr_cat != NULL){
+                $product = \App\product::where('status','=','PUBLISH')
+                        ->where('client_id','=',$client_id)
+                        ->get();
             }else{
-                $product = DB::select("SELECT * FROM products WHERE EXISTS 
+                $product = DB::select("SELECT * FROM products WHERE client_id = '$client_id' AND EXISTS 
                             (SELECT group_id,status,product_id FROM group_product WHERE 
                             group_product.product_id = products.id AND status='ACTIVE' AND group_id='$group_id')");
             }
         }
-        if($product !== null ){
+        if($product != null ){
             $total_row = count($product);
         }
         else{
@@ -580,7 +602,7 @@ class CustomerPaketController extends Controller
         }
         if($total_row > 0){
             foreach($product as $p_group){
-                if($order_id != ''){
+                if($order_id != NULL){
                     $qty_on_bonus = \App\Order_paket_temp::where('order_id',$order_id)
                                     ->where('product_id',$p_group->id)
                                    //->where('paket_id',$paket_id->id)
@@ -590,7 +612,7 @@ class CustomerPaketController extends Controller
                             $harga_on_bonus = $p_group->price * $qty_on_bonus->quantity; 
                         }
                 }
-                if(($order_id != '') && ($qty_on_bonus != NULL)){
+                if(($order_id != NULL) && ($qty_on_bonus != NULL)){
                     $c_orderid_delete =  $order_id;
                     $c_check = 'checked';
                     $c_price = $harga_on_bonus;

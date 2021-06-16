@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update_lowstock')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update_lowstock',[$vendor])}}">
     	@csrf
         <div class="form-group form-float">
             <div class="form-line">

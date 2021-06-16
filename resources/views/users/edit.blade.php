@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @if(Route::is('users.edit'))
-    @section('title') Edit User @endsection
+    @section('title') Edit Admin @endsection
     @section('content')
 
         @if(session('status'))
@@ -9,9 +9,9 @@
             </div>
         @endif
         <!-- Form Create -->
-        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.update',[$user->id])}}">
+        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.update',[$vendor,$user->id])}}">
             @csrf
-            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="_method" value="GET">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" value="{{$user->name}}" name="name" autocomplete="off" required>
@@ -29,17 +29,23 @@
             -->
             <h2 class="card-inside-title">Status</h2>
             <div class="form-group">
-                <input type="radio" value="ACTIVE" name="status" id="ACTIVE" {{$user->status == 'ACTIVE' ? 'checked' : ''}}>
+                <input type="radio" value="ACTIVE" name="status" id="ACTIVE" {{$user->status == 'ACTIVE' ? 'checked' : ''}} {{Auth::user()->id == $user->id ? 'disabled' : ''}}>
                 <label for="ACTIVE">ACTIVE</label>
                                 &nbsp;
-                <input type="radio" value="INACTIVE" name="status" id="INACTIVE" {{$user->status == 'INACTIVE' ? 'checked' : ''}}>
+                <input type="radio" value="INACTIVE" name="status" id="INACTIVE" {{$user->status == 'INACTIVE' ? 'checked' : ''}} {{Auth::user()->id == $user->id ? 'disabled' : ''}}>
                 <label for="INACTIVE">INACTIVE</label>
             </div>
 
             <h2 class="card-inside-title">Roles</h2>
             <div class="form-group">
-                <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" type="radio" name="roles" id="ADMIN" value="SUPERADMIN" required {{$user->roles == "SUPERADMIN" ? "checked" : ""}}> <label for="ADMIN">Super Admin</label>
-                <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" type="radio" name="roles" id="STAFF" value="ADMIN" {{$user->roles == "ADMIN" ? "checked" : ""}}> <label for="STAFF">Admin</label>
+                <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" 
+                    type="radio" name="roles" id="ADMIN" value="SUPERADMIN" required 
+                    {{$user->roles == "SUPERADMIN" ? "checked" : ""}} {{Auth::user()->id == $user->id ? 'disabled' : ''}}> 
+                <label for="ADMIN">Super Admin</label>
+                <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" 
+                    type="radio" name="roles" id="STAFF" value="ADMIN" 
+                    {{$user->roles == "ADMIN" ? "checked" : ""}} {{Auth::user()->id == $user->id ? 'disabled' : ''}}> 
+                <label for="STAFF">Admin</label>
                 <div class="invalid-feedback">
                     {{$errors->first('roles')}}
                 </div>
@@ -62,11 +68,9 @@
             <h2 class="card-inside-title">Avatar Image</h2>
             <div class="form-group">
             <div class="form-line">
-                @if($user->avatar)
-                <img src="{{asset('storage/'.$user->avatar)}}" width="120px"/>
-                @else
-                No Avatar
-                @endif
+                
+                <img src="{{ asset('storage/'.(($user->avatar !='') ? $user->avatar : 'image-noprofile.png').'') }}" width="120px"/>
+                
                 <input type="file" name="avatar" class="form-control" id="avatar" autocomplete="off">
                 <small
                     class="text-muted">Leave it blank if you don't want to change your avatar
@@ -82,7 +86,7 @@
             </div>
 
             <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>&nbsp;
-            <a href="{{route('users.index')}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
+            <a href="{{route('users.index',[$vendor])}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
         </form>
 
         <!-- #END#  -->		
@@ -100,9 +104,9 @@
             </div>
         @endif
         <!-- Form Create -->
-        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('sales.update',[$user->id])}}">
+        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('sales.update',[$vendor,$user->id])}}">
             @csrf
-            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="_method" value="GET">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" value="{{$user->name}}" name="name" autocomplete="off" required>
@@ -162,7 +166,7 @@
             </div>
 
             <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>&nbsp;
-            <a href="{{route('sales.index')}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
+            <a href="{{route('sales.index',[$vendor])}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
         </form>
 
         <!-- #END#  -->		
@@ -211,12 +215,12 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Add Item Group</h4>
+                        <h4 class="modal-title">Add Sales Team Member</h4>
                     </div>
                     <div class="modal-body">
-                        <form action="{{route('spv.update',[$user->id])}}" method="POST">
+                        <form action="{{route('spv.update',[$vendor,$user->id])}}" method="POST">
                             @csrf
-                            <input type="hidden" name="_method" value="PUT">
+                            <input type="hidden" name="_method" value="GET">
                             <select id="list_user" class="users" multiple="multiple" name="sls_id[]" style="width: 100%;" required>
                                 @foreach ($sales_list as $sls_list)
                                     <option value="{{ $sls_list->id }}">
@@ -239,9 +243,9 @@
             </div>
         @endif
         <!-- Form Create -->
-        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('spv.update',[$user->id])}}">
+        <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('spv.update',[$vendor, $user->id])}}">
             @csrf
-            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="_method" value="GET">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" value="{{$user->name}}" name="name" autocomplete="off" required>
@@ -322,9 +326,9 @@
                                                             Delete this sales ?
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <form action="{{route('spv.update',[$user->id])}}" method="POST">
+                                                            <form action="{{route('spv.update',[$vendor,$user->id])}}" method="POST">
                                                                 @csrf
-                                                                <input type="hidden" name="_method" value="PUT">
+                                                                <input type="hidden" name="_method" value="GET">
                                                                 <input type="hidden" name="del_id" value="{{$spv->id}}">
                                                                 <button type="submit" name="save_action" value="DELETE_ITEM" class="btn-link waves-effect">Delete</button>
                                                                 <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
@@ -363,7 +367,7 @@
             </div>
 
             <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>&nbsp;
-            <a href="{{route('spv.index')}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
+            <a href="{{route('spv.index',[$vendor])}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
         </form>
 
         <!-- #END#  -->		

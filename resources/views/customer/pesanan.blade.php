@@ -1,5 +1,5 @@
 @extends('customer.layouts.template-nocart')
-@section('title') Profil @endsection
+@section('title') Orders @endsection
 @section('content')
 <style>
     
@@ -63,6 +63,14 @@
         line-height: 0;
     }
 
+    .detail-list-order{
+        margin-bottom:10px;
+    }
+
+    .detail-list-paket_table{
+        margin-bottom:10px;
+    }
+
     @media (max-width: 540px){
         .col-list-order{
             margin-left: -1.3rem;
@@ -88,10 +96,11 @@
         .txt-reset{
             font-size: 12px;
         }
-        
-    }
 
-    
+        .detail-list-order{
+            margin-bottom:-11rem;
+        }
+    }
 </style>
 
     <div class="container" style="">
@@ -116,19 +125,19 @@
                     </div>
                 </div>
                 <div class="col-badge-order col-9 px-0 mt-3" style="z-index:3;">
-                    <a href="{{route('pesanan', ['status' =>'submit'])}}" >
-                        <span class="style-badge badge {{Request::is('pesanan/submit')  ?'bg-link text-light' : 'badge-light' }}  status-order filter-badge" style="">SUBMIT</span>
+                    <a href="{{route('pesanan', [$vendor,'status' =>'submit'])}}" >
+                        <span class="style-badge badge {{Request::is($vendor.'/pesanan/submit')  ?'bg-link text-light' : 'badge-light' }}  status-order filter-badge" style="">SUBMIT</span>
                     </a>
-                    <a href="{{route('pesanan', ['status' =>'process'])}}">
-                        <span class="style-badge badge {{Request::is('pesanan/process')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge" >PROCESS</span>
+                    <a href="{{route('pesanan', [$vendor,'status' =>'process'])}}">
+                        <span class="style-badge badge {{Request::is($vendor.'/pesanan/process')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge" >PROCESS</span>
                     </a>
-                    <a href="{{route('pesanan', ['status' =>'finish'])}}">
-                        <span class="style-badge badge {{Request::is('pesanan/finish')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">FINISH</span>
+                    <a href="{{route('pesanan', [$vendor,'status' =>'finish'])}}">
+                        <span class="style-badge badge {{Request::is($vendor.'/pesanan/finish')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">FINISH</span>
                     </a>
-                    <a href="{{route('pesanan', ['status' =>'cancel'])}}" class="mr-2">
-                        <span class="style-badge badge {{Request::is('pesanan/cancel')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">CANCEL</span>
+                    <a href="{{route('pesanan', [$vendor,'status' =>'cancel'])}}" class="mr-2">
+                        <span class="style-badge badge {{Request::is($vendor.'/pesanan/cancel')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">CANCEL</span>
                     </a>
-                    <a class="ml-2 txt-reset" href="{{route('pesanan')}}">
+                    <a class="ml-2 txt-reset" href="{{route('pesanan',[$vendor])}}">
                         <span class="style-badge  badge  txt-reset ">Reset Filter</span>
                     </a>
                 </div>

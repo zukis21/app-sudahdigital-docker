@@ -13,7 +13,7 @@
 		</div>
     @endif
     <!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('post.changepass')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('post.changepass',[$vendor])}}">
         @csrf
         <div class="form-group form-float">
             <div class="form-line">

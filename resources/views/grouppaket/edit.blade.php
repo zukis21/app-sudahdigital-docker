@@ -9,7 +9,7 @@
                     <h4 class="modal-title">Add Item Group</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('groups.update',[$groups->id])}}" method="POST">
+                    <form action="{{route('groups.update',[$vendor,$groups->id])}}" method="POST">
                         @csrf
                         <input type="hidden" name="_method" value="PUT">
                         <select class="products" multiple="multiple" name="product_id[]" style="width: 100%;" required>
@@ -34,7 +34,7 @@
         </div>
     @endif
     <!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('groups.update',[$groups->id])}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('groups.update',[$vendor,$groups->id])}}">
     	@csrf
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group form-float">
@@ -134,7 +134,7 @@
                                                         Delete this item ?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <form action="{{route('groups.update',[$groups->id])}}" method="POST">
+                                                        <form action="{{route('groups.update',[$vendor,$groups->id])}}" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="_method" value="PUT">
                                                             <input type="hidden" name="del_id" value="{{$p->pivot->id}}">
@@ -156,7 +156,7 @@
                                                         {{$p->pivot->status == 'ACTIVE' ? 'Deactivate this item ?' : 'Activate this item ?'}}
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <form action="{{route('groups.update',[$groups->id])}}" method="POST">
+                                                        <form action="{{route('groups.update',[$vendor,$groups->id])}}" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="_method" value="PUT">
                                                             <input type="hidden" name="{{$p->pivot->status == 'ACTIVE' ? 'deactivate_id' : 'activate_id'}}" value="{{$p->pivot->id}}">
@@ -179,7 +179,7 @@
             </div>
         @endif
         <button class="btn btn-primary" name="save_action" id="save" value="UPDATE" type="submit" style="margin-top:20px;" {{$groups->status=='INACTIVE' ? 'disabled' : ''}}>UPDATE</button>
-        <a href="{{route('groups.index')}}" class="btn bg-grey" style="margin-top:20px;margin-left:10px;">LIST GROUP</a>
+        <a href="{{route('groups.index',[$vendor])}}" class="btn bg-grey" style="margin-top:20px;margin-left:10px;">LIST GROUP</a>
     </form>
     <!-- #END#  -->		
 

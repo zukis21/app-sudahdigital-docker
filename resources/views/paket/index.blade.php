@@ -12,43 +12,11 @@
 	</div>
 @endif
 
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
-		<!--
-		<div class="col-md-3">
-			<div class="input-group input-group-sm">
-        		<div class="form-line">
-	            	<input type="text" class="form-control" name="keyword" value="{{Request::get('keyword')}}" placeholder="Filter by product name" autocomplete="off" />
-	    		</div>
-	        </div>
-		</div>
-		<div class="col-md-2">
-			<input type="submit" class="btn bg-blue pull-left" value="Filter">
-		</div>
 		
-		<div class="col-md-6">
-			<ul class="nav nav-tabs tab-col-pink pull-left" >
-				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'products' ? 'active' : ''}}">
-					<a href="{{route('products.index')}}" aria-expanded="true" >All</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'publish' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'publish'])}}" >PUBLISH</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'draft' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'draft'])}}">DRAFT</a>
-				</li>
-				<li role="presentation" class="">
-					<a href="{{route('products.low_stock')}}">LOW STOCK</a>
-				</li>
-				<li role="presentation" class="">
-					<a href="{{route('products.trash')}}" >TRUSH</a>
-				</li>
-			</ul>
-		</div>
-		<div class="col-md-6">&nbsp;</div>
-		-->
 		<div class="col-md-12">
-			<a href="{{route('paket.create')}}" class="btn bg-cyan pull-right">Create Paket</a>
+			<a href="{{route('paket.create',[$vendor])}}" class="btn bg-cyan pull-right">Create Paket</a>
 		</div>
 		
 	</div>
@@ -86,7 +54,7 @@
 
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('paket.edit',[$p->id])}}"><i class="material-icons">edit</i></a>
+					<a class="btn btn-info btn-xs" href="{{route('paket.edit',[$vendor,Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>
 					<button type="button" class="btn bg-{{$p->status == 'ACTIVE' ? 'orange' : 'cyan'}}" data-toggle="modal" data-target="#activeModal{{$p->id}}"><small>{{$p->status == 'ACTIVE' ? 'DEACTIVATE' : 'ACTIVATE'}}</small></button>
 					<!-- Modal deactivate -->
@@ -100,7 +68,7 @@
 									{{$p->status == 'ACTIVE' ? 'Deactivate this paket ?' : 'Activate this paket ?'}}
 								</div>
 								<div class="modal-footer">
-									<form action="{{route('paket.edit_status')}}" method="POST">
+									<form action="{{route('paket.edit_status',[$vendor])}}" method="POST">
 										@csrf
 										<input type="hidden" name="{{$p->status == 'ACTIVE' ? 'deactivate_id' : 'activate_id'}}" value="{{$p->id}}">
 										<button type="submit" name="save_action" value="{{$p->status == 'ACTIVE' ? 'DEACTIVATE' : 'ACTIVATE'}}" class="btn btn-link waves-effect">{{$p->status == 'ACTIVE' ? 'Deactivate' : 'Activate'}}</button>
@@ -121,7 +89,7 @@
 		                           Delete this paket
 								</div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('paket.destroy',[$p->id])}}" method="POST">
+		                        	<form action="{{route('paket.destroy',[$vendor,$p->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

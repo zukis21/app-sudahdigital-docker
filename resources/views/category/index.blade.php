@@ -8,7 +8,7 @@
 	</div>
 @endif
 
-<form action="{{route('categories.index')}}">
+<form action="{{route('categories.index',[$vendor])}}">
 	<div class="row">
 		<!--
 		<div class="col-md-4">
@@ -25,16 +25,16 @@
 		<div class="col-md-12">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="active">
-					<a href="{{route('categories.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('categories.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="">
-					<a href="{{route('categories.trash')}}" >TRUSH</a>
+					<a href="{{route('categories.trash',[$vendor])}}" >TRUSH</a>
 				</li>
 			</ul>
 		</div>		
 		<div class="col-md-12">
-			<a href="{{route('categories.export')}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Export</a>&nbsp;
-			<a href="{{route('categories.create')}}" class="btn bg-cyan">Create Category</a>
+			<a href="{{route('categories.export',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Export</a>&nbsp;
+			<a href="{{route('categories.create',[$vendor])}}" class="btn bg-cyan">Create Category</a>
 		</div>
 	</div>
 </form>
@@ -63,7 +63,7 @@
 					@endif
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('categories.edit',[$c->id])}}"><i class="material-icons">edit</i></a>&nbsp;
+					<a class="btn btn-info btn-xs" href="{{route('categories.edit',[$vendor,Crypt::encrypt($c->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}"><i class="material-icons">delete</i></button>&nbsp;
 					<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$c->id}}">Detail</button>
 
@@ -78,7 +78,7 @@
 		                           Delete this category ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('categories.destroy',[$c->id])}}" method="POST">
+		                        	<form action="{{route('categories.destroy',[$vendor,$c->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

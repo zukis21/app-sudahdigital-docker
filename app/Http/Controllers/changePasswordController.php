@@ -8,19 +8,28 @@ use Illuminate\Support\Facades\Gate;
 class changePasswordController extends Controller
 {   
     public function __construct(){
+        $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('change-password')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('change-password')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
     }
 
-    public function index(){
-        return view('users.change_password');
+    public function index($vendor){
+        return view('users.change_password',['vendor'=>$vendor]);
     }
 
-    public function changepassword(Request $request){
+    public function changepassword(Request $request, $vendor){
 
         if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
             // The passwords matches

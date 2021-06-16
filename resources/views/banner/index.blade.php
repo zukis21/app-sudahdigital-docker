@@ -8,21 +8,21 @@
 	</div>
 @endif
 
-<form action="{{route('banner.index')}}">
+<form action="{{route('banner.index',[$vendor])}}">
 	<div class="row">
 		
 		<div class="col-md-4">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="active">
-					<a href="{{route('banner.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('banner.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="">
-					<a href="{{route('banner.trash')}}" >TRUSH</a>
+					<a href="{{route('banner.trash',[$vendor])}}" >TRUSH</a>
 				</li>
 			</ul>
 		</div>		
 		<div class="col-md-8">
-			<a href="{{route('banner.create')}}" class="btn btn-success pull-right">Create Banner Slide</a>
+			<a href="{{route('banner.create',[$vendor])}}" class="btn btn-success pull-right">Create Banner Slide</a>
 		</div>
 	</div>
 </form>
@@ -52,7 +52,7 @@
 					@endif
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('banner.edit',[$c->id])}}"><i class="material-icons">edit</i></a>&nbsp;
+					<a class="btn btn-info btn-xs" href="{{route('banner.edit',[$vendor,Crypt::encrypt($c->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}"><i class="material-icons">delete</i></button>&nbsp;
 					<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$c->id}}">Detail</button>
 
@@ -67,9 +67,9 @@
 		                           Delete this Image ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('banner.destroy',[$c->id])}}" method="POST">
+		                        	<form action="{{route('banner.destroy',[$vendor,$c->id])}}" method="POST">
 										@csrf
-										<input type="hidden" name="_method" value="DELETE">
+										<input type="hidden" name="_method" value="GET">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>
 										<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
 									</form>

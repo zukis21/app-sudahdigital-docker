@@ -15,97 +15,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class CustomerKeranjangController extends Controller
 {
-    public function __construct(){
-        $this->middleware('auth');
-        
-    }
-
-    public function index(Request $request, $cat = null)
-    {   
-        $id_user = \Auth::user()->id;
-        $banner_active = \App\Banner::orderBy('position', 'ASC')->first();
-        $banner = \App\Banner::orderBy('position', 'ASC')->limit(5)->get();
-        $categories = \App\Category::all();//paginate(10);
-        $paket = \App\Paket::all()->first();//paginate(10);
-        $cat_count = $categories->count();
-        $stock_status= DB::table('product_stock_status')->first();
-        $top_product = product::with('categories')
-        ->where('top_product','=','1')
-        ->where('status','=','PUBLISH')
-        ->orderBy('top_product','ASC')->get();
-        if($cat){
-            //$category_id = $request->get('cats');
-            $product = \App\product::whereHas('categories',function($q) use ($cat){
-                return $q->where('category_id','=',$cat)
-                ->where('status','=','PUBLISH');
-                //->where('top_product','=','0');
-                })->get();
-        }else{
-            $product = product::with('categories')
-            //->where('top_product','=','0')
-            ->where('status','=','PUBLISH')
-            ->get();//->paginate(6);
-        }
-        $top_count = $top_product->count();
-        $count_data = $product->count();
-        $keranjang = DB::select("SELECT orders.user_id, orders.status,orders.customer_id, 
-                    products.Product_name, products.image, products.price, products.discount,
-                    products.price_promo, order_product.id, order_product.order_id,
-                    order_product.product_id,order_product.quantity,order_product.group_id 
-                    FROM order_product, products, orders WHERE order_product.group_id IS NULL
-                    AND orders.id = order_product.order_id AND 
-                    order_product.product_id = products.id AND orders.status = 'SUBMIT' 
-                    AND orders.user_id = '$id_user' AND orders.customer_id IS NULL ");
-        /*$krj_paket = DB::select("SELECT orders.user_id, orders.status,orders.customer_id, 
-                    products.Product_name, products.image, products.price, products.discount,
-                    products.price_promo, order_product.id, order_product.order_id,
-                    order_product.product_id,order_product.quantity,order_product.group_id,order_product.bonus_cat  
-                    FROM order_product, products, orders WHERE order_product.group_id IS NOT NULL
-                    AND orders.id = order_product.order_id AND order_product.bonus_cat IS NULL AND
-                    order_product.product_id = products.id AND orders.status = 'SUBMIT' 
-                    AND orders.user_id = '$id_user' AND orders.customer_id IS NULL ");*/
-        $item = DB::table('orders')
-                    ->where('user_id','=',"$id_user")
-                    ->where('orders.status','=','SUBMIT')
-                    ->whereNull('orders.customer_id')
-                    ->first();
-        $item_name = DB::table('orders')
-                    ->join('order_product','order_product.order_id','=','orders.id')
-                    ->where('user_id','=',"$id_user")
-                    ->whereNotNull('orders.customer_id')
-                    ->first();
-        
-        $total_item = DB::table('orders')
-                    ->join('order_product','order_product.order_id','=','orders.id')
-                    ->where('user_id','=',"$id_user")
-                    ->whereNull('orders.customer_id')
-                    ->distinct('order_product.product_id')
-                    /*->whereNull('order_product.group_id')*/
-                    ->count();
-        $data=['total_item'=> $total_item, 
-                'keranjang'=>$keranjang,
-                'top_product'=>$top_product,
-                'top_count'=>$top_count, 
-                'product'=>$product,
-                'item'=>$item,
-                'item_name'=>$item_name,
-                'count_data'=>$count_data,
-                'paket'=>$paket,
-                'categories'=>$categories,
-                'cat_count'=>$cat_count,
-                'banner'=>$banner,
-                'banner_active'=>$banner_active,
-                'stock_status'=>$stock_status
-                ];
-       
-        return view('customer.content_customer',$data);
-    }         
-    
     public function simpan(Request $request){ 
         /*$ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
         $id = $ses_id.$clientIP;*/
-        $id_user = \Auth::user()->id; 
+        $id_user = \Auth::user()->id;
+        $client_id =  \Auth::user()->client_id;
         //$id = $request->header('User-Agent'); 
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
@@ -141,6 +56,7 @@ class CustomerKeranjangController extends Controller
 
             $order = new \App\Order;
             $order->user_id = $id_user;
+            $order->client_id = $client_id;
             //$order->quantity = $quantity;
             $order->invoice_number = date('YmdHis');
             $order->total_price = $price * $quantity;
@@ -299,15 +215,19 @@ class CustomerKeranjangController extends Controller
                         return redirect()->back()->with('status','Product berhasil dihapus dari keranjang');
     }
 
-    public function pesan(Request $request){
+    public function pesan(Request $request, $vendor){
         $user_id = \Auth::user()->id;
+        $client_id =\Auth::user()->client_id;
+        $client_name = \App\B2b_Client::findOrfail($client_id);
+        $wa_numb=$client_name->phone_whatsapp;
         $id = $request->get('id');
         $cek_order = DB::select("SELECT order_product.order_id, order_product.product_id,
                     sum(order_product.quantity), products.stock, products.Product_name FROM products,order_product 
                     WHERE order_product.product_id = products.id AND order_product.order_id = '$id' 
                     GROUP BY order_product.product_id HAVING SUM(order_product.quantity) > products.stock");
         $count_cek = count($cek_order);
-        $stock_status= DB::table('product_stock_status')->first();
+        $stock_status= DB::table('product_stock_status')
+                        ->where('client_id',$client_id)->first();
         if(($count_cek > 0) && ($stock_status->stock_status == 'ON')){
             return view('errors/error_wa');
         }else{
@@ -321,20 +241,52 @@ class CustomerKeranjangController extends Controller
                         }
                     }
             }
+
             $user = User::findOrfail($user_id);
             $ses_order = $request->session()->get('ses_order');
+            if($ses_order->customer_id == null){
+                $name = $ses_order->name;
+                $store_name = $ses_order->store_name;
+                $addr_for_ses = $ses_order->address;
+                $new_cust = new Customer;
+                $new_cust->name = $name;
+                $new_cust->phone = $ses_order->phone;
+                $new_cust->phone_owner = $ses_order->phone_owner;
+                $new_cust->phone_store = $ses_order->phone_store;
+                $new_cust->store_name = $store_name;
+                $new_cust->address = $ses_order->address;
+                $new_cust->user_id = $user_id;
+                $new_cust->client_id = $client_id;
+                $new_cust->status = 'NEW';
+                $new_cust->save();
+                if ( $new_cust->save()){
+                    $sel_cust = \App\Customer::where('client_id','=',$client_id)
+                                ->whereRaw('BINARY name = ?',[$name])
+                                ->where('phone','=',$ses_order->phone)
+                                ->where('phone_owner','=',$ses_order->phone_owner)
+                                ->where('phone_store','=',$ses_order->phone_store)
+                                ->whereRaw('BINARY store_name = ?',[$store_name])
+                                ->whereRaw('BINARY address = ?',[$addr_for_ses])
+                                ->where('user_id','=',$user_id)
+                                ->first();
+                    //dd($sel_cust->id);
+                    $customer = Customer::findOrfail($sel_cust->id);
+                }
+            }else{
+                $customer = Customer::findOrfail($ses_order->customer_id);
+            }
+            
             $payment_method=$request->get('check_tunai_value');
             if($request->get('notes') != ""){
                 $notes=$request->get('notes');
             }else{
                 $notes = NULL;
             }
-            $customer = Customer::findOrfail($ses_order->customer_id);
+
             //$city = City::findOrfail($user->city_id);
-            $customer_id = $ses_order->customer_id;
             $orders = Order::findOrfail($id);
             $orders->user_loc = $ses_order->user_loc;
-            $orders->customer_id = $customer_id;
+            $orders->customer_id = $customer->id;
             $orders->payment_method = $payment_method;
             $orders->notes = $notes;
             
@@ -348,6 +300,7 @@ class CustomerKeranjangController extends Controller
                 $orders->id_voucher = NULL;
             }
             $orders->save();
+
             $total_pesanan = $request->get('total_pesanan');
             if($request->get('voucher_code_hide_modal')!= ""){
                 $sum_novoucher = $request->get('total_novoucher');
@@ -363,7 +316,7 @@ class CustomerKeranjangController extends Controller
             //$total_ongkir  = 15000;
             //$total_bayar  = $total_pesanan;
 
-$txt_descwa='*Hello Admin Mega Cools*,
+$txt_descwa='*Hello Admin '.$client_name->client_name.'*,
 
 *Detail Sales*
 Nama : '.$user->name.',
@@ -480,7 +433,7 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
                 $note_sales = '*Notes* : '.$notes_wa;
                 $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales;
             
-                $url = "https://api.whatsapp.com/send?phone=6281288222777&text=$text_wa";
+                $url = "https://api.whatsapp.com/send?phone=$wa_numb&text=$text_wa";
                 return Redirect::to($url);
                 //Alert::success('', 'Pesanan berhasil dikirim');
                 //return redirect()->route('home_customer');    
@@ -506,7 +459,7 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
           }
     }
 
-    public function apply_code(Request $request){
+    /*public function apply_code(Request $request){
         $keyword = $request->get('code');
         $vouchers = \App\Voucher::where('code','=',"$keyword")->first();
         $ses_id = $request->header('User-Agent');
@@ -758,7 +711,7 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
             </div>
         </div>';
         }
-    }
+    }*/
 
     public function ajax_cart(Request $request)
     {   
@@ -1056,7 +1009,7 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
                                         </div>';    
                                     echo'
                                         <div id="chk-bl-btn" class="row justify-content-end my-auto">
-                                            <a type="button" id="beli_sekarang" class="btn button_add_to_pesan float-right mb-2" onclick="show_modal()" style="padding: 10px 20px; ">Pesan Sekarang <i class="fab fa-whatsapp" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i></a>
+                                            <a type="button" id="beli_sekarang" class="btn button_add_to_pesan float-right mb-2" onclick="show_modal()" style="padding: 10px 20px;">Pesan Sekarang <i class="fab fa-whatsapp" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i></a>
                                         </div>';
                                     }
                                 echo'</div>
@@ -1095,7 +1048,32 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
     {
         $id = $request->get('order_id');
         $ses_order = $request->session()->get('ses_order');
-        $customer = Customer::findOrfail($ses_order->customer_id);
+        //dd($ses_order->store_name);
+        if($ses_order->customer_id == null){
+            $customer = $request->session()->get('ses_order');
+            $toko = $customer->store_name;
+            $disable_button = '';
+            $ps_error_toko = '';
+        }else{
+            $customer = Customer::where('id',$ses_order->customer_id)
+                        ->where('status','ACTIVE')->first();
+            if($customer == null){
+                $toko = '';
+                $disable_button = 'disabled';
+                $ps_error_toko = '<small>
+                                    <small>
+                                        <p class="my-2" style="line-height:1.3;color:red;font-weight:400;text-align:left">
+                                            Toko yang dipilih telah dihapus atau dinonaktifkan, mohon untuk menghubungi admin terkait.
+                                        </p>
+                                    </small>
+                                </small>';
+            }
+            else{
+                $disable_button = '';
+                $ps_error_toko = '';
+                $toko = $customer->store_name;
+            }
+        }
         $order = \App\Order::findOrFail($id);
         $paket_list = \DB::table('order_product')
                 ->join('pakets','pakets.id','=','order_product.paket_id')
@@ -1120,13 +1098,15 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
                             <small>
                                 <small>
                                 <p class="my-2" style="line-height:1.3;color:#000;font-weight:400;text-align:left">
-                                    '.$customer->store_name.'
+                                    '.$toko.'
                                 </p>
                                 </small>
                             </small>
+                            '.$ps_error_toko.'
                          </div>
                     </div>
                 </div>
+                <input type="hidden" id="dsbl_btn_wa" value="'.$disable_button.'">
             </div>
             
             <div class="mb-0 mt-4">

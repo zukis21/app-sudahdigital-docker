@@ -15,11 +15,20 @@ use Illuminate\Support\Arr;
 class productController extends Controller
 {
     public function __construct(){
+        $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-products')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-products')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
     }
     /**
@@ -27,24 +36,30 @@ class productController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
         $status = $request->get('status');
         $keyword = $request->get('keyword') ? $request->get('keyword') : '';
         if($status){
         $products = \App\product::with('categories')
+        ->where('client_id','=',auth()->user()->client_id)
         ->where('Product_name','LIKE',"%$keyword%")
         ->where('status',strtoupper($status))->get();//->paginate(10);
-        $stock_status= DB::table('product_stock_status')->first();
+        $stock_status= DB::table('product_stock_status')
+        ->where('product_stock_status.client_id','=',auth()->user()->client_id)
+        ->first();
         }
         else
             {
             $products = \App\product::with('categories')
+            ->where('client_id','=',auth()->user()->client_id)
             ->where('Product_name','LIKE',"%$keyword%")->get();
             //->paginate(10);
-            $stock_status= DB::table('product_stock_status')->first();
+            $stock_status= DB::table('product_stock_status')
+            ->where('product_stock_status.client_id','=',auth()->user()->client_id)
+            ->first();
             }
-        return view('products.index', ['products'=> $products, 'stock_status'=>$stock_status]);
+        return view('products.index', ['products'=> $products, 'stock_status'=>$stock_status, 'vendor'=>$vendor]);
     }
 
     /**
@@ -52,10 +67,10 @@ class productController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($vendor)
     {
         $stock_status= DB::table('product_stock_status')->first();
-        return view('products.create',['stock_status'=>$stock_status]);
+        return view('products.create',['stock_status'=>$stock_status,'vendor'=>$vendor]);
     }
 
     /**
@@ -64,7 +79,7 @@ class productController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $vendor)
     {
         /*\Validator::make($request->all(), [
             "Product_name" => "required|min:0|max:200",
@@ -74,6 +89,7 @@ class productController extends Controller
             "stock" => "required|digits_between:0,10"
         ])->validate();*/
         $new_product = new \App\product;
+        $new_product->client_id = $request->get('client_id');
         $new_product->product_code = $request->get('code');
         $new_product->Product_name = $request->get('Product_name');
         $new_product->description = $request->get('description');
@@ -114,11 +130,11 @@ class productController extends Controller
       
         if($request->get('save_action') == 'PUBLISH'){
           return redirect()
-                ->route('products.create')
+                ->route('products.create',[$vendor])
                 ->with('status', 'Product successfully saved and published');
         } else {
           return redirect()
-                ->route('products.create')
+                ->route('products.create',[$vendor])
                 ->with('status', 'Product saved as draft');
         }
     }
@@ -140,11 +156,12 @@ class productController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($vendor, $id)
     {
+        $id = \Crypt::decrypt($id);
         $product = \App\product::findOrFail($id);
         $stock_status= DB::table('product_stock_status')->first();
-        return view('products.edit', ['product' => $product, 'stock_status'=>$stock_status]);
+        return view('products.edit', ['product' => $product, 'stock_status'=>$stock_status, 'vendor'=>$vendor]);
     }
 
     /**
@@ -154,7 +171,7 @@ class productController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
         $product = \App\product::findOrFail($id);
         $product->product_code = $request->get('code');
@@ -180,7 +197,8 @@ class productController extends Controller
         }else{
             $product->top_product = 0;
         }
-        $product->slug = $request->get('slug');
+        //$product->slug = $request->get('slug');
+        $product->slug = \Str::slug($request->get('Product_name'));
         $new_image = $request->file('image');
         if($new_image){
             if($product->image && file_exists(storage_path('app/public/'.$product->image))){
@@ -193,7 +211,7 @@ class productController extends Controller
         $product->status = $request->get('status');
         $product->save();
         $product->categories()->sync($request->get('categories'));
-        return redirect()->route('products.edit', [$product->id])->with('status',
+        return redirect()->route('products.edit', [$vendor, \Crypt::encrypt($product->id)])->with('status',
         'Product successfully updated');
     }
 
@@ -203,87 +221,92 @@ class productController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($vendor, $id)
     {
         $product = \App\product::findOrFail($id);
         $product->delete();
-        return redirect()->route('products.index')->with('status', 'Product moved to
+        return redirect()->route('products.index',[$vendor])->with('status', 'Product moved to
         trash');
     }
 
-    public function trash(){
-        $products = \App\product::onlyTrashed()->get();//->paginate(10);
-
-        return view('products.trash', ['products' => $products]);
+    public function trash($vendor){
+        $products = \App\product::where('client_id','=',auth()->user()->client_id)
+        ->onlyTrashed()
+        ->get();//->paginate(10);
+        $stock_status= DB::table('product_stock_status')
+            ->where('product_stock_status.client_id','=',auth()->user()->client_id)
+            ->first();
+        return view('products.trash', ['products' => $products,'vendor'=>$vendor,'stock_status'=>$stock_status]);
     }
 
-    public function restore($id){
+    public function restore($vendor,$id){
 
         $product = \App\product::withTrashed()->findOrFail($id);
         if($product->trashed()){
         $product->restore();
-        return redirect()->route('products.trash')->with('status', 'Product successfully restored');
+        return redirect()->route('products.trash',[$vendor])->with('status', 'Product successfully restored');
         } else {
-        return redirect()->route('products.trash')->with('status', 'Product is not in trash');
+        return redirect()->route('products.trash',[$vendor])->with('status', 'Product is not in trash');
         }
     }
 
-    public function deletePermanent($id){
+    public function deletePermanent($vendor, $id){
 
         $product = \App\product::withTrashed()->findOrFail($id);
         if(!$product->trashed()){
-        return redirect()->route('products.trash')->with('status', 'Product is not in trash!')->with('status_type', 'alert');
+        return redirect()->route('products.trash',[$vendor])->with('status', 'Product is not in trash!')->with('status_type', 'alert');
         } else {
         $product->categories()->detach();
         $product->forceDelete();
-        return redirect()->route('products.trash')->with('status', 'Product permanently deleted!');
+        return redirect()->route('products.trash',[$vendor])->with('status', 'Product permanently deleted!');
         }
 
     }
 
-    public function OnOff_stock(Request $request){
-        $status = $request->get('status');
-        $product = DB::table('product_stock_status')->update(array('stock_status'=>$status));
+    public function low_stock($vendor){
+        $products = \App\product::with('categories')
+                    ->where('products.client_id','=',auth()->user()->client_id)
+                    ->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
+        $stock_status= DB::table('product_stock_status')
+                    ->where('product_stock_status.client_id','=',auth()->user()->client_id)
+                    ->first();
+        return view('products.low_stock', ['products' => $products, 'vendor'=>$vendor,'stock_status'=>$stock_status]);
     }
 
-    public function low_stock(){
-        $products = \App\product::with('categories')->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
-
-        return view('products.low_stock', ['products' => $products]);
+    public function edit_stock($vendor){
+        return view('products.edit_stock',['vendor'=>$vendor]);
     }
 
-    public function edit_stock(){
-        return view('products.edit_stock');
-    }
-
-    public function update_low_stock(Request $request){
+    public function update_low_stock(Request $request, $vendor){
         $newstock= $request->get('stock');
-        $product = DB::table('products')->whereRaw('stock < low_stock_treshold')
+        $product = DB::table('products')
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->whereRaw('stock < low_stock_treshold')
                     ->where('deleted_at',NULL)->update(array('stock' => $newstock));
         return redirect()->back()->with('status',
         'Stock successfully updated');
     }
 
-    public function export_low_stock() {
+    public function export_low_stock($vendor) {
         return Excel::download( new ProductsLowStock(), 'Products_low_stock.xlsx') ;
     }
 
-    public function export_all() {
+    public function export_all($vendor) {
         return Excel::download( new AllProductExport(), 'Products.xlsx') ;
     }
 
-    public function import_product(){
-        return view('products.import_products');
+    public function import_product($vendor){
+        return view('products.import_products',['vendor'=>$vendor]);
     }
 
-    public function import_data(Request $request)
+    public function import_data(Request $request, $vendor)
     {
         \Validator::make($request->all(), [
             "file" => "required|mimes:xls,xlsx"
         ])->validate();
         
         Excel::import(new ProductsImport,request()->file('file'));
-        return redirect()->route('products.import_products')->with('status', 'File successfully upload');
+        return redirect()->route('products.import_products',[$vendor])->with('status', 'File successfully upload');
         /*$data = Excel::toArray(new ProductsImport, request()->file('file')); 
 
         $update = collect(head($data))
@@ -297,15 +320,5 @@ class productController extends Controller
             return redirect()->route('products.import_products')->with('status', 'File successfully upload'); 
         }
         */
-    }
-
-    public function codeSearch(Request $request){
-        $keyword = $request->get('code');
-        $vouchers = \App\product::where('product_code','=',"$keyword")->count();
-        if ($vouchers > 0) {
-            echo "taken";	
-          }else{
-            echo 'not_taken';
-          }
     }
 }

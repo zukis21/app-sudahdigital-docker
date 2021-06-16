@@ -8,9 +8,9 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('categories.update',[$cat_edit->id])}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('categories.update',[$vendor,$cat_edit->id])}}">
     	@csrf
-        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="_method" value="get">
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="text" class="form-control" value="{{$cat_edit->name}}" name="name" autocomplete="off" required>
@@ -35,11 +35,15 @@
             No Image
             @endif
             <input type="file" name="image" class="form-control" id="avatar" autocomplete="off">
+            <small
+                class="text-muted">Leave it blank if you don't want to change your avatar
+            </small>
             </div>
+            <label id="name-error" class="error" for="image">{{ $errors->first('image') }}</label>
         </div>
 
         <button class="btn btn-primary waves-effect" type="submit">EDIT</button>&nbsp;
-        <a href="{{route('categories.index')}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
+        <a href="{{route('categories.index',[$vendor])}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
     </form>
 
     <!-- #END#  -->		

@@ -8,8 +8,9 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('categories.store')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('categories.store',[$vendor])}}">
     	@csrf
+        <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="text" class="form-control" name="name" autocomplete="off" required>

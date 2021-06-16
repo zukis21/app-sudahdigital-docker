@@ -15,7 +15,7 @@
 
 
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.import_data')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.import_data',[$vendor])}}">
     	@csrf
         
         <h2 class="card-inside-title">File(.xls, .xlsx)</h2>

@@ -7,29 +7,29 @@
 	</div>
 @endif
 
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		<div class="col-md-6">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
-				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'orders' ? 'active' : ''}}">
-					<a href="{{route('orders.index')}}" aria-expanded="true" >All</a>
+				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/orders' ? 'active' : ''}}">
+					<a href="{{route('orders.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'submit' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'submit'])}}" >SUBMIT</a>
+					<a href="{{route('orders.index', [$vendor,'status' =>'submit'])}}" >SUBMIT</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'process' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'process'])}}">PROCESS</a>
+					<a href="{{route('orders.index', [$vendor,'status' =>'process'])}}">PROCESS</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'finish' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'finish'])}}">FINISH</a>
+					<a href="{{route('orders.index', [$vendor,'status' =>'finish'])}}">FINISH</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'cancel' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'cancel'])}}">CANCEL</a>
+					<a href="{{route('orders.index', [$vendor,'status' =>'cancel'])}}">CANCEL</a>
 				</li>
 			</ul>
 		</div>
 		<div class="col-md-6">
-			<a href="{{route('orders.export_mapping') }}" 
+			<a href="{{route('orders.export_mapping',[$vendor]) }}" 
 				class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
 				<i class="fas fa-file-excel fa-0x "></i> Export
 			</a>
@@ -124,14 +124,14 @@
 					</ul>
 				</td>
 				-->
-				<td>{{\Auth::user()->roles == 'SUPERVISOR' ? $odr->totalQuantity : $order->totalQuantity}} pc (s)</td>
+				<td>{{\Auth::user()->roles == 'SUPERVISOR' ? $odr->totalQuantity : $order->totalQuantity}} DUS</td>
 				<td>{{$order->created_at}}</td>
 				<td>{{number_format($order->total_price)}}</td>
 				
 				<td>
-					<a class="btn btn-info btn-xs btn-block" href="{{route('orders.detail',[$order->id])}}">Details</a>&nbsp;
+					<a class="btn btn-info btn-xs btn-block" href="{{route('orders.detail',[$vendor,Crypt::encrypt($order->id)])}}">Details</a>&nbsp;
 					@can('isSuperadmin')
-						<!--<a style="margin-top:0;" class="btn btn-success btn-xs btn-block" href="{{route('order_edit',[$order->id])}}">Edit</a>&nbsp;-->
+						<!--<a style="margin-top:0;" class="btn btn-success btn-xs btn-block" href="route('order_edit',[$vendor,$order->id])">Edit</a>&nbsp;-->
 					@endcan
 				</td>
 			</tr>

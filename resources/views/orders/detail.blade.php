@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" action="{{route('orders.update', [$order->id])}}">
+    <form id="form_validation" method="POST" action="{{route('orders.update', [$vendor,$order->id])}}">
         @csrf
         <input type="hidden" name="_method" value="PUT">
         

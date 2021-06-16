@@ -15,7 +15,9 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
     */
     public function collection()
     {
-        return Customer::where('status','=','ACTIVE')->get();
+        return Customer::where('status','=','ACTIVE')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->get();
     }
 
     public function map($customer) : array {

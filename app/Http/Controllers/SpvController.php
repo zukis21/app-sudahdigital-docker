@@ -9,10 +9,18 @@ class Spvcontroller extends Controller
     public function __construct(){
         $this->middleware('auth');
         $this->middleware(function($request, $next){
-            
-            if(Gate::allows('manage-spv')) return $next($request);
-
-            abort(403, 'Anda tidak memiliki cukup hak akses');
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-spv')) return $next($request);
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
 
     }
@@ -21,25 +29,32 @@ class Spvcontroller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $vendor)
     {
-        $users = \App\User::where('roles','=','SUPERVISOR')->get();//paginate(10);
+        $users = \App\User::where('roles','=','SUPERVISOR')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->get();//paginate(10);
         $filterkeyword = $request->get('keyword');
         $status = $request->get('status');
         if($filterkeyword){
             if($status){
                 $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+                ->where('client_id','=',auth()->user()->client_id)
                 ->where('status', 'LIKE', "%$status%")->get();
                 //->paginate(10);
             }
             else{
-                $users = \App\User::where('email','LIKE',"%$filterkeyword%")->get();//paginate(10);
+                $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+                ->where('client_id','=',auth()->user()->client_id)
+                ->get();//paginate(10);
             }
         }
         if($status){
-            $users = \App\User::where('status', 'Like', "%$status")->get();//paginate(10);
+            $users = \App\User::where('status', 'Like', "%$status")
+            ->where('client_id','=',auth()->user()->client_id)
+            ->get();//paginate(10);
         }
-        return view ('users.index',['users'=>$users]);
+        return view ('users.index',['users'=>$users,'vendor'=>$vendor]);
     }
 
     /**
@@ -47,12 +62,20 @@ class Spvcontroller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($vendor)
     {   
-        $users = \App\User::where('roles','=','SALES')
+        /*$users = \App\User::where('roles','=','SALES')
+                ->where('client_id','=',auth()->user()->client_id)
                 ->where('status','ACTIVE')
-                ->get();//paginate(10);
-        return view('users.create',['users'=>$users]);
+                ->get();//paginate(10);*/
+        $client_slsid = \Auth::user()->client_id;
+        $users = \DB::select("SELECT * FROM users u WHERE u.status='ACTIVE' AND u.client_id = $client_slsid AND u.roles='SALES' AND NOT EXISTS
+                                        (
+                                            SELECT * FROM  spv_sales s
+                                            WHERE   s.sls_id = u.id
+                                        )
+                                    ");
+        return view('users.create',['users'=>$users,'vendor'=>$vendor]);
 
     }
 
@@ -62,13 +85,14 @@ class Spvcontroller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $vendor)
     {
         \Validator::make($request->all(), [
             "avatar" => "required|mimes:jpg,jpeg,png"
         ])->validate();
 
         $new_user = new \App\User;
+        $new_user->client_id = $request->get('client_id');
         $new_user->name = $request->get('name');
         $new_user->email = $request->get('email');
         $new_user->password = \Hash::make($request->get('password'));
@@ -94,9 +118,9 @@ class Spvcontroller extends Controller
         }
         
         if ( $new_user->save()){
-            return redirect()->route('spv.create')->with('status','Supervisor Succsessfully Created');
+            return redirect()->route('spv.create',[$vendor])->with('status','Supervisor Succsessfully Created');
         }else{
-            return redirect()->route('spv.create')->with('error','Supervisor Not Succsessfully Created');
+            return redirect()->route('spv.create',[$vendor])->with('error','Supervisor Not Succsessfully Created');
         }
     }
 
@@ -117,17 +141,19 @@ class Spvcontroller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($vendor, $id)
     {
+        $id = \Crypt::decrypt($id);
         $user = \App\User::findOrFail($id);
-        $sales_list = \DB::select("SELECT * FROM users u WHERE u.status='ACTIVE' AND u.roles='SALES' AND NOT EXISTS
+        $client_slsid = \Auth::user()->client_id;
+        $sales_list = \DB::select("SELECT * FROM users u WHERE u.status='ACTIVE' AND u.client_id = $client_slsid AND u.roles='SALES' AND NOT EXISTS
                                         (
                                             SELECT * FROM  spv_sales s
                                             WHERE   s.sls_id = u.id
                                             AND s.spv_id = '$id'
                                         )
                                     ");
-        return view('users.edit',['user'=>$user,'sales_list'=>$sales_list]);
+        return view('users.edit',['user'=>$user,'sales_list'=>$sales_list, 'vendor'=>$vendor]);
     }
 
     /**
@@ -137,7 +163,7 @@ class Spvcontroller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $vendor, $id)
     {
         if($request->get('save_action') == 'ADD'){
             $sls_id = $request->input('sls_id', []);
@@ -150,7 +176,7 @@ class Spvcontroller extends Controller
                 }
             }
             
-            return redirect()->route('spv.edit', [$id])->with('status',
+            return redirect()->route('spv.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
             'Sales team member successfully add');
         }
         else if($request->get('save_action') == 'DELETE_ITEM')
@@ -159,7 +185,7 @@ class Spvcontroller extends Controller
             $spvsls = \App\Spv_sales::findOrFail($del_id);
             $spvsls->delete();
 
-            return redirect()->route('spv.edit', [$id])->with('status',
+            return redirect()->route('spv.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
             'Sales team member successfully delete');
         }
         else{
@@ -182,7 +208,7 @@ class Spvcontroller extends Controller
                 $user->avatar =$file;
             }
             $user->save();
-            return redirect()->route('spv.edit', [$id])->with('status_user',
+            return redirect()->route('spv.edit', [$vendor,\Crypt::encrypt($id)])->with('status_user',
             'Supervisor successfully update');
         }
     }
@@ -193,7 +219,7 @@ class Spvcontroller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $vendor, $id)
     {   
         //$del_id = $request->input('del_id');
         $spv = \DB::table('spv_sales')->where('spv_id',$id)->count();
@@ -205,6 +231,6 @@ class Spvcontroller extends Controller
             }
         }
         
-        return redirect()->route('spv.index')->with('status','Supervisor Succsessfully Delete');
+        return redirect()->route('spv.index',[$vendor])->with('status','Supervisor Succsessfully Delete');
     }
 }

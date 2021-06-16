@@ -11,10 +11,10 @@
 		{{session('error')}}
 	</div>
 @endif
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		<div class="col-md-12">
-			<a href="{{route('groups.create')}}" class="btn bg-cyan pull-right">Create Group Paket</a>
+			<a href="{{route('groups.create',[$vendor])}}" class="btn bg-cyan pull-right">Create Group Paket</a>
 		</div>
 	</div>
 </form>	
@@ -66,7 +66,7 @@
 
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('groups.edit',[$p->id])}}">Detail</a>
+					<a class="btn btn-info btn-xs" href="{{route('groups.edit',[$vendor,Crypt::encrypt($p->id)])}}">Detail</a>
 					<button type="button" class="btn bg-{{$p->status == 'ACTIVE' ? 'orange' : 'cyan'}} btn-xs" data-toggle="modal" data-target="#activeModal{{$p->id}}"><small>{{$p->status == 'ACTIVE' ? 'DEACTIVATE' : 'ACTIVATE'}}</small></button>
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>
 					<!-- Modal deactivate -->
@@ -80,7 +80,7 @@
 									{{$p->status == 'ACTIVE' ? 'Deactivate this group ?' : 'Activate this group ?'}}
 								</div>
 								<div class="modal-footer">
-									<form action="{{route('groups.edit_status')}}" method="POST">
+									<form action="{{route('groups.edit_status',[$vendor])}}" method="POST">
 										@csrf
 										<input type="hidden" name="{{$p->status == 'ACTIVE' ? 'deactivate_id' : 'activate_id'}}" value="{{$p->id}}">
 										<button type="submit" name="save_action" value="{{$p->status == 'ACTIVE' ? 'DEACTIVATE' : 'ACTIVATE'}}" class="btn btn-link waves-effect">{{$p->status == 'ACTIVE' ? 'Deactivate' : 'Activate'}}</button>
@@ -101,7 +101,7 @@
 		                           Delete this group
 								</div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('groups.destroy',[$p->id])}}" method="POST">
+		                        	<form action="{{route('groups.destroy',[$vendor,$p->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

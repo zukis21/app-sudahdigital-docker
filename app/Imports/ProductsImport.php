@@ -22,7 +22,9 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
     */
     public function rules(): array
     {
-        $stock_status= \DB::table('product_stock_status')->first();
+        $stock_status= \DB::table('product_stock_status')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->first();
         if($stock_status->stock_status == 'ON'){
             return [
                 'product_code' => 'required',
@@ -40,7 +42,9 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
 
     public function customValidationMessages()
     {
-        $stock_status= \DB::table('product_stock_status')->first();
+        $stock_status= \DB::table('product_stock_status')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->first();
         if($stock_status->stock_status == 'ON'){
             return [
                 'product_code.required' => 'Product_code is required.',
@@ -58,11 +62,14 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
     {
             //dd($rows);
             $cek = product::where('product_code','=',$rows['product_code'])->count();
-            $stock_status= \DB::table('product_stock_status')->first();
+            $stock_status= \DB::table('product_stock_status')
+            ->where('client_id','=',auth()->user()->client_id)
+            ->first();
             //dd($cek);
             
             if($cek > 0){
                 $product = product::where('product_code','=',$rows['product_code'])->first();
+                $product->client_id = $stock_status->client_id;
                 $product->product_code = $rows['product_code'];
                 $product->Product_name = $rows['product_name'];
                 $product->slug = \Str::slug($rows['product_name']);
@@ -85,6 +92,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
                 $product->categories()->sync($rows['category_id']);
             }else{
                 $product = new product;
+                $product->client_id = $stock_status->client_id;
                 $product->product_code = $rows['product_code'];
                 $product->Product_name = $rows['product_name'];
                 $product->slug = \Str::slug($rows['product_name']);

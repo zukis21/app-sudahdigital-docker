@@ -7,7 +7,7 @@
 	</div>
 @endif
 
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		<!--
 		<div class="col-md-3">
@@ -24,27 +24,38 @@
 		<div class="col-md-6">
 			<ul class="nav nav-tabs tab-col-pink pull-left" role="tablist">
 				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'products' ? 'active' : ''}}">
-					<a href="{{route('products.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('products.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'publish' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'publish'])}}" >PUBLISH</a>
+					<a href="{{route('products.index', [$vendor,'status' =>'publish'])}}" >PUBLISH</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'draft' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'draft'])}}">DRAFT</a>
+					<a href="{{route('products.index', [$vendor,'status' =>'draft'])}}">DRAFT</a>
 				</li>
-				<li role="presentation" class="">
-					<a href="{{route('products.low_stock')}}">LOW STOCK</a>
-				</li>
+				@if($stock_status)
+					@if($stock_status->stock_status == 'ON')
+					<li role="presentation" class="">
+						<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
+					</li>
+					@endif
+				@endif
 				<li role="presentation" class="active">
-					<a href="{{route('products.trash')}}">TRUSH</a>
+					<a href="{{route('products.trash',[$vendor])}}">TRUSH</a>
 				</li>
 			</ul>
 		</div>
 		<div class="col-md-6">&nbsp;</div>
 		<div class="col-md-12">
-			<a href="{{route('products.import_products')}}" class="btn btn-success ">Import Excel (<small>Update Products</small>) </a>&nbsp;
-			<a href="{{route('products.export_all')}}" class="btn btn-success ">Export Excel</a>&nbsp;
-			<a href="{{route('products.create')}}" class="btn bg-cyan">Create Product</a>
+			<div class="demo-switch">
+				<a href="{{route('products.import_products',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Import</a>&nbsp;
+				<a href="{{route('products.export_all',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Export</a>&nbsp;
+				<a href="{{route('products.create',[$vendor])}}" class="btn bg-cyan" style="padding:8px;">Create Product</a> &nbsp;
+				<span class="label label-warning" style="padding:10px;"><label>ON / OFF STOCK</label>
+					<div class="switch">
+						<label>OFF<input id="check_onoff_stock" type="checkbox" {{$stock_status && $stock_status->stock_status == 'ON' ? 'checked' : ''}}><span class="lever"></span>ON</label>
+					</div>
+				</span>
+			</div>
 		</div>
 	</div>
 </form>	
@@ -58,8 +69,10 @@
 				<th>Product Name</th>
 				<th>Descritption</th>
 				<th>Category</th>
-				<th>Stock</th>
-				<th>Low Stock Treshold</th>
+				@if($stock_status && $stock_status->stock_status == 'ON')
+					<th>Stock</th>
+					<th>Low Stock Treshold</th>
+				@endif
 				<th>Price</th>
 				<th>Status</th>
 				<th width="20%">Action</th>
@@ -85,12 +98,14 @@
 					@endforeach
 					
 				</td>
-				<td>
-					{{$p->stock}}
-				</td>
-				<td>
-					{{$p->low_stock_treshold}}
-				</td>
+				@if($stock_status->stock_status == 'ON')
+					<td>
+						{{$p->stock}}
+					</td>
+					<td>
+						{{$p->low_stock_treshold}}
+					</td>
+				@endif
 				<td>
 					{{$p->price}}
 				</td>
@@ -113,10 +128,10 @@
 		                            <h4 class="modal-title" id="deleteModalLabel">Delete Product</h4>
 		                        </div>
 		                        <div class="modal-body">
-		                           Delete permanent this product ..? 
+		                           Delete permanently this product ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('products.delete-permanent',[$p->id])}}" method="POST">
+		                        	<form action="{{route('products.delete-permanent',[$vendor,$p->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>
@@ -139,7 +154,7 @@
 							</div>
 							<div class="modal-footer">
 								
-									<a href="{{route('products.restore', [$p->id])}}" class="btn bg-deep-orange">Restore</a>
+									<a href="{{route('products.restore', [$vendor,$p->id])}}" class="btn bg-deep-orange">Restore</a>
 									<button type="button" class="btn bg-deep-orange" data-dismiss="modal">Close</button>
 								
 							</div>
@@ -152,4 +167,70 @@
 		</tbody>
 	</table>
 </div>
+@endsection
+@section('footer-scripts')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		$("#check_onoff_stock").change(function() {
+		if(this.checked) {
+			var status = 'ON';
+			$.ajax({
+                url: '{{URL::to('/products/change_status_stock')}}',
+                type: 'get',
+                data: {
+                    'status' : status,
+                },
+                success: function(){
+                    Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "All Product Stock is ON",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					}).then(function(){ 
+							location.reload();
+						})
+                }
+            });
+		}
+	else
+		{
+			var status = 'OFF';
+			$.ajax({
+                url: '{{URL::to('/products/change_status_stock')}}',
+                type: 'get',
+                data: {
+                    'status' : status,
+                },
+                success: function(){
+                    Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "All Product Stock is OFF",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					}).then(function(){ 
+							location.reload();
+						})
+                }
+            });
+		
+		}
+	});
+	</script>
 @endsection

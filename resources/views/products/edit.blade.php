@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update',[$product->id])}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update',[$vendor,$product->id])}}">
         @csrf
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group form-float">
@@ -25,13 +25,14 @@
             </div>
         </div>
 
+        <!--
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="text" class="form-control" value="{{$product->slug}}" name="slug" autocomplete="off" required>
                 <label class="form-label">Slug</label>
             </div>
         </div>
-        
+         -->
         <div class="form-group">
             <div class="form-line">
                 <textarea name="description" rows="4" class="form-control no-resize" placeholder="Description" autocomplete="off" required>{{$product->description}}</textarea>

@@ -17,7 +17,9 @@ class ProductsLowStock implements FromCollection, WithMapping, WithHeadings
     */
     public function collection()
     {
-        return product::with('categories')->whereRaw('stock < low_stock_treshold')->get();
+        return product::with('categories')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->whereRaw('stock < low_stock_treshold')->get();
     }
 
    public function map($product) : array {

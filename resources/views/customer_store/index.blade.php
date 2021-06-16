@@ -13,7 +13,7 @@
 	</div>
 @endif
 
-<form action="{{route('customers.index')}}">
+<form action="{{route('customers.index',[$vendor])}}">
 	<div class="row">
 		<!--
 		<div class="col-md-3">
@@ -29,23 +29,23 @@
 		-->
 		<div class="col-md-6">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
-				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'customers' ? 'active' : ''}}">
-					<a href="{{route('customers.index')}}" aria-expanded="true" >All</a>
+				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/customers' ? 'active' : ''}}">
+					<a href="{{route('customers.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'active' ?'active' : '' }}">
-					<a href="{{route('customers.index', ['status' =>'active'])}}" >ACTIVE</a>
+					<a href="{{route('customers.index', [$vendor,'status' =>'active'])}}" >ACTIVE</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'nonactive' ?'active' : '' }}">
-					<a href="{{route('customers.index', ['status' =>'nonactive'])}}">INACTIVE</a>
+					<a href="{{route('customers.index', [$vendor,'status' =>'nonactive'])}}">INACTIVE</a>
 				</li>
 			</ul>
 		</div>
 		<div class="col-md-6">&nbsp;</div>
 		<div class="col-md-12">
-			<a href="{{route('customers.import')}}" class="btn btn-success py-auto"><i class="fas fa-file-excel fa-0x "></i> Import </a>&nbsp;
-			<a href="{{route('customers.export')}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
-			<a href="{{route('cities.export')}}" class="btn btn-primary "><i class="fas fa-file-excel fa-1x"></i> City List </a>&nbsp;
-			<a href="{{route('customers.create')}}" class="btn bg-cyan">Create Customer</a>
+			<a href="{{route('customers.import',[$vendor])}}" class="btn btn-success py-auto"><i class="fas fa-file-excel fa-0x "></i> Import </a>&nbsp;
+			<a href="{{route('customers.export',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
+			<a href="{{route('cities.export',[$vendor])}}" class="btn btn-primary "><i class="fas fa-file-excel fa-1x"></i> City List </a>&nbsp;
+			<a href="{{route('customers.create',[$vendor])}}" class="btn bg-cyan">Create Customer</a>
 		</div>
 	</div>
 </form>	
@@ -107,8 +107,8 @@
 
 				</td>
 				<td>
-					<a class="btn bg-grey waves-effect" href="{{route('customers.detail',[$c->id])}}">Detail</a>&nbsp;
-					<a class="btn btn-info btn-xs" href="{{route('customers.edit',[$c->id])}}"><i class="material-icons">edit</i></a>&nbsp;
+					<a class="btn bg-grey waves-effect" href="{{route('customers.detail',[$vendor,Crypt::encrypt($c->id)])}}">Detail</a>&nbsp;
+					<a class="btn btn-info btn-xs" href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}"><i class="material-icons">delete</i></button>&nbsp;
 					<!-- Modal Delete -->
 		            <div class="modal fade" id="deleteModal{{$c->id}}" tabindex="-1" role="dialog">
@@ -121,7 +121,7 @@
 		                           Delete this customer ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('customers.delete-permanent',[$c->id])}}" method="POST">
+		                        	<form action="{{route('customers.delete-permanent',[$vendor,$c->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>
