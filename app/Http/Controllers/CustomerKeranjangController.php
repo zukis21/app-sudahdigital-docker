@@ -433,7 +433,7 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
                 $note_sales = '*Notes* : '.$notes_wa;
                 $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales;
             
-                $url = "https://api.whatsapp.com/send?phone=$wa_numb&text=$text_wa";
+                $url = "https://api.whatsapp.com/send?phone=62$wa_numb&text=$text_wa";
                 return Redirect::to($url);
                 //Alert::success('', 'Pesanan berhasil dikirim');
                 //return redirect()->route('home_customer');    

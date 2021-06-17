@@ -103,7 +103,11 @@ Route::group(['prefix' => '/{vendor}'], function()
 {  
     //home
     Route::get('/home_admin', 'DashboardController@home_admin')->name('home_admin');
-    
+
+    //Client profil
+    //Route::get('/shop-profile', 'ProfilClientController@index')->name('profile_client.index');
+    Route::put('/shop-update-profile/{id}', 'DashboardController@update')->name('profile.client.update');
+
     //admin
     Route::get('/users', 'UserController@index')->name('users.index');
     Route::get('/users/create', 'UserController@create')->name('users.create');
