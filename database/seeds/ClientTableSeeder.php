@@ -26,7 +26,7 @@ class ClientTableSeeder extends Seeder
                 'created_at'=>$dateNow,
                 'updated_at'=>$dateNow
             ],
-            [
+            /*[
                 'client_name'=>'Mega Cool',
                 //'client_image'=>'/client_image/LOGO MEGACOOLS_DEFAULT.png',
                 'client_slug'=>\Str::slug('Mega Cool','-'),
@@ -49,7 +49,7 @@ class ClientTableSeeder extends Seeder
                 'client_address'=>'Jakarta Barat',
                 'created_at'=>$dateNow,
                 'updated_at'=>$dateNow
-            ]
+            ]*/
         ];
 
          
