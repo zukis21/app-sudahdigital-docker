@@ -244,7 +244,7 @@
             <h2 class="card-inside-title">Avatar Image</h2>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="file" name="avatar" class="form-control" id="avatar" autocomplete="off" required accept="image/x-png,image/jpg,image/jpeg" >
+                    <input type="file" name="avatar" class="form-control" id="avatar" autocomplete="off" required accept="image/png,image/jpg,image/jpeg" >
                 </div>
                 <label id="name-error" class="error" for="avatar">{{ $errors->first('avatar') }}</label>
             </div>
