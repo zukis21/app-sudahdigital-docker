@@ -26,7 +26,8 @@ class changePasswordController extends Controller
     }
 
     public function index($vendor){
-        return view('users.change_password',['vendor'=>$vendor]);
+        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        return view('users.change_password',['vendor'=>$vendor,'client'=>$client]);
     }
 
     public function changepassword(Request $request, $vendor){

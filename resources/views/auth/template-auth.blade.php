@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>B2B SudahOnline | @yield('title')</title>
+    <title>AppSudahOnline | @yield('title')</title>
 
     <link rel="icon" href="{{ asset('assets/image/Logo_SudahOnline.png')}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->

@@ -51,7 +51,7 @@
     </style>
 </head>
 
-<body class="theme-indigo">
+<body class="{{ $vendor == 'owner' ? 'theme-amber' : 'theme-indigo'}}">
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <div class="loader">
@@ -92,7 +92,7 @@
                 </a>
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="#">{{strtoUpper(Request::session()->get('client_sess')['client_name'])}}</a>
+                <a class="navbar-brand" href="#">{{ $vendor == 'owner' ? '' : strtoUpper(Request::session()->get('client_sess')['client_name'])}}</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <!--
@@ -244,6 +244,7 @@
                     </li>
                     @endif
 
+                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
                     <li class="{{request()->routeIs('orders.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">shopping_cart</i>
@@ -255,14 +256,28 @@
                             </li>
                         </ul>
                     </li>
-                    
+                    @endif
+
+                    @if(Gate::check('isOwner'))
+                    <li class="{{request()->routeIs('client_so.index') ? 'active' : ''}}">
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">group_work</i>
+                            <span>Manage Client</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li class="{{request()->routeIs('client_so.index') ? 'active' : '' }}">
+                                <a href="{{route('client_so.index',[$vendor])}}">Client List</a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endif
                 </ul>
             </div>
             <!-- #Menu -->
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2021 <a href="javascript:void(0);">{{Request::session()->get('client_sess')['client_name']}}</a>
+                    &copy; 2021 <a href="javascript:void(0);">{{$vendor == 'owner' ? $client->company_name : strtoUpper(Request::session()->get('client_sess')['client_name'])}}</a>
                 </div>
                 
             </div>

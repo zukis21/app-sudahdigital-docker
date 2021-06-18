@@ -24,7 +24,7 @@ Route::get('/admin', function () {
     return view('auth.login',['categories'=>$categories]);
     });
 
-//Sales route
+//Sales Route
 Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::get('/main_home', 'MainHomeSalesController@index')->name('main_home');
 
@@ -107,7 +107,13 @@ Route::group(['prefix' => '/{vendor}'], function()
     //Client profil
     //Route::get('/shop-profile', 'ProfilClientController@index')->name('profile_client.index');
     Route::put('/shop-update-profile/{id}', 'DashboardController@update')->name('profile.client.update');
-
+    
+    //Owner
+    Route::get('/client-list', 'ClientListController@index')->name('client_so.index');
+    Route::get('/client-list/create', 'ClientListController@create')->name('client_so.create');
+    Route::post('/client-list/store', 'ClientListController@store')->name('client_so.store');
+    Route::post('/client-list/update', 'ClientListController@update_client')->name('client_so.update');
+    
     //admin
     Route::get('/users', 'UserController@index')->name('users.index');
     Route::get('/users/create', 'UserController@create')->name('users.create');
@@ -230,6 +236,8 @@ Route::get('/ajax/paket/search', 'AjaxAdminSearch@PaketNameSearch');
 Route::get('/ajax/users/search', 'AjaxAdminSearch@CustomerajaxUserSearch');
 Route::get('/customer/ajax/city_search', 'AjaxAdminSearch@CustomerajaxCitySearch');
 Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');
+Route::get('/ajax/name_client_so/search', 'AjaxAdminSearch@ClientsoCodeSearch');
+Route::get('/ajax/email_client_so/search', 'AjaxAdminSearch@email_so_search');
 
 /*===route group unique product===*/
 //Route::get('/ajax/groups/search', 'GroupController@ajaxSearch');

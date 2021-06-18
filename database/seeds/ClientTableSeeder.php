@@ -14,6 +14,18 @@ class ClientTableSeeder extends Seeder
         $dateNow = date('Y-m-d H:i:s');
         $client=[
             [
+                'client_name'=>'Owner',
+                'client_image'=>'/client_image/Logo_SudahOnline.png',
+                'client_slug'=>\Str::slug('Owner','-'),
+                'company_name'=>'Sudahonline.com',
+                'email'=>'admin@sudahonline.com',
+                'phone_whatsapp'=>'919191919191',
+                'phone'=>'‭02100000',
+                'client_address'=>'Jakarta',
+                'created_at'=>$dateNow,
+                'updated_at'=>$dateNow
+            ],
+            /*[
                 'client_name'=>'Mega Cool',
                 'client_image'=>'/client_image/LOGO MEGACOOLS_DEFAULT.png',
                 'client_slug'=>\Str::slug('Mega Cool','-'),
@@ -36,7 +48,7 @@ class ClientTableSeeder extends Seeder
                 'client_address'=>'Jakarta Barat',
                 'created_at'=>$dateNow,
                 'updated_at'=>$dateNow
-            ]
+            ]*/
         ];
 
          

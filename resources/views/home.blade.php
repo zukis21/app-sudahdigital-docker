@@ -6,15 +6,27 @@
             {{ session('status') }}
         </div>
     @endif
+    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+        <style>
+            .profile-card .profile-header {
+                background-color: #3F51B5;
+                padding: 42px 0;
+            }
+            .tab-pane ul{
+                margin-left: -10px;
+            }
+        </style>
+    @elseif(Gate::check('isOwner'))
     <style>
         .profile-card .profile-header {
-            background-color: #3F51B5;
+            background-color: #FFC107;
             padding: 42px 0;
         }
         .tab-pane ul{
             margin-left: -10px;
         }
     </style>
+    @endif
     <!--
     Hi <strong>{{ auth()->user()->name }}</strong>,
     {{ __('You are logged in as') }}
@@ -27,8 +39,9 @@
     @endcan
     -->
     @can('isSpv')
-        i <strong>{{ auth()->user()->name }}</strong>,
+        Hi <strong>{{ auth()->user()->name }}</strong>,
         {{ __('You are logged in as') }}
+        <span class="badge bg-green">Supervisor</span>
     @endcan
     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
         <div class="container-fluid">
@@ -272,17 +285,41 @@
             </div>
         </div>
     @endif
+    @if(Gate::check('isOwner'))
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-sm-offset-3 col-xs-12 col-sm-6">
+                    <div class="card profile-card">
+                        <div class="profile-header text-center">
+                            <div class="image-area">
+                                <img src="{{ asset('assets/image'.$client->client_image)}}" alt="image logo" />
+                            </div>
+                        </div>
+                        <div class="profile-body">
+                            
+                            <div class="content-area">
+                                <h3>Wellcome</h3>
+                                <h3>{{Auth::user()->name}}</h3>
+                                <p>{{Auth::user()->email}}</p>
+                                <p>Administrator</p>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 @section('footer-scripts')
-<script>
-    function isNumberKey(evt)
-    {
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode != 46 && charCode > 31 
-        && (charCode < 48 || charCode > 57))
-        return false;
-        return true;
-    }
-</script>
-
+    <script>
+        function isNumberKey(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31 
+            && (charCode < 48 || charCode > 57))
+            return false;
+            return true;
+        }
+    </script>
 @endsection

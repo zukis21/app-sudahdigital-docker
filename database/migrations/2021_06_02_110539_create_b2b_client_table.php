@@ -20,8 +20,8 @@ class CreateB2bClientTable extends Migration
             $table->string('client_slug')->unique();
             $table->string('company_name');
             $table->string('email')->unique();
-            $table->string('phone_whatsapp')->unique();
-            $table->string('phone')->unique();
+            $table->string('phone_whatsapp');
+            $table->string('phone');
             $table->text('client_address');
             $table->text('fb_url')->nullable();
             $table->text('inst_url')->nullable();

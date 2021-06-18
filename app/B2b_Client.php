@@ -17,4 +17,8 @@ class B2b_Client extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function users(){
+        return $this->hasMany('App\User','client_id');
+    }
 }

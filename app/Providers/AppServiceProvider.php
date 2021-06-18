@@ -44,6 +44,11 @@ class AppServiceProvider extends ServiceProvider
             //return in_array("SALES", json_decode($user->roles));
             return $user->roles == 'SUPERVISOR';
         });
+
+        Gate::define('isOwner', function($user) {
+            //return in_array("SALES", json_decode($user->roles));
+            return $user->roles == 'OWNER';
+        });
         
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');

@@ -16,6 +16,16 @@ class AjaxAdminSearch extends Controller
           }
     }
 
+    public function email_so_search(Request $request){
+      $keyword = $request->get('email');
+      $users = \App\B2b_Client::where('email','=',"$keyword")->count();
+      if ($users > 0) {
+          echo "taken";	
+        }else{
+          echo 'not_taken';
+        }
+  }
+
     public function CitySearch(Request $request){
       $keyword = $request->get('q');
       $cities = \App\City::where('city_name','LIKE',"%$keyword%")->get();
@@ -104,6 +114,17 @@ class AjaxAdminSearch extends Controller
     $keyword = $request->get('code');
     $cust = \App\Customer::where('client_id','=',auth()->user()->client_id)
             ->where('store_code','=',"$keyword")->count();
+    if ($cust > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
+  public function ClientsoCodeSearch(Request $request){
+    $keyword = $request->get('code');
+    $key_slug = \Str::slug($keyword,'-');
+    $cust = \App\B2b_Client::where('client_slug','=',"$key_slug")->count();
     if ($cust > 0) {
         echo "taken";	
       }else{
