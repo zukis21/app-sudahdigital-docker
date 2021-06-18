@@ -22,6 +22,7 @@ class ClientTableSeeder extends Seeder
                 'phone_whatsapp'=>'919191919191',
                 'phone'=>'‭02100000',
                 'client_address'=>'Jakarta',
+                'type'=>'OWNER',
                 'created_at'=>$dateNow,
                 'updated_at'=>$dateNow
             ],

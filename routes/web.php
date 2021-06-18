@@ -123,12 +123,12 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/users/{id}/destroy', 'UserController@destroy')->name('users.destroy');
     
     //sales
-    Route::get('/sales', 'salesController@index')->name('sales.index');
-    Route::get('/sales/create', 'salesController@create')->name('sales.create');
-    Route::post('/sales/store', 'salesController@store')->name('sales.store');
-    Route::get('/sales/{id}/edit', 'salesController@edit')->name('sales.edit');
-    Route::get('/sales/{id}/update', 'salesController@update')->name('sales.update');
-    Route::get('/sales/{id}/destroy', 'salesController@destroy')->name('sales.destroy');
+    Route::get('/sales', 'SalesController@index')->name('sales.index');
+    Route::get('/sales/create', 'SalesController@create')->name('sales.create');
+    Route::post('/sales/store', 'SalesController@store')->name('sales.store');
+    Route::get('/sales/{id}/edit', 'SalesController@edit')->name('sales.edit');
+    Route::get('/sales/{id}/update', 'SalesController@update')->name('sales.update');
+    Route::get('/sales/{id}/destroy', 'SalesController@destroy')->name('sales.destroy');
     Route::get('/sales/export', 'SalesController@export')->name('sales.export');
 
     //spv
