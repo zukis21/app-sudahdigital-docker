@@ -14,7 +14,7 @@ class UserTableSeeder extends Seeder
         $dateNow = date('Y-m-d H:i:s');
         $user=[
             [
-                'client_id'=>3,
+                'client_id'=>1,
                 'name'=>'Admin Sudahonline',
                 'email'=>'admin@sudahonline.com',
                 'password'=>\Hash::make('admin'),
