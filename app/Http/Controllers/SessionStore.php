@@ -69,7 +69,7 @@ class SessionStore extends Controller
 
     public function OrderSuccess(){
         $client_id = \Auth::user()->client_id;
-        $vendor = \App\B2b_Client::findOrFail($client_id);
+        $vendor = \App\B2b_client::findOrFail($client_id);
         return redirect()->route('session.clear',[$vendor->client_slug]);
     }
 

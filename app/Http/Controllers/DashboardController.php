@@ -38,7 +38,7 @@ class DashboardController extends Controller
         \Validator::make($request->all(), [
             'client_image' => 'mimes:jpg,jpeg,png|max:1000', //only allow this type extension file.
         ]);
-        $client = \App\B2b_Client::findOrFail($id);
+        $client = \App\B2b_client::findOrFail($id);
         //dd($user);
         $client->client_name = $request->get('client_name');
         $client->company_name = $request->get('company_name');

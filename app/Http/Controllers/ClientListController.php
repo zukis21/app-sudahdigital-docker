@@ -28,7 +28,7 @@ class ClientListController extends Controller
 
     public function index(Request $request, $vendor)
     {
-        $client_list = \App\B2b_Client::where('type','CLIENT')
+        $client_list = \App\B2b_client::where('type','CLIENT')
                     ->orderBy('id','DESC')->get();//paginate(10);
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
         return view ('client_so.index',['client'=>$client,'client_list'=>$client_list,'vendor'=>$vendor]);
@@ -42,7 +42,7 @@ class ClientListController extends Controller
 
     public function store(Request $request, $vendor)
     {
-        $new_cust = new \App\B2b_Client;
+        $new_cust = new \App\B2b_client;
         $new_cust->client_name = $request->get('client_name');
         $new_cust->client_slug = \Str::slug($request->get('client_name'),'-');
         $new_cust->email = $request->get('email');
@@ -52,7 +52,7 @@ class ClientListController extends Controller
         $new_cust->client_address = $request->get('client_address');
         $new_cust->save();
         if ( $new_cust->save()){
-            $cek_client = \App\B2b_Client::where('email','=',$request->get('email'))->first();
+            $cek_client = \App\B2b_client::where('email','=',$request->get('email'))->first();
             $new_login = new \App\User;
             $new_login->client_id = $cek_client->id;
             $new_login->name = 'Superadmin';
@@ -72,7 +72,7 @@ class ClientListController extends Controller
         if($request->get('save_action') == 'ACTIVATE')
         {
             $active_id = $request->input('activate_id');
-            $client = \App\B2b_Client::findOrFail($active_id);
+            $client = \App\B2b_client::findOrFail($active_id);
             $client->status = 'ACTIVE';
             $client->save();
             if($client->save()){
@@ -83,7 +83,7 @@ class ClientListController extends Controller
         }else{
             $active_id = $request->input('deactivate_id');
             //dd($active_id);
-            $client = \App\B2b_Client::findOrFail($active_id);
+            $client = \App\B2b_client::findOrFail($active_id);
             
             $client->status='INACTIVE';
             $client->save();

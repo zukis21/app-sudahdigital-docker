@@ -18,7 +18,7 @@ class AjaxAdminSearch extends Controller
 
     public function email_so_search(Request $request){
       $keyword = $request->get('email');
-      $users = \App\B2b_Client::where('email','=',"$keyword")->count();
+      $users = \App\B2b_client::where('email','=',"$keyword")->count();
       if ($users > 0) {
           echo "taken";	
         }else{
@@ -124,7 +124,7 @@ class AjaxAdminSearch extends Controller
   public function ClientsoCodeSearch(Request $request){
     $keyword = $request->get('code');
     $key_slug = \Str::slug($keyword,'-');
-    $cust = \App\B2b_Client::where('client_slug','=',"$key_slug")->count();
+    $cust = \App\B2b_client::where('client_slug','=',"$key_slug")->count();
     if ($cust > 0) {
         echo "taken";	
       }else{

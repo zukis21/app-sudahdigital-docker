@@ -218,7 +218,7 @@ class CustomerKeranjangController extends Controller
     public function pesan(Request $request, $vendor){
         $user_id = \Auth::user()->id;
         $client_id =\Auth::user()->client_id;
-        $client_name = \App\B2b_Client::findOrfail($client_id);
+        $client_name = \App\B2b_client::findOrfail($client_id);
         $wa_numb=$client_name->phone_whatsapp;
         $id = $request->get('id');
         $cek_order = DB::select("SELECT order_product.order_id, order_product.product_id,
