@@ -40,7 +40,7 @@
 					@endif
 				@endif
 				<li role="presentation" class="">
-					<a href="{{route('products.trash',[$vendor])}}" >TRUSH</a>
+					<a href="{{route('products.trash',[$vendor])}}" >TRASH</a>
 				</li>
 			</ul>
 		</div>

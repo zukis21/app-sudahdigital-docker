@@ -28,7 +28,7 @@
 					<a href="{{route('categories.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="">
-					<a href="{{route('categories.trash',[$vendor])}}" >TRUSH</a>
+					<a href="{{route('categories.trash',[$vendor])}}" >TRASH</a>
 				</li>
 			</ul>
 		</div>		

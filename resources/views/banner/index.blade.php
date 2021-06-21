@@ -17,7 +17,7 @@
 					<a href="{{route('banner.index',[$vendor])}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="">
-					<a href="{{route('banner.trash',[$vendor])}}" >TRUSH</a>
+					<a href="{{route('banner.trash',[$vendor])}}" >TRASH</a>
 				</li>
 			</ul>
 		</div>		

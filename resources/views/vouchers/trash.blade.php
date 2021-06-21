@@ -28,7 +28,7 @@
 				</li>
 				
 				<li role="presentation" class="active">
-					<a href="{{route('vouchers.trash')}}">TRUSH</a>
+					<a href="{{route('vouchers.trash')}}">TRASH</a>
 				</li>
 			</ul>
 		</div>

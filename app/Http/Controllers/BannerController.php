@@ -64,6 +64,12 @@ class BannerController extends Controller
         \Validator::make($request->all(), [
             "image" => "required|image|mimes:jpeg,png,jpg|max:500"
         ])->validate();
+        $max_position = \App\Banner::where('client_id','=',$request->get('client_id'))
+                      ->max('position');
+                      //->orderBy('position','DESC')
+                      //->value('position');
+        //dd($max_position);
+        
         $name = $request->get('name');
         $newBanner = new \App\Banner;
         $newBanner->name = $name;
@@ -72,9 +78,20 @@ class BannerController extends Controller
             $newBanner->image = $image_path;
         }
         $newBanner->client_id = $request->get('client_id');
+        
+        if($max_position == null){
+            $newBanner->position = 1;
+        }
+        else{
+            $newBanner->position = $max_position + 1;
+        }
+        
         $newBanner->create_by = \Auth::user()->id;
-        //$newCategory->slug = \Str::slug($name,'-');
         $newBanner->save();
+        
+        //$newCategory->slug = \Str::slug($name,'-');
+        
+        
         return redirect()->route('banner.create',[$vendor])->with('status','Banner Slide Succesfully Created');
     }
 

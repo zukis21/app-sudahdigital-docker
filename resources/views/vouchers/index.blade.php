@@ -27,7 +27,7 @@
 					<a href="{{route('vouchers.index')}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="">
-					<a href="{{route('vouchers.trash')}}">TRUSH</a>
+					<a href="{{route('vouchers.trash')}}">TRASH</a>
 				</li>
 			</ul>
 		</div>

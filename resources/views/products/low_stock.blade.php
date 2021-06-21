@@ -36,7 +36,7 @@
 					<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
 				</li>
 				<li role="presentation">
-					<a href="{{route('products.trash',[$vendor])}}">TRUSH</a>
+					<a href="{{route('products.trash',[$vendor])}}">TRASH</a>
 				</li>
 			</ul>
 		</div>
