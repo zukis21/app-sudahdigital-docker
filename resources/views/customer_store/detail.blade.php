@@ -55,6 +55,13 @@
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>
         <li>
+            <label class="form-label">Customer Type</label>
+        </li>
+        <small class="text-muted">{{$customer->cust_type ? "$customer->cust_type" : '-'}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
             <label class="form-label">Payment Term</label>
         </li>
         <small class="text-muted">{{$customer->payment_term ? "$customer->payment_term" : '-'}}</small>

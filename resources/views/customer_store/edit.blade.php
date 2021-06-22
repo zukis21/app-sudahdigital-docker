@@ -1,5 +1,13 @@
 @extends('layouts.master')
-@section('title') Edit Customer @endsection
+@section('title') 
+    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+        Edit Customer
+    @else
+        @if(Gate::check('isSpv'))
+        Edit Customer Type
+        @endif
+    @endif 
+@endsection
 @section('content')
 
 	@if(session('status'))
@@ -7,93 +15,107 @@
 			{{session('status')}}
 		</div>
 	@endif
+   
 	<!-- Form Create -->
     <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.update',[$vendor,$cust->id])}}">
     	@csrf
         <input type="hidden" name="_method" value="PUT">
-        <div class="form-group form-float">
-            <div class="form-line" id="code_">
-                <input type="text" class="form-control" name="store_code" autocomplete="off" 
-                value="{{$cust->store_code}}" readonly required>
-                <label class="form-label">Customer Code / Search Key</label>
+        @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+            <div class="form-group form-float">
+                <div class="form-line" id="code_">
+                    <input type="text" class="form-control" name="store_code" autocomplete="off" 
+                    value="{{$cust->store_code}}" readonly required>
+                    <label class="form-label">Customer Code / Search Key</label>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="text" class="form-control" name="store_name" value="{{$cust->store_name}}" autocomplete="off" required>
-                <label class="form-label">Name</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" class="form-control" name="store_name" value="{{$cust->store_name}}" autocomplete="off" required>
+                    <label class="form-label">Name</label>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="email" class="form-control" value="{{$cust->email}}" name="email" autocomplete="off" required>
-                <label class="form-label">Email</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="email" class="form-control" value="{{$cust->email}}" name="email" autocomplete="off" required>
+                    <label class="form-label">Email</label>
+                </div>
             </div>
-        </div>
-        <h2 class="card-inside-title" >City</h2>
-            <select name="city_id"  id="city_id" class="form-control" required></select>
-        <br>
-        <br>
-        <div class="form-group">
-            <div class="form-line">
-                <textarea name="address" rows="4" class="form-control no-resize" placeholder="Address" autocomplete="off" required>{{$cust->address}}</textarea>
+            
+            <h2 class="card-inside-title" >City</h2>
+                <select name="city_id"  id="city_id" class="form-control" required></select>
+            <br>
+            <br>
+            <div class="form-group">
+                <div class="form-line">
+                    <textarea name="address" rows="4" class="form-control no-resize" placeholder="Address" autocomplete="off" required>{{$cust->address}}</textarea>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input id="txtNumber" value="{{$cust->phone}}" class="form-control" onkeypress="return isNumberKey(event)"  type="text" name="phone" minlength="10" maxlength="13" autocomplete="off">
-                <label class="form-label">Whatsapp Number</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input id="txtNumber" value="{{$cust->phone}}" class="form-control" onkeypress="return isNumberKey(event)"  type="text" name="phone" minlength="10" maxlength="13" autocomplete="off">
+                    <label class="form-label">Whatsapp Number</label>
+                </div>
+                <div class="help-info">Min.10, Max. 13 Characters</div>
             </div>
-            <div class="help-info">Min.10, Max. 13 Characters</div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="text" value="{{$cust->phone_owner}}" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_owner"  autocomplete="off" >
-                <label class="form-label">Owner Phone</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" value="{{$cust->phone_owner}}" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_owner"  autocomplete="off" >
+                    <label class="form-label">Owner Phone</label>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="text" value="{{$cust->phone_store}}" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_store"  autocomplete="off" >
-                <label class="form-label">Office/Shop Phone</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" value="{{$cust->phone_store}}" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_store"  autocomplete="off" >
+                    <label class="form-label">Office/Shop Phone</label>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="text" class="form-control" name="name" value="{{$cust->name}}" autocomplete="off" required>
-                <label class="form-label">Contact Person</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" class="form-control" name="name" value="{{$cust->name}}" autocomplete="off" required>
+                    <label class="form-label">Contact Person</label>
+                </div>
             </div>
-        </div>
 
-        <h2 class="card-inside-title">Payment Term</h2>
-            <select name="payment_term"  id="payment_term" class="form-control" required>
-                <option value="7 Days" {{$cust->payment_term == '7 Days' ? 'selected' : '' }}>7 Days</option>
-                <option value="45 Days" {{$cust->payment_term == '45 Days' ? 'selected' : '' }}>45 Days</option>
-                <option value="60 Days" {{$cust->payment_term == '60 Days' ? 'selected' : '' }}>60 Days</option>
+            <h2 class="card-inside-title">Payment Term</h2>
+                <select name="payment_term"  id="payment_term" class="form-control" required>
+                    <option value="7 Days" {{$cust->payment_term == '7 Days' ? 'selected' : '' }}>7 Days</option>
+                    <option value="45 Days" {{$cust->payment_term == '45 Days' ? 'selected' : '' }}>45 Days</option>
+                    <option value="60 Days" {{$cust->payment_term == '60 Days' ? 'selected' : '' }}>60 Days</option>
+                </select>
+            <br>
+            <!--
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" class="form-control" name="payment_term" value="{{$cust->payment_term}}" autocomplete="off" required>
+                    <label class="form-label">Payment Term</label>
+                </div>
+            </div>
+            -->
+            <h2 class="card-inside-title">Sales Representative</h2>
+                <select name="user_id"  id="user" class="form-control" required></select>
+            <br>
+        @endif
+        @if(Gate::check('isSpv'))
+            <p>
+                <b>Customer Type</b>
+            </p>
+            <select name="cust_type"  id="cust_type" class="form-control" required>
+                <option value="DISTRIBUTOR" {{$cust->cust_type == 'DISTRIBUTOR' ? 'selected' : ''}}>DISTRIBUTOR</option>
+                <option value="PREMIUM STORE" {{$cust->cust_type == 'PREMIUM STORE' ? 'selected' : ''}}>PREMIUM STORE</option>
+                <option value="REGULAR STORE" {{$cust->cust_type == 'REGULAR STORE' ? 'selected' : ''}}>REGULAR STORE</option>
             </select>
-        <br>
-        <!--
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="text" class="form-control" name="payment_term" value="{{$cust->payment_term}}" autocomplete="off" required>
-                <label class="form-label">Payment Term</label>
-            </div>
-        </div>
-        -->
-        <h2 class="card-inside-title">Sales Representative</h2>
-            <select name="user_id"  id="user" class="form-control" required></select>
-        <br>
-        
+        @endif
         <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
     </form>
-    <!-- #END#  -->		
-
+    <!-- #END#  -->
+    		
+    
 @endsection
 
 @section('footer-scripts')
@@ -108,7 +130,7 @@
             return false;
             return true;
         }
-    $('#payment_term').select2(); 
+    $('#payment_term , #cust_type').select2(); 
 
     $('#user').select2({
       placeholder: 'Select an item',

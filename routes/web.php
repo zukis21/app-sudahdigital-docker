@@ -222,6 +222,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
     Route::post('/users/post/change_password', 'changePasswordController@changepassword')->name('post.changepass');
+
 });
 
 //Ajax controller in admin panel

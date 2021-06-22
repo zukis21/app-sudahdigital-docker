@@ -230,21 +230,21 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
                     
+                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
                     <li class="{{request()->routeIs('customers.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">contacts</i>
-                            <span>Manage Customers</span>
+                            <span>{{Gate::check('isSpv') ? 'Customers' : 'Manage Customers'}}</span>
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('customers.index') ? 'active' : '' }}">
-                                <a href="{{route('customers.index',[$vendor])}}">Customers</a>
+                                <a href="{{route('customers.index',[$vendor])}}">Customer List</a>
                             </li>
                         </ul>
                     </li>
-                    @endif
-
-                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                    
                     <li class="{{request()->routeIs('orders.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">shopping_cart</i>

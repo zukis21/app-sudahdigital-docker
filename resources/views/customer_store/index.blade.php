@@ -13,6 +13,7 @@
 	</div>
 @endif
 
+
 <form action="{{route('customers.index',[$vendor])}}">
 	<div class="row">
 		<!--
@@ -41,14 +42,18 @@
 			</ul>
 		</div>
 		<div class="col-md-6">&nbsp;</div>
-		<div class="col-md-12">
-			<a href="{{route('customers.import',[$vendor])}}" class="btn btn-success py-auto"><i class="fas fa-file-excel fa-0x "></i> Import </a>&nbsp;
-			<a href="{{route('customers.export',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
-			<a href="{{route('cities.export',[$vendor])}}" class="btn btn-primary "><i class="fas fa-file-excel fa-1x"></i> City List </a>&nbsp;
-			<a href="{{route('customers.create',[$vendor])}}" class="btn bg-cyan">Create Customer</a>
-		</div>
 	</div>
-</form>	
+</form>
+@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+<div class="row">
+	<div class="col-md-12">
+		<a href="{{route('customers.import',[$vendor])}}" class="btn btn-success py-auto"><i class="fas fa-file-excel fa-0x "></i> Import </a>&nbsp;
+		<a href="{{route('customers.export',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-1x"></i> Export</a>&nbsp;
+		<a href="{{route('cities.export',[$vendor])}}" class="btn btn-primary "><i class="fas fa-file-excel fa-1x"></i> City List </a>&nbsp;
+		<a href="{{route('customers.create',[$vendor])}}" class="btn bg-cyan">Create Customer</a>
+	</div>
+</div>
+@endif
 <hr>
 <div class="table-responsive">
 	<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
@@ -57,13 +62,12 @@
 				<th>No</th>
 				<th>Search Key</th>
 				<th>Name/Email</th>
-				<th>City</th>
 				<th>Address</th>
 				<th >Phone</th>
-				<th>Payment Term</th>
+				<th>Customer Type</th>
 				<th>Sales Rep</th>
 				<th>Status</th>
-				<th width="10%">Action</th>
+				<th width="13%">Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -84,20 +88,36 @@
 					<small class="text-secondary"><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
 					<small class="text-success"><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small>
 				</td>
-				<td>{{$c->city_id ? $c->cities->city_name :''}}</td>
-				<td>{{$c->address}}</td>
+				<td>
+					{{$c->address}}<br>
+					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+					{{$c->city_id ? $c->cities->city_name :''}}
+					@else 
+						@if(Gate::check('isSpv'))
+							{{$c->city_name}}
+						@endif
+					@endif
+				</td>
 				<td>
 					<small class="text-primary"><b> Wa : </b>{{$c->phone != NULL ? "$c->phone" : '-'}}</small><br>
 					<small class="text-warning"><b> Owner : </b>{{$c->phone_owner != NULL ? "$c->phone_owner" : '-'}}</small><br>
 					<small class="text-danger"><b> Office : </b>{{$c->phone_store != NULL ? "$c->phone_store" : '-'}}</small>
 				</td>
-				<td>{{$c->payment_term}}</td>
-				<td>@if($c->user_id > 0)
-					{{$c->users->name}}
-					@else
-					-
+				<td>{{$c->cust_type}}</td>
+				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+					<td>@if($c->user_id > 0)
+						{{$c->users->name}}
+						@else
+						-
+						@endif
+					</td>
+				@else 
+					@if(Gate::check('isSpv'))
+						<td>
+							{{$c->user_name}}	
+						</td>
 					@endif
-				</td>
+				@endif
 				<td>
 					@if($c->status=="NONACTIVE")
 					<span class="badge bg-red text-white">{{$c->status}}</span>
@@ -108,7 +128,10 @@
 				</td>
 				<td>
 					<a class="btn bg-grey waves-effect" href="{{route('customers.detail',[$vendor,Crypt::encrypt($c->id)])}}">Detail</a>&nbsp;
-					<a class="btn btn-info btn-xs" href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
+					<a class="btn btn-info btn-xs" href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}"><i class="material-icons">edit</i></a>
+					<!--gate check-->
+					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+					&nbsp;
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}"><i class="material-icons">delete</i></button>&nbsp;
 					<!-- Modal Delete -->
 		            <div class="modal fade" id="deleteModal{{$c->id}}" tabindex="-1" role="dialog">
@@ -131,7 +154,7 @@
 		                    </div>
 		                </div>
 		            </div>
-
+					@endif
 		        </td>
 			</tr>
 			@endforeach

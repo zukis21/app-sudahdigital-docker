@@ -35,17 +35,49 @@ class CustomerController extends Controller
      */
     public function index(Request $request, $vendor)
     {
-        $customers = \App\Customer::with('users')->with('cities')
-        ->where('client_id','=',auth()->user()->client_id)
-        ->where('status','!=','NEW')->orderBy('id','DESC')->get();//paginate(10);
-        //$filterkeyword = $request->get('keyword');
-        $status = $request->get('status');
-        
-        if($status){
+        if(Gate::check('isSpv')){
+            $client_id = \Auth::user()->client_id;
+            $spv_id = \Auth::user()->id;
+            $customers = \DB::select("SELECT c.*, ct.city_name, u.id as user_id, u.name as user_name  
+                        FROM customers c, cities ct, users u WHERE c.status != 'NEW'
+                        AND c.client_id = $client_id AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
+                            (
+                                SELECT * FROM  spv_sales
+                                WHERE   spv_sales.sls_id = c.user_id
+                                AND spv_sales.spv_id ='$spv_id'
+                            )
+                        ");
+            
+            
+            $status = $request->get('status');
+            
+            if($status){
+                $customers = \DB::select("SELECT c.*, ct.city_name, u.id as user_id, u.name as user_name  
+                FROM customers c, cities ct, users u WHERE c.status != 'NEW'
+                AND c.client_id = $client_id AND c.user_id = u.id AND c.city_id = ct.id 
+                AND c.status LIKE '%$status%' AND EXISTS
+                    (
+                        SELECT * FROM  spv_sales
+                        WHERE   spv_sales.sls_id = c.user_id
+                        AND spv_sales.spv_id ='$spv_id'
+                    )
+                ");
+            }
+        }
+        else{
             $customers = \App\Customer::with('users')->with('cities')
             ->where('client_id','=',auth()->user()->client_id)
-            ->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
+            ->where('status','!=','NEW')->orderBy('id','DESC')->get();//paginate(10);
+            //$filterkeyword = $request->get('keyword');
+            $status = $request->get('status');
+            
+            if($status){
+                $customers = \App\Customer::with('users')->with('cities')
+                ->where('client_id','=',auth()->user()->client_id)
+                ->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
+            }
         }
+        
         return view ('customer_store.index',['customers'=>$customers,'vendor'=>$vendor]);
     }
 
@@ -56,7 +88,12 @@ class CustomerController extends Controller
      */
     public function create($vendor)
     {
-        return view('customer_store.create',['vendor'=>$vendor]);
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            return view('customer_store.create',['vendor'=>$vendor]);
+        }
+        else{
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        }       
     }
 
     /**
@@ -123,17 +160,22 @@ class CustomerController extends Controller
     public function update(Request $request, $vendor,$id)
     {
         $cust =\App\Customer::findOrFail($id);
-        $cust->store_code = $request->get('store_code');
-        $cust->name = $request->get('name');
-        $cust->email = $request->get('email');
-        $cust->phone = $request->get('phone');
-        $cust->phone_owner = $request->get('phone_owner');
-        $cust->phone_store = $request->get('phone_store');
-        $cust->store_name = $request->get('store_name');
-        $cust->city_id = $request->get('city_id');
-        $cust->address = $request->get('address');
-        $cust->payment_term = $request->get('payment_term');
-        $cust->user_id = $request->get('user_id');
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $cust->store_code = $request->get('store_code');
+            $cust->name = $request->get('name');
+            $cust->email = $request->get('email');
+            $cust->phone = $request->get('phone');
+            $cust->phone_owner = $request->get('phone_owner');
+            $cust->phone_store = $request->get('phone_store');
+            $cust->store_name = $request->get('store_name');
+            $cust->city_id = $request->get('city_id');
+            $cust->address = $request->get('address');
+            $cust->payment_term = $request->get('payment_term');
+            $cust->user_id = $request->get('user_id');
+        }
+        else{
+            $cust->cust_type = $request->get('cust_type');
+        }   
         $cust->save();
         return redirect()->route('customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Customer Succsessfully Update');
     }
