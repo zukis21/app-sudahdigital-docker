@@ -38,7 +38,7 @@
 
             <div class="form-group form-float">
                 <div class="form-line">
-                    <input type="email" class="form-control" value="{{$cust->email}}" name="email" autocomplete="off" required>
+                    <input type="email" class="form-control" value="{{$cust->email}}" name="email" autocomplete="off">
                     <label class="form-label">Email</label>
                 </div>
             </div>
