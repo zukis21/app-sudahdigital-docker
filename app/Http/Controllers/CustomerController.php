@@ -104,6 +104,10 @@ class CustomerController extends Controller
      */
     public function store(Request $request, $vendor)
     {
+        \Validator::make($request->all(),[
+            "city" => "required",
+            "user" => "required"
+        ])->validate();
         $new_cust = new \App\Customer;
         $new_cust->store_code = $request->get('store_code');
         $new_cust->name = $request->get('name');
@@ -112,10 +116,15 @@ class CustomerController extends Controller
         $new_cust->phone_owner = $request->get('phone_owner');
         $new_cust->phone_store = $request->get('phone_store');
         $new_cust->store_name = $request->get('store_name');
-        $new_cust->city_id = $request->get('city_id');
+        $new_cust->city_id = $request->get('city');
         $new_cust->address = $request->get('address');
-        $new_cust->payment_term = $request->get('payment_term');
-        $new_cust->user_id = $request->get('user_id');
+        $pay_trm = $request->get('payment_term');
+        if($pay_trm == 'TOP'){
+            $new_cust->payment_term = $request->get('pay_cust').' Days';
+        }else{
+            $new_cust->payment_term = $request->get('payment_term');
+        }
+        $new_cust->user_id = $request->get('user');
         $new_cust->client_id = $request->get('client_id');
         
         $new_cust->save();
@@ -147,7 +156,15 @@ class CustomerController extends Controller
     {
         $id = \Crypt::decrypt($id);
         $cust = \App\Customer::findOrFail($id);
-        return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor]);
+        if(($cust->payment_term != null) && ($cust->payment_term != 'Cash')){
+            $cust_term = 'TOP';
+        }else
+        if(($cust->payment_term != null) && ($cust->payment_term == 'Cash')){
+            $cust_term = 'Cash';
+        }else{
+            $cust_term ='';
+        }
+        return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term]);
     }
 
     /**
@@ -161,6 +178,10 @@ class CustomerController extends Controller
     {
         $cust =\App\Customer::findOrFail($id);
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            \Validator::make($request->all(),[
+                "city" => "required",
+                "user" => "required"
+            ])->validate();
             $cust->store_code = $request->get('store_code');
             $cust->name = $request->get('name');
             $cust->email = $request->get('email');
@@ -168,10 +189,15 @@ class CustomerController extends Controller
             $cust->phone_owner = $request->get('phone_owner');
             $cust->phone_store = $request->get('phone_store');
             $cust->store_name = $request->get('store_name');
-            $cust->city_id = $request->get('city_id');
+            $cust->city_id = $request->get('city');
             $cust->address = $request->get('address');
-            $cust->payment_term = $request->get('payment_term');
-            $cust->user_id = $request->get('user_id');
+            $pay_trm = $request->get('payment_term');
+            if($pay_trm == 'TOP'){
+                $cust->payment_term = $request->get('pay_cust').' Days';
+            }else{
+                $cust->payment_term = $request->get('payment_term');
+            }
+            $cust->user_id = $request->get('user');
         }
         else{
             $cust->cust_type = $request->get('cust_type');
@@ -232,6 +258,9 @@ class CustomerController extends Controller
         ])->validate();
             
         $data = Excel::import(new CustomersImport, request()->file('file'));
-        return redirect()->route('customers.import',[$vendor])->with('status', 'File successfully upload');
+        if($data){
+            return redirect()->route('customers.import',[$vendor])->with('status', 'File successfully upload');
+        }
+        
     }
 }

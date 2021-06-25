@@ -87,32 +87,25 @@
 							$odr = \App\Order::with('products')->with('customers')
 								->where('id',$order->id)->first();
 						@endphp
-						<small><b>Name :</b> {{$odr->customers->store_name}}</small>
-						@if($odr->customers->status == 'NEW')<span class="badge bg-pink">New</span>@endif
-						<br>
+						@if($odr->customers->status == 'NEW')<span class="badge bg-pink">New Customer</span><br>@endif
+						<small><b>Name :</b> {{$odr->customers->store_name}}</small><br>
 						<small><b>Sales Rep :</b> {{$odr->users['name']}} <span class="badge {{$odr->user_loc == 'On Location' ? 'bg-green' : 'bg-black'}}">{{$odr->user_loc}}</span></small><br>
 						<small><b>Payment Term :</b> 
-							@if($odr->payment_method == 'Non Tunai')
-							{{$odr->customers->payment_term}}
-							@else
 							{{$odr->payment_method}}
-							@endif
 						</small>	
 					@else
-						<small><b>Name :</b> {{$order->customers->store_name}}</small>
-						@if($order->customers->status == 'NEW')<span class="badge bg-pink">New</span>@endif
-						<br>
+						@if($order->customers->status == 'NEW')
+							<a href="{{route('orders.addnew_customer',[$vendor,Crypt::encrypt($order->customers->id),$order->payment_method])}}"><span class="badge bg-pink">New Customer</span></a><br>
+						@endif
+						
+						<small><b>Name :</b> {{$order->customers->store_name}}</small><br>
 						<!--<small><b>Email :</b> {{$order->customers->email}}</small><br>
 						<small><b>Addr :</b> {{$order->customers->address}}</small><br>
 						<small><b>Phone :</b> {{$order->customers->phone}}</small><br>-->
 						<small><b>Sales Rep :</b> {{$order->users['name']}} <span class="badge {{$order->user_loc == 'On Location' ? 'bg-green' : 'bg-black'}}">{{$order->user_loc}}</span></small><br>
 						<small><b>Payment Term :</b> 
-							@if($order->payment_method == 'Non Tunai')
-							{{$order->customers->payment_term}}
-							@else
 							{{$order->payment_method}}
-							@endif
-					</small>
+						</small>
 					@endif
 				</td>
 				<!--

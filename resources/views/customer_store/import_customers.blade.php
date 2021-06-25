@@ -7,12 +7,7 @@
 			{{session('status')}}
 		</div>
     @endif
-    @if(session('error'))
-		<div class="alert alert-danger">
-			{{session('error')}}
-		</div>
-	@endif
-
+    
 
 	<!-- Form Create -->
     <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.import_data',[$vendor])}}">

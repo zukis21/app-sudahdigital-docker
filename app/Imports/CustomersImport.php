@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Illuminate\Validation\Rule;
 
 class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
 {
@@ -17,27 +18,6 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-
-    public function rules(): array
-    {
-        return [
-            'cust_code' => 'required',
-            'name' => 'required',
-            //'city_id'=>'required',
-            //'payment_term' => 'required',
-        ];
-
-    }
-
-    public function customValidationMessages()
-    {
-        return [
-            'cust_code.required' => 'cust_code is required.',
-            'name.required' => 'name is required.',
-            //'city_id.required'=> 'City ID is required.',
-            //'payment_term.required' => 'payment_term is required.',
-        ];
-    }
 
     public function model(array $rows)
     {
@@ -55,6 +35,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
                 $customer->city_id = $rows['city_id'];
             }
             $customer->address = $rows['address'];
+            if(!empty( $rows['customer_type'])){
+                $customer->cust_type = $rows['customer_type'];
+            }
             if(!empty( $rows['whatsapp'])){
                 $customer->phone = $rows['whatsapp'];
             }
@@ -67,7 +50,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             if(!empty( $rows['contact'])){
                 $customer->name = $rows['contact'];
             }
-            $customer->payment_term = $rows['payment_term'];
+            if(!empty( $rows['term_of_payment'])){
+                $customer->payment_term = $rows['term_of_payment'];
+            }
             if(!empty( $rows['sales_rep'])){
                 $customer->user_id = $rows['sales_rep'];
             }
@@ -83,6 +68,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
                 $customer->city_id = $rows['city_id'];
             }
             $customer->address = $rows['address'];
+            if(!empty( $rows['customer_type'])){
+                $customer->cust_type = $rows['customer_type'];
+            }
             if(!empty( $rows['whatsapp'])){
                 $customer->phone = $rows['whatsapp'];
             }
@@ -95,7 +83,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             if(!empty( $rows['contact'])){
                 $customer->name = $rows['contact'];
             }
-            $customer->payment_term = $rows['payment_term'];
+            if(!empty( $rows['term_of_payment'])){
+                $customer->payment_term = $rows['term_of_payment'];
+            }
             if(!empty( $rows['sales_rep'])){
                 $customer->user_id = $rows['sales_rep'];
             }
@@ -113,6 +103,29 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             'payment_term'=>$row[7]=='NULL' ? null : $row[7],
             /*'user_id'=>$row[8]=='NULL' ? null : $row[8],
         ]);*/
+    }
+
+    public function rules(): array
+    {
+        return [
+            //'cust_code' => 'required:cust_code',
+            //'cust_code' => '',
+            //'name' => 'required',
+            //'city_id'=>'required',
+            //'payment_term' => 'required',
+            
+        ];
+
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            //'cust_code.required' => 'cust_code is required.',
+            //'name.required' => 'name is required.',
+            //'city_id.required'=> 'City ID is required.',
+            //'payment_term.required' => 'payment_term is required.',
+        ];
     }
 
     /*public function startRow(): int

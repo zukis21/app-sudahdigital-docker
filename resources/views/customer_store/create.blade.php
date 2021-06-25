@@ -13,7 +13,7 @@
         <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
         <div class="form-group form-float">
             <div class="form-line" id="code_">
-                <input type="text" class="form-control" id="code"  name="store_code" autocomplete="off" required>
+                <input type="text" value="{{old('store_code')}}" class="form-control" id="code"  name="store_code" autocomplete="off" required>
                 <label class="form-label">Customer Code / Search Key</label>
             </div>
             <label id="name-error" class=""></label>
@@ -22,32 +22,33 @@
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" class="form-control" name="store_name" autocomplete="off" required>
+                <input type="text" value="{{old('store_name')}}" class="form-control" name="store_name" autocomplete="off" required>
                 <label class="form-label">Name</label>
             </div>
         </div>
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="email" class="form-control" name="email" autocomplete="off" required>
+                <input type="email" class="form-control" value="{{old('email')}}" name="email" autocomplete="off" required>
                 <label class="form-label">Email</label>
             </div>
         </div>
         
         <h2 class="card-inside-title" >City</h2>
-            <select name="city_id"  id="city_id" class="form-control" required></select>
+            <select name="city"  id="city_id" class="form-control"></select>
+            <small id="name-error" class="error merah" for="city_id">{{ $errors->first('city') }}</small>
         <br>
         <br>
 
         <div class="form-group">
             <div class="form-line">
-                <textarea name="address" rows="4" class="form-control no-resize" placeholder="Address" autocomplete="off" required></textarea>
+                <textarea name="address" rows="4" class="form-control no-resize" placeholder="Address" autocomplete="off" required>{{old('address')}}</textarea>
             </div>
         </div>
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)"  type="text" name="phone" minlength="10" maxlength="13" autocomplete="off">
+                <input id="txtNumber" value="{{old('phone')}}" class="form-control" onkeypress="return isNumberKey(event)"  type="text" name="phone" minlength="10" maxlength="13" autocomplete="off">
                 <label class="form-label">Whatsapp Number</label>
             </div>
             <div class="help-info">Min.10, Max. 13 Characters</div>
@@ -55,25 +56,25 @@
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_owner"  autocomplete="off" >
+                <input type="text" value="{{old('phone_owner')}}" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_owner"  autocomplete="off" >
                 <label class="form-label">Owner Phone</label>
             </div>
         </div>
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_store"  autocomplete="off" >
+                <input type="text" value="{{old('phone_store')}}" id="txtNumber" class="form-control" onkeypress="return isNumberKey(event)" name="phone_store"  autocomplete="off" >
                 <label class="form-label">Office/Shop Phone</label>
             </div>
         </div>
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" class="form-control" name="name" autocomplete="off" required>
+                <input type="text" value="{{old('name')}}" class="form-control" name="name" autocomplete="off" required>
                 <label class="form-label">Contact Person</label>
             </div>
         </div>
-        
+        <!--
         <h2 class="card-inside-title">Payment Term</h2>
             <select name="payment_term"  id="payment_term" class="form-control" required>
                 <option></option>
@@ -82,6 +83,32 @@
                 <option value="60 Days">60 Days</option>
             </select>
         <br>
+        -->
+        <h2 class="card-inside-title">Term Of Payment</h2>
+            <div class="col-sm-2" style="padding-left:0;padding-right:0;">
+                <div class="form-group">
+                    <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                        type="radio" name="payment_term" id="cash" value="Cash" required onclick="checkstate()"
+                        {{old('payment_term')== 'Cash' ? 'checked' : ''}} > 
+                    <label for="cash">Cash</label>
+                    &nbsp;&nbsp;
+                    <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                        type="radio" name="payment_term" id="top" value="TOP" onclick="checkstate()"
+                        {{{old('payment_term')== 'TOP' ? 'checked' : ''}}}> 
+                    <label for="top">TOP</label>
+                </div>
+            </div>
+            
+            <div class="col-sm-10" style="padding-left:0;">
+                <div class="input-group">
+                    <div class="form-line">
+                        <input type="number" min="0" class="form-control"
+                        id="pay_cust" name="pay_cust" value="{{old('pay_cust')}}" 
+                        autocomplete="off" required placeholder="Net d Days">
+                    </div>
+                    <span class="input-group-addon">Days</span>
+                </div>
+            </div>
         <!--
         <div class="form-group form-float">
             <div class="form-line">
@@ -90,8 +117,12 @@
             </div>
         </div>
         -->
-        <h2 class="card-inside-title">Sales Representative</h2>
-            <select name="user_id"  id="user" class="form-control" required></select>
+        <div class="col-sm-12" style="padding:0;">
+            <h2 class="card-inside-title">Sales Representative</h2>
+            <select name="user"  id="user" class="form-control">
+            </select>
+            <small id="name-error" class="error merah" for="user">{{ $errors->first('user')}}</small>
+        </div>
         <br>
         
         <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
@@ -105,6 +136,12 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+    $('document').ready(function(){
+        document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;
+     });
+    function checkstate() {
+        document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;
+    }
     function isNumberKey(evt)
         {
             var charCode = (evt.which) ? evt.which : evt.keyCode;

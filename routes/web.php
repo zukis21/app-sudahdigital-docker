@@ -217,7 +217,9 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::put('/orders/{id}/update', 'OrderController@update')->name('orders.update');
     Route::get('/orders/{id}/edit', 'OrderController@edit')->name('orders.edit');
     Route::get('/orders/{id}/detail', 'OrderController@detail')->name('orders.detail');
-    Route::get('orders/export_mapping', 'OrderController@export_mapping')->name('orders.export_mapping') ;
+    Route::get('/orders/export_mapping', 'OrderController@export_mapping')->name('orders.export_mapping') ;
+    Route::get('/orders/add-new-customer/{id}/{payment}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
+    Route::put('/orders/new-customer/{id}/update', 'OrderController@save_new_customer')->name('orders.newcustomer.update');
 
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');

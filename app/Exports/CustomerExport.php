@@ -17,6 +17,7 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
     {
         return Customer::where('status','=','ACTIVE')
         ->where('client_id','=',auth()->user()->client_id)
+        ->orderBy('created_at','DESC')
         ->get();
     }
 
@@ -44,12 +45,12 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
            'Email',
            'City_ID',
            'Address',
-           'Customer_type',
+           'Customer_Type',
            'Whatsapp',
            'Owner_Phone',
            'Office_Phone',
            'Contact',
-           'Payment_Term',
+           'Term_Of_Payment',
            'Sales_Rep'
         ] ;
     }

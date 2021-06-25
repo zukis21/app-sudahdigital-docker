@@ -178,4 +178,45 @@ class OrderController extends Controller
     public function export_mapping($vendor) {
         return Excel::download( new OrdersExportMapping(), 'Orders.xlsx') ;
     }
+
+    public function new_customer($vendor, $id, $payment){
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $id = \Crypt::decrypt($id);
+            $cust = \App\Customer::findOrFail($id);
+            $sls = \App\User::findOrFail($cust->user_id);
+            return view('orders.edit_cust',['cust' => $cust,'vendor'=>$vendor, 'sls'=>$sls, 'payment'=>$payment]);
+        }
+        else{
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        } 
+    }
+
+    public function save_new_customer(Request $request, $vendor,$id)
+    {
+        \Validator::make($request->all(),[
+            "city" => "required"
+        ])->validate();
+
+        $cust =\App\Customer::findOrFail($id);
+        $cust->store_code = $request->get('store_code');
+        $cust->name = $request->get('name');
+        $cust->email = $request->get('email');
+        $cust->phone = $request->get('phone');
+        $cust->phone_owner = $request->get('phone_owner');
+        $cust->phone_store = $request->get('phone_store');
+        $cust->store_name = $request->get('store_name');
+        $cust->city_id = $request->get('city');
+        $cust->address = $request->get('address');
+        $cust->client_id = $request->get('client_id');
+        $pay_term = $request->get('payment_term');
+        if($pay_term == 'TOP'){
+            $cust->payment_term = $request->get('pay_cust').' Days';
+        }else{
+            $cust->payment_term = $pay_term;
+        }
+        $cust->status = 'ACTIVE';
+        
+        $cust->save();
+        return redirect()->route('orders.addnew_customer',[$vendor,\Crypt::encrypt($id),$pay_term])->with('status','Customer Succsessfully Update');
+    }
 }

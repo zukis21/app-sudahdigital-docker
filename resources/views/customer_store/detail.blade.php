@@ -62,9 +62,15 @@
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>
         <li>
-            <label class="form-label">Payment Term</label>
+            <label class="form-label">Term Of Payment</label>
         </li>
-        <small class="text-muted">{{$customer->payment_term ? "$customer->payment_term" : '-'}}</small>
+        @if($customer->payment_term == 'Cash')
+            <small class="text-muted">{{$customer->payment_term ? "$customer->payment_term" : '-'}}</small>
+        @else
+        <small class="text-muted">
+            TOP&nbsp;{{$customer->payment_term ? "$customer->payment_term" : '-'}}
+        </small>
+        @endif
     </ul>
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>

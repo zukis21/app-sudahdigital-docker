@@ -159,8 +159,11 @@ class productController extends Controller
     public function edit($vendor, $id)
     {
         $id = \Crypt::decrypt($id);
+        $client_id = \Auth::user()->client_id;
+        //dd($client_id);
         $product = \App\product::findOrFail($id);
-        $stock_status= DB::table('product_stock_status')->first();
+        $stock_status= DB::table('product_stock_status')
+                      ->where('client_id','=',$client_id)->first();
         return view('products.edit', ['product' => $product, 'stock_status'=>$stock_status, 'vendor'=>$vendor]);
     }
 
