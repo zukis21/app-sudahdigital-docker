@@ -59,7 +59,9 @@ class AllProductExport implements FromCollection, WithMapping, WithHeadings
     }
 
     public function headings() : array {
-        $stock_status= \DB::table('product_stock_status')->first();
+        $stock_status= \DB::table('product_stock_status')
+        ->where('client_id','=',auth()->user()->client_id)
+        ->first();
         if($stock_status->stock_status == 'ON'){
             return [
                 'Product_Code',
