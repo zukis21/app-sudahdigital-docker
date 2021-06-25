@@ -69,7 +69,10 @@ class productController extends Controller
      */
     public function create($vendor)
     {
-        $stock_status= DB::table('product_stock_status')->first();
+        $client_id = \Auth::user()->client_id;
+        $stock_status= DB::table('product_stock_status')
+                    ->where('client_id','=',$client_id)
+                    ->first();
         return view('products.create',['stock_status'=>$stock_status,'vendor'=>$vendor]);
     }
 
