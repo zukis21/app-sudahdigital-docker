@@ -911,7 +911,7 @@
                     <div class="container">
                         <div class="d-flex justify-content-center mx-auto">
                             <div class="col-md-2 image-logo-login" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
+                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
                             </div>
                         </div>
                     </div>
@@ -919,11 +919,43 @@
                         <h3 >Lokasi Anda</h3>
                     </div>
                     
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center  d-flex">
                         <div class="col-md-5 login-label" style="z-index: 2">
                             <form method="POST" action="{{route('session.store',[$vendor])}}">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                <div class="row mt-3">
+                                    <div class="col-label col-lg-3 mt-auto">
+                                        <p class="p-label text-left">Kota</p>
+                                    </div>
+                                    <div class="col-select col-lg-9 pl-0">
+                                        <div class="form-group">
+                                            <select onchange="getval(this);" name="city_id"  id="city_id" class="form-control" style="width:100%;" required></select>
+                                        </div>
+                                     </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-label col-lg-3 mt-auto">
+                                        <p class="p-label text-left">Pilih Toko</p>
+                                    </div>
+                                    <div class="col-select col-lg-9 pl-0">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <select name="customer_id"  id="customer_id" class="form-control" style="width:100%;" required>
+                                                </select>
+                                            </div>
+                                            <input id="city_id_select" type="hidden" value=""/>
+                                            <input id="nm-toko-hide" name="nm_toko_hide" type="hidden" />
+                                            <input id="nm-cust-hide" name="nm_cust_hide" type="hidden" />
+                                            <input id="no-telp-hide" name="no_telp_hide" type="hidden" />
+                                            <input id="no-owner-hide" name="no_owner_hide" type="hidden" />
+                                            <input id="no-toko-hide" name="no_toko_hide" type="hidden" />
+                                            <input id="alamat-hide" name="alamat_hide" type="hidden" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!---
                                 <table class="table borderless">
                                     <tbody width="100%">
                                         <tr>
@@ -957,7 +989,9 @@
                                         
                                     </tbody>
                                 </table>
-                                <div class="row justify-content-center mt-n4 mb-2">
+                                -->
+
+                                <div class="row justify-content-center mt-2 mb-2">
                                     <div class="custom-control custom-radio mr-4">
                                         <input type="radio" name="user_loc" class="custom-control-input" id="on_location" value="On Location"  required>
                                         <label class="custom-control-label" for="on_location" style="color:#ffffff;font-weight:600;">On Location</label>
@@ -972,6 +1006,15 @@
                                 <input type="hidden" id="lng" name="lng">
                                 <div class="mx-auto text-center">
                                     <button type="submit" class="btn btn_login_form" >{{ __('Masuk') }}</button>
+                                </div>
+                                <div class="row justify-content-center mt-4">
+                                    <a href="{{route('log-out')}}"><p>Keluar</p></a>
+                                    <h4 class="ml-2 mt-n1 grip-on" style="font-weight: 100;color:#f0f0f0;">|</h4>
+                                    <a href="{{URL::route('pesanan',[$vendor])}}">
+                                        <div class="row ml-2">
+                                            <p>Cek Pesanan</p><span><i class="fa fa-angle-right ml-2" style="color: #ffffff"></i></span>
+                                        </div>
+                                    </a>
                                 </div>
                             </form>
                         </div>
@@ -1264,12 +1307,21 @@
     <!-- End Google Tag Manager (noscript) -->
     <script type="text/javascript">
         //style column new toko form
+        if($(window).width()> 1367 ){
+            $('.col-label').removeClass('col-lg-3').addClass('col-lg-2');
+        }
         if($(window).width()< 769 ){
             $('.col-new-toko').removeClass('col-md-5').addClass('col-md-10');
+            $('.col-select').removeClass('pl-0');
+            $('.p-label').removeClass('text-left').addClass('text-center');
         }
         if($(window).width() < 426 ){
             $('.btn-new-toko').addClass('btn-block').addClass('mb-2');
             $('.content-new-toko').addClass('mt-n3');
+            $('.img-logo-loc').removeClass('pt-4').addClass('pt-3');
+        }
+        if($(window).width() < 601 ){
+            $('.grip-on').removeClass('mt-n2').addClass('mt-n1');
         }
 
 

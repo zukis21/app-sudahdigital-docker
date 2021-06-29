@@ -27,6 +27,7 @@ Route::get('/admin', function () {
 //Sales Route
 Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::get('/main_home', 'MainHomeSalesController@index')->name('main_home');
+    Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout')->name('log-out');
 
     Route::group(['prefix' => '/{vendor}'], function()
     {
