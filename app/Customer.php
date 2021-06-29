@@ -18,4 +18,8 @@ class Customer extends Model
         return $this->belongsTo('App\City','city_id');
     }
 
+    public function type_cust(){
+        return $this->belongsTo('App\TypeCustomer','cust_type');
+    }
+
 }

@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CustomersImport;
 use App\Exports\CitiesExport;
 use App\Exports\CustomerExport;
+use App\Exports\CustomerExportType;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -38,9 +39,11 @@ class CustomerController extends Controller
         if(Gate::check('isSpv')){
             $client_id = \Auth::user()->client_id;
             $spv_id = \Auth::user()->id;
-            $customers = \DB::select("SELECT c.*, ct.city_name, u.id as user_id, u.name as user_name  
-                        FROM customers c, cities ct, users u WHERE c.status != 'NEW'
-                        AND c.client_id = $client_id AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
+            $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
+                        u.id as user_id, u.name as user_name FROM customers c left outer join 
+                        type_customer ON type_customer.id = c.cust_type, 
+                        cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                        AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
                             (
                                 SELECT * FROM  spv_sales
                                 WHERE   spv_sales.sls_id = c.user_id
@@ -52,10 +55,11 @@ class CustomerController extends Controller
             $status = $request->get('status');
             
             if($status){
-                $customers = \DB::select("SELECT c.*, ct.city_name, u.id as user_id, u.name as user_name  
-                FROM customers c, cities ct, users u WHERE c.status != 'NEW'
-                AND c.client_id = $client_id AND c.user_id = u.id AND c.city_id = ct.id 
-                AND c.status LIKE '%$status%' AND EXISTS
+                $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
+                u.id as user_id, u.name as user_name FROM customers c left join 
+                type_customer ON type_customer.id = c.cust_type, 
+                cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                     (
                         SELECT * FROM  spv_sales
                         WHERE   spv_sales.sls_id = c.user_id
@@ -65,20 +69,33 @@ class CustomerController extends Controller
             }
         }
         else{
-            $customers = \App\Customer::with('users')->with('cities')
+            $customers = \App\Customer::with('users')->with('cities')->with('type_cust')
             ->where('client_id','=',auth()->user()->client_id)
             ->where('status','!=','NEW')->orderBy('id','DESC')->get();//paginate(10);
             //$filterkeyword = $request->get('keyword');
             $status = $request->get('status');
             
             if($status){
-                $customers = \App\Customer::with('users')->with('cities')
+                $customers = \App\Customer::with('users')->with('cities')->with('type_cust')
                 ->where('client_id','=',auth()->user()->client_id)
                 ->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
             }
         }
         
         return view ('customer_store.index',['customers'=>$customers,'vendor'=>$vendor]);
+    }
+
+    public function index_type(Request $request, $vendor)
+    {
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $customers_type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)
+            ->get();//paginate(10);
+            //$filterkeyword = $request->get('keyword');
+            //$status = $request->get('status');
+            return view ('customer_store.type_index',['customers_type'=>$customers_type,'vendor'=>$vendor]);
+        }else{
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        }
     }
 
     /**
@@ -90,6 +107,16 @@ class CustomerController extends Controller
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
             return view('customer_store.create',['vendor'=>$vendor]);
+        }
+        else{
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        }       
+    }
+
+    public function create_type($vendor)
+    {
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            return view('customer_store.create_type',['vendor'=>$vendor]);
         }
         else{
             abort(403, 'Anda tidak memiliki cukup hak akses');
@@ -135,6 +162,21 @@ class CustomerController extends Controller
         }
     }
 
+    public function store_type(Request $request, $vendor)
+    {
+        
+        $new_cust = new \App\TypeCustomer();
+        $new_cust->name = strtoupper($request->get('name'));
+        $new_cust->client_id = $request->get('client_id');
+        
+        $new_cust->save();
+        if ( $new_cust->save()){
+            return redirect()->route('type_customers.create',[$vendor])->with('status','Name for Type Customer Succsessfully Created');
+        }else{
+            return redirect()->route('type_ustomers.create',[$vendor])->with('error','Name for Type Customer Not Succsessfully Created');
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -164,7 +206,21 @@ class CustomerController extends Controller
         }else{
             $cust_term ='';
         }
-        return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term]);
+
+        if(Gate::check('isSpv')){
+            $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
+            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'type'=>$type]);
+        }else{
+            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term]);
+        }
+        
+    }
+
+    public function edit_type($vendor,$id)
+    {
+        $id = \Crypt::decrypt($id);
+        $cust = \App\TypeCustomer::findOrFail($id);
+        return view('customer_store.edit_type',['cust' => $cust,'vendor'=>$vendor]);
     }
 
     /**
@@ -206,6 +262,15 @@ class CustomerController extends Controller
         return redirect()->route('customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Customer Succsessfully Update');
     }
 
+    public function update_type(Request $request, $vendor,$id)
+    {
+        $cust =\App\TypeCustomer::findOrFail($id);
+        $cust->name = $request->get('name');
+        
+        $cust->save();
+        return redirect()->route('type_customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Name for Type Customer Succsessfully Update');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -240,8 +305,28 @@ class CustomerController extends Controller
 
     }
 
+    public function deletePermanent_type($vendor,$id){
+
+        $cust = \App\TypeCustomer::findOrFail($id);
+        //dd($id);
+        $order_cust = \App\Customer::where('cust_type','=',"$id")->count();
+        //dd($order_cust);
+        if($order_cust > 0){
+            return redirect()->route('type_customers.index_type',[$vendor])->with('error', 'Cannot be deleted, because this data already exists in customers');
+        }
+        else {
+        $cust->forceDelete();
+        return redirect()->route('type_customers.index_type',[$vendor])->with('status', 'Customer type permanently deleted!');
+        }
+
+    }
+
     public function export($vendor) {
         return Excel::download( new CustomerExport(), 'Customers.xlsx') ;
+    }
+
+    public function export_type($vendor) {
+        return Excel::download( new CustomerExportType(), 'CustomersType.xlsx') ;
     }
 
     public function exportCity($vendor) {

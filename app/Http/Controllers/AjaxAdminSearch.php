@@ -131,4 +131,30 @@ class AjaxAdminSearch extends Controller
         echo 'not_taken';
       }
   }
+
+  public function TypeCustomerSearch(Request $request){
+    if ($request->has('old_name')){
+      $key_old = $request->get('old_name');
+      $keyword = $request->get('name');
+      $cust = \App\TypeCustomer::where('id','!=',$key_old)
+              ->where('client_id','=',auth()->user()->client_id)
+              ->where('name','=',$keyword)->count();
+      if ($cust > 0) {
+          echo "taken";	
+        }else{
+          echo 'not_taken';
+        }
+    }else{
+      $keyword = $request->get('name');
+      $cust = \App\TypeCustomer::where('name','=',$keyword)
+            ->where('client_id','=',auth()->user()->client_id)
+            ->count();
+      if ($cust > 0) {
+          echo "taken";	
+        }else{
+          echo 'not_taken';
+        }
+    }
+     //$cust = \App\TypeCustomer::whereRaw("BINARY 'name'= ?",[$keyword])->count();
+  }
 }

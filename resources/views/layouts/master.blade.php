@@ -233,7 +233,7 @@
                     @endif
                     
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
-                    <li class="{{request()->routeIs('customers.index') ? 'active' : ''}}">
+                    <li class="{{(request()->routeIs('customers.index')) || (request()->routeIs('type_customers.index_type')) ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">contacts</i>
                             <span>{{Gate::check('isSpv') ? 'Customers' : 'Manage Customers'}}</span>
@@ -242,6 +242,14 @@
                             <li class="{{request()->routeIs('customers.index') ? 'active' : '' }}">
                                 <a href="{{route('customers.index',[$vendor])}}">Customer List</a>
                             </li>
+                        
+                            @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                
+                                <li class="{{request()->routeIs('type_customers.index_type') ? 'active' : '' }}">
+                                    <a href="{{route('type_customers.index_type',[$vendor])}}">Customer Type</a>
+                                </li>
+                                
+                            @endif
                         </ul>
                     </li>
                     

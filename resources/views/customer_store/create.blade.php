@@ -125,7 +125,7 @@
         </div>
         <br>
         
-        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
+        <button id="save" class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
     </form>
     <!-- #END#  -->		
 
@@ -207,7 +207,7 @@
     });
 
     $('document').ready(function(){
-        $('#code, .btn').on('keyup', function(){
+        $('#code, .btn').on('keyup blur', function(){
         var code = $('#code').val();
             $.ajax({
                 url: '{{URL::to('/ajax/code_cust/search')}}',

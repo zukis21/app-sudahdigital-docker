@@ -211,6 +211,13 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers/import', 'CustomerController@import')->name('customers.import');
     Route::post('/customers/import_data', 'CustomerController@import_data')->name('customers.import_data');
     Route::delete('/customers/{customers}/delete-permanent','CustomerController@deletePermanent')->name('customers.delete-permanent');
+    Route::get('/customers/customers-type', 'CustomerController@index_type')->name('type_customers.index_type');
+    Route::get('/customers/export-customers-type', 'CustomerController@export_type')->name('type_customers.export');
+    Route::get('/customers/create-customers-type', 'CustomerController@create_type')->name('type_customers.create');
+    Route::get('/customers/{id}/edit-customers-type', 'CustomerController@edit_type')->name('type_customers.edit');
+    Route::post('/customers/store-customers-type', 'CustomerController@store_type')->name('type_customers.store');
+    Route::put('/customers/{id}/update-customer-type', 'CustomerController@update_type')->name('type_customers.update');
+    Route::delete('/customers/{customers}/type-delete-permanent','CustomerController@deletePermanent_type')->name('type_customers.delete-permanent');
 
     //Order
     Route::get('/orders', 'OrderController@index')->name('orders.index');
@@ -241,6 +248,7 @@ Route::get('/customer/ajax/city_search', 'AjaxAdminSearch@CustomerajaxCitySearch
 Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');
 Route::get('/ajax/name_client_so/search', 'AjaxAdminSearch@ClientsoCodeSearch');
 Route::get('/ajax/email_client_so/search', 'AjaxAdminSearch@email_so_search');
+Route::get('/ajax/type_customers/search', 'AjaxAdminSearch@TypeCustomerSearch');
 
 /*===route group unique product===*/
 //Route::get('/ajax/groups/search', 'GroupController@ajaxSearch');

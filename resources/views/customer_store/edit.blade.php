@@ -137,9 +137,10 @@
                 <b>Customer Type</b>
             </p>
             <select name="cust_type"  id="cust_type" class="form-control" required>
-                <option value="DISTRIBUTOR" {{$cust->cust_type == 'DISTRIBUTOR' ? 'selected' : ''}}>DISTRIBUTOR</option>
-                <option value="PREMIUM STORE" {{$cust->cust_type == 'PREMIUM STORE' ? 'selected' : ''}}>PREMIUM STORE</option>
-                <option value="REGULAR STORE" {{$cust->cust_type == 'REGULAR STORE' ? 'selected' : ''}}>REGULAR STORE</option>
+                <option></option>
+                @foreach($type as $ty)
+                    <option value="{{$ty->id}}" {{$ty->id == $cust->cust_type ? 'selected' : ''}}>{{$ty->name}}</option>
+                @endforeach
             </select>
         @endif
         <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
@@ -168,10 +169,12 @@
             return false;
             return true;
         }
-    $('#payment_term , #cust_type').select2(); 
+    $('#cust_type').select2({
+        placeholder: 'Select a Customer Type',
+    }); 
 
     $('#user').select2({
-      placeholder: 'Select an item',
+      placeholder: 'Select a Sales Representative',
       ajax: {
         url: '{{URL::to('/ajax/users/search')}}',
         processResults: function (data) {
@@ -223,5 +226,4 @@
     $('#city_id').append(option_city).trigger('change');
     });
 </script>
-
 @endsection

@@ -60,7 +60,7 @@
 		<thead>
 			<tr>
 				<th>No</th>
-				<th>Search Key</th>
+				<th>Customer Code</th>
 				<th>Name/Email</th>
 				<th>Address</th>
 				<th >Phone</th>
@@ -103,7 +103,15 @@
 					<small class="text-warning"><b> Owner : </b>{{$c->phone_owner != NULL ? "$c->phone_owner" : '-'}}</small><br>
 					<small class="text-danger"><b> Office : </b>{{$c->phone_store != NULL ? "$c->phone_store" : '-'}}</small>
 				</td>
-				<td>{{$c->cust_type}}</td>
+				<td>
+					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+						{{$c->type_cust ? $c->type_cust->name : ''}}
+					@else
+						@if(Gate::check('isSpv'))
+							{{$c->cust_type ? $c->tp_name : ''}}
+						@endif
+					@endif
+				</td>
 				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
 					<td>@if($c->user_id > 0)
 						{{$c->users->name}}
