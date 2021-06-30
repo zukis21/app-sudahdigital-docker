@@ -222,7 +222,7 @@
         @if($order->status == 'CANCEL')
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" class="form-control"  autocomplete="off"  value="{{$order_cancel->name}}" disabled>
+                <input type="text" class="form-control"  autocomplete="off"  value="{{$order_cancel ? $order_cancel->name : ''}}" disabled>
                 <label class="form-label">Canceled By</label>
             </div>
         </div>
