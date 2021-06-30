@@ -128,7 +128,12 @@ class AjaxDetailPesananSales extends Controller
     {
         $id = $request->get('order_id');
         $order = \App\Order::findOrFail($id);
-        $order_cancel = \App\User::findOrFail($order->canceled_by);
+        if($order->canceled_by != null){
+            $order_cancel = \App\User::findOrFail($order->canceled_by);
+        }else{
+            $order_cancel = null;        
+        }
+        //$order_cancel = \App\User::findOrFail($order->canceled_by);
         $paket_list = \DB::table('order_product')
                 ->join('pakets','pakets.id','=','order_product.paket_id')
                 ->join('groups','groups.id','=','order_product.group_id')
