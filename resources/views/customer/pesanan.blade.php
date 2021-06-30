@@ -2,7 +2,14 @@
 @section('title') Orders @endsection
 @section('content')
 <style>
-    
+    #modalNotesCancel .modal-dialog {
+        -webkit-transform: translate(0,-50%);
+        -o-transform: translate(0,-50%);
+        transform: translate(0,-50%);
+        top: 50%;
+        margin: 5 auto;
+    }
+
     .modal-dialog-full-width {
         position:absolute;
         right:0;
@@ -71,6 +78,10 @@
         margin-bottom:10px;
     }
 
+    .p-btn-detil{
+        padding-right:10px;
+    }
+
     @media (max-width: 540px){
         .col-list-order{
             margin-left: -1.3rem;
@@ -99,6 +110,15 @@
 
         .detail-list-order{
             margin-bottom:-11rem;
+        }
+
+        .bt-dtl-pesan{
+            width: 100%;
+        }
+        
+        .p-btn-detil{
+            padding-left:10px;
+            padding-right:10px;
         }
     }
 </style>
@@ -243,6 +263,44 @@
         </div>
     </div>
 
+    <!-- Modal cancel notes-->
+    <div class="container">
+        <div class="modal fade" id="modalNotesCancel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color:#1A4066">Pembatalan Pesanan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <form action="{{route('cancel_status', [$vendor])}}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <input name="order_id" type="hidden" value="" id="OrderIdCancel">
+                            <textarea class="form-control" placeholder="Berikan alasan pembatalan pesanan" name="notes_cancel"
+                            style="border-top-right-radius:20px;
+                                    border-top-left-radius:20px;
+                                    border-bottom-right-radius:0;
+                                    border-bottom-left-radius:0;"
+                            id="notes_cancel" rows="3" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary px-3" 
+                            style="border:none;
+                                background-color: #1A4066 !important;
+                                border-top-right-radius:15px;
+                                border-top-left-radius:15px;
+                                border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;"><b>Confirm</b></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
     <script>
         if ($(window).width() < 769) {
             $('.modal-dialog-paket').removeClass('modal-lg');
@@ -260,7 +318,9 @@
         } 
         if ($(window).width() <= 411) {
             $('.col-list-order').addClass('ml-n3');
+            $('.btn-preview-cancel').addClass('btn-block').addClass('mt-5');
             //$('.contact-row').addClass('mt-5');
-        } 
+        }
+
     </script>
 @endsection

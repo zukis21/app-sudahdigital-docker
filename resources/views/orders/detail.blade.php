@@ -189,23 +189,61 @@
        
         <label class="form-label">Status</label>
         <div class="form-group">
-            <input type="radio" value="SUBMIT" name="status" id="SUBMIT" {{$order->status == 'SUBMIT' ? 'checked' : ''}}>
+            <input type="radio" value="SUBMIT" name="status" id="SUBMIT" {{$order->status == 'SUBMIT' ? 'checked' : ''}} 
+            {{$order->status == 'CANCEL' ? 'disabled' : ''}}>
             <label for="SUBMIT">SUBMIT</label>
             &nbsp;
-            <input type="radio" value="PROCESS" name="status" id="PROCESS" {{$order->status == 'PROCESS' ? 'checked' : ''}}>
+            <input type="radio" value="PROCESS" name="status" id="PROCESS" {{$order->status == 'PROCESS' ? 'checked' : ''}}
+            {{$order->status == 'CANCEL' ? 'disabled' : ''}}>
             <label for="PROCESS">PROCESS</label>
             &nbsp;
-            <input type="radio" value="FINISH" name="status" id="FINISH" {{$order->status == 'FINISH' ? 'checked' : ''}}>
+            <input type="radio" value="FINISH" name="status" id="FINISH" {{$order->status == 'FINISH' ? 'checked' : ''}}
+            {{$order->status == 'CANCEL' ? 'disabled' : ''}}>
             <label for="FINISH">FINISH</label>
             &nbsp;
             <input type="radio" value="CANCEL" name="status" id="CANCEL" {{$order->status == 'CANCEL' ? 'checked' : ''}}>
             <label for="CANCEL">CANCEL</label>
         </div>
 
+        <div class="form-group"  style="{{$order->status == 'CANCEL' ? 'display: block' : 'display:none'}}" id="notes_cancel">
+            <div class="form-line">
+                @if($order->canceled_by != null)
+                <textarea name="notes_cancel" rows="4" class="form-control no-resize"  
+                    placeholder="Give a reason to cancel the order"  {{(Auth::user()->id == $order->canceled_by) ? '' : 'readonly'}}
+                    autocomplete="off" required>{{$order->notes_cancel ? $order->notes_cancel : ''}}</textarea>
+                @else
+                    <textarea name="notes_cancel" rows="4" class="form-control no-resize"  
+                        placeholder="Give a reason to cancel the order" 
+                        autocomplete="off" required>{{$order->notes_cancel ? $order->notes_cancel : ''}}</textarea>
+                @endif
+            </div>
+        </div>
+        <br>
+        @if($order->status == 'CANCEL')
+        <div class="form-group form-float">
+            <div class="form-line">
+                <input type="text" class="form-control"  autocomplete="off"  value="{{$order_cancel->name}}" disabled>
+                <label class="form-label">Canceled By</label>
+            </div>
+        </div>
+        @endif
         <input type="submit" class="btn btn-primary waves-effect" value="UPDATE" {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}>
         
     </form>
     <!-- #END#  -->		
 
+@endsection
+@section('footer-scripts')
+    <script type="text/javascript">
+        $(function () {
+            $("input[name='status']").click(function () {
+                if ($("#CANCEL").is(":checked")) {
+                    $("#notes_cancel").show();
+                } else {
+                    $("#notes_cancel").hide();
+                }
+            });
+        });
+    </script>
 @endsection
 

@@ -139,6 +139,8 @@ class OrderController extends Controller
         }else if($status == 'CANCEL'){
             $order->status = $status;
             $order->cancel_time = $dateNow;
+            $order->notes_cancel = $request->get('notes_cancel');
+            $order->canceled_by = \Auth::user()->id;
         }else{
             $order->status = $status;
         }
@@ -162,6 +164,12 @@ class OrderController extends Controller
     {
         $id = \Crypt::decrypt($id);
         $order = \App\Order::findOrFail($id);
+        if($order->canceled_by != null){
+            $order_cancel = \App\User::findOrFail($order->canceled_by);
+        }else{
+            $order_cancel = null;        
+        }
+        
         $paket_list = \DB::table('order_product')
                 ->join('pakets','pakets.id','=','order_product.paket_id')
                 ->join('groups','groups.id','=','order_product.group_id')
@@ -172,7 +180,7 @@ class OrderController extends Controller
                 ->distinct()
                 ->get(['paket_id','group_id']);
                 //dd($paket_list);
-        return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list, 'vendor'=>$vendor]);
+        return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list, 'vendor'=>$vendor,'order_cancel'=>$order_cancel]);
     }
 
     public function export_mapping($vendor) {

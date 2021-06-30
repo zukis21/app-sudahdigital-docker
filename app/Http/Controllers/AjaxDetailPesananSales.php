@@ -128,6 +128,7 @@ class AjaxDetailPesananSales extends Controller
     {
         $id = $request->get('order_id');
         $order = \App\Order::findOrFail($id);
+        $order_cancel = \App\User::findOrFail($order->canceled_by);
         $paket_list = \DB::table('order_product')
                 ->join('pakets','pakets.id','=','order_product.paket_id')
                 ->join('groups','groups.id','=','order_product.group_id')
@@ -137,6 +138,21 @@ class AjaxDetailPesananSales extends Controller
                 ->whereNull('bonus_cat')
                 ->distinct()
                 ->get(['paket_id','group_id']);
+        if($order->status == 'SUBMIT'){
+            $bg_badge = 'bg-warning';
+            $txt = 'ORDER SUBMITED';
+        }else if($order->status == 'PROCESS'){
+            $bg_badge = 'bg-info';
+            $txt= 'ORDER PROCESSED';
+        }
+        else if($order->status == 'FINISH'){
+            $bg_badge = 'bg-success';
+            $txt= 'ORDER FINISHED';
+        }
+        else if($order->status == 'CANCEL'){
+            $bg_badge = 'bg-danger';
+            $txt= 'ORDER CANCELED';
+        }
                 //dd($paket_list);
         //return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
         echo'
@@ -147,9 +163,21 @@ class AjaxDetailPesananSales extends Controller
                 <small><b>Tanggal Order</b> <br>
                 <p class="mt-n1">'.$order->created_at.'</p></small>
 
-                <small><b>Status Order</b> <br>
+                <small class="mb-n2"><b >Status Order</b><br></small>
+                <span class="badge '.$bg_badge.'" 
+                    style="color:#ffffff;
+                        margin-top:-20px;
+                        border-top-right-radius:0;
+                        border-top-left-radius:0;
+                        border-bottom-right-radius:0;
+                        border-bottom-left-radius:0;">
+                    '.$order->status.'
+                </span>
+                
+                <br>
+                <!--
                 <p class="mt-n1">'.$order->status.'</p></small>
-
+                -->
                 <small class="mt-n1"><b>Nama Toko</b><br>
                 <p class="mt-n1">'.$order->customers->store_name.'</p></small>';
                 /*if($order->customers->status == 'NEW'){
@@ -195,64 +223,72 @@ class AjaxDetailPesananSales extends Controller
                 <p class="mt-n1">'.$order->user_loc.'</p></small>
 
                 
-                <small><b>Jangka Waktu Pembayaran</b><br> 
+                <small><b>Jenis Pembayaran</b><br> 
                 <p class="mt-n1">'.$order->payment_method.'</p></small>
                 
-                <small><b>Keterangan</b> <br>';
+                <small><b>Keterangan Order</b> <br>';
                 if($order->notes){
                     echo'<p class="mt-n1">'.$order->notes.'</p></small>';
                 }else{
                     echo'<p class="mt-n1">-</p></small>';
                 }
+                if($order->status == 'CANCEL'){
+                    echo'
+                    <small><b>Keterangan Pembatalan</b><br>
+                    <p class="mt-n1">'.$order->notes_cancel.'</p></small>
+                    
+                    <small><b>Dibatalkan Oleh</b><br>
+                    <p class="mt-n1">'.$order_cancel->name.'</p></small>';
+                }
             echo'
-            </div>
+           </div>
             <div class="mb-2">
-                <small style="color:#1A4066;"><b>Detail Produk</b></small>
+                <small style="color:#1A4066;"><b>Detail Produk</b></></small>
             </div>';
             
             if(count($order->products_nonpaket) > 0){
                 echo'
-                <table width="100%" class="table table-hover detail-list-order" style="">
-                    <thead style="background: #f0f1f2 !important;">
-                        <th width="50%" style="padding-bottom:0;">
-                            <small><b><p style="line-height:1.2;">Produk (NonPaket)</p></b></small>
-                        </th>
-                        <th width="" style="padding-bottom:0;">
-                            <small><b><p style="line-height:1.2;">Jumlah </p></b></small> 
-                        </th>
-                        <th width="40%" style="padding-bottom:0;" class="text-right">
-                            <small><b><p style="line-height:1.2;">Sub Total</p></b></small>
-                        </th>
-                    </thead>
-                    <tbody>';
-                        foreach($order->products_nonpaket as $p){
-                        echo'<tr>
-                            <td width="50%" style="padding-bottom:0;"><small><p style="line-height:1.2;">'.$p->Product_name.'</p></small></td>
-                            <td style="padding-bottom:0;"><small><p style="line-height:1.2;">'.$p->pivot->quantity.'</p></small></td>
-                            <td width="40%" align="right" style="padding-bottom:0;">';
-                                if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
-                                echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
-                                }else{
-                                echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
-                                }
-                            echo'</td>
-                        </tr>';
-                        }
-                        echo '<tr>
-                            
-                        </tr>
-                        <tr>';
-                            $pirce_r = \App\order_product::where('order_id',$order->id)
-                                ->whereNull('group_id')
-                                ->whereNull('paket_id')
-                                ->whereNull('bonus_cat')
-                                ->sum(\DB::raw('price_item * quantity'));
-                            
-                            echo'<td colspan="2" align="right"><small><p style="line-height:1.2;"><b>Total Harga :</b></p></small></p></td>
-                            <td align="right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b></p></small></td>
-                        </tr>
-                    </tbody>
-                </table>';
+                    <table width="100%" class="table table-hover detail-list-order" style="">
+                        <thead style="background: #f0f1f2 !important;">
+                            <th width="50%" style="padding-bottom:0;">
+                                <small><b><p style="line-height:1.2;">Produk (NonPaket)</p></b></small>
+                            </th>
+                            <th width="" style="padding-bottom:0;">
+                                <small><b><p style="line-height:1.2;">Jumlah </p></b></small> 
+                            </th>
+                            <th width="40%" style="padding-bottom:0;" class="text-right">
+                                <small><b><p style="line-height:1.2;">Sub Total</p></b></small>
+                            </th>
+                        </thead>
+                        <tbody>';
+                            foreach($order->products_nonpaket as $p){
+                            echo'<tr>
+                                <td width="50%" style="padding-bottom:0;"><small><p style="line-height:1.2;">'.$p->Product_name.'</p></small></td>
+                                <td style="padding-bottom:0;"><small><p style="line-height:1.2;">'.$p->pivot->quantity.'</p></small></td>
+                                <td width="40%" align="right" style="padding-bottom:0;">';
+                                    if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
+                                    echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
+                                    }else{
+                                    echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                    }
+                                echo'</td>
+                            </tr>';
+                            }
+                            echo '<tr>
+                                
+                            </tr>
+                            <tr>';
+                                $pirce_r = \App\order_product::where('order_id',$order->id)
+                                    ->whereNull('group_id')
+                                    ->whereNull('paket_id')
+                                    ->whereNull('bonus_cat')
+                                    ->sum(\DB::raw('price_item * quantity'));
+                                
+                                echo'<td colspan="2" align="right"><small><p style="line-height:1.2;"><b>Total Harga :</b></p></small></p></td>
+                                <td align="right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b></p></small></td>
+                            </tr>
+                        </tbody>
+                    </table>';
             }
             
             if(count( $paket_list) > 0){
@@ -319,13 +355,32 @@ class AjaxDetailPesananSales extends Controller
                 }
             }
             echo '<div class="grand-total" style="margin-top:-20px;">
-                <table width="100%" class="table table-hover">
-                    <thead >
-                        <th style="border-bottom:none;" width="60%" class="text-right"><small><p style="line-height:1.2;"><b>Grand Total :</p></small></th>
-                        <th style="border-bottom:none;" width="" class="text-right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></small></th>
-                    </thead>
-                </table>
-            </div>
+                
+                    <table width="100%" class="table table-hover">
+                        <thead >
+                            <th style="border-bottom:none;" width="66%" class="text-right"><small><p style="line-height:1.2;"><b>Grand Total :</p></small></th>
+                            <th style="border-bottom:none;" width="" class="text-right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></small></th>
+                        </thead>
+                    </table>
+                
+            </div>';
+            if($order->status == 'SUBMIT'){
+                echo'
+                <div class="p-btn-detil">
+                    <button type="submit" onclick="cancel_status('.$order->id.')" class="bt-dtl-pesan btn btn-danger py-1 px-3 mb-5 float-right mt-4"
+                        style="background-color: #FF0000 !important;
+                                border-top-right-radius:20px;
+                                border-top-left-radius:20px;
+                                border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;">
+                        <i class="fa fa-times fa-1x" aria-hidden="true" style="color:#fff;font-weight:900;">
+                        </i>&nbsp;<b>Batalkan Pesanan</b>
+                    </button>
+                </div>   
+                ';
+                
+            }
+        echo'
         </div>';
 
         

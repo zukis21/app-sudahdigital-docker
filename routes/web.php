@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::get('/profil', 'ProfilController@index')->name('profil.index');
         Route::put('/profil/{id}/update', 'ProfilController@update')->name('profil.update');
         Route::get('/pesanan/{status?}','TransaksiSalesController@index')->name('pesanan');
+        Route::post('/pesanan/cancel','TransaksiSalesController@change_status')->name('cancel_status');
     });
 
     Route::get('/success/send/order','SessionStore@OrderSuccess');

@@ -24,6 +24,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-183852861-1"></script>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <style type="text/css">
         /*[class^='select2'] {
             border-top-left-radius: 15px !important;
@@ -825,6 +829,15 @@
                 }
             });
         }
+
+        function cancel_status(order_id)
+        {
+            $("#modalNotesCancel").modal('show');
+            $('#OrderIdCancel').val(order_id);
+            $("#modalDetilList").modal('hide');
+        }
+
+        
 
     /*
         window.setTimeout(function() {
