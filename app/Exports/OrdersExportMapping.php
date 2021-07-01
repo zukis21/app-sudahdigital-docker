@@ -32,7 +32,12 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $diskon = 0;
                 $total= $p->pivot->price_item * $p->pivot->quantity;
             }
-        
+
+            if($order->canceled_by != null){
+                $canceled_by = $order->canceledBy['name'];
+            }else{
+                $canceled_by = null;
+            }
             
             array_push($rows,[
                 $order->id,
@@ -40,7 +45,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $order->customers->store_code,
                 $order->customers->store_name,
                 $order->customers->name,
-                $order->users['name'],
+                $order->users()->first()['name'],
                 $order->user_loc,
                 $p->Product_name,
                 $p->pivot->quantity,
@@ -54,7 +59,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $order->finish_time,
                 $order->cancel_time,
                 $order->notes_cancel,
-                $order->canceled_by,
+                $canceled_by,
                 //Carbon::parse($order->created_at)->toFormattedDateString()
             ]);
         }

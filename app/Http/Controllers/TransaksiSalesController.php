@@ -63,6 +63,6 @@ class TransaksiSalesController extends Controller
         $order->canceled_by = $user_id;
         $order->save();
         
-        return redirect()->route('pesanan', [$vendor])->with('status', 'Order status succesfully updated');
+        return redirect()->route('pesanan', [$vendor])->with('toast_success','Pesanan berhasil dibatalkan');
     }
 }

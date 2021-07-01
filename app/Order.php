@@ -58,7 +58,11 @@ class Order extends Model
     }
 
     public function users(){
-        return $this->belongsTo('App\User','user_id');
+        return $this->belongsTo('App\User','user_id','id');
+    }
+
+    public function canceledBy(){
+        return $this->belongsTo('App\User','canceled_by','id');
     }
 
     public function getTotalQuantityAttribute(){
