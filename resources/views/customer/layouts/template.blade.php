@@ -941,9 +941,10 @@
                                     <div class="col-select col-lg-9 pl-0">
                                         <div class="form-group">
                                             <div class="form-group">
-                                                <select name="customer_id"  id="customer_id" class="form-control" style="width:100%;" required>
+                                                <select onchange="getct(this);" name="customer_id"  id="customer_id" class="form-control" style="width:100%;" required>
                                                 </select>
                                             </div>
+                                            <input id="store_id_select" type="hidden" value=""/>
                                             <input id="city_id_select" type="hidden" value=""/>
                                             <input id="nm-toko-hide" name="nm_toko_hide" type="hidden" />
                                             <input id="nm-cust-hide" name="nm_cust_hide" type="hidden" />
@@ -1353,7 +1354,7 @@
         });
 
         //Select2 city
-        $('#city_id').select2({
+        /*$('#city_id').select2({
         placeholder: 'Pilih Kota',
         language: {
         noResults: function() {
@@ -1378,7 +1379,7 @@
             };
             }
         }
-        });
+        });*/
         
         //onchange select city
         function getval(sel)
@@ -1386,9 +1387,53 @@
             $( '#city_id_select' ).val(sel.value);
         }
 
+        //onchange select store
+        function getct(sel)
+        {
+            $( '#store_id_select' ).val(sel.value);
+        }
+
+        //Select2 city
+        $('#city_id').each(function(){
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            //var city_id = $('#city_id_select' ).val();
+            //var city_id = $( '#city_id_select' ).val();//$('#city_id option:selected');//.find(":selected").val();
+            $(this).select2({
+                placeholder: 'Pilih Kota',
+                language: {
+                    noResults: function() {
+                        return '&nbsp;Data Tidak Ditemukan';
+                    },
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                },
+                ajax: {
+                        url: '{{URL::to('/ajax/city')}}',
+                        type: "post",
+                        dataType: 'json',
+                        data: function (params){
+                            return {
+                            _token: CSRF_TOKEN,
+                            search: params.term, // search term
+                            store_id: $('#store_id_select' ).val(),
+                            };
+                        },
+                        processResults: function (response) {
+                        return {
+                            results: response
+                            };
+                        },
+                        cache: true
+                }
+
+            });
+        });
+
         //select2 customer
         $('#customer_id').each(function(){
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            //var city_id = $('#city_id_select' ).val();
             //var city_id = $( '#city_id_select' ).val();//$('#city_id option:selected');//.find(":selected").val();
             $(this).select2({
                 placeholder: 'Pilih Toko',
@@ -1408,7 +1453,7 @@
                             return {
                             _token: CSRF_TOKEN,
                             search: params.term, // search term
-                            city_id:$( '#city_id_select' ).val()
+                            city_id: $('#city_id_select' ).val(),
                             };
                         },
                         processResults: function (response) {

@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     });
 
     Route::get('/success/send/order','SessionStore@OrderSuccess');
-    Route::get('/ajax/city', 'AjaxCitySearch@ajax_city');
+    Route::post('/ajax/city', 'AjaxCitySearch@ajax_city');
     Route::post('/ajax/store', 'AjaxCitySearch@ajax_store');
     Route::post('/sales/order_search','AjaxDetailPesananSales@search_order');
     Route::post('/pesanan/detail','AjaxDetailPesananSales@detail');
