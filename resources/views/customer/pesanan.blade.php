@@ -87,9 +87,9 @@
             margin-left: -1.3rem;
         }
 
-        tbody {
+        /*tbody {
             height:320px;
-        }
+        }*/
 
         .data-list-order{
             font-size:12px;
@@ -109,7 +109,7 @@
         }
 
         .detail-list-order{
-            margin-bottom:-11rem;
+            margin-bottom:-3rem;
         }
 
         .bt-dtl-pesan{
@@ -274,7 +274,7 @@
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <form action="{{route('cancel_status', [$vendor])}}" method="POST">
+                    <form action="{{route('cancel_status', [$vendor])}}" target="_BLANK" method="POST">
                         @csrf
                         <div class="modal-body">
                             <input name="order_id" type="hidden" value="" id="OrderIdCancel">
@@ -286,7 +286,7 @@
                             id="notes_cancel" rows="3" required></textarea>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary px-3" 
+                            <button type="submit" class="btn btn-primary px-3" onclick="wa_cancel()"
                             style="border:none;
                                 background-color: #1A4066 !important;
                                 border-top-right-radius:15px;

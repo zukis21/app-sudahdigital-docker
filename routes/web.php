@@ -49,6 +49,8 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::post('/sales/order_search','AjaxDetailPesananSales@search_order');
     Route::post('/pesanan/detail','AjaxDetailPesananSales@detail');
     Route::get('/home_cart', 'CustomerKeranjangController@ajax_cart');
+    Route::get('/pesanan/cancel/success','AjaxDetailPesananSales@cancel_success');
+
 
     Route::group(['prefix' => '/keranjang'], function()
     {

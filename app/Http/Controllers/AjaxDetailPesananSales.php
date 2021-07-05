@@ -248,13 +248,13 @@ class AjaxDetailPesananSales extends Controller
             echo'
            </div>
             <div class="mb-2">
-                <small style="color:#1A4066;"><b>Detail Produk</b></></small>
+                <small style="color:#1A4066;"><b>Detail Produk</b></small>
             </div>';
             
             if(count($order->products_nonpaket) > 0){
                 echo'
-                    <table width="100%" class="table table-hover detail-list-order" style="">
-                        <thead style="background: #f0f1f2 !important;">
+                    <table width="100%" class="table table-hover" style="">
+                        <thead class="thead-dark">
                             <th width="50%" style="padding-bottom:0;">
                                 <small><b><p style="line-height:1.2;">Produk (NonPaket)</p></b></small>
                             </th>
@@ -267,30 +267,50 @@ class AjaxDetailPesananSales extends Controller
                         </thead>
                         <tbody>';
                             foreach($order->products_nonpaket as $p){
-                            echo'<tr>
-                                <td width="50%" style="padding-bottom:0;"><small><p style="line-height:1.2;">'.$p->Product_name.'</p></small></td>
-                                <td style="padding-bottom:0;"><small><p style="line-height:1.2;">'.$p->pivot->quantity.'</p></small></td>
-                                <td width="40%" align="right" style="padding-bottom:0;">';
-                                    if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
-                                    echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
-                                    }else{
-                                    echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
-                                    }
-                                echo'</td>
-                            </tr>';
+                                echo'<tr>
+                                    <td width="50%" style="padding-bottom:0;">
+                                        <small>
+                                            <p style="line-height:1.2;">'.$p->Product_name.'</p>
+                                        </small>
+                                    </td>
+                                    <td style="padding-bottom:0;">
+                                        <small>
+                                            <p style="line-height:1.2;">'.$p->pivot->quantity.'</p>
+                                        </small>
+                                    </td>
+                                    <td width="40%" align="right" style="padding-bottom:0;">';
+                                        if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
+                                        echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
+                                        }else{
+                                        echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                        }
+                                    echo'</td>
+                                </tr>';
                             }
-                            echo '<tr>
-                                
-                            </tr>
-                            <tr>';
+                            echo '<tr>';
                                 $pirce_r = \App\order_product::where('order_id',$order->id)
                                     ->whereNull('group_id')
                                     ->whereNull('paket_id')
                                     ->whereNull('bonus_cat')
                                     ->sum(\DB::raw('price_item * quantity'));
                                 
-                                echo'<td colspan="2" align="right"><small><p style="line-height:1.2;"><b>Total Harga :</b></p></small></p></td>
-                                <td align="right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b></p></small></td>
+                                echo'<td colspan="2" align="right">
+                                    <small>
+                                        <p style="line-height:1.2;">
+                                            <b>Total Harga :</b>
+                                        </p>
+                                    </small>
+                                </td>
+                                <td width="40%" align="right">
+                                    <small>
+                                        <p style="line-height:1.2;">
+                                            <b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b>
+                                        </p>
+                                    </small>
+                                </td>
+                            </tr>
+
+                            <tr>
                             </tr>
                         </tbody>
                     </table>';
@@ -302,8 +322,8 @@ class AjaxDetailPesananSales extends Controller
                                     ->first();
                         $group_name =\App\Group::where('id',$paket->group_id)
                                     ->first();           
-                    echo '<table width="100%" class="table table-hover detail-list-paket_table">
-                        <thead style="background: #f0f1f2 !important;">
+                    echo '<table width="100%" class="table table-hover ">
+                        <thead class="thead-dark">
                             <th width="50%" style="padding-bottom:0;">
                                 <small><b><p style="line-height:1.2;">Product '.$paket_name->display_name.' - '.$group_name->display_name.'</p></b></small>
                             </th>
@@ -359,12 +379,12 @@ class AjaxDetailPesananSales extends Controller
                     </table>';
                 }
             }
-            echo '<div class="grand-total" style="margin-top:-20px;">
+            echo '<div class="grand-total" style="">
                 
                     <table width="100%" class="table table-hover">
-                        <thead >
-                            <th style="border-bottom:none;" width="66%" class="text-right"><small><p style="line-height:1.2;"><b>Grand Total :</p></small></th>
-                            <th style="border-bottom:none;" width="" class="text-right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></small></th>
+                        <thead class="thead-light">
+                            <th style="border-bottom:none;" width="" class="text-right"><small><p style="line-height:1.2;"><b>Grand Total :</p></small></th>
+                            <th style="border-bottom:none;" width="40%" class="text-right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></small></th>
                         </thead>
                     </table>
                 
@@ -389,5 +409,13 @@ class AjaxDetailPesananSales extends Controller
         </div>';
 
         
+    }
+
+    public function cancel_success(){
+        $client_id = \Auth::user()->client_id;
+        $vendor_cek= \App\B2b_Client::findorFail($client_id);
+        $vendor = $vendor_cek->client_slug;
+        
+        return redirect()->route('pesanan', [$vendor]);
     }
 }

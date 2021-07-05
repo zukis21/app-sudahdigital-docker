@@ -683,7 +683,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <script src="https://unpkg.com/sweetalert2@7.18.0/dist/sweetalert2.all.js"></script>
+    <!--<script src="https://unpkg.com/sweetalert2@7.18.0/dist/sweetalert2.all.js"></script>-->
     
     <!--<script src="{{ asset('assets/js/jquery.firstVisitPopup.js')}}"></script>-->
     
@@ -837,6 +837,26 @@
             $("#modalNotesCancel").modal('show');
             $('#OrderIdCancel').val(order_id);
             $("#modalDetilList").modal('hide');
+        }
+
+        function wa_cancel()
+        {
+            
+            //var order_id = $('#OrderIdCancel').val();
+            var notes = $('#notes_cancel').val();
+            if (notes != "") {
+                $('#modalNotesCancel').modal('hide');
+                Swal.fire({
+                            //title: 'Berhasil',
+                            text: "Pesanan berhasil dibatalkan",
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: '#4db849'
+                            }).then(function(){ 
+                                window.location.href = '{{URL::to('/pesanan/cancel/success')}}';
+                            });
+            }
         }
 
         
