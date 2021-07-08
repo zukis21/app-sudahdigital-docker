@@ -1158,6 +1158,9 @@
             </div>
             <ul class="list-unstyled components">
                 <li class="">
+                    <a href="{{route('dash-sales',[$vendor])}}">Dashboard</a>
+                </li>
+                <li class="">
                    <a href="{{ url('/') }}">Beranda</a>
                 </li>
                 <!--
