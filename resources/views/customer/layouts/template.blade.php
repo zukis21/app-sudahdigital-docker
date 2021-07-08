@@ -12,7 +12,7 @@
     <link href="//db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_2.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
@@ -1011,9 +1011,11 @@
                                 <div class="row justify-content-center mt-4">
                                     <a href="{{route('log-out')}}"><p>Keluar</p></a>
                                     <h4 class="ml-2 mt-n1 grip-on" style="font-weight: 100;color:#f0f0f0;">|</h4>
-                                    <a href="{{URL::route('pesanan',[$vendor])}}">
+                                    <!--<a href="{{URL::route('pesanan',[$vendor])}}"><p class="ml-2">Dashboard</p></a>
+                                    <h4 class="ml-2 mt-n1 grip-on" style="font-weight: 100;color:#f0f0f0;">|</h4>-->
+                                    <a href="{{route('dash-sales',[$vendor])}}">
                                         <div class="row ml-2">
-                                            <p>Cek Pesanan</p><span><i class="fa fa-angle-right ml-2" style="color: #ffffff"></i></span>
+                                            <p>Dashboard</p><span><i class="fa fa-angle-right ml-2" style="color: #ffffff"></i></span>
                                         </div>
                                     </a>
                                 </div>

@@ -2336,3 +2336,95 @@ footer.footer .cart .count-cart-three {
     margin-left: 0;
     margin-right: 0;
   }
+
+  /*Dashboard Start welcome */
+  
+  .welcome {
+    color: #CCC;
+  }
+
+  .welcome .content {
+    background-color: #313348;
+    padding: 15px;
+    margin-top: 25px;
+    border-radius: 10px;
+  }
+
+  .welcome h2 {
+    font-family: Calibri;
+    font-weight: 100;
+    margin-top: 0
+  }
+  .welcome p {
+    color: #999;
+  }
+
+  /* Start statis */
+  .statis {
+    color: #EEE;
+    margin-top: 15px;
+  }
+  .statis .box {
+    position: relative;
+    padding: 15px;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 25px;
+  }
+  .statis .box h3:after {
+    content: "";
+    height: 2px;
+    width: 70%;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.12);
+    display: block;
+    margin-top: 10px;
+  }
+  .statis .box i {
+    position: absolute;
+    height: 70px;
+    width: 70px;
+    font-size: 22px;
+    padding: 15px;
+    top: -25px;
+    left: -25px;
+    background-color: rgba(255, 255, 255, 0.15);
+    line-height: 60px;
+    text-align: right;
+    border-radius: 50%;
+  }
+  /*end statis*/
+  /* Start statistics */
+  .statistics {
+    margin-top: 0;
+    /*color: #CCC;*/
+    color: #1A4066;
+  }
+  .statistics .box {
+    /*background-color: #313348;*/
+    background-color:#fff!important;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+  .statistics .box > i {
+    float: left;
+    color: #FFF;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 22px;
+  }
+  .statistics .box .info {
+    float: left;
+    width: auto;
+    margin-left: 10px;
+  }
+  .statistics .box .info h3 {
+    margin: 5px 0 5px;
+    display: inline-block;
+  }
+  .statistics .box .info p {color:#BBB}
+  
+  /* End statistics */

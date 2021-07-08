@@ -165,30 +165,45 @@
                             <span>Home</span>
                         </a>
                     </li>
-                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-                    <li class="{{request()->routeIs('users.index') || request()->routeIs('sales.index') || request()->routeIs('spv.index') ? 'active' : '' }}">
+                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                    <li class="{{request()->routeIs('users.index') || request()->routeIs('sales.index') || request()->routeIs('spv.index') || request()->routeIs('target.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">people</i>
-                            <span>Manage Users</span>
+                            <span>{{Gate::check('isSpv') ? 'Sales' : 'Manage Users'}}</span>
                         </a>
                        
                         <ul class="ml-menu">
-                            @can('isSuperadmin')
+                            <!--@can('isSuperadmin')@endcan-->
+                            @if(Gate::check('isSuperadmin'))
                                 <li class="{{request()->routeIs('users.index') ? 'active' : '' }}">
                                     <a href="{{route('users.index',[$vendor])}}">Admin List</a>
                                 </li>
-                             @endcan
-                            <li class="{{request()->routeIs('sales.index') ? 'active' : '' }}">
-                                <a href="{{route('sales.index',[$vendor])}}">Sales List</a>
-                            </li>
+                            @endif
                             
-                            <li class="{{request()->routeIs('spv.index') ? 'active' : '' }}">
-                                <a href="{{route('spv.index',[$vendor])}}">SPV List</a>
-                            </li>
-                            
+                            @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                                <li class="{{request()->routeIs('sales.index') ? 'active' : '' }}">
+                                    <a href="{{route('sales.index',[$vendor])}}">
+                                        {{Gate::check('isSpv') ? 'Sales Team List' : 'Sales List'}}
+                                    </a>
+                                </li>
+                            @endif
+                            @if(Gate::check('isSpv'))
+                                <li class="{{request()->routeIs('target.index') ? 'active' : '' }}">
+                                    <a href="{{route('target.index',[$vendor])}}">
+                                        Sales Target List
+                                    </a>
+                                </li>
+                            @endif
+                            @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                <li class="{{request()->routeIs('spv.index') ? 'active' : '' }}">
+                                    <a href="{{route('spv.index',[$vendor])}}">SPV List</a>
+                                </li>
+                            @endif
                         </ul>
                     </li>
-                    
+                    @endif
+
+                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                     <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">insert_photo</i>

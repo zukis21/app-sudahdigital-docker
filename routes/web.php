@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::put('/profil/{id}/update', 'ProfilController@update')->name('profil.update');
         Route::get('/pesanan/{status?}','TransaksiSalesController@index')->name('pesanan');
         Route::post('/pesanan/cancel','TransaksiSalesController@change_status')->name('cancel_status');
+        Route::get('/sales-dashboard','DashboardSalesController@index')->name('dash-sales');
     });
 
     Route::get('/success/send/order','SessionStore@OrderSuccess');
@@ -134,6 +135,12 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/sales/{id}/update', 'SalesController@update')->name('sales.update');
     Route::get('/sales/{id}/destroy', 'SalesController@destroy')->name('sales.destroy');
     Route::get('/sales/export', 'SalesController@export')->name('sales.export');
+    //sales target
+    Route::get('/sales/target', 'TargetController@index')->name('target.index');
+    Route::get('/sales/create-target', 'TargetController@create_target')->name('sales.create_target');
+    Route::post('/sales/store-target', 'TargetController@store_target')->name('sales.store_target');
+    Route::get('/sales/edit-target/{id}', 'TargetController@edit_target')->name('sales.edit_target');
+    Route::post('/sales/update-target', 'TargetController@update_target')->name('sales.update_target');
 
     //spv
     Route::get('/spv', 'SpvController@index')->name('spv.index');
@@ -253,6 +260,8 @@ Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');
 Route::get('/ajax/name_client_so/search', 'AjaxAdminSearch@ClientsoCodeSearch');
 Route::get('/ajax/email_client_so/search', 'AjaxAdminSearch@email_so_search');
 Route::get('/ajax/type_customers/search', 'AjaxAdminSearch@TypeCustomerSearch');
+Route::get('/ajax/exist_user/search', 'AjaxAdminSearch@UserExistSearch');
+Route::get('/ajax/exist_user_edit/search', 'AjaxAdminSearch@UserExistEditSearch');
 
 /*===route group unique product===*/
 //Route::get('/ajax/groups/search', 'GroupController@ajaxSearch');

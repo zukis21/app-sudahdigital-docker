@@ -12,7 +12,7 @@
     <link href="//db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_2.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
@@ -683,6 +683,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    @yield('footer-scripts')
     <!--<script src="https://unpkg.com/sweetalert2@7.18.0/dist/sweetalert2.all.js"></script>-->
     
     <!--<script src="{{ asset('assets/js/jquery.firstVisitPopup.js')}}"></script>-->
@@ -694,7 +695,7 @@
         $(document).ready(function(){
             $(window).scroll(function(){
                 var scroll = $(window).scrollTop();
-                if (scroll > 200) {
+                if (scroll > 50) {
                     $(".navbar").css("background" , "#1A4066");
                     $(".fa-bars").css("color" , "#fff");
                     $(".navbar").css("opacity" , "0.9");

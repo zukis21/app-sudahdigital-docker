@@ -157,4 +157,31 @@ class AjaxAdminSearch extends Controller
     }
      //$cust = \App\TypeCustomer::whereRaw("BINARY 'name'= ?",[$keyword])->count();
   }
+
+  public function UserExistSearch(Request $request){
+    $user_id = $request->get('user_id');
+    $date = $request->get('date').'-01';
+    $cust = \App\Sales_Targets::where('user_id','=',$user_id)
+            ->where('period','=',$date)->count();
+    if ($cust > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
+  public function UserExistEditSearch(Request $request){
+    $user_id = $request->get('user_id');
+    $date = $request->get('date').'-01';
+    $p_dt = $request->get('p_dt');
+    $cust = \App\Sales_Targets::where('user_id','=',$user_id)
+            ->where('period','!=',$p_dt)
+            ->where('period','=',$date)
+            ->count();
+    if ($cust > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
 }

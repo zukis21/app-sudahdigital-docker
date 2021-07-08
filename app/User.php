@@ -44,9 +44,19 @@ class User extends Authenticatable
         return $this->hasMany('App\Spv_sales','spv_id');
     }
 
+    public function sls_exists(){
+        return $this->hasMany('App\Spv_sales','sls_id');
+    }
+
     public function sls(){
         return $this->hasMany('App\Spv_sales','sls_id');
     }
+
+    public function targets_nominal(){
+        return $this->hasOne('App\Sales_Targets','user_id');
+    }
+
+    
     /**
      * The attributes that should be cast to native types.
      *

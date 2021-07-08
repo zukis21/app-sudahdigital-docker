@@ -32,30 +32,45 @@ class SalesController extends Controller
      */
     public function index(Request $request, $vendor)
     {
-        $users = \App\User::with('cities')->where('roles','=','SALES')
-        ->where('client_id','=',auth()->user()->client_id)
-        ->get();//paginate(10);
-        $filterkeyword = $request->get('keyword');
-        $status = $request->get('status');
-        if($filterkeyword){
-            if($status){
-                $users = \App\User::where('email','LIKE',"%$filterkeyword%")
-                ->where('status', 'LIKE', "%$status%")
-                ->where('client_id',auth()->user()->client_id)
-                ->get();
-                //->paginate(10);
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $users = \App\User::with('cities')->where('roles','=','SALES')
+            ->where('client_id','=',auth()->user()->client_id)
+            ->get();//paginate(10);
+            $filterkeyword = $request->get('keyword');
+            $status = $request->get('status');
+            if($filterkeyword){
+                if($status){
+                    $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+                    ->where('status', 'LIKE', "%$status%")
+                    ->where('client_id',auth()->user()->client_id)
+                    ->get();
+                    //->paginate(10);
+                }
+                else{
+                    $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+                    ->where('client_id',auth()->user()->client_id)
+                    ->get();//paginate(10);
+                }
             }
-            else{
-                $users = \App\User::where('email','LIKE',"%$filterkeyword%")
+            if($status){
+                $users = \App\User::where('status', 'Like', "%$status")
                 ->where('client_id',auth()->user()->client_id)
                 ->get();//paginate(10);
             }
+            
         }
-        if($status){
-            $users = \App\User::where('status', 'Like', "%$status")
-            ->where('client_id',auth()->user()->client_id)
-            ->get();//paginate(10);
+        else{
+            $user_id = \Auth::user()->id;
+            $users = \App\User::whereHas('sls_exists', function($q) use($user_id)
+                    {
+                        return $q->where('spv_id','=',"$user_id");
+                    })
+                    //->whereIn('group_id', $user)
+                    ->where('roles','=','SALES')
+                    ->get();
+                    //dd($users);
         }
+
         return view ('users.index',['users'=>$users,'vendor'=>$vendor]);
     }
 
@@ -96,6 +111,8 @@ class SalesController extends Controller
         }
     }
 
+    
+
     /**
      * Display the specified resource.
      *
@@ -120,6 +137,8 @@ class SalesController extends Controller
         return view('users.edit',['user'=>$user,'vendor'=>$vendor]);
     }
 
+    
+
     /**
      * Update the specified resource in storage.
      *
@@ -138,6 +157,8 @@ class SalesController extends Controller
         $user->save();
         return redirect()->route('sales.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Sales Succsessfully Update');
     }
+
+    
 
     /**
      * Remove the specified resource from storage.

@@ -78,7 +78,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('manage-sales', function($user){
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN' || $user->roles == 'SUPERVISOR');
         });
 
         Gate::define('manage-customers', function($user){
@@ -99,6 +99,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-paket', function($user){
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
             return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+        });
+
+        Gate::define('manage-target', function($user){
+            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
+            return ($user->roles == 'SUPERVISOR');
         });
     }
 }

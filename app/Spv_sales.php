@@ -13,4 +13,9 @@ class Spv_sales extends Model
                             'created_at',
                             'updated_at'
                           ];
+
+      public function targets_spv_sls(){
+        return $this->belongsTo('App\Sales_Targets','sls_id');
+    }
 }
+
