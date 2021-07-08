@@ -209,8 +209,8 @@
                     <div class="container-fluid">
                       <div class="row">
                         <div class="col-md-6 mb-3 d-flex">
-                          <div class="box">
-                            <ul class="list-group">
+                          <div class="box w-100">
+                            <ul class="list-group w-100">
                               <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
                                 <b>Toko Belum Order {{date('F-Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
