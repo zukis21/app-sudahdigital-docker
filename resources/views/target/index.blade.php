@@ -51,7 +51,22 @@
 						{{number_format($u->target_values)}}
 					</td>
 					<td>
-						{{number_format($u->target_achievement)}}
+						@php
+							$month= date('m', strtotime($u->period));
+							$year= date('Y', strtotime($u->period));
+							//dd($month);
+							$order_ach = \App\Order::where('user_id',$u->user_id)
+									->whereNotNull('customer_id')
+									->whereMonth('created_at', '=', $month)
+									->whereYear('created_at', '=', $year)
+									->where('status','!=','CANCEL')->get();
+									$total_ach = 0;
+                              			foreach($order_ach as $p){
+                                 			 $total_ach += $p->total_price;
+                              			}
+                              		//return $total_ach;
+                              		echo $total_ach;
+						@endphp
 					</td>
 					<td>
 						{{date('M-Y', strtotime($u->period))}}

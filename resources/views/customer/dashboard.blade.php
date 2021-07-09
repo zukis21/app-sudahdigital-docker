@@ -126,7 +126,7 @@
     }
 </style>
 
-    <div class="container" style="">
+    <div class="container pb-4" style="">
         <div class="row align-middle">
             <div class="col-sm-12 col-md-12">
                 <nav aria-label="breadcrumb" class="float-right mt-0">
@@ -168,7 +168,7 @@
                         <div class="col-md-3">
                           <div class="box bg-danger">
                             <i class="far fa-money-bill-alt"></i>
-                            <h3>{{$target ? number_format($target->target_values) : '~'}}</h3>
+                            <h3>{{$target ? number_format($target->target_values) : '0'}}</h3>
                             <p class="lead">Target (Rp)</p>
                           </div>
                         </div>
@@ -183,7 +183,7 @@
                                   $total_ach += $p->total_price;
                               }
                               //return $total_ach;
-                              echo $total_ach;
+                              echo number_format($total_ach);
                               @endphp
                             </h3>
                             <p class="lead">Pencapaian (Rp)</p>
@@ -214,9 +214,13 @@
                               <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
                                 <b>Toko Belum Order {{date('F-Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
-                              @foreach ($cust_not_exists as $item)
-                                <li class="list-group-item"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
-                              @endforeach  
+                              @if(count($cust_not_exists) > 0 )
+                                @foreach ($cust_not_exists as $item)
+                                  <li class="list-group-item"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
+                                @endforeach
+                              @else
+                                <li class="list-group-item"><b>Nihil</b></li>
+                              @endif  
                             </ul>
                           </div>
                         </div>
@@ -227,9 +231,13 @@
                               <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
                                 <b>Toko Sudah Order {{date('F-Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
-                              @foreach ($cust_exists as $it)
-                                <li class="list-group-item"><b>{{$it->store_name}}</b>,<br>{{$it->address}}</li>
-                              @endforeach  
+                              @if(count($cust_exists) > 0 )
+                                @foreach ($cust_exists as $it)
+                                  <li class="list-group-item"><b>{{$it->store_name}}</b>,<br>{{$it->address}}</li>
+                                @endforeach
+                              @else
+                                <li class="list-group-item"><b>Nihil</b></li>
+                              @endif  
                             </ul>
                           </div>
                         </div>
@@ -259,7 +267,7 @@
                 </section>
            </div>
         </div>
-        -->
+      -->
     </div>
 
     @include('sweetalert::alert')
@@ -288,51 +296,31 @@
             //$('.contact-row').addClass('mt-5');
         }
 
-        var Order = <?php echo $order_chart;?>;
+        //var Order = <?php echo $order_chart;?>;
 
-        Highcharts.chart('container', {
-            title: {
-                text: 'New User Growth, 2020'
-            },
-            subtitle: {
-                text: 'Source: positronx.io'
-            },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-                    'Oct', 'Nov', 'Dec'
-                ]
-            },
-            yAxis: {
-                title: {
-                    text: 'Number of New Users'
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
-            plotOptions: {
-                series: {
-                    allowPointSelect: true
-                }
-            },
-            series: [{
-                name: 'New Users',
-                data: Order
-            }],
-            responsive: {
-                rules: [{
-                    
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
-                    }
-                }]
+        $('#container').highcharts({
+          chart: {
+            type: 'column'
+          },
+          title: {
+            text: 'Yearly Website Ratio'
+          },
+          xAxis: {
+            categories: ['2013','2014','2015', '2016']
+          },
+          yAxis: {
+              title: {
+              text: 'Rate'
             }
+          },
+          series: [{
+            name: 'Click',
+            data: data_click
+          }, {
+            name: 'View',
+            data: data_viewer
+          }]
         });
+      });
     </script> 
 @endsection
