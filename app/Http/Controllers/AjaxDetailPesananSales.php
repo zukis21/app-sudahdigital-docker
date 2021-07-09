@@ -413,7 +413,7 @@ class AjaxDetailPesananSales extends Controller
 
     public function cancel_success(){
         $client_id = \Auth::user()->client_id;
-        $vendor_cek= \App\B2b_Client::findorFail($client_id);
+        $vendor_cek= \App\B2b_client::findorFail($client_id);
         $vendor = $vendor_cek->client_slug;
         
         return redirect()->route('pesanan', [$vendor]);

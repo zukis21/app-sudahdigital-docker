@@ -94,9 +94,9 @@ class DashboardSalesController extends Controller
             'order_ach'=>$order_ach,
             'cust_exists'=>$cus_exists,
             'cust_not_exists'=>$cus_not_exists,
-            'order_chart'=>$order_chart
+            //'order_chart'=>$order_chart
             ];
         
-        return view('customer.dashboard',$data);
+        return view('customer.dashboard',$data)->with('order_chart',json_encode($order_chart,JSON_NUMERIC_CHECK));
     }
 }

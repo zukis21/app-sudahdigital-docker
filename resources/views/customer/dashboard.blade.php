@@ -246,7 +246,6 @@
                   </section>
             </div>
         </div>
-
         <!--
         <div class="row justify-content-center" style="">
           <div class="col-12" style="z-index: 2;">
@@ -296,29 +295,32 @@
             //$('.contact-row').addClass('mt-5');
         }
 
-        //var Order = <?php echo $order_chart;?>;
+      $(function () {
+        var data_order = <?php echo $order_chart; ?>;
 
         $('#container').highcharts({
           chart: {
             type: 'column'
           },
           title: {
-            text: 'Yearly Website Ratio'
+            text: 'Pencapaian Target'
           },
           xAxis: {
-            categories: ['2013','2014','2015', '2016']
+            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
+                'October', 'November', 'December'
+            ]
           },
           yAxis: {
               title: {
-              text: 'Rate'
+              text: 'Nominal'
             }
           },
           series: [{
-            name: 'Click',
-            data: data_click
-          }, {
+            name: 'Pencapaian Target',
+            data: data_order
+          /*}, {
             name: 'View',
-            data: data_viewer
+            data: data_viewer*/
           }]
         });
       });
