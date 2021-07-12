@@ -28,6 +28,7 @@ class CustomerKeranjangController extends Controller
         $cek_promo = product::findOrFail($id_product);
         $cek_order = Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
+        //dd($cek_order->id);
         if($cek_order !== null){
             $order_product = order_product::where('order_id','=',$cek_order->id)
             ->where('product_id','=',$id_product)->first();
@@ -336,6 +337,19 @@ Alamat : '.$customer->address.',
 
                 //$href=urlencode($txt_wa);
                 if($orders->save()){
+                
+                $orders_ach = Order::findOrfail($id);
+                $month = date('m',strtotime($orders_ach->created_at));
+                $year = date('Y',strtotime($orders_ach->created_at));
+                $target_ach = \App\Sales_Targets::where('user_id',$user_id)
+                            ->where('client_id',$client_id)
+                            ->whereMonth('period', $month)
+                            ->whereYear('period', $year)->first();
+                if($target_ach){
+                    $target_ach->target_achievement +=  $orders_ach->total_price;
+                    $target_ach->save();
+                }
+
                 $groupby_paket = DB::table('order_product')
                                 ->where('order_id',$id)
                                 ->whereNotNull('paket_id')
@@ -726,6 +740,7 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
                     ->distinct('order_product.product_id')
                     /*->whereNull('order_product.group_id')*/
                     ->count();
+        //dd($id_user);
        /* $total_item = DB::table('orders')
                     ->join('order_product','order_product.order_id','=','orders.id')
                     ->where('user_id','=',"$id_user")

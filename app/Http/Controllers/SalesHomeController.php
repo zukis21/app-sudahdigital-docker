@@ -115,12 +115,14 @@ class SalesHomeController extends Controller
         
         $total_item = DB::table('orders')
                     ->join('order_product','order_product.order_id','=','orders.id')
-                    ->where('client_id','=',$client->id)
-                    ->where('user_id','=',"$id_user")
+                    ->where('orders.client_id','=',$client->id)
+                    ->where('user_id','=',$id_user)
                     ->whereNull('orders.customer_id')
                     ->distinct('order_product.product_id')
                     /*->whereNull('order_product.group_id')*/
                     ->count();
+        //dd($item_name->id);
+        //dd($total_item);
         if($routeName == 'home_paket'){
             $data=['total_item'=> $total_item, 
                 'keranjang'=>$keranjang,

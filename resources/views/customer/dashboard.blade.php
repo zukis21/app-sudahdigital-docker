@@ -144,7 +144,14 @@
                       <div class="row">
                         <div class="col-md-12">
                           <div class="content">
+                            @if($target)
                             <h6><b>Dashboard {{Auth::user()->name}} {{date('F'.' Y', strtotime(\Carbon\Carbon::now()))}}</b></h6>
+                            @else
+                            <h6>
+                                Dashboard {{Auth::user()->name}} {{date('F'.' Y', strtotime(\Carbon\Carbon::now()))}}
+                                Tidak Dapat Ditampilkan Karena Target Belum Dibuat.
+                            </h6>   
+                            @endif
                           </div>
                         </div>
                       </div>
@@ -152,7 +159,7 @@
                 </div>
             </div>
         </div>
-
+        @if($target)
         <div class="row justify-content-center" style="">
             <div class="col-12" style="z-index: 2;">
                 <section class='statis text-center'>
@@ -163,6 +170,13 @@
                             <i class="fa fa-address-card" aria-hidden="true"></i>
                             <h3>{{$cust_total}}</h3>
                             <p class="lead">Customers / Toko</p>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="box bg-success">
+                            <i class="fa fa-handshake"></i>
+                            <h3>{{$order}}</h3>
+                            <p class="lead">Transaksi (Toko)</p>
                           </div>
                         </div>
                         <div class="col-md-3">
@@ -177,23 +191,17 @@
                             <!--<i class="fa fa-shopping-cart"></i>-->
                             <i class="far fa-money-bill-alt"></i>
                             <h3>
-                              @php
+                              <!--/*
                               $total_ach = 0;
                               foreach($order_ach as $p){
                                   $total_ach += $p->total_price;
                               }
                               //return $total_ach;
-                              echo number_format($total_ach);
-                              @endphp
+                              echo number_format($total_ach);*/
+                              -->
+                              {{$target ? number_format($target->target_achievement) : '0'}}
                             </h3>
                             <p class="lead">Pencapaian (Rp)</p>
-                          </div>
-                        </div>
-                        <div class="col-md-3">
-                          <div class="box bg-success">
-                            <i class="fa fa-handshake"></i>
-                            <h3>{{$order}}</h3>
-                            <p class="lead">Transaksi (Toko)</p>
                           </div>
                         </div>
                       </div>
@@ -246,16 +254,16 @@
                   </section>
             </div>
         </div>
-        <!--
+        
         <div class="row justify-content-center" style="">
           <div class="col-12" style="z-index: 2;">
               <section class="statistics">
                   <div class="container-fluid">
                     <div class="row">
-                      <div class="col-md-12 mb-3">
+                      <div class="col-md-12">
                         <div class="box">
                           
-                            <span>Garafik Pencapaian Th. {{date(' Y', strtotime(\Carbon\Carbon::now()))}}</span>
+                            <span><b>Grafik Pencapaian Th. {{date(' Y', strtotime(\Carbon\Carbon::now()))}}</b></span>
                             <hr style="width: 100%;">
                             <div id="container"></div>
                           
@@ -266,7 +274,7 @@
                 </section>
            </div>
         </div>
-      -->
+        @endif
     </div>
 
     @include('sweetalert::alert')
@@ -296,31 +304,40 @@
         }
 
       $(function () {
-        var data_order = <?php echo $order_chart; ?>;
+        var target = <?php echo $target_order ?>;
+        var month = <?php echo $months ?>;
+        var achievement = <?php echo $target_ach ?>;
+        var colors = ['#dc3545', '#6c757d'];
 
+        if ($(window).width() <= 600) {
+          var type = 'bar';
+        }else if($(window).width() > 600){
+          var type = 'column';
+        }
+        
         $('#container').highcharts({
           chart: {
-            type: 'column'
+            type: type
+            /*type: 'bar'*/
           },
           title: {
-            text: 'Pencapaian Target'
+            text: 'Pencapaian'
           },
           xAxis: {
-            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
-                'October', 'November', 'December'
-            ]
+            categories: month
           },
           yAxis: {
               title: {
-              text: 'Nominal'
+              text: 'Nominal (Rp)'
             }
           },
+          colors:colors,
           series: [{
-            name: 'Pencapaian Target',
-            data: data_order
-          /*}, {
-            name: 'View',
-            data: data_viewer*/
+            name: 'Target',
+            data: target
+          },{
+            name: 'Pencapaian',
+            data: achievement
           }]
         });
       });

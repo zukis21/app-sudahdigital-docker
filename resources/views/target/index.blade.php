@@ -51,7 +51,7 @@
 						{{number_format($u->target_values)}}
 					</td>
 					<td>
-						@php
+						<!--
 							$month= date('m', strtotime($u->period));
 							$year= date('Y', strtotime($u->period));
 							//dd($month);
@@ -65,8 +65,9 @@
                                  			 $total_ach += $p->total_price;
                               			}
                               		//return $total_ach;
-                              		echo $total_ach;
-						@endphp
+                              		echo $total_ach;*/
+						-->
+						{{number_format($u->target_achievement)}}
 					</td>
 					<td>
 						{{date('M-Y', strtotime($u->period))}}

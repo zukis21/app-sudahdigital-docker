@@ -34,6 +34,7 @@ class TargetController extends Controller
                     return $q->where('spv_id','=',"$user_id");
                 })
                 //->whereIn('group_id', $user)
+                ->orderBy('period','ASC')
                 ->get();
                 //\DB::enableQueryLog();
                 //dd(\DB::getQueryLog($targets));
@@ -60,11 +61,39 @@ class TargetController extends Controller
 
     public function store_target(Request $request, $vendor)
     {
+        $user_id = $request->get('user_id');
+        $date_period = $request->get('period');
+        $date_explode = explode('-',$date_period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+        //dd($month);
+        $orders = \App\Order::where('user_id',$user_id)
+                ->whereNotNull('customer_id')
+                ->where('status','!=','CANCEL')
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)->count();
+        if($orders > 0){
+                $targ_ach = \App\Order::where('user_id',$user_id)
+                        ->whereNotNull('customer_id')
+                        ->where('status','!=','CANCEL')
+                        ->whereMonth('created_at', '=', $month)
+                        ->whereYear('created_at', $year)
+                        ->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');
+                //$ach = json_encode($targ_ach,JSON_NUMERIC_CHECK);
+                $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+                $ach_value = $ach[0];
+                //dd($ach_value);
+        }else{
+            $ach_value = 0;
+        }
+        //dd($ach);      
         $new_t = new \App\Sales_Targets;
         $new_t->client_id = $request->get('client_id');
-        $new_t->user_id = $request->get('user_id');
+        $new_t->user_id = $user_id;
         $new_t->target_values = $request->get('target_value');
-        $period = $request->get('period').'-01';
+        $new_t->target_achievement = $ach_value;
+        $period = $date_period.'-01';
         $new_t->period = $period;
         $new_t->save();
         if ( $new_t->save()){

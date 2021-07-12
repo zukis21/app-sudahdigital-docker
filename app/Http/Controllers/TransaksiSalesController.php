@@ -73,6 +73,18 @@ class TransaksiSalesController extends Controller
             $user = \App\User::findOrfail($user_id);
             $text_cancel = $request->get('notes_cancel');
 
+            //minus ach
+            $month = date('m',strtotime($order_wa->created_at));
+            $year = date('Y',strtotime($order_wa->created_at));
+                $target_ach = \App\Sales_Targets::where('user_id',$user_id)
+                            //->where('client_id',$client_id)
+                            ->whereMonth('period', $month)
+                            ->whereYear('period', $year)->first();
+                if($target_ach){
+                    $target_ach->target_achievement -=  $order_wa->total_price;
+                    $target_ach->save();
+                }
+
 $txt_descwa='*PEMBATALAN PESANAN*,
 
 *Detail Sales*

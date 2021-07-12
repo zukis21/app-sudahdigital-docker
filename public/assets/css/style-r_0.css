@@ -2370,6 +2370,7 @@ footer.footer .cart .count-cart-three {
     overflow: hidden;
     border-radius: 10px;
     margin-bottom: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
   .statis .box h3:after {
     content: "";
