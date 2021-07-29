@@ -17,6 +17,27 @@
                 <label class="form-label">Category Name</label>
             </div>
         </div>
+
+        <div class="form-group">
+            <h2 class="card-inside-title">Select a parent category</h2>
+            <select name="parent_id"  id="parent_id" 
+                class="form-control" style="width:100%;">
+                <option></option>
+                @if($categories)
+                    @foreach($categories as $category)
+                        <?php $dash=''; ?>
+                        <option value="{{$category->id}}">{{$category->name}}</option>
+                        @if(count($category->subcategory))
+                            @include('category.subCategoryList-option',['subcategories' => $category->subcategory])
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+            <div class="form-group form-float">
+                <small class="err_exist"></small>
+            </div>
+        </div>
+        <br>
         
         <h2 class="card-inside-title">Category Image</h2>
         <div class="form-group">
@@ -29,4 +50,17 @@
     </form>
     <!-- #END#  -->		
 
+@endsection
+@section('footer-scripts')
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+
+        $('#parent_id').select2({
+            placeholder: 'None',
+        });
+
+        
+    </script> 
 @endsection

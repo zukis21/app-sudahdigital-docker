@@ -35,12 +35,16 @@ class CategoryController extends Controller
     public function index(Request $request, $vendor)
     {   
         $categories = \App\Category::where('client_id','=',auth()->user()->client_id)
-        ->get();//paginate(10);
+                    ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
+                    ->get();//paginate(10);
         $keyword = $request->get('name');
         if($keyword){
             $categories = \App\Category::where('name','LIKE',"%$keyword%")
-            ->where('client_id','=',auth()->user()->client_id)
-            ->get();//paginate(10);
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
+                    ->get();//paginate(10);
         }
         return view('category.index', ['categories'=>$categories, 'vendor'=>$vendor]);
     }
@@ -52,7 +56,11 @@ class CategoryController extends Controller
      */
     public function create($vendor)
     {
-        return view('category.create',['vendor'=>$vendor]);
+        $categories = \App\Category::where('client_id','=',auth()->user()->client_id)
+                    ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
+                    ->get();
+        return view('category.create',['vendor'=>$vendor,'categories'=>$categories]);
     }
 
     /**
@@ -73,6 +81,9 @@ class CategoryController extends Controller
         }
         $newCategory->create_by = \Auth::user()->id;
         $newCategory->slug = \Str::slug($name,'-');
+        if($request->has('parent_id')){
+            $newCategory->parent_id = $request->get('parent_id');
+        }
         $newCategory->save();
         return redirect()->route('categories.create',[$vendor])->with('status','Category Succesfully Created'); 
     }
@@ -98,7 +109,9 @@ class CategoryController extends Controller
     {
         $id = \Crypt::decrypt($id);
         $cat_edit = \App\Category::findOrFail($id);
-        return view('category.edit',['cat_edit'=>$cat_edit,'vendor'=>$vendor]);
+        $categories = \App\Category::whereNull('parent_id')
+                    ->where('id', '!=', $cat_edit->id)->orderby('name', 'asc')->get();
+        return view('category.edit',['cat_edit'=>$cat_edit,'vendor'=>$vendor,'categories'=>$categories]);
     }
 
     /**
@@ -126,6 +139,9 @@ class CategoryController extends Controller
             $new_image = $request->file('image')->store('category_images','public');
             $category->image_category = $new_image;
         }
+        if($request->has('parent_id')){
+            $category->parent_id = $request->get('parent_id');
+        }
             $category->update_by = \Auth::user()->id;
             $category->slug = \Str::slug($name);
             $category->save();
@@ -150,6 +166,8 @@ class CategoryController extends Controller
     public function trash($vendor){
         $deleted_category = \App\Category::onlyTrashed()
         ->where('client_id','=',auth()->user()->client_id)
+        ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
         ->get();//paginate(10);
 
         return view('category.trash', ['categories' => $deleted_category,'vendor'=>$vendor]);
@@ -172,7 +190,7 @@ class CategoryController extends Controller
 
     public function deletePermanent($vendor, $id){
 
-        $category = \App\Category::withTrashed()->findOrFail($id);
+        /*$category = \App\Category::withTrashed()->findOrFail($id);
         if(!$category->trashed()){
         return redirect()->route('categories.trash',[$vendor])
         ->with('status', 'Can not delete permanent active category');
@@ -180,12 +198,28 @@ class CategoryController extends Controller
         $category->forceDelete();
         return redirect()->route('categories.trash',[$vendor])
         ->with('status', 'Category permanently deleted');
+        }*/
 
+        $category = \App\Category::findOrFail($id);
+        if(count($category->subcategory))
+            {
+                $subcategories = $category->subcategory;
+                foreach($subcategories as $cat)
+                {
+                    $cat = \App\Category::findOrFail($cat->id);
+                    $cat->parent_id = null;
+                    $cat->save();
+                }
             }
-        }
+        $category->forceDelete();
+        return redirect()->route('categories.index',[$vendor])
+        ->with('status', 'Category successfully deleted permanently');
 
-        public function export($vendor) {
-            return Excel::download( new CategoryExport(), 'Categories.xlsx') ;
-        }
+        
+    }
+
+    public function export($vendor) {
+        return Excel::download( new CategoryExport(), 'Categories.xlsx') ;
+    }
             
 }

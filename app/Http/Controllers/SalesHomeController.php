@@ -35,8 +35,12 @@ class SalesHomeController extends Controller
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
         $banner = \App\Banner::where('client_id','=',$client->id)
                 ->orderBy('position', 'ASC')->limit(5)->get();
+        /*$categories = \App\Category::where('client_id','=',$client->id)
+                    ->get();//paginate(10);*/
         $categories = \App\Category::where('client_id','=',$client->id)
-                    ->get();//paginate(10);
+                    ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
+                    ->get();
         $paket = \App\Paket::where('client_id','=',$client->id)->first();//paginate(10);
         $cat_count = $categories->count();
         $stock_status= DB::table('product_stock_status')

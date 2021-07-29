@@ -18,4 +18,14 @@ class Category extends Model
         return 'slug';
     }*/
 
+    public function subcategory()
+    {
+        return $this->hasMany('App\Category', 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo('App\Category', 'parent_id');
+    }
+
 } 

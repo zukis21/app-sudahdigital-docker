@@ -73,7 +73,11 @@ class productController extends Controller
         $stock_status= DB::table('product_stock_status')
                     ->where('client_id','=',$client_id)
                     ->first();
-        return view('products.create',['stock_status'=>$stock_status,'vendor'=>$vendor]);
+        $categories = \App\Category::where('client_id','=',auth()->user()->client_id)
+                    ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
+                    ->get();
+        return view('products.create',['stock_status'=>$stock_status,'vendor'=>$vendor,'categories'=>$categories]);
     }
 
     /**
@@ -167,7 +171,23 @@ class productController extends Controller
         $product = \App\product::findOrFail($id);
         $stock_status= DB::table('product_stock_status')
                       ->where('client_id','=',$client_id)->first();
-        return view('products.edit', ['product' => $product, 'stock_status'=>$stock_status, 'vendor'=>$vendor]);
+        $a = '';
+        foreach($product->categories as $p){
+            $a = $p->id;
+        }             
+        //return $a;
+        if($a != null){
+            $cat_edit = \App\Category::findOrFail($a);
+        }              
+        else{
+            $cat_edit= '';
+        }
+        //dd($a);
+        $categories = \App\Category::where('client_id','=',auth()->user()->client_id)
+                    ->whereNull('parent_id')
+                    ->orderBy('name','ASC')
+                    ->get();
+        return view('products.edit', ['product' => $product, 'stock_status'=>$stock_status, 'vendor'=>$vendor,'categories'=>$categories,'cat_edit'=>$cat_edit]);
     }
 
     /**

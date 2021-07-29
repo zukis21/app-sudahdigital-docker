@@ -39,9 +39,33 @@
             </div>
         </div>
 
+        <!--
         <h2 class="card-inside-title">Categories</h2>
         <select name="categories"  id="categories" class="form-control"></select>
         <br>
+        -->
+
+        <div class="form-group">
+            <h2 class="card-inside-title">Categories</h2>
+            <select name="categories"  id="categories" 
+                class="form-control" style="width:100%;">
+                <option></option>
+                @if($categories)
+                    @foreach($categories as $category)
+                        <?php $dash=''; ?>
+                        <option value="{{$category->id}}" @if(($cat_edit != '') && ($cat_edit->id == $category->id)) selected @endif>{{$category->name}}</option>
+                        @if(count($category->subcategory))
+                            @include('products.sub-category-list-option-for-update',['subcategories' => $category->subcategory])
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+            <div class="form-group form-float">
+                <small class="err_exist"></small>
+            </div>
+        </div>
+        <br>
+
         <h2 class="card-inside-title">Product Image</h2>
         <div class="form-group">
          <div class="form-line">
@@ -127,8 +151,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
     $('#categories').select2({
-      placeholder: 'Select an item',
-      ajax: {
+      placeholder: 'Select a category',
+      /*ajax: {
         url: '{{URL::to('/ajax/categories/search')}}',
         processResults: function (data) {
           return {
@@ -142,14 +166,14 @@
           };
         }
         
-      }
+      }*/
     });
 
-    var categories = {!! $product->categories !!}
+    /*var categories = {!! $product->categories !!}
     categories.forEach(function(category){
     var option = new Option(category.name, category.id, true, true);
     $('#categories').append(option).trigger('change');
-    });
+    });*/
 </script>
 
 @endsection

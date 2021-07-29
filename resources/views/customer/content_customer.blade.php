@@ -21,6 +21,34 @@ Home
             height:auto;
     }
 
+    .dropdown-menu{
+        min-width: 250px;
+        white-space: normal;
+    }
+
+    .dropdown-item {
+        white-space: pre-wrap;
+    }
+
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu a::after {
+        transform: rotate(-90deg);
+        position: absolute;
+        right: 6px;
+        top: .8em;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+        top: 0;
+        
+        margin-left: .1rem;
+        margin-right: .1rem;
+        border-bottom-left-radius:10px;border-bottom-right-radius:10px;
+    }
+
     @media only screen and (max-width:1920px){
         .image-logo-confirm img{
             width:90px;
@@ -54,6 +82,22 @@ Home
             height:auto;
             margin-left:0rem;
         }
+
+        .dropdown-submenu .dropdown-menu {
+            position: relative;
+            top: 0;
+            left:0;
+            min-width: 240px;
+            /*border-top-style: none;*/
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+            border-bottom-left-radius:2px;
+            border-bottom-right-radius:2px;
+        }
+
+        .dropdown-submenu a::after {
+            transform: rotate(360deg);
+        }
     }
 
     @media only screen and (max-width:600px){
@@ -67,6 +111,7 @@ Home
             font-size:20px;
         }
     }
+
 </style>
 
     @if(session('sukses_peesan'))
@@ -91,22 +136,71 @@ Home
                         </ol>
                     </nav>
                 </div>
+                <!--
                 <div class="col-4 ">
                     <div id="dropfilter" class="dropfilter dropdown pt-4 mt-3 float-right" style=""> 
                         <button class="btn filter_category" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Filter</b>
                             <i class="fas fa-caret-down fa-lg"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="height: auto;max-height: 200px;overflow-x: hidden; border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;">
-                            <a class="dropdown-item" href="{{ url('/') }}" style="color: #1A4066;"><b>Semua Produk</b></a>
-                            @foreach($categories as $filter_product)
-                                <a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$filter_product->slug])}}" style="color: #000;"><b>{{$filter_product->name}}</b></a>
-                            @endforeach
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" style="height: auto;max-height: 200px;overflow-x: hidden; border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;">
                         </div>
                     </div>
                 </div>
+                -->
+                <div class="col-4">
+                    <div class="dropfilter dropdown pt-4 mt-3 float-right ">
+                        <button class="btn filter_category" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Filter</b>
+                            <i class="fas fa-caret-down fa-lg"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right dropleft" aria-labelledby="navbarDropdownMenuLink" 
+                        style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                            <!--
+                            @foreach($categories as $filter_product)
+                                <a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$filter_product->slug])}}" style="color: #000;"><b>{{$filter_product->name}}</b></a>
+                            @endforeach
+                            -->
+                            <li><a class="dropdown-item" href="{{ url('/') }}" style="color: #1A4066;"><b>Semua Produk</b></a></li>
+                            @if($categories)
+                                @foreach($categories as $category)
+                                    @if(!count($category->subcategory))
+                                        <li><a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$category->slug])}}">{{$category->name}}</a></li>
+                                    @elseif(count($category->subcategory))
+                                        <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">{{$category->name}}</a>
+                                        @include('customer.subCategoryList-option',['subcategories' => $category->subcategory])
+                                    @endif
+                                @endforeach
+                            @endif
+                            <!--
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">Submenu wider text</a>
+                              <ul class="dropdown-menu" style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                <li><a class="dropdown-item" href="#">Submenu asasd </a></li>
+                                <li><a class="dropdown-item" href="#">Submenu0</a></li>
+                                <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">Submenu 1</a>
+                                  <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Subsubmenu1</a></li>
+                                    <li><a class="dropdown-item" href="#">Subsubmenu1</a></li>
+                                  </ul>
+                                </li>
+                                <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">Submenu 2</a>
+                                  <ul class="dropdown-menu" style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                    <li><a class="dropdown-item" href="#">Subsubmenu2</a></li>
+                                    <li><a class="dropdown-item" href="#">Subsubmenu2</a></li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </li>
+                            -->
+
+                            
+                        </ul>
+                    </div>
+                </div>
+                
+                
             </div>
         </div>
-        
+
         <div class="container list-product" style="">
             <div class="row mt-0">
                 <div class="col-md-12 mt-4 menu-wrapper">
@@ -227,18 +321,57 @@ Home
                     </nav>
                 </div>
                 <div class="col-4 ">
-                    <div id="dropfilter" class="dropfilter dropdown pt-4 mt-3 float-right">
-                        <button class="btn filter_category" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Filter</b>
+                    <div class="dropfilter dropdown pt-4 mt-3 float-right ">
+                        <button class="btn filter_category px-0 mr-3" type="button" 
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
+                        aria-expanded="false" style="outline: none;"><b>Filter</b>
                             <i class="fas fa-caret-down fa-lg"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="height: auto;max-height: 200px;overflow-x: hidden; border-bottom-left-radius:1rem;border-bottom-right-radius:1rem;">
-                            <a class="dropdown-item" href="{{ url('/') }}" style="color: #1A4066;"><b>Semua Produk</b></a>
+                        <ul class="dropdown-menu dropdown-menu-right dropleft" aria-labelledby="navbarDropdownMenuLink" 
+                        style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                            <!--
                             @foreach($categories as $filter_product)
-                                <a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$filter_product->slug] )}}" style="color: #000;"><b>{{$filter_product->name}}</b></a>
+                                <a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$filter_product->slug])}}" style="color: #000;"><b>{{$filter_product->name}}</b></a>
                             @endforeach
-                        </div>
+                            -->
+                            <li><a class="dropdown-item" href="{{ url('/') }}" style="color: #1A4066;"><b>Semua Produk</b></a></li>
+                            @if($categories)
+                                @foreach($categories as $category)
+                                    @if(!count($category->subcategory))
+                                        <li><a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$category->slug])}}">{{$category->name}}</a></li>
+                                    @elseif(count($category->subcategory))
+                                        <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">{{$category->name}}</a>
+                                        @include('customer.subCategoryList-option',['subcategories' => $category->subcategory])
+                                    @endif
+                                @endforeach
+                            @endif
+                            <!--
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">Submenu wider text</a>
+                              <ul class="dropdown-menu" style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                <li><a class="dropdown-item" href="#">Submenu asasd </a></li>
+                                <li><a class="dropdown-item" href="#">Submenu0</a></li>
+                                <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">Submenu 1</a>
+                                  <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Subsubmenu1</a></li>
+                                    <li><a class="dropdown-item" href="#">Subsubmenu1</a></li>
+                                  </ul>
+                                </li>
+                                <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">Submenu 2</a>
+                                  <ul class="dropdown-menu" style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                    <li><a class="dropdown-item" href="#">Subsubmenu2</a></li>
+                                    <li><a class="dropdown-item" href="#">Subsubmenu2</a></li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </li>
+                            -->
+
+                            
+                        </ul>
                     </div>
                 </div>
+                
             </div>
         </div>
         @endif
@@ -722,6 +855,22 @@ Home
 
    
 <script>
+    $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+        if (!$(this).next().hasClass('show')) {
+            $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
+        }
+        var $subMenu = $(this).next(".dropdown-menu");
+        $subMenu.toggleClass('show');
+
+
+        $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+            $('.dropdown-submenu .show').removeClass("show");
+        });
+
+
+        return false;
+    });
+
     if($(window).width() <1450){
         $('.label-confirm').removeClass('col-md-5').addClass('col-md-7').addClass('px-4');
     }
@@ -733,6 +882,7 @@ Home
 
     if($(window).width() < 769){
         $('.label-confirm').removeClass('col-md-5').addClass('col-md-11').addClass('px-4');
+        $('.dropdown-menu').removeClass('dropleft');
     }
 
     if ($(window).width() < 601) {

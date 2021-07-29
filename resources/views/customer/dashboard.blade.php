@@ -165,31 +165,39 @@
                 <section class='statis text-center'>
                     <div class="container">
                       <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                           <div class="box bg-primary">
-                            <i class="fa fa-address-card" aria-hidden="true"></i>
+                            <i class="fal fa-store"></i>
                             <h3>{{$cust_total}}</h3>
-                            <p class="lead">Customers / Toko</p>
+                            <p class="lead">Jumlah Toko</p>
                           </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                           <div class="box bg-success">
-                            <i class="fa fa-handshake"></i>
+                            <i class="fal fa-shopping-cart" aria-hidden="true"></i>
                             <h3>{{$order}}</h3>
-                            <p class="lead">Transaksi (Toko)</p>
+                            <p class="lead">Toko Sudah Order</p>
                           </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                           <div class="box bg-danger">
-                            <i class="far fa-money-bill-alt"></i>
+                            <i class="fal fa-shopping-cart" aria-hidden="true"></i>
+                            <i class="fas fa-slash fa-2x "></i>
+                            <h3>{{$cust_total - $order}}</h3>
+                            <p class="lead">Toko Belum Order</p>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="box bg-primary">
+                            <i class="fal fa-bullseye-arrow"></i>
                             <h3>{{$target ? number_format($target->target_values) : '0'}}</h3>
                             <p class="lead">Target (Rp)</p>
                           </div>
                         </div>
-                        <div class="col-md-3">
-                          <div class="box bg-secondary">
+                        <div class="col-md-4">
+                          <div class="box bg-success">
                             <!--<i class="fa fa-shopping-cart"></i>-->
-                            <i class="far fa-money-bill-alt"></i>
+                            <i class="fal fa-trophy" aria-hidden="true"></i>
                             <h3>
                               <!--/*
                               $total_ach = 0;
@@ -202,6 +210,22 @@
                               {{$target ? number_format($target->target_achievement) : '0'}}
                             </h3>
                             <p class="lead">Pencapaian (Rp)</p>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="box bg-danger">
+                            <!--<i class="fa fa-shopping-cart"></i>-->
+                            <i class="fal fa-bullseye-arrow"></i>
+                            <i class="fas fa-slash fa-2x "></i>
+                            <h3>
+                              @php
+                                if ($target){
+                                  $sisa = $target->target_values - $target->target_achievement;
+                                }
+                              @endphp  
+                              {{$target ? number_format($sisa) : '0'}}
+                            </h3>
+                            <p class="lead">Target Belum Capai (Rp)</p>
                           </div>
                         </div>
                       </div>
@@ -264,6 +288,9 @@
                         <div class="box">
                           
                             <span><b>Grafik Pencapaian Th. {{date(' Y', strtotime(\Carbon\Carbon::now()))}}</b></span>
+                            <span class="float-right">
+                              <i class="fas fa-chart-bar"></i>
+                            </span>
                             <hr style="width: 100%;">
                             <div id="container"></div>
                           

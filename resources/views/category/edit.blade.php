@@ -14,9 +14,30 @@
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="text" class="form-control" value="{{$cat_edit->name}}" name="name" autocomplete="off" required>
-                <label class="form-label">Name</label>
+                <label class="form-label">Category Name</label>
             </div>
         </div>
+
+        <div class="form-group">
+            <h2 class="card-inside-title">Select a parent category</h2>
+            <select name="parent_id"  id="parent_id" 
+                class="form-control" style="width:100%;">
+                <option></option>
+                @if($categories)
+                    @foreach($categories as $item)
+                        <?php $dash=''; ?>
+                        <option value="{{$item->id}}" @if($cat_edit->parent_id == $item->id ) selected @endif>{{$item->name}}</option>
+                        @if(count($item->subcategory))
+                            @include('category.sub-category-list-option-for-update',['subcategories' => $item->subcategory])
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+            <div class="form-group form-float">
+                <small class="err_exist"></small>
+            </div>
+        </div>
+        <br>
 
         <!--
         <div class="form-group form-float">
@@ -26,7 +47,7 @@
             </div>
         </div>
         -->
-        <h2 class="card-inside-title">Image</h2>
+        <h2 class="card-inside-title">Category Image</h2>
         <div class="form-group">
          <div class="form-line">
             @if($cat_edit->image_category)
@@ -48,4 +69,18 @@
 
     <!-- #END#  -->		
 
+@endsection
+
+@section('footer-scripts')
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+
+        $('#parent_id').select2({
+            placeholder: 'None',
+        });
+
+        
+    </script> 
 @endsection
