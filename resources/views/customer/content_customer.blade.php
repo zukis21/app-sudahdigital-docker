@@ -149,7 +149,9 @@ Home
                 -->
                 <div class="col-4">
                     <div class="dropfilter dropdown pt-4 mt-3 float-right ">
-                        <button class="btn filter_category" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Filter</b>
+                        <button class="btn filter_category px-0 mr-3" type="button" 
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
+                            aria-expanded="false" style="outline: none;"><b>Filter</b>
                             <i class="fas fa-caret-down fa-lg"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right dropleft" aria-labelledby="navbarDropdownMenuLink" 
@@ -191,13 +193,9 @@ Home
                               </ul>
                             </li>
                             -->
-
-                            
                         </ul>
                     </div>
                 </div>
-                
-                
             </div>
         </div>
 
