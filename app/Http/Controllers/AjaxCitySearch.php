@@ -64,6 +64,8 @@ class AjaxCitySearch extends Controller
         ->orWhere('store_code','LIKE',"%$keyword%")->get();
         return $store;*/
         $search = $request->get('search');
+        $user_id = $request->get('user_id');
+        
         if ($request->has('city_id')){
             $city_id = $request->get('city_id');
         }else{
@@ -73,12 +75,18 @@ class AjaxCitySearch extends Controller
         $client_id =  \Auth::user()->client_id;
         if($city_id == ''){
             if($search == ''){
-                $store = \App\Customer::where('client_id',$client_id)->get();
+                $store = \App\Customer::where('client_id',$client_id)
+                        ->where('user_id',$user_id)
+                        ->get();
             }else{
                 $store = \App\Customer::where('client_id',$client_id)
-                        ->where('store_name','LIKE',"%$search%")
-                        ->orWhere('store_code','LIKE',"%$search%")->get();
-                //\App\Customer::where('city_id','=',$city_id)
+                        ->where('user_id',$user_id)
+                        ->where(function($q) use($search) {
+                            $q->where('store_name','LIKE',"%$search%")
+                              ->orWhere('store_code','LIKE',"%$search%");
+                        })->get();
+                        
+                        //\App\Customer::where('city_id','=',$city_id)
                         //->where('store_name','LIKE',"$search")
                         //->orWhere('store_code','LIKE',"$search")
                         //->get();
@@ -86,9 +94,11 @@ class AjaxCitySearch extends Controller
         }else{
             if($search == ''){
                 $store = \App\Customer::where('client_id',$client_id)
+                        ->where('user_id',$user_id)
                         ->where('city_id',$city_id)->get();
             }else{
                     $store = \App\Customer::where('client_id',$client_id)
+                    ->where('user_id',$user_id)
                     ->where('city_id','=',$city_id)
                     ->where(function($q) use($search) {
                         $q->where('store_name','LIKE',"%$search%")

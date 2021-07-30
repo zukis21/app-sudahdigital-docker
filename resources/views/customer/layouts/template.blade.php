@@ -923,7 +923,7 @@
                         <div class="col-md-5 login-label" style="z-index: 2">
                             <form method="POST" action="{{route('session.store',[$vendor])}}">
                                 @csrf
-                                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                <input type="hidden" name="user_id" id="user_id_sales" value="{{ Auth::user()->id }}">
                                 <div class="row mt-3">
                                     <div class="col-label col-lg-3 mt-auto">
                                         <p class="p-label text-left">Kota</p>
@@ -1459,6 +1459,7 @@
                             _token: CSRF_TOKEN,
                             search: params.term, // search term
                             city_id: $('#city_id_select' ).val(),
+                            user_id: $('#user_id_sales' ).val(),
                             };
                         },
                         processResults: function (response) {
