@@ -4,7 +4,7 @@
         <option alt="{{$category->name}}" value="{{$subcategory->id}}">{{$dash}}{{$subcategory->name}}</option>
     @elseif(count($subcategory->subcategory))
         <optgroup label="{{$dash}}{{$subcategory->name}}">
-            @include('products.subCategoryList-option',['subcategories' => $subcategory->subcategory])
+            @include('products.subcategoryList-option',['subcategories' => $subcategory->subcategory])
         </optgroup>
     @endif
 @endforeach
