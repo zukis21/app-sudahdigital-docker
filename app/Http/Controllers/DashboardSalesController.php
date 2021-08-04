@@ -36,6 +36,11 @@ class DashboardSalesController extends Controller
                 ->whereMonth('period', '=', $month)
                 ->whereYear('period', '=', $year)
                 ->first();
+        $order_ach = \App\Order::where('user_id',\Auth::user()->id)
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')->get();
         $cust_total = \App\Customer::where('user_id',\Auth::user()->id)->count();
         $order = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
@@ -134,7 +139,7 @@ class DashboardSalesController extends Controller
             'cust_total'=>$cust_total,
             'target'=>$target,
             'order'=>$order,
-            //'order_ach'=>$order_ach,
+            'order_ach'=>$order_ach,
             'cust_exists'=>$cust_exists,
             'cust_not_exists'=>$cust_not_exists,
             //'order_chart'=>$order_chart

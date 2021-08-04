@@ -2401,9 +2401,10 @@ footer.footer .cart .count-cart-three {
     /*color: #CCC;*/
     color: #1A4066;
   }
+  
   .statistics .box {
     /*background-color: #313348;*/
-    background-color:#fff!important;
+    background-color:#fff !important;
     padding: 15px;
     overflow: hidden;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -2429,3 +2430,49 @@ footer.footer .cart .count-cart-three {
   .statistics .box .info p {color:#BBB}
   
   /* End statistics */
+
+  /* Start info-box */
+  .info-box {
+    margin-top: 25px;
+    color: #fff;
+  }
+  .info-box .box {
+    transition: transform 250ms;
+    background-image: linear-gradient(-45deg,  #210c59 0%, #34b5bf  100%);
+    border-radius: 5px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .info-box .box:hover {
+    outline:0px !important;
+    -webkit-appearance:none;
+    -webkit-transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
+  }
+
+  .info-box .box > i {
+    float: left;
+    color: #FFF;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 22px;
+  }
+  .info-box .box .info {
+    /*float: left;*/
+    width: auto;
+    margin-left: 10px;
+  }
+  .info-box .box .info h3 {
+    margin: 5px 0 5px;
+    display: inline-block;
+  }
+  .info-box .box .info p {color:#fff}
+
+  /* End infobox */
+
+

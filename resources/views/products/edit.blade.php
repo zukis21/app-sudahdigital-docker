@@ -47,19 +47,24 @@
 
         <div class="form-group">
             <h2 class="card-inside-title">Categories</h2>
+            <label for="categories" style="width:100%;">
             <select name="categories"  id="categories" 
                 class="form-control" style="width:100%;">
                 <option></option>
                 @if($categories)
                     @foreach($categories as $category)
                         <?php $dash=''; ?>
-                        <option value="{{$category->id}}" @if(($cat_edit != '') && ($cat_edit->id == $category->id)) selected @endif>{{$category->name}}</option>
-                        @if(count($category->subcategory))
-                            @include('products.sub-category-list-option-for-update',['subcategories' => $category->subcategory])
+                        @if(!count($category->subcategory))
+                            <option value="{{$category->id}}" @if(($cat_edit != '') && ($cat_edit->id == $category->id)) selected @endif>{{$category->name}}</option>
+                        @elseif(count($category->subcategory))
+                            <optgroup label="{{$category->name}}">
+                                @include('products.sub-category-list-option-for-update',['subcategories' => $category->subcategory])
+                            </optgroup>
                         @endif
                     @endforeach
                 @endif
             </select>
+            </label>
             <div class="form-group form-float">
                 <small class="err_exist"></small>
             </div>

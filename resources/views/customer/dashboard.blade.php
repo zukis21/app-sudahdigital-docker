@@ -159,80 +159,174 @@
                 </div>
             </div>
         </div>
+        
         @if($target)
+        @php
+          function singkat_angka($n, $presisi=1) {
+            if ($n < 900) {
+              $format_angka = number_format($n, $presisi);
+              $simbol = '';
+            } else if ($n < 900000) {
+              $format_angka = number_format($n / 1000, $presisi);
+              $simbol = ' Rb';
+            } else if ($n < 900000000) {
+              $format_angka = number_format($n / 1000000, $presisi);
+              $simbol = ' Jt';
+            } else if ($n < 900000000000) {
+              $format_angka = number_format($n / 1000000000, $presisi);
+              $simbol = ' M';
+            } else {
+              $format_angka = number_format($n / 1000000000000, $presisi);
+              $simbol = ' T';
+            }
+          
+            if ( $presisi > 0 ) {
+              $pisah = '.' . str_repeat( '0', $presisi );
+              $format_angka = str_replace( $pisah, '', $format_angka );
+            }
+            
+            return $format_angka . $simbol;
+          }
+
+          /*if ($target){
+            $sisa = $target->target_values - $target->target_achievement;
+          }*/
+
+          $total_ach = 0;
+          foreach($order_ach as $p){
+            $total_ach += $p->total_price;
+          }
+          //return $total_ach;
+          //echo number_format($total_ach);
+        @endphp
         <div class="row justify-content-center" style="">
-            <div class="col-12" style="z-index: 2;">
-                <section class='statis text-center'>
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-md-4">
-                          <div class="box bg-primary">
-                            <i class="fal fa-store"></i>
-                            <h3>{{$cust_total}}</h3>
-                            <p class="lead">Jumlah Toko</p>
-                          </div>
+          
+          <div class="col-12" style="z-index: 2;">
+              <section class='statis text-center'>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="box bg-primary">
+                          <i class="fal fa-store"></i>
+                          <h3>{{$cust_total}}</h3>
+                          <p class="lead">Jumlah Toko</p>
                         </div>
-                        <div class="col-md-4">
-                          <div class="box bg-success">
-                            <i class="fal fa-shopping-cart" aria-hidden="true"></i>
-                            <h3>{{$order}}</h3>
-                            <p class="lead">Toko Sudah Order</p>
-                          </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="box bg-success">
+                          <i class="fal fa-shopping-cart" aria-hidden="true"></i>
+                          <h3>{{$order}}</h3>
+                          <p class="lead">Toko Sudah Order</p>
                         </div>
-                        <div class="col-md-4">
-                          <div class="box bg-danger">
-                            <i class="fal fa-shopping-cart" aria-hidden="true"></i>
-                            <i class="fas fa-slash fa-2x "></i>
-                            <h3>{{$cust_total - $order}}</h3>
-                            <p class="lead">Toko Belum Order</p>
-                          </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="box bg-danger">
+                          <i class="fal fa-shopping-cart" aria-hidden="true"></i>
+                          <i class="fas fa-slash fa-2x "></i>
+                          <h3>{{$cust_total - $order}}</h3>
+                          <p class="lead">Toko Belum Order</p>
                         </div>
-                        <div class="col-md-4">
-                          <div class="box bg-primary">
-                            <i class="fal fa-bullseye-arrow"></i>
-                            <h3>{{$target ? number_format($target->target_values) : '0'}}</h3>
-                            <p class="lead">Target (Rp)</p>
-                          </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="box bg-primary">
+                          <i class="fal fa-bullseye-arrow"></i>
+                          <h3>{{$target ? number_format($target->target_values) : '0'}}</h3>
+                          <p class="lead">Target (Rp)</p>
                         </div>
-                        <div class="col-md-4">
-                          <div class="box bg-success">
-                            <!--<i class="fa fa-shopping-cart"></i>-->
-                            <i class="fal fa-trophy" aria-hidden="true"></i>
-                            <h3>
-                              <!--/*
-                              $total_ach = 0;
-                              foreach($order_ach as $p){
-                                  $total_ach += $p->total_price;
+                      </div>
+                      <div class="col-md-4">
+                        <div class="box bg-success">
+                          <!--<i class="fa fa-shopping-cart"></i>-->
+                          <i class="fal fa-trophy" aria-hidden="true"></i> 
+                          <h3>
+                            {{number_format($total_ach)}}
+                            
+                            <!--{{$target ? number_format($target->target_achievement) : '0'}}-->
+                          </h3>
+                          <p class="lead">Pencapaian (Rp)</p>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="box bg-danger">
+                          <!--<i class="fa fa-shopping-cart"></i>-->
+                          <i class="fal fa-bullseye-arrow"></i>
+                          <i class="fas fa-slash fa-2x "></i>
+                          <h3>
+                            @php
+                              if ($target){
+                                $sisa = $target->target_values - $total_ach;
                               }
-                              //return $total_ach;
-                              echo number_format($total_ach);*/
-                              -->
-                              {{$target ? number_format($target->target_achievement) : '0'}}
-                            </h3>
-                            <p class="lead">Pencapaian (Rp)</p>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="box bg-danger">
-                            <!--<i class="fa fa-shopping-cart"></i>-->
-                            <i class="fal fa-bullseye-arrow"></i>
-                            <i class="fas fa-slash fa-2x "></i>
-                            <h3>
-                              @php
-                                if ($target){
-                                  $sisa = $target->target_values - $target->target_achievement;
-                                }
-                              @endphp  
-                              {{$target ? number_format($sisa) : '0'}}
-                            </h3>
-                            <p class="lead">Target Belum Capai (Rp)</p>
-                          </div>
+                            @endphp  
+                            {{$target ? number_format($sisa) : '0'}}
+                          </h3>
+                          <p class="lead">Target Belum Capai (Rp)</p>
                         </div>
                       </div>
                     </div>
-                </section>
-            </div>
-            
+                  </div>
+              </section>
+          </div>
+          
+          <!--
+          <div class="col-12 mb-3" style="z-index: 2;">
+            <section class="info-box">
+              <div class="container">
+                <div class="row">
+
+                  <div class="col-md-4 mb-2">
+                    <div class="box">
+                      <i class="fal fa-shopping-cart fa-fw bg-dark" aria-hidden="true"></i>
+                      <div class="info">
+                        <div class="media-body align-self-center">
+                          <div class="text-right">
+                              <h4 class="font-20 my-0 font-weight-bold"><span data-plugin="counterup">{{$order}} / {{$cust_total}}</span></h4>
+                              <p class="mb-0 mt-1 text-truncate">Toko Order</p>
+                          </div>
+                      </div>
+                      </div>
+                      <div class="ml-1 mt-4" >
+                        <h6 class="text-uppercase">Persentase <span class="float-right">{{$order/$cust_total * 100}}%</span></h6>
+                        <div class="progress progress-sm m-0" style="height: 5px;">
+                          
+                            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$order/$cust_total * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$order/$cust_total * 100}}%">
+                                <span class="sr-only">{{$order/$cust_total * 100}}% Complete</span>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="box">
+                      <i class="fal fa-bullseye-arrow fa-fw bg-dark" aria-hidden="true"></i>
+                      <div class="info">
+                        <div class="media-body align-self-center">
+                          <div class="text-right">
+                              <h4 class="font-20 my-0 font-weight-bold">
+                                <span data-plugin="counterup">
+                                  {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                                </span>
+                              </h4>
+                              <p class="mb-0 mt-1 text-truncate">Pencapaian</p>
+                          </div>
+                      </div>
+                      </div>
+                      <div class="ml-1 mt-4" >
+                        <h6 class="text-uppercase">Persentase <span class="float-right">{{$total_ach/$target->target_values * 100}}%</span></h6>
+                        <div class="progress progress-sm m-0" style="height: 5px;">
+                          
+                            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$total_ach/$target->target_values * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$total_ach/$target->target_values * 100}}%">
+                                <span class="sr-only">{{$total_ach/$target->target_values * 100}}% Complete</span>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          -->
         </div>
 
         <div class="row justify-content-center" style="">

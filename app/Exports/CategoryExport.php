@@ -24,6 +24,7 @@ class CategoryExport implements FromCollection, WithMapping, WithHeadings
         return[
                 $category->id,
                 $category->name,
+                $category->parent_id,
             ];
     }
 
@@ -31,6 +32,7 @@ class CategoryExport implements FromCollection, WithMapping, WithHeadings
         return [
            'Id',
            'Category Name',
+           'Parent Id',
         ] ;
     }
 

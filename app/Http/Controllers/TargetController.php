@@ -29,7 +29,8 @@ class TargetController extends Controller
     public function index(Request $request, $vendor){
         //\DB::connection()->enableQueryLog();
         $user_id = \Auth::user()->id;
-        $targets = \App\Sales_Targets::whereHas('sls_exists_spv', function($q) use($user_id)
+        $targets = \App\Sales_Targets::where('client_id',auth()->user()->client_id)
+                ->whereHas('sls_exists_spv', function($q) use($user_id)
                 {
                     return $q->where('spv_id','=',"$user_id");
                 })
@@ -49,7 +50,8 @@ class TargetController extends Controller
             $user_id = \Auth::user()->id;
             //$id_user = \Crypt::decrypt($id);
             //$user = \App\User::findorFail($id_user);
-            $users = \App\User::whereHas('sls_exists', function($q) use($user_id)
+            $users = \App\User::where('client_id',auth()->user()->client_id)
+                    ->whereHas('sls_exists', function($q) use($user_id)
                     {
                         return $q->where('spv_id','=',"$user_id");
                     })

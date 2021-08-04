@@ -22,12 +22,13 @@ Home
     }
 
     .dropdown-menu{
-        min-width: 250px;
+        min-width: 220px;
         white-space: normal;
     }
 
     .dropdown-item {
         white-space: pre-wrap;
+        line-height:normal;
     }
 
     .dropdown-submenu {
@@ -87,7 +88,8 @@ Home
             position: relative;
             top: 0;
             left:0;
-            min-width: 240px;
+            min-width: 210px;
+            /*margin : auto;*/
             /*border-top-style: none;*/
             border-top-left-radius: 2px;
             border-top-right-radius: 2px;
@@ -168,7 +170,9 @@ Home
                                         <li><a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$category->slug])}}">{{$category->name}}</a></li>
                                     @elseif(count($category->subcategory))
                                         <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">{{$category->name}}</a>
-                                        @include('customer.subCategoryList-option',['subcategories' => $category->subcategory])
+                                        
+                                            @include('customer.subcategoryList-option',['subcategories' => $category->subcategory])
+                                        
                                     @endif
                                 @endforeach
                             @endif

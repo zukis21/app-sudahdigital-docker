@@ -1,7 +1,11 @@
 @extends('layouts.master')
 @section('title') Create Product @endsection
 @section('content')
-
+<style>
+    .sel-opt{
+        font-weight: bold;
+    }
+</style>
 	@if(session('status'))
 		<div class="alert alert-success">
 			{{session('status')}}
@@ -37,8 +41,7 @@
         <h2 class="card-inside-title">Categories</h2>
         <select name="categories"  id="categories" class="form-control"></select>
         <br>
-        -->
-
+        
         <div class="form-group">
             <h2 class="card-inside-title">Categories</h2>
             <select name="categories"  id="categories" 
@@ -54,6 +57,32 @@
                     @endforeach
                 @endif
             </select>
+            <div class="form-group form-float">
+                <small class="err_exist"></small>
+            </div>
+        </div>
+        <br>
+        -->
+
+        <div class="form-group">
+            <h2 class="card-inside-title">Categories</h2>
+            <label for="categories" style="width:100%;">
+            <select name="categories"  id="categories" style="width:100%;">
+                <option></option>
+                @if($categories)
+                    @foreach($categories as $category)
+                        <?php $dash=''; ?>
+                        @if(!count($category->subcategory))
+                            <option value="{{$category->id}}">{{$category->name}}</option>
+                        @elseif(count($category->subcategory))
+                            <optgroup label="{{$category->name}}">
+                                @include('products.subcategoryList-option',['subcategories' => $category->subcategory])
+                            </optgroup>
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+            </label>
             <div class="form-group form-float">
                 <small class="err_exist"></small>
             </div>
@@ -171,7 +200,8 @@
 
     //select2
     $('#categories').select2({
-      placeholder: 'Select an categories',
+      placeholder: 'Select a categories',
+      //templateResult: formatOutput,
       /*ajax: {
         url: '{{URL::to('/ajax/categories/search')}}',
         processResults: function (data) {
@@ -189,7 +219,13 @@
       }*/
     });
 
-
+    /*function formatOutput (optionElement) {
+        
+        var $opt = $(
+            '<span><strong>' + optionElement.text + '</span>'
+        );
+        return $opt;
+    }*/
     
     function test_fn(test_value){
         var test_value = test_value.replace(/[^0-9]+/g, "");
@@ -202,6 +238,7 @@
         document.getElementById("low_stock").value = "";
         document.getElementById("low_stock").value = test_value;
     }
+
     </script>
 
 @endsection

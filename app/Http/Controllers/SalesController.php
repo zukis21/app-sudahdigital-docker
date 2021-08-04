@@ -61,7 +61,8 @@ class SalesController extends Controller
         }
         else{
             $user_id = \Auth::user()->id;
-            $users = \App\User::whereHas('sls_exists', function($q) use($user_id)
+            $users = \App\User::where('client_id',auth()->user()->client_id)
+                    ->whereHas('sls_exists', function($q) use($user_id)
                     {
                         return $q->where('spv_id','=',"$user_id");
                     })

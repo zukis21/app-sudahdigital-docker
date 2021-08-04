@@ -217,6 +217,7 @@ class CustomerKeranjangController extends Controller
     }
 
     public function pesan(Request $request, $vendor){
+        $date = date('Y-m-d H:i:s');
         $user_id = \Auth::user()->id;
         $client_id =\Auth::user()->client_id;
         $client_name = \App\B2b_client::findOrfail($client_id);
@@ -290,7 +291,8 @@ class CustomerKeranjangController extends Controller
             $orders->customer_id = $customer->id;
             $orders->payment_method = $payment_method;
             $orders->notes = $notes;
-            
+            $orders->created_at = $date;
+            $orders->updated_at = $date;
             if($request->get('voucher_code_hide_modal') != ""){
                 $keyword = $request->get('voucher_code_hide_modal');
                 $vouchers_cek = \App\Voucher::where('code','=',"$keyword")->first();
@@ -345,6 +347,7 @@ Alamat : '.$customer->address.',
                             ->where('client_id',$client_id)
                             ->whereMonth('period', $month)
                             ->whereYear('period', $year)->first();
+                //dd($month);
                 if($target_ach){
                     $target_ach->target_achievement +=  $orders_ach->total_price;
                     $target_ach->save();
