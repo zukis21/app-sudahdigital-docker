@@ -52,7 +52,7 @@
                         <?php $dash=''; ?>
                         <option value="{{$category->id}}">{{$category->name}}</option>
                         @if(count($category->subcategory))
-                            @include('products.subCategoryList-option',['subcategories' => $category->subcategory])
+                            @include('products.subcategoryList-option',['subcategories' => $category->subcategory])
                         @endif
                     @endforeach
                 @endif
