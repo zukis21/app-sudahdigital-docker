@@ -94,6 +94,8 @@ class DashboardSalesController extends Controller
         if($work_plan){
             $day_off = \App\Holiday::where('wp_id',$work_plan->id)
                   ->where('date_holiday','<=',$date_now)->count();
+        }else{
+            $day_off = null;
         }
         
         //dd($day_off);
