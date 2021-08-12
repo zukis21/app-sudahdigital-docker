@@ -91,26 +91,17 @@ class DashboardSalesController extends Controller
         $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
                     ->whereMonth('work_period', '=', $month)
                     ->whereYear('work_period', '=', $year)->first();
-        $day_off = \App\Holiday::where('wp_id',$work_plan->id)
+        if($work_plan){
+            $day_off = \App\Holiday::where('wp_id',$work_plan->id)
                   ->where('date_holiday','<=',$date_now)->count();
+        }
+        
         //dd($day_off);
         //$current_day = date('d');
         //$work_current = $current_day - $day_off;
         //dd($work_plan->working_days);
 
-        $target_users = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
-                        ->whereMonth('period', '=', $month)
-                        ->whereYear('period', '=', $year)
-                        ->orderBy('user_id', 'ASC')
-                        ->pluck('target_values');
-        
-        $ach_users = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
-                        ->whereMonth('period', '=', $month)
-                        ->whereYear('period', '=', $year)
-                        ->orderBy('user_id', 'ASC')
-                        ->pluck('target_achievement');
-        
-        $cartuser = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
+       $cartuser = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
                         ->whereMonth('period', '=', $month)
                         ->whereYear('period', '=', $year)
                         ->orderBy('user_id', 'ASC')->get();
