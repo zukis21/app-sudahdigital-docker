@@ -121,7 +121,7 @@
                         },
                         success: function(response){
                             if (response == 'taken') {
-                            $('.err_exist').addClass("small").addClass('merah').text('Month & Year already exists...');
+                            $('.err_exist').addClass("small").addClass('merah').text('Period already exists...');
                             $('#btnSubmit').prop('disabled', true);
                             }else if (response == 'not_taken') {
                             $('.err_exist').addClass("text-primary").removeClass('merah').text('');
