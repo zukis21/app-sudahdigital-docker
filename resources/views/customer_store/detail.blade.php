@@ -57,7 +57,7 @@
         <li>
             <label class="form-label">Customer Type</label>
         </li>
-        <small class="text-muted">{{$customer->cust_type ? "$customer->cust_type" : '-'}}</small>
+        <small class="text-muted">{{$customer->cust_type ? $customer->type_cust->name : '-'}}</small>
     </ul>
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>
@@ -71,6 +71,20 @@
             TOP&nbsp;{{$customer->payment_term ? "$customer->payment_term" : '-'}}
         </small>
         @endif
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Pareto Code</label>
+        </li>
+        <small class="text-muted">{{$customer->pareto_id ? $customer->pareto->pareto_code : '-'}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Target Store</label>
+        </li>
+        <small class="text-muted">{{$customer->ptarget_store ? $customer->target_store : '-'}}</small>
     </ul>
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>

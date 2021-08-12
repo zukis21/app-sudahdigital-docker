@@ -1,5 +1,5 @@
 @extends('customer.layouts.template-nocart')
-@section('title') Orders @endsection
+@section('title') Dashboard @endsection
 @section('content')
 <style>
     .lead{
@@ -200,7 +200,7 @@
           //echo number_format($total_ach);
         @endphp
         <div class="row justify-content-center" style="">
-          
+          <!--
           <div class="col-12" style="z-index: 2;">
               <section class='statis text-center'>
                   <div class="container">
@@ -236,19 +236,17 @@
                       </div>
                       <div class="col-md-4">
                         <div class="box bg-success">
-                          <!--<i class="fa fa-shopping-cart"></i>-->
                           <i class="fal fa-trophy" aria-hidden="true"></i> 
                           <h3>
                             {{number_format($total_ach)}}
                             
-                            <!--{{$target ? number_format($target->target_achievement) : '0'}}-->
+                            
                           </h3>
                           <p class="lead">Pencapaian (Rp)</p>
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="box bg-danger">
-                          <!--<i class="fa fa-shopping-cart"></i>-->
                           <i class="fal fa-bullseye-arrow"></i>
                           <i class="fas fa-slash fa-2x "></i>
                           <h3>
@@ -266,26 +264,27 @@
                   </div>
               </section>
           </div>
+          -->
           
-          <!--
           <div class="col-12 mb-3" style="z-index: 2;">
-            <section class="info-box">
+            <section class="info-box ">
               <div class="container">
                 <div class="row">
 
-                  <div class="col-md-4 mb-2">
+                  <!--toko order-->
+                  <div class="col-md-4 mb-3">
                     <div class="box">
                       <i class="fal fa-shopping-cart fa-fw bg-dark" aria-hidden="true"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
                           <div class="text-right">
-                              <h4 class="font-20 my-0 font-weight-bold"><span data-plugin="counterup">{{$order}} / {{$cust_total}}</span></h4>
+                              <h5 class="font-20 my-0 font-weight-bold"><span data-plugin="counterup">{{$order}} / {{$cust_total}}</span></h5>
                               <p class="mb-0 mt-1 text-truncate">Toko Order</p>
                           </div>
                       </div>
                       </div>
                       <div class="ml-1 mt-4" >
-                        <h6 class="text-uppercase">Persentase <span class="float-right">{{$order/$cust_total * 100}}%</span></h6>
+                        <h6 class="text-uppercase">Persentase <span class="float-right">{{round($order/$cust_total * 100,2)}}%</span></h6>
                         <div class="progress progress-sm m-0" style="height: 5px;">
                           
                             <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$order/$cust_total * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$order/$cust_total * 100}}%">
@@ -296,23 +295,24 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <!--pencapaian-->
+                  <div class="col-md-4 mb-3">
                     <div class="box">
                       <i class="fal fa-bullseye-arrow fa-fw bg-dark" aria-hidden="true"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
                           <div class="text-right">
-                              <h4 class="font-20 my-0 font-weight-bold">
+                              <h5 class="font-20 my-0 font-weight-bold">
                                 <span data-plugin="counterup">
                                   {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
                                 </span>
-                              </h4>
+                              </h5>
                               <p class="mb-0 mt-1 text-truncate">Pencapaian</p>
                           </div>
                       </div>
                       </div>
                       <div class="ml-1 mt-4" >
-                        <h6 class="text-uppercase">Persentase <span class="float-right">{{$total_ach/$target->target_values * 100}}%</span></h6>
+                        <h6 class="text-uppercase">Persentase <span class="float-right">{{round($total_ach/$target->target_values * 100,2)}}%</span></h6>
                         <div class="progress progress-sm m-0" style="height: 5px;">
                           
                             <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$total_ach/$target->target_values * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$total_ach/$target->target_values * 100}}%">
@@ -322,11 +322,170 @@
                       </div>
                     </div>
                   </div>
+
+                  <!--pencapaian & target pareto-->
+                  @if($pareto)
+                    @php
+                      $user_id = \Auth::user()->id;
+                      $date_now = date('Y-m-d');
+                      $month = date('m');
+                      $year = date('Y');
+                    @endphp
+                    @foreach($pareto as $prt)
+                      @php
+                        //jumlah toko pareto
+                        $cust_total_p = \App\Customer::where('user_id',$user_id)
+                                      ->where('pareto_id',$prt->id)
+                                      ->count();
+                        
+                        $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
+                                      {
+                                          return $q->where('user_id','=',"$user_id")
+                                                  ->whereNotNull('customer_id')
+                                                  ->whereMonth('created_at', '=', $month)
+                                                  ->whereYear('created_at', '=', $year)
+                                                  ->where('status','!=','CANCEL')
+                                                  ->groupBy('customer_id');
+                                      })
+                                      ->where('pareto_id',$prt->id)
+                                      ->get();
+                        
+                        //target/pencapaian pareto
+                        if($period_par != null){
+                            $pr = $prt->id;
+                            $target_str = \App\Store_Targets::
+                                        whereHas('customers', function($q) use($user_id,$pr)
+                                        {
+                                            return $q->where('pareto_id',$pr)
+                                                      ->where('user_id',$user_id);
+                                            
+                                        })
+                                        ->where('period',$period_par)
+                                        ->selectRaw('sum(target_values) as sum')
+                                        ->pluck('sum');
+
+                            $total_tp = json_decode($target_str,JSON_NUMERIC_CHECK);
+                            $total_target = $total_tp[0];
+                          //dd($total_target);
+                        
+                          //ach pareto
+                          $ach_p = \App\Order::whereHas('customers', function($q) use($user_id,$pr)
+                                      {
+                                          return $q->where('pareto_id',$pr);
+                                      })
+                                      ->where('user_id','=',"$user_id")
+                                      ->whereNotNull('customer_id')
+                                      ->whereMonth('created_at', '=', $month)
+                                      ->whereYear('created_at', '=', $year)
+                                      ->where('status','!=','CANCEL')
+                                      ->selectRaw('sum(total_price) as sum')
+                                      ->pluck('sum');
+                          $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
+                          $total_ach_pareto = $total_ap[0];
+                        }
+                      @endphp
+
+                      <!--jumlah toko pareto-->
+                      <div class="col-md-4 mb-3">
+                        <div class="box">
+                          <i class="fas fa-shopping-cart fa-fw bg-dark" aria-hidden="true"></i>
+                          <div class="info">
+                            <div class="media-body align-self-center">
+                              <div class="text-right">
+                                  <h5 class="font-20 my-0 font-weight-bold">
+                                    <span data-plugin="counterup">
+                                      {{$target ? count($cust_exists_p) : '0'}} / {{$target ? $cust_total_p : '0'}}
+                                    </span>
+                                  </h5>
+                                  <p class="mb-0 mt-1 text-truncate">Pareto Order ({{$prt->pareto_code}}) </p>
+                              </div>
+                          </div>
+                          </div>
+                          <div class="ml-1 mt-4" >
+                            <h6 class="text-uppercase">Persentase <span class="float-right">{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%</span></h6>
+                            <div class="progress progress-sm m-0" style="height: 5px;">
+                              
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                    aria-valuenow="{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%">
+                                    <span class="sr-only">{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}% Complete</span>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--target/pencapaian pareto-->
+                      <div class="col-md-4 mb-3">
+                        <div class="box">
+                          <i class="fas fa-bullseye-arrow fa-fw bg-dark" aria-hidden="true"></i>
+                          <div class="info">
+                            <div class="media-body align-self-center">
+                              <div class="text-right">
+                                  <h5 class="font-20 my-0 font-weight-bold">
+                                    <span data-plugin="counterup">
+                                      {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
+                                    </span>
+                                  </h5>
+                                  <p class="mb-0 mt-1 text-truncate">Pencapaian Pareto ({{$prt->pareto_code}}) </p>
+                              </div>
+                          </div>
+                          </div>
+                          <div class="ml-1 mt-4" >
+                            <h6 class="text-uppercase">Persentase <span class="float-right">{{$total_target ? round(($total_ach_pareto/$total_target  * 100) ,2) : '0'}}%</span></h6>
+                            <div class="progress progress-sm m-0" style="height: 5px;">
+                              
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                    aria-valuenow="{{$total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}%">
+                                    <span class="sr-only">{{$total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}% Complete</span>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      
+                    @endforeach
+                  @endif
+
+                  <!--prediksi pencapaian-->
+                  <div class="col-md-4 mb-3" style="display:flex;">
+                    <div class="box w-100">
+                      <i class="fal fa-analytics fa-fw bg-dark" aria-hidden="true" style="align-items: center"></i>
+                      <div class="info">
+                        <div class="media-body align-self-center">
+                          <div class="text-right">
+                              <h5 class="font-20 my-0 font-weight-bold">
+                                <span data-plugin="counterup">
+                                  {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                                </span>
+                              </h5>
+                              <p class="mb-0 mt-1 text-truncate">Prediksi Pencapaian</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="ml-1 mt-4 text-right" >
+                        <h5 class="font-20 my-0 font-weight-bold">@if($target && $work_plan)
+                          @php
+                              $current_day = date('d');
+                              $hari_berjalan = $current_day - $day_off;
+                              $hari_kerja = $work_plan->working_days;
+                              $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
+                            @endphp
+                          @endif
+                          {{($target && $work_plan) ? number_format($prediksi) : '0'}}
+                        </h5>
+                        
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </section>
           </div>
-          -->
+          
         </div>
 
         <div class="row justify-content-center" style="">
@@ -334,11 +493,12 @@
                 <section class="statistics">
                     <div class="container-fluid">
                       <div class="row">
+
                         <div class="col-md-6 mb-3 d-flex">
                           <div class="box w-100">
                             <ul class="list-group w-100">
                               <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
-                                <b>Toko Belum Order {{date('F-Y', strtotime(\Carbon\Carbon::now()))}}</b>
+                                <b>Toko Pareto Belum Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
@@ -355,11 +515,13 @@
                           <div class="box w-100">
                             <ul class="list-group w-100">
                               <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
-                                <b>Toko Sudah Order {{date('F-Y', strtotime(\Carbon\Carbon::now()))}}</b>
+                                <b>Toko Pareto Sudah Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
                               @if(count($cust_exists) > 0 )
                                 @foreach ($cust_exists as $it)
-                                  <li class="list-group-item"><b>{{$it->store_name}}</b>,<br>{{$it->address}}</li>
+                                  <li class="list-group-item"><b>{{$it->store_name}}</b>,<br>{{$it->address}} 
+                                    <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
+                                  </li>
                                 @endforeach
                               @else
                                 <li class="list-group-item"><b>Nihil</b></li>
@@ -381,7 +543,7 @@
                       <div class="col-md-12">
                         <div class="box">
                           
-                            <span><b>Grafik Pencapaian Th. {{date(' Y', strtotime(\Carbon\Carbon::now()))}}</b></span>
+                            <span><b>Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b></span>
                             <span class="float-right">
                               <i class="fas fa-chart-bar"></i>
                             </span>
@@ -425,10 +587,14 @@
         }
 
       $(function () {
-        var target = <?php echo $target_order ?>;
-        var month = <?php echo $months ?>;
-        var achievement = <?php echo $target_ach ?>;
-        var colors = ['#dc3545', '#6c757d'];
+        var achievement = <?php echo $percent ?>;
+        
+        var sales = <?php echo $users_display ?>;
+        
+
+        //var colors = ['#dc3545', '#6c757d'];
+
+        var colors = ['#1A4066']
 
         if ($(window).width() <= 600) {
           var type = 'bar';
@@ -442,23 +608,23 @@
             /*type: 'bar'*/
           },
           title: {
-            text: 'Pencapaian'
+            text: 'Persentase Pencapaian'
           },
           xAxis: {
-            categories: month
+            categories: sales
           },
           yAxis: {
               title: {
-              text: 'Nominal (Rp)'
+              text: 'Persentase'
             }
           },
           colors:colors,
-          series: [{
+          series: [/*{
             name: 'Target',
             data: target
-          },{
-            name: 'Pencapaian',
-            data: achievement
+          },*/{
+            name: 'Pencapaian (%)',
+            data: achievement,
           }]
         });
       });

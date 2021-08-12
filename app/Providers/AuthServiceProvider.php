@@ -103,7 +103,12 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('manage-target', function($user){
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERVISOR');
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN' || $user->roles == 'SUPERVISOR');
+        });
+
+        Gate::define('work-plan', function($user){
+            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
         });
     }
 }

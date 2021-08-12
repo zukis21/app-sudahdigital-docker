@@ -29,18 +29,20 @@ class DashboardSalesController extends Controller
         $date_now = date('Y-m-d');
         $month = date('m');
         $year = date('Y');
-        
+         
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
         $paket = \App\Paket::where('client_id',\Auth::user()->client_id)->first();
         $target = \App\Sales_Targets::where('user_id',\Auth::user()->id)
                 ->whereMonth('period', '=', $month)
                 ->whereYear('period', '=', $year)
                 ->first();
+
         $order_ach = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
                 ->whereMonth('created_at', '=', $month)
                 ->whereYear('created_at', '=', $year)
                 ->where('status','!=','CANCEL')->get();
+
         $cust_total = \App\Customer::where('user_id',\Auth::user()->id)->count();
         $order = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
@@ -48,7 +50,11 @@ class DashboardSalesController extends Controller
                 ->whereYear('created_at', '=', $year)
                 ->where('status','!=','CANCEL')
                 ->distinct()->get(['customer_id'])->count();
-       
+
+        $pareto = \App\CatPareto::where('client_id',(auth()->user()->client_id))
+                 ->orderBy('position','ASC')
+                 ->get();
+
         $cust_not_exists = \App\Customer::whereNotExists(function($q) use($user_id,$month,$year)
                 {
                     $q->select(\DB::raw(1))
@@ -60,7 +66,9 @@ class DashboardSalesController extends Controller
                             ->where('status','!=','CANCEL');
                             
                 })
+                ->whereNotNull('pareto_id')
                 ->where('user_id',$user_id)->get();
+
         //dd($cus_not_exists);
         $cust_exists = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
                 {
@@ -71,7 +79,55 @@ class DashboardSalesController extends Controller
                             ->where('status','!=','CANCEL')
                             ->groupBy('customer_id');
                 })
+                ->whereNotNull('pareto_id')
                 ->get();
+
+        //target pareto
+        $period_par = \App\Store_Targets::where('period','<=',$date_now)
+                     ->max('period');
+        //dd($period_par);
+            
+        //--hari berjalan
+        $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
+                    ->whereMonth('work_period', '=', $month)
+                    ->whereYear('work_period', '=', $year)->first();
+        $day_off = \App\Holiday::where('wp_id',$work_plan->id)
+                  ->where('date_holiday','<=',$date_now)->count();
+        //dd($day_off);
+        //$current_day = date('d');
+        //$work_current = $current_day - $day_off;
+        //dd($work_plan->working_days);
+
+        $target_users = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
+                        ->whereMonth('period', '=', $month)
+                        ->whereYear('period', '=', $year)
+                        ->orderBy('user_id', 'ASC')
+                        ->pluck('target_values');
+        
+        $ach_users = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
+                        ->whereMonth('period', '=', $month)
+                        ->whereYear('period', '=', $year)
+                        ->orderBy('user_id', 'ASC')
+                        ->pluck('target_achievement');
+        
+        $cartuser = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
+                        ->whereMonth('period', '=', $month)
+                        ->whereYear('period', '=', $year)
+                        ->orderBy('user_id', 'ASC')->get();
+                        //->pluck('user_id');
+        
+        $user_value=[];
+        $percentage=[];
+        foreach ($cartuser as $userval) {
+            $user_value[]= $userval->users->name;
+            $percentage[]= round(($userval->target_achievement / $userval->target_values) * 100 ,2);
+        }
+        $users_display = array_unique($user_value);
+        //$percentcart = json_encode($percentage);
+        //dd($percentcart);
+        
+        
+        /* target order ---
 
         //---Target & Ach chart yearly----//
         $target_order = \App\Sales_Targets::where('user_id',\Auth::user()->id)
@@ -95,8 +151,9 @@ class DashboardSalesController extends Controller
             }
         $months = array_unique($month_value);
         //dd($months);
-        
-         /* target order ---
+        ===============////==================
+
+        //target order ---
         $order_ach = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
                 ->whereMonth('created_at', '=', $month)
@@ -141,12 +198,20 @@ class DashboardSalesController extends Controller
             'order'=>$order,
             'order_ach'=>$order_ach,
             'cust_exists'=>$cust_exists,
-            'cust_not_exists'=>$cust_not_exists,
+            'cust_not_exists'=>$cust_not_exists, 
+            'pareto'=>$pareto,
+            'period_par'=>$period_par,
+            'work_plan'=>$work_plan,
+            'day_off'=>$day_off,
             //'order_chart'=>$order_chart
             ];
         
-        return view('customer.dashboard',$data)->with('target_order',json_encode($target_order,JSON_NUMERIC_CHECK))
+        return view('customer.dashboard',$data) ->with('percent',json_encode($percentage,JSON_NUMERIC_CHECK))
+                                                ->with('users_display',json_encode($users_display));
+                                                
+                                                /*
+                                                ->with('target_order',json_encode($target_order,JSON_NUMERIC_CHECK))
                                                 ->with('months',json_encode($months))
-                                                ->with('target_ach',json_encode($target_ach,JSON_NUMERIC_CHECK));
+                                                ->with('target_ach',json_encode($target_ach,JSON_NUMERIC_CHECK));*/
     }
 }

@@ -28,8 +28,13 @@ class TargetController extends Controller
 
     public function index(Request $request, $vendor){
         //\DB::connection()->enableQueryLog();
-        $user_id = \Auth::user()->id;
-        $targets = \App\Sales_Targets::where('client_id',auth()->user()->client_id)
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $targets = \App\Sales_Targets::where('client_id',auth()->user()->client_id)
+                        ->orderBy('period','ASC')
+                        ->get();
+        }else{
+            $user_id = \Auth::user()->id;
+            $targets = \App\Sales_Targets::where('client_id',auth()->user()->client_id)
                 ->whereHas('sls_exists_spv', function($q) use($user_id)
                 {
                     return $q->where('spv_id','=',"$user_id");
@@ -37,16 +42,38 @@ class TargetController extends Controller
                 //->whereIn('group_id', $user)
                 ->orderBy('period','ASC')
                 ->get();
-                //\DB::enableQueryLog();
-                //dd(\DB::getQueryLog($targets));
+        }
+        
+        //\DB::enableQueryLog();
+        //dd(\DB::getQueryLog($targets));
         //$queries = \DB::getQueryLog();
         //dd($targets);
         
         return view ('target.index',['targets'=>$targets,'vendor'=>$vendor]);
     }
 
+    public function cust_index(Request $request, $vendor){
+        //\DB::connection()->enableQueryLog();
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $targets = \App\Store_Targets::where('client_id',auth()->user()->client_id)
+                        ->orderBy('period','ASC')
+                        ->get();
+            
+            return view ('customer_store.index_target',['targets'=>$targets,'vendor'=>$vendor]);
+        }else{
+            abort(404, 'Tidak ditemukan');
+        }
+        
+    }
+
     public function create_target($vendor)
     {
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $users = \App\User::where('client_id',auth()->user()->client_id)
+                    ->where('roles','=','SALES')
+                    ->where('status','=','ACTIVE')
+                    ->get();
+        }else{
             $user_id = \Auth::user()->id;
             //$id_user = \Crypt::decrypt($id);
             //$user = \App\User::findorFail($id_user);
@@ -57,8 +84,24 @@ class TargetController extends Controller
                     })
                     //->whereIn('group_id', $user)
                     ->where('roles','=','SALES')
+                    ->where('status','=','ACTIVE')
                     ->get();
+        }
+            
             return view('target.create_target',['vendor'=>$vendor,'users'=>$users]);
+    }
+
+    public function cust_create_target($vendor)
+    {
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $customers = \App\Customer::where('client_id',auth()->user()->client_id)
+                    ->whereNotNull('pareto_id')
+                    ->where('status','=','ACTIVE')
+                    ->get();
+            return view('customer_store.create_target',['vendor'=>$vendor,'customers'=>$customers]);
+        }else{
+            abort(404, 'Tidak ditemukan');
+        }
     }
 
     public function store_target(Request $request, $vendor)
@@ -68,7 +111,7 @@ class TargetController extends Controller
         $date_explode = explode('-',$date_period);
         $year = $date_explode[0];
         $month = $date_explode[1];
-        //dd($month);
+        //dd($year);
         $orders = \App\Order::where('user_id',$user_id)
                 ->whereNotNull('customer_id')
                 ->where('status','!=','CANCEL')
@@ -78,7 +121,7 @@ class TargetController extends Controller
                 $targ_ach = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->where('status','!=','CANCEL')
-                        ->whereMonth('created_at', '=', $month)
+                        ->whereMonth('created_at', $month)
                         ->whereYear('created_at', $year)
                         ->selectRaw('sum(total_price) as sum')
                         ->pluck('sum');
@@ -97,12 +140,107 @@ class TargetController extends Controller
         $new_t->target_achievement = $ach_value;
         $period = $date_period.'-01';
         $new_t->period = $period;
+        $new_t->created_by = \Auth::user()->id;
         $new_t->save();
         if ( $new_t->save()){
             return redirect()->route('sales.create_target',[$vendor])->with('status','Target Succsessfully Created');
         }else{
             return redirect()->route('sales.create_target',[$vendor])->with('error','Target Not Succsessfully Created');
         }
+    }
+
+    public function cust_store_target(Request $request, $vendor)
+    {
+        if(count($request->customer_id) > 0) {
+            $sum = 0;
+            
+            foreach ($request->customer_id as $i => $v){
+                $data_target=array(
+                    'client_id'=>$request->client_id,
+                    'customer_id'=>$request->customer_id[$i],
+                    'target_values'=>$request->target_value[$i] ?? '0',
+                    'period'=>$request->period.'-01',
+                    'created_by'=>\Auth::user()->id,
+                );
+                $new_t = new \App\Store_Targets;
+                $new_t->create($data_target);
+            }
+        }
+
+        return redirect()->route('customers.index_target',[$vendor])->with('status','Target Succsessfully Created');
+        /*
+
+        $customer_id = $request->get('customer_id');
+        $date_period = $request->get('period');
+        $startdate = $date_period.'-01';
+
+        $date_explode = explode('-',$date_period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+
+        $min_period = \App\Store_Targets::where('period','>',$startdate)
+                     ->min('period');
+        
+        if($min_period != null){
+            $enddate = date("Y-m", strtotime("$min_period-1 months"));
+
+            if($enddate == $date_period){
+                $orders = \App\Order::where('customer_id',$customer_id)
+                        ->where('status','!=','CANCEL')
+                        ->whereMonth('created_at','>=',$month)
+                        ->whereYear('created_at','>=',$year)->count();
+                if($orders > 0){
+                        $targ_ach = \App\Order::where('customer_id',$customer_id)
+                                ->where('status','!=','CANCEL')
+                                ->whereMonth('created_at', $month)
+                                ->whereYear('created_at', $year)
+                                ->selectRaw('sum(total_price) as sum')
+                                ->pluck('sum');
+                        //$ach = json_encode($targ_ach,JSON_NUMERIC_CHECK);
+                        $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+                        $ach_value = $ach[0];
+                        //dd($ach_value);
+                }else{
+                    $ach_value = 0;
+                }
+            }else{
+                $tgl_terakhir = date('Y-m-t', strtotime($enddate));
+                $orders_count = \App\Order::where('customer_id',$customer_id)
+                        ->where('status','!=','CANCEL')
+                        ->whereBetween('created_at',[$startdate, $tgl_terakhir])
+                        ->count();
+                if($orders_count > 0){
+                    $targ_ach = \App\Order::where('customer_id',$customer_id)
+                        ->where('status','!=','CANCEL')
+                        ->whereBetween('created_at',[$startdate, $tgl_terakhir])
+                        ->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');
+                    //$ach = json_encode($targ_ach,JSON_NUMERIC_CHECK);
+                    $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+                    $ach_value = $ach[0];
+                }else{
+                    $ach_value = 0;
+                }
+            }
+        }
+        
+        //dd($ach);      
+        $new_t = new \App\Sales_Targets;
+        $new_t->client_id = $request->get('client_id');
+        $new_t->user_id = $user_id;
+        $new_t->target_values = $request->get('target_value');
+        $new_t->target_achievement = $ach_value;
+        $period = $date_period.'-01';
+        $new_t->period = $period;
+        $new_t->created_by = \Auth::user()->id;
+        $new_t->save();
+        
+        if ( $new_t->save()){
+            return redirect()->route('sales.create_target',[$vendor])->with('status','Target Succsessfully Created');
+        }else{
+            return redirect()->route('sales.create_target',[$vendor])->with('error','Target Not Succsessfully Created');
+        }
+        */
     }
 
     public function edit_target($vendor,$id)
@@ -113,18 +251,73 @@ class TargetController extends Controller
             return view('target.edit_target',['vendor'=>$vendor, 'user'=>$user, 'target'=>$target]);
         
     }
+
+    public function cust_edit_target($vendor,$id)
+    {
+            $id = \Crypt::decrypt($id);
+            $target = \App\Store_Targets::findorFail($id);
+            
+            return view('customer_store.edit_target',['vendor'=>$vendor, 'target'=>$target]);
+        
+    }
     
     public function update_target(Request $request, $vendor)
     {
         $id_target = $request->get('target_id');
         $new_t = \App\Sales_Targets::findorFail($id_target);
+        $date_period = $request->get('period');
+        $date_explode = explode('-',$date_period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+
+        $orders = \App\Order::where('user_id',$new_t->user_id)
+                ->whereNotNull('customer_id')
+                ->where('status','!=','CANCEL')
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)->count();
+        if($orders > 0){
+                $targ_ach = \App\Order::where('user_id',$new_t->user_id)
+                        ->whereNotNull('customer_id')
+                        ->where('status','!=','CANCEL')
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');
+                //$ach = json_encode($targ_ach,JSON_NUMERIC_CHECK);
+                $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+                $ach_value = $ach[0];
+                //dd($ach_value);
+        }else{
+            $ach_value = 0;
+        }
+
         $new_t->target_values = $request->get('target_value');
-        $new_t->period = $request->get('period').'-01';
+        $new_t->target_achievement = $ach_value;
+        $period = $date_period.'-01';
+        $new_t->period = $period;
+        $new_t->updated_by = \Auth::user()->id;
         $new_t->save();
         if ( $new_t->save()){
             return redirect()->route('sales.edit_target',[$vendor, \Crypt::encrypt($id_target)])->with('status','Target Succsessfully Update');
         }else{
             return redirect()->route('sales.edit_target',[$vendor])->with('error','Target Not Succsessfully Update');
+        }
+    }
+
+    public function cust_update_target(Request $request, $vendor)
+    {
+        $id_target = $request->get('target_id');
+        $new_t = \App\Store_Targets::findorFail($id_target);
+        
+
+        $new_t->target_values = $request->get('target_value');
+        
+        $new_t->updated_by = \Auth::user()->id;
+        $new_t->save();
+        if ( $new_t->save()){
+            return redirect()->route('customers.edit_target',[$vendor, \Crypt::encrypt($id_target)])->with('status','Target Succsessfully Update');
+        }else{
+            return redirect()->route('customers.edit_target',[$vendor])->with('error','Target Not Succsessfully Update');
         }
     }
 }

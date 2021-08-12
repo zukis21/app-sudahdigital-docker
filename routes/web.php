@@ -209,7 +209,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::delete('/paket/{id}/destroy', 'PaketController@destroy')->name('paket.destroy');
     Route::post('/paket/edit_status', 'PaketController@update_status')->name('paket.edit_status');
 
-    //Customers
+    //Customers list
     Route::get('/customers', 'CustomerController@index')->name('customers.index');
     Route::get('/customers/create', 'CustomerController@create')->name('customers.create');
     Route::post('/customers/store', 'CustomerController@store')->name('customers.store');
@@ -222,6 +222,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers/import', 'CustomerController@import')->name('customers.import');
     Route::post('/customers/import_data', 'CustomerController@import_data')->name('customers.import_data');
     Route::delete('/customers/{customers}/delete-permanent','CustomerController@deletePermanent')->name('customers.delete-permanent');
+    //customer type
     Route::get('/customers/customers-type', 'CustomerController@index_type')->name('type_customers.index_type');
     Route::get('/customers/export-customers-type', 'CustomerController@export_type')->name('type_customers.export');
     Route::get('/customers/create-customers-type', 'CustomerController@create_type')->name('type_customers.create');
@@ -229,6 +230,28 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::post('/customers/store-customers-type', 'CustomerController@store_type')->name('type_customers.store');
     Route::put('/customers/{id}/update-customer-type', 'CustomerController@update_type')->name('type_customers.update');
     Route::delete('/customers/{customers}/type-delete-permanent','CustomerController@deletePermanent_type')->name('type_customers.delete-permanent');
+    //customer pareto code
+    Route::get('/customers/pareto-code', 'CustomerController@index_pareto')->name('customers.index_pareto');
+    Route::get('/customers/create-pareto-code', 'CustomerController@create_pareto')->name('pareto_customers.create');
+    Route::post('/customers/store-pareto-code', 'CustomerController@store_pareto')->name('pareto_customers.store');
+    Route::get('/customers/{id}/edit-pareto-code', 'CustomerController@edit_pareto')->name('pareto_customers.edit');
+    Route::put('/customers/{id}/update-pareto-code', 'CustomerController@update_pareto')->name('pareto_customers.update');
+    Route::delete('/customers/{id}/pareto-delete-permanent','CustomerController@deletePermanent_pareto')->name('pareto_customers.delete-permanent');
+    //customer target
+    Route::get('/customers/target', 'TargetController@cust_index')->name('customers.index_target');
+    Route::get('/customers/create-target', 'TargetController@cust_create_target')->name('customers.create_target');
+    Route::post('/customers/store-target', 'TargetController@cust_store_target')->name('customers.store_target');
+    Route::get('/customers/edit-target/{id}', 'TargetController@cust_edit_target')->name('customers.edit_target');
+    Route::post('/customers/update-target', 'TargetController@cust_update_target')->name('customers.update_target');
+
+    //work plan
+    Route::get('/work-plan', 'WorkPlanController@index')->name('workplan.index');
+    Route::get('/work-plan/create', 'WorkPlanController@create')->name('workplan.create');
+    Route::post('/work-plan/store', 'WorkPlanController@store')->name('workplan.store');
+    Route::put('/work-plan/{id}/update', 'WorkPlanController@update')->name('workplan.update');
+    Route::get('/work-plan/{id}/edit', 'WorkPlanController@edit')->name('workplan.edit');
+    Route::delete('/paket/{id}/destroy', 'PaketController@destroy')->name('paket.destroy');
+    Route::post('/paket/edit_status', 'PaketController@update_status')->name('paket.edit_status');
 
     //Order
     Route::get('/orders', 'OrderController@index')->name('orders.index');
@@ -249,6 +272,7 @@ Route::group(['prefix' => '/{vendor}'], function()
 Route::get('/ajax/users_email/search', 'AjaxAdminSearch@email_search');
 Route::get('/ajax/cities/search', 'AjaxAdminSearch@CitySearch');
 Route::post('/ajax/post-sortable','AjaxAdminSearch@post_sortable');
+Route::post('/ajax/post-sortable-pareto','AjaxAdminSearch@post_sortable_pareto');
 Route::get('/ajax/products/code/search', 'AjaxAdminSearch@CodeProductSearch');
 Route::get('/ajax/categories/search', 'AjaxAdminSearch@CategorySearch');
 Route::get('/products/change_status_stock', 'AjaxAdminSearch@OnOff_stock');
@@ -260,7 +284,10 @@ Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');
 Route::get('/ajax/name_client_so/search', 'AjaxAdminSearch@ClientsoCodeSearch');
 Route::get('/ajax/email_client_so/search', 'AjaxAdminSearch@email_so_search');
 Route::get('/ajax/type_customers/search', 'AjaxAdminSearch@TypeCustomerSearch');
+Route::get('/ajax/pareto_code/search', 'AjaxAdminSearch@ParetoCodeSearch');
 Route::get('/ajax/exist_user/search', 'AjaxAdminSearch@UserExistSearch');
+Route::get('/ajax/exist_date/search', 'AjaxAdminSearch@DateExistSearch');
+Route::get('/ajax/workplan/search', 'AjaxAdminSearch@WorkPlanExistSearch');
 Route::get('/ajax/exist_user_edit/search', 'AjaxAdminSearch@UserExistEditSearch');
 
 /*===route group unique product===*/

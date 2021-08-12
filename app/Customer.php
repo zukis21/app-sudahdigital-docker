@@ -26,4 +26,12 @@ class Customer extends Model
         return $this->hasMany('App\Order','customer_id');
     }
 
+    public function pareto(){
+        return $this->belongsTo('App\CatPareto','pareto_id');
+    }
+
+    public function store_targets(){
+        return $this->hasMany('App\Store_Targets','customer_id');
+    }
+
 }

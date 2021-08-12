@@ -2400,6 +2400,7 @@ footer.footer .cart .count-cart-three {
     margin-top: 0;
     /*color: #CCC;*/
     color: #1A4066;
+    
   }
   
   .statistics .box {
@@ -2408,6 +2409,8 @@ footer.footer .cart .count-cart-three {
     padding: 15px;
     overflow: hidden;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    /*border : 1px solid #ccc;*/
+    
   }
   .statistics .box > i {
     float: left;
@@ -2417,6 +2420,7 @@ footer.footer .cart .count-cart-three {
     height: 60px;
     line-height: 60px;
     font-size: 22px;
+    
   }
   .statistics .box .info {
     float: left;

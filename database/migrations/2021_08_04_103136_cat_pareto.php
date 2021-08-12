@@ -15,10 +15,11 @@ class CatPareto extends Migration
     {
         Schema::create('cat_pareto', function (Blueprint $table) {
             $table->id();
-            $table->string('pareto_kode');
+            $table->string('pareto_code');
             $table->string('name');
             $table->integer('client_id')->unsigned();
             $table->integer('position')->unsigned();
+            $table->enum('status',['ACTIVE','INACTIVE']);
             $table->timestamps();
             
             //$table->foreign('client_id')->references('id')->on('b2b_client');

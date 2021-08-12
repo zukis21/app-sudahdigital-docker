@@ -126,6 +126,28 @@
                 </div>
             </div>
             -->
+
+            <div class="col-sm-12" style="padding:0;">
+                <h2 class="card-inside-title">Pareto Code</h2>
+                <select name="pareto_id"  id="pareto_id" class="form-control">
+                    <option></option>
+                    @foreach($pareto as $ty)
+                        <option value="{{$ty->id}}" {{$ty->id == $cust->pareto_id ? 'selected' : ''}}>{{$ty->pareto_code}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <br>
+
+            <div class="input-group">
+                <div class="form-line">
+                    <input type="number" min="0" class="form-control" 
+                    id="target_store" name="target_store" value="{{old('target_store',preg_replace("/[^0-9]/","",$cust->target_store))}}" 
+                    autocomplete="off" placeholder="Target Store">
+                </div>
+                <span class="input-group-addon">IDR</span>
+            </div>
+            
+
             <div class="col-sm-12" style="padding:0;">
                 <h2 class="card-inside-title">Sales Representative</h2>
                 <select name="user"  id="user" class="form-control" required></select>
@@ -171,6 +193,10 @@
         }
     $('#cust_type').select2({
         placeholder: 'Select a Customer Type',
+    });
+
+    $('#pareto_id').select2({
+        placeholder: 'Select a Pareto Code',
     }); 
 
     $('#user').select2({

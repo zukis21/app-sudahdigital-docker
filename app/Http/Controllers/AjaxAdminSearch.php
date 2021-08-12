@@ -46,6 +46,20 @@ class AjaxAdminSearch extends Controller
       return response('Update Successfully.', 200);
     }
 
+    public function post_sortable_pareto(Request $request){
+      $pareto= \App\CatPareto::all();
+
+      foreach ($pareto as $ban) {
+          foreach ($request->posit as $order) {
+              if ($order['id'] == $ban->id) {
+                  $ban->update(['position' => $order['position']]);
+              }
+          }
+      }
+      
+      return response('Update Successfully.', 200);
+    }
+
     public function CodeProductSearch(Request $request){
       $keyword = $request->get('code');
       $vouchers = \App\product::where('product_code','=',"$keyword")->count();
@@ -158,11 +172,47 @@ class AjaxAdminSearch extends Controller
      //$cust = \App\TypeCustomer::whereRaw("BINARY 'name'= ?",[$keyword])->count();
   }
 
+  public function ParetoCodeSearch(Request $request){
+    if ($request->has('old_code')){
+      $key_old = $request->get('old_code');
+      $keyword = $request->get('code');
+      $pareto = \App\CatPareto::where('id','!=',$key_old)
+              ->where('client_id','=',auth()->user()->client_id)
+              ->where('pareto_code','=',"$keyword")->count();
+      if ($pareto > 0) {
+          echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+    }else{
+      $keyword = $request->get('code');
+      $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
+              ->where('pareto_code','=',"$keyword")->count();
+      if ($pareto > 0) {
+          echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+    }
+    
+  }
+
   public function UserExistSearch(Request $request){
     $user_id = $request->get('user_id');
     $date = $request->get('date').'-01';
     $cust = \App\Sales_Targets::where('user_id','=',$user_id)
             ->where('period','=',$date)->count();
+    if ($cust > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
+  public function DateExistSearch(Request $request){
+    $date = $request->get('date').'-01';
+    $cust = \App\Store_Targets::where('client_id','=',auth()->user()->client_id)
+          ->where('period','=',$date)->count();
     if ($cust > 0) {
         echo "taken";	
       }else{
@@ -179,6 +229,18 @@ class AjaxAdminSearch extends Controller
             ->where('period','=',$date)
             ->count();
     if ($cust > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
+  public function WorkPlanExistSearch(Request $request){
+    $date = $request->get('date').'-01';
+    $client_id = $request->get('client_id');
+    $plan = \App\WorkPlan::where('client_id','=',$client_id)
+            ->where('work_period','=',$date)->count();
+    if ($plan > 0) {
         echo "taken";	
       }else{
         echo 'not_taken';

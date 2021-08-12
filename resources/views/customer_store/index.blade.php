@@ -59,15 +59,14 @@
 	<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
 		<thead>
 			<tr>
-				<th>No</th>
+				<th>Status</th>
 				<th>Customer Code</th>
 				<th>Name/Email</th>
 				<th>Address</th>
 				<th >Phone</th>
 				<th>Customer Type</th>
 				<th>Sales Rep</th>
-				<th>Status</th>
-				<th width="13%">Action</th>
+				<th>#Act </th>
 			</tr>
 		</thead>
 		<tbody>
@@ -75,12 +74,22 @@
 			@foreach($customers as $c)
 			<?php $no++;?>
 			<tr>
-				<td>{{$no}}</td>
+				<td>
+					@if($c->status=="NONACTIVE")
+						<span class="badge bg-red text-white">{{$c->status}}</span>
+							@else
+						<span class="badge bg-green">{{$c->status}}</span>
+					@endif
+				</td>
 				<td>
 					@if($c->store_code)
 					{{$c->store_code}}
 					@else
 					-
+					@endif
+					<br>
+					@if($c->pareto_id)
+					<span class="badge bg-orange">{{$c->pareto->pareto_code}}</span>
 					@endif
 				</td>
 				<td>
@@ -127,20 +136,12 @@
 					@endif
 				@endif
 				<td>
-					@if($c->status=="NONACTIVE")
-					<span class="badge bg-red text-white">{{$c->status}}</span>
-						@else
-					<span class="badge bg-green">{{$c->status}}</span>
-					@endif
-
-				</td>
-				<td>
-					<a class="btn bg-grey waves-effect" href="{{route('customers.detail',[$vendor,Crypt::encrypt($c->id)])}}">Detail</a>&nbsp;
-					<a class="btn btn-info btn-xs" href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}"><i class="material-icons">edit</i></a>
+					<a class="btn bg-grey waves-effect btn-xs" href="{{route('customers.detail',[$vendor,Crypt::encrypt($c->id)])}}" style="margin-bottom:2px;"><i class="material-icons">list</i></a>&nbsp;
+					<a class="btn btn-info waves-effect btn-xs" href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}" style="margin-bottom:2px;"><i class="material-icons">edit</i></a>
 					<!--gate check-->
 					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
 					&nbsp;
-					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}"><i class="material-icons">delete</i></button>&nbsp;
+					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}" style=""><i class="material-icons">delete</i></button>&nbsp;
 					<!-- Modal Delete -->
 		            <div class="modal fade" id="deleteModal{{$c->id}}" tabindex="-1" role="dialog">
 		                <div class="modal-dialog modal-sm" role="document">

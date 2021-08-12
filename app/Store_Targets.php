@@ -4,27 +4,22 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sales_Targets extends Model
+class Store_Targets extends Model
 {
-    protected $table = "sales_targets";
-
+    protected $table = "store_target";
+    
     protected $fillable = [
-        'user_id', 
+        'client_id',
+        'customer_id', 
         'target_values', 
         'target_achievement',
         'period',
-        'created_at',
-        'updated_at',
         'created_by',
         'updated_by'
     ];
 
-    public function users(){
-        return $this->belongsTo('App\User','user_id');
-    }
-
-    public function sls_exists_spv(){
-        return $this->belongsTo('App\Spv_sales','user_id','sls_id');
+    public function customers(){
+        return $this->belongsTo('App\Customer','customer_id');
     }
 
     public function created_of(){

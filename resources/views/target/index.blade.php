@@ -20,13 +20,15 @@
 		<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
 			<thead>
 				<tr>
-					<th>No</th>
+					<!--<th>No</th>-->
 					<th>Name</th>
 					<th>Customers Total</th>
-					<th>Monthly Target Values (IDR)</th>
+					<th>Target Values (IDR)</th>
 					<th>Target Achievement (IDR)</th>
 					<th>Period</th>
-					<th width="10%">Action</th>
+					<th>Created By</th>
+					<th>Updated By</th>
+					<th>#</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -34,12 +36,9 @@
 				@foreach($targets as $u)
 				<?php $no++;?>
 				<tr>
-					<td>{{$no}}</td>
+					<!--<td>{{$no}}</td>-->
 					<td>
-						@php
-							$user = \App\User::where('id',$u->user_id)->first();
-						@endphp
-						<b>{{$user->name}}</b></p>
+						{{$u->users->name}}
 					</td>
 					<td>
 						@php
@@ -71,6 +70,16 @@
 					</td>
 					<td>
 						{{date('M-Y', strtotime($u->period))}}
+					</td>
+					<td>
+						{{$u->created_by ? $u->created_of->name : ''}}
+						<br>
+						{{$u->created_by ? $u->created_at : ''}}
+					</td>
+					<td>
+						{{$u->updated_by ? $u->updated_of->name : ''}}
+						<br>
+						{{$u->updated_by ? $u->updated_at : ''}}
 					</td>
 					<td>
 						<a class="btn btn-info btn-xs" href="{{route('sales.edit_target',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;

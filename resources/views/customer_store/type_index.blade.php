@@ -50,7 +50,7 @@
 		                <div class="modal-dialog modal-sm" role="document">
 		                    <div class="modal-content modal-col-red">
 		                        <div class="modal-header">
-		                            <h4 class="modal-title" id="deleteModalLabel">Delete Customer</h4>
+		                            <h4 class="modal-title" id="deleteModalLabel">Delete Type</h4>
 		                        </div>
 		                        <div class="modal-body">
 		                           Delete this type ..? 

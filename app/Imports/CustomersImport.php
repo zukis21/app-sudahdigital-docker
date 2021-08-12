@@ -53,6 +53,12 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             if(!empty( $rows['term_of_payment'])){
                 $customer->payment_term = $rows['term_of_payment'];
             }
+            if(!empty( $rows['pareto_id'])){
+                $customer->pareto_id = $rows['pareto_id'];
+            }
+            if(!empty( $rows['target_store'])){
+                $customer->target_store = $rows['target_store'];
+            }
             if(!empty( $rows['sales_rep'])){
                 $customer->user_id = $rows['sales_rep'];
             }
@@ -85,6 +91,12 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             }
             if(!empty( $rows['term_of_payment'])){
                 $customer->payment_term = $rows['term_of_payment'];
+            }
+            if(!empty( $rows['pareto_id'])){
+                $customer->pareto_id = $rows['pareto_id'];
+            }
+            if(!empty( $rows['target_store'])){
+                $customer->target_store = $rows['target_store'];
             }
             if(!empty( $rows['sales_rep'])){
                 $customer->user_id = $rows['sales_rep'];

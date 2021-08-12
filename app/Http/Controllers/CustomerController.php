@@ -98,6 +98,20 @@ class CustomerController extends Controller
         }
     }
 
+    public function index_pareto(Request $request, $vendor)
+    {
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
+                    ->orderBy('position', 'ASC')
+                    ->get();//paginate(10);
+            //$filterkeyword = $request->get('keyword');
+            //$status = $request->get('status');
+            return view ('customer_store.pareto_index',['pareto'=>$pareto,'vendor'=>$vendor]);
+        }else{
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -117,6 +131,16 @@ class CustomerController extends Controller
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
             return view('customer_store.create_type',['vendor'=>$vendor]);
+        }
+        else{
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        }       
+    }
+
+    public function create_pareto($vendor)
+    {
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            return view('customer_store.create_pareto',['vendor'=>$vendor]);
         }
         else{
             abort(403, 'Anda tidak memiliki cukup hak akses');
@@ -177,6 +201,29 @@ class CustomerController extends Controller
         }
     }
 
+    public function store_pareto(Request $request, $vendor)
+    {
+        
+        $max_position = \App\CatPareto::where('client_id','=',$request->get('client_id'))
+                      ->max('position');
+
+        $new_cut = new \App\CatPareto();
+        $new_cut->pareto_code = strtoupper($request->get('pareto_code'));
+        $new_cut->client_id = $request->get('client_id');
+        if($max_position == null){
+            $new_cut->position = 1;
+        }
+        else{
+            $new_cut->position = $max_position + 1;
+        }
+        $new_cut->save();
+        if ( $new_cut->save()){
+            return redirect()->route('pareto_customers.create',[$vendor])->with('status','Pareto Code Succsessfully Created');
+        }else{
+            return redirect()->route('pareto_customers.create',[$vendor])->with('error','Pareto Code Not Succsessfully Created');
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -207,11 +254,15 @@ class CustomerController extends Controller
             $cust_term ='';
         }
 
+        $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
+                    ->orderBy('position', 'ASC')
+                    ->get();
+
         if(Gate::check('isSpv')){
             $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
             return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'type'=>$type]);
         }else{
-            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term]);
+            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term,'pareto'=>$pareto]);
         }
         
     }
@@ -221,6 +272,13 @@ class CustomerController extends Controller
         $id = \Crypt::decrypt($id);
         $cust = \App\TypeCustomer::findOrFail($id);
         return view('customer_store.edit_type',['cust' => $cust,'vendor'=>$vendor]);
+    }
+
+    public function edit_pareto($vendor,$id)
+    {
+        $id = \Crypt::decrypt($id);
+        $pareto = \App\CatPareto::findOrFail($id);
+        return view('customer_store.edit_pareto',['pareto' => $pareto,'vendor'=>$vendor]);
     }
 
     /**
@@ -248,6 +306,8 @@ class CustomerController extends Controller
             $cust->city_id = $request->get('city');
             $cust->address = $request->get('address');
             $pay_trm = $request->get('payment_term');
+            $cust->pareto_id = $request->get('pareto_id');
+            $cust->target_store = $request->get('target_store');
             if($pay_trm == 'TOP'){
                 $cust->payment_term = $request->get('pay_cust').' Days';
             }else{
@@ -269,6 +329,15 @@ class CustomerController extends Controller
         
         $cust->save();
         return redirect()->route('type_customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Name for Type Customer Succsessfully Update');
+    }
+
+    public function update_pareto(Request $request, $vendor,$id)
+    {
+        $cut =\App\CatPareto::findOrFail($id);
+        $cut->pareto_code = $request->get('pareto_code');
+        
+        $cut->save();
+        return redirect()->route('pareto_customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Pareto Code Succsessfully Update');
     }
 
     /**
@@ -300,7 +369,7 @@ class CustomerController extends Controller
         }
         else {
         $cust->forceDelete();
-        return redirect()->route('customers.index',[$vendor])->with('status', 'Customer permanently deleted!');
+        return redirect()->route('customers.index',[$vendor])->with('status', 'Type permanently deleted!');
         }
 
     }
@@ -317,6 +386,22 @@ class CustomerController extends Controller
         else {
         $cust->forceDelete();
         return redirect()->route('type_customers.index_type',[$vendor])->with('status', 'Customer type permanently deleted!');
+        }
+
+    }
+
+    public function deletePermanent_pareto($vendor,$id){
+
+        $cat = \App\CatPareto::findOrFail($id);
+        //dd($id);
+        $order_cat = \App\Customer::where('pareto_id','=',"$id")->count();
+        //dd($order_cust);
+        if($order_cat > 0){
+            return redirect()->route('customers.index_pareto',[$vendor])->with('error', 'Cannot be deleted, because this data already exists in customers');
+        }
+        else {
+        $cat->forceDelete();
+        return redirect()->route('customers.index_pareto',[$vendor])->with('status', 'Pareto Code permanently deleted!');
         }
 
     }
