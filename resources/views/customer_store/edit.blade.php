@@ -138,6 +138,7 @@
             </div>
             <br>
 
+            <!--
             <div class="input-group">
                 <div class="form-line">
                     <input type="number" min="0" class="form-control" 
@@ -146,7 +147,7 @@
                 </div>
                 <span class="input-group-addon">IDR</span>
             </div>
-            
+            -->
 
             <div class="col-sm-12" style="padding:0;">
                 <h2 class="card-inside-title">Sales Representative</h2>

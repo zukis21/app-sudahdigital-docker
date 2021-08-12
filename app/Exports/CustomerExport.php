@@ -35,7 +35,6 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
                 $customer->name,
                 $customer->payment_term,
                 $customer->pareto_id,
-                $customer->target_store,
                 $customer->user_id,
             ];
     }
@@ -54,7 +53,6 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
            'Contact',
            'Term_Of_Payment',
            'Pareto_ID',
-           'Target_Store',
            'Sales_Rep'
         ] ;
     }
