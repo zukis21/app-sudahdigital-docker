@@ -432,13 +432,13 @@
                           </div>
                           </div>
                           <div class="ml-1 mt-4" >
-                            <h6 class="text-uppercase">Persentase <span class="float-right">{{$total_target ? round(($total_ach_pareto/$total_target  * 100) ,2) : '0'}}%</span></h6>
+                            <h6 class="text-uppercase">Persentase <span class="float-right">{{($period_par && $total_target) ? round(($total_ach_pareto/$total_target  * 100) ,2) : '0'}}%</span></h6>
                             <div class="progress progress-sm m-0" style="height: 5px;">
                               
                                 <div class="progress-bar bg-info" role="progressbar" 
-                                    aria-valuenow="{{$total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}" 
-                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}%">
-                                    <span class="sr-only">{{$total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}% Complete</span>
+                                    aria-valuenow="{{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}%">
+                                    <span class="sr-only">{{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}% Complete</span>
                                 </div>
                             </div>
                           </div>
