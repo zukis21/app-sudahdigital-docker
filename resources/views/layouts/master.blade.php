@@ -284,7 +284,7 @@
                             <li class="{{request()->routeIs('workplan.index') ? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="material-icons">date_range</i>
-                                    <span>Work Plan</span>
+                                    <span>Work Calender</span>
                                 </a>
                                 <ul class="ml-menu">
                                     <li class="{{request()->routeIs('workplan.index') ? 'active' : '' }}">
