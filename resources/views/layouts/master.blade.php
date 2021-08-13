@@ -288,7 +288,7 @@
                                 </a>
                                 <ul class="ml-menu">
                                     <li class="{{request()->routeIs('workplan.index') ? 'active' : '' }}">
-                                        <a href="{{route('workplan.index',[$vendor])}}">Work Plan List</a>
+                                        <a href="{{route('workplan.index',[$vendor])}}">Work Calender List</a>
                                     </li>
                                 </ul>
                             </li>
