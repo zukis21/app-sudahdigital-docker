@@ -307,7 +307,7 @@ class CustomerController extends Controller
             $cust->address = $request->get('address');
             $pay_trm = $request->get('payment_term');
             $cust->pareto_id = $request->get('pareto_id');
-            $cust->target_store = $request->get('target_store');
+            //$cust->target_store = $request->get('target_store');
             if($pay_trm == 'TOP'){
                 $cust->payment_term = $request->get('pay_cust').' Days';
             }else{
