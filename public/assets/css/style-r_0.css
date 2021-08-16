@@ -2440,6 +2440,7 @@ footer.footer .cart .count-cart-three {
     margin-top: 25px;
     color: #fff;
   }
+
   .info-box .box {
     transition: transform 250ms;
     background-image: linear-gradient(-45deg,  #210c59 0%, #34b5bf  100%);
@@ -2449,7 +2450,58 @@ footer.footer .cart .count-cart-three {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
 
+  .info-box .box-green {
+    transition: transform 250ms;
+    background-image: linear-gradient(-45deg,  #00b712 0%, #5aff15  100%);
+    border-radius: 5px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .info-box .box-yellow {
+    transition: transform 250ms;
+    background-image: linear-gradient(-45deg,  #fbb034 0%, #ffdd00 100%);
+    border-radius: 5px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .info-box .box-red {
+    transition: transform 250ms;
+    background-image: linear-gradient(-45deg,  #990000 0%, #ff0000 100%);
+    border-radius: 5px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+
   .info-box .box:hover {
+    outline:0px !important;
+    -webkit-appearance:none;
+    -webkit-transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
+  }
+
+  .info-box .box-green:hover {
+    outline:0px !important;
+    -webkit-appearance:none;
+    -webkit-transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
+  }
+
+  .info-box .box-yellow:hover {
+    outline:0px !important;
+    -webkit-appearance:none;
+    -webkit-transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
+  }
+
+  .info-box .box-red:hover {
     outline:0px !important;
     -webkit-appearance:none;
     -webkit-transform: translateY(-3px);
@@ -2466,16 +2518,88 @@ footer.footer .cart .count-cart-three {
     line-height: 60px;
     font-size: 22px;
   }
+
+  .info-box .box-green > i {
+    float: left;
+    color: #FFF;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 22px;
+  }
+
+  .info-box .box-yellow > i {
+    float: left;
+    color: #FFF;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 22px;
+  }
+
+  .info-box .box-red > i {
+    float: left;
+    color: #FFF;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 22px;
+  }
+
   .info-box .box .info {
     /*float: left;*/
     width: auto;
     margin-left: 10px;
   }
+
+  .info-box .box-green .info {
+    /*float: left;*/
+    width: auto;
+    margin-left: 10px;
+  }
+
+  .info-box .box-yellow .info {
+    /*float: left;*/
+    width: auto;
+    margin-left: 10px;
+  }
+
+  .info-box .box-red .info {
+    /*float: left;*/
+    width: auto;
+    margin-left: 10px;
+  }
+
   .info-box .box .info h3 {
     margin: 5px 0 5px;
     display: inline-block;
   }
+
+  .info-box .box-green .info h3 {
+    margin: 5px 0 5px;
+    display: inline-block;
+  }
+
+  .info-box .box-yellow .info h3 {
+    margin: 5px 0 5px;
+    display: inline-block;
+  }
+
+  .info-box .box-red .info h3 {
+    margin: 5px 0 5px;
+    display: inline-block;
+  }
+
   .info-box .box .info p {color:#fff}
+
+  .info-box .box-green .info p {color:#fff}
+
+  .info-box .box-yellow .info p {color:#fff}
+
+  .info-box .box-red .info p {color:#fff}
 
   /* End infobox */
 

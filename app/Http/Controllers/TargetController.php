@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Gate;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class TargetController extends Controller
@@ -20,7 +20,7 @@ class TargetController extends Controller
                 if(Gate::allows('manage-target')) return $next($request);
                 abort(403, 'Anda tidak memiliki cukup hak akses');
             }else{
-                abort(404, 'Tidak ditemukan');
+                abort(404, 'Tidak ditemukan');  
             }
         });
 
@@ -55,10 +55,18 @@ class TargetController extends Controller
     public function cust_index(Request $request, $vendor){
         //\DB::connection()->enableQueryLog();
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
-            $targets = \App\Store_Targets::where('client_id',auth()->user()->client_id)
+            /*$targets = \App\Store_Targets::where('client_id',auth()->user()->client_id)
                         ->orderBy('period','ASC')
+                        ->groupBy('period')
+                        ->get();*/
+            $targets = \DB::table('store_target')
+                        ->where('client_id',auth()->user()->client_id)
+                        ->select('period',DB::raw('count(*) as total, SUM(target_values) as total_target'))
+                        //->select(DB::raw("SUM(target_values) as total_target"))
+                        ->groupBy('period')
                         ->get();
-            
+            //dd($targets);
+
             return view ('customer_store.index_target',['targets'=>$targets,'vendor'=>$vendor]);
         }else{
             abort(404, 'Tidak ditemukan');
@@ -158,7 +166,7 @@ class TargetController extends Controller
                 $data_target=array(
                     'client_id'=>$request->client_id,
                     'customer_id'=>$request->customer_id[$i],
-                    'target_values'=>$request->target_value[$i] ?? '0',
+                    'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
                     'period'=>$request->period.'-01',
                     'created_by'=>\Auth::user()->id,
                 );
@@ -243,6 +251,28 @@ class TargetController extends Controller
         */
     }
 
+    public function addnew_target(Request $request, $vendor, $period)
+    {
+        if(count($request->customer_id) > 0) {
+            $sum = 0;
+            //dd(str_replace(',', '', $request->target_value));
+            
+            foreach ($request->customer_id as $i => $v){
+                $data_target=array(
+                    'client_id'=>$request->client_id,
+                    'customer_id'=>$request->customer_id[$i],
+                    'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
+                    'period'=>$period,
+                    'created_by'=>\Auth::user()->id,
+                );
+                $new_t = new \App\Store_Targets;
+                $new_t->create($data_target);
+            }
+        }
+
+        return redirect()->route('customers.edit_target',[$vendor, \Crypt::encrypt($period)])->with('status','Customers Target Succsessfully Add');
+    }
+    
     public function edit_target($vendor,$id)
     {
             $id = \Crypt::decrypt($id);
@@ -255,10 +285,21 @@ class TargetController extends Controller
     public function cust_edit_target($vendor,$id)
     {
             $id = \Crypt::decrypt($id);
-            $target = \App\Store_Targets::findorFail($id);
+            //dd($id);
+            $target = \App\Store_Targets::where('client_id',auth()->user()->client_id)
+                    ->where('period',$id)->get();
+                   
+            $exist_store = \App\Customer::with('store_targets')
+                         ->whereNotNull('pareto_id')
+                         ->whereDoesnthave('store_targets',function($q) use ($id)
+                         {
+                             return $q->where('period',$id)
+                                     ->where('client_id',auth()->user()->client_id);
+                         })
+                      ->get();
+            //dd(count($exist_store));
             
-            return view('customer_store.edit_target',['vendor'=>$vendor, 'target'=>$target]);
-        
+            return view('customer_store.edit_target',['vendor'=>$vendor, 'target'=>$target, 'period'=>$id, 'exist_store'=>$exist_store]);
     }
     
     public function update_target(Request $request, $vendor)
@@ -304,9 +345,23 @@ class TargetController extends Controller
         }
     }
 
-    public function cust_update_target(Request $request, $vendor)
+    public function cust_update_target(Request $request, $vendor, $period)
     {
-        $id_target = $request->get('target_id');
+        if(count($request->id) > 0) {
+            $sum = 0;
+            foreach ($request->id as $i => $v){
+                $data_target=array(
+                    'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
+                    'updated_by'=>\Auth::user()->id,
+                );
+                $new_t = \App\Store_Targets::where('id',$request->id[$i])->first();
+                $new_t->update($data_target);
+            }
+        }
+
+        return redirect()->route('customers.edit_target',[$vendor, \Crypt::encrypt($period)])->with('status','Target Succsessfully Update');
+        
+        /*$id_target = $request->get('target_id');
         $new_t = \App\Store_Targets::findorFail($id_target);
         
 
@@ -314,10 +369,11 @@ class TargetController extends Controller
         
         $new_t->updated_by = \Auth::user()->id;
         $new_t->save();
+        
         if ( $new_t->save()){
             return redirect()->route('customers.edit_target',[$vendor, \Crypt::encrypt($id_target)])->with('status','Target Succsessfully Update');
         }else{
             return redirect()->route('customers.edit_target',[$vendor])->with('error','Target Not Succsessfully Update');
-        }
+        }*/
     }
 }

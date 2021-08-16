@@ -242,7 +242,8 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers/create-target', 'TargetController@cust_create_target')->name('customers.create_target');
     Route::post('/customers/store-target', 'TargetController@cust_store_target')->name('customers.store_target');
     Route::get('/customers/edit-target/{id}', 'TargetController@cust_edit_target')->name('customers.edit_target');
-    Route::post('/customers/update-target', 'TargetController@cust_update_target')->name('customers.update_target');
+    Route::put('/customers/update-target/{period}', 'TargetController@cust_update_target')->name('customers.update_target');
+    Route::post('/customers/store-target-new/{period}', 'TargetController@addnew_target')->name('customers.store_target_add');
 
     //work plan
     Route::get('/work-plan', 'WorkPlanController@index')->name('workplan.index');

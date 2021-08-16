@@ -66,6 +66,7 @@ class DashboardSalesController extends Controller
                             ->where('status','!=','CANCEL');
                             
                 })
+                ->where('client_id',\Auth::user()->client_id)
                 ->whereNotNull('pareto_id')
                 ->where('user_id',$user_id)->get();
 
@@ -79,11 +80,13 @@ class DashboardSalesController extends Controller
                             ->where('status','!=','CANCEL')
                             ->groupBy('customer_id');
                 })
+                ->where('client_id',\Auth::user()->client_id)
                 ->whereNotNull('pareto_id')
                 ->get();
 
         //target pareto
-        $period_par = \App\Store_Targets::where('period','<=',$date_now)
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                     ->where('period','<=',$date_now)
                      ->max('period');
         //dd($period_par);
             
