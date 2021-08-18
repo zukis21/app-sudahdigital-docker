@@ -120,7 +120,7 @@ class DashboardSalesController extends Controller
         }
         $users_display = array_unique($user_value);
         //$percentcart = json_encode($percentage);
-        //dd($percentcart);
+        //dd($users_display);
         
         
         /* target order ---

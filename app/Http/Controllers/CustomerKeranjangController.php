@@ -349,6 +349,7 @@ Alamat : '.$customer->address.',
                             ->whereYear('period', $year)->first();
                 //dd($month);
                 if($target_ach){
+                    
                     $target_ach->target_achievement +=  $orders_ach->total_price;
                     $target_ach->save();
                 }

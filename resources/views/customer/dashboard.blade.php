@@ -316,7 +316,7 @@
                       </div>
                       </div>
                       <div class="ml-1 mt-4" >
-                        <h6 class="">Target Sales Total <span class="float-right">{{round($total_ach/$target->target_values * 100,2)}}%</span></h6>
+                        <h6 class="">Target Sales Total <span class="float-right">{{round(($total_ach/$target->target_values) * 100 ,2)}}%</span></h6>
                         <div class="progress progress-sm m-0" style="height: 7px;">
                           
                             <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$total_ach/$target->target_values * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$total_ach/$target->target_values * 100}}%">

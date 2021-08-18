@@ -28,7 +28,7 @@ Home
 
     .dropdown-item {
         white-space: pre-wrap;
-        line-height:normal;
+        line-height:1.5;
     }
 
     .dropdown-submenu {
@@ -42,9 +42,12 @@ Home
         top: .8em;
     }
 
+    .dropdown-submenu a:hover {
+        background-color: #ddd;
+    }
+
     .dropdown-submenu .dropdown-menu {
         top: 0;
-        
         margin-left: .1rem;
         margin-right: .1rem;
         border-bottom-left-radius:10px;border-bottom-right-radius:10px;
@@ -84,22 +87,29 @@ Home
             margin-left:0rem;
         }
 
+        .dropdown-menu{
+            min-width: 260px;
+        }
+
         .dropdown-submenu .dropdown-menu {
             position: relative;
             top: 0;
             left:0;
-            min-width: 210px;
+            border:none;
+             margin-left: 0;
+            margin-right: 0;
             /*margin : auto;*/
-            /*border-top-style: none;*/
-            border-top-left-radius: 2px;
-            border-top-right-radius: 2px;
-            border-bottom-left-radius:2px;
-            border-bottom-right-radius:2px;
+            /*border-top-style: none;
+            border-right:none;
+            border-left:none;
+            border-top-left-radius: 0;
+            border-top-right-radius:0;*/
         }
 
         .dropdown-submenu a::after {
             transform: rotate(360deg);
         }
+
     }
 
     @media only screen and (max-width:600px){
@@ -111,6 +121,12 @@ Home
 
         .login-label h3{
             font-size:20px;
+        }
+    }
+
+    @media only screen and (max-width:320px){
+        .dropdown-menu{
+            min-width: 255px;
         }
     }
 
@@ -377,6 +393,9 @@ Home
             </div>
         </div>
         @endif
+
+        
+
         <div class="container list-product" style="">
             <div class="row mt-0">
                 <div class="col-md-12 mt-4">

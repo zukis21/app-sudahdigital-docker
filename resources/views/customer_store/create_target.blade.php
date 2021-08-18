@@ -100,7 +100,7 @@
                 </div>
             </div>
             -->
-            <button id="btnSubmit" class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
+            <button id="btnSubmit" {{count($customers) < 1 ? 'disabled' : ''}} class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
         </form>
         <!-- #END#  -->		
 
