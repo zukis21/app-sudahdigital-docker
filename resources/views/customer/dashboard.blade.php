@@ -543,13 +543,13 @@
 
       $(function () {
         var achievement = <?php echo $percent ?>;
-        
         var sales = <?php echo $users_display ?>;
-        
-
+        var red_line = <?php echo $red_line ?>;
+        var param_line = <?php echo $param_line ?>;
         //var colors = ['#dc3545', '#6c757d'];
 
-        var colors = ['#1A4066']
+        //var colors1 = ['#1A4066'];
+        //var colors2 = ['#08f3ff'];
 
         if ($(window).width() <= 600) {
           var type = 'bar';
@@ -559,7 +559,7 @@
         
         $('#container').highcharts({
           chart: {
-            type: type
+            type: type,
             /*type: 'bar'*/
           },
           title: {
@@ -569,18 +569,45 @@
             categories: sales
           },
           yAxis: {
+            max: 150,
               title: {
-              text: 'Persentase'
-            }
+                text: 'Persentase'
+            },
+            labels: {
+              formatter: function() {
+                var pcnt = Highcharts.numberFormat((this.value / 100 * 100), 0, '.');
+                return pcnt + '%';
+              }
+            },
+            plotLines: [{
+              value: param_line,
+              color: 'red',
+              dashStyle: 'shortdash',
+              width: 2,
+              label: {
+                text: 'Maximum'
+              }
+            }]
           },
-          colors:colors,
+          //colors:colors,
+          plotOptions: {
+        	column: {
+            	zones: [{
+                	value: param_line, // Values up to 10 (not including) ...
+                    color:  '#08b1ff'// ... have the color blue.
+                },{
+                	color: '#1A4066' // Values from 10 (including) and up have the color red
+                }]
+            }
+        },
           series: [/*{
             name: 'Target',
             data: target
           },*/{
             name: 'Pencapaian (%)',
             data: achievement,
-          }]
+          }
+          ]
         });
       });
     </script> 

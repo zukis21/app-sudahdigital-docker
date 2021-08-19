@@ -94,11 +94,16 @@ class DashboardSalesController extends Controller
         $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
                     ->whereMonth('work_period', '=', $month)
                     ->whereYear('work_period', '=', $year)->first();
+        
         if($work_plan){
             $day_off = \App\Holiday::where('wp_id',$work_plan->id)
                   ->where('date_holiday','<=',$date_now)->count();
+            $day = date('d');
+            $param_line = round(($day/$work_plan->working_days) * 100 ,2);
+            //dd(json_encode($red_line));
         }else{
             $day_off = null;
+            $rparam_line = 0;
         }
         
         //dd($day_off);
@@ -114,14 +119,16 @@ class DashboardSalesController extends Controller
         
         $user_value=[];
         $percentage=[];
+        $red_line = [];
         foreach ($cartuser as $userval) {
             $user_value[]= $userval->users->name;
             $percentage[]= round(($userval->target_achievement / $userval->target_values) * 100 ,2);
+            $red_line[]= $param_line;
         }
         $users_display = array_unique($user_value);
         //$percentcart = json_encode($percentage);
         //dd($users_display);
-        
+        //dd($red_line);
         
         /* target order ---
 
@@ -182,8 +189,6 @@ class DashboardSalesController extends Controller
             $months = array_unique($month_value);
         end order chart month----*/   
         
-        
-        
         $data=
             [
             'vendor'=>$vendor, 
@@ -199,12 +204,13 @@ class DashboardSalesController extends Controller
             'period_par'=>$period_par,
             'work_plan'=>$work_plan,
             'day_off'=>$day_off,
+            'param_line'=>$param_line,
             //'order_chart'=>$order_chart
             ];
         
         return view('customer.dashboard',$data) ->with('percent',json_encode($percentage,JSON_NUMERIC_CHECK))
-                                                ->with('users_display',json_encode($users_display));
-                                                
+                                                ->with('users_display',json_encode($users_display))
+                                                ->with('red_line',json_encode($red_line));
                                                 /*
                                                 ->with('target_order',json_encode($target_order,JSON_NUMERIC_CHECK))
                                                 ->with('months',json_encode($months))
