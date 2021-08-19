@@ -10,7 +10,6 @@
 
     <link rel="icon" href="{{ asset('assets/image/Logo_SudahOnline.png')}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->
-    <link href="https://db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
