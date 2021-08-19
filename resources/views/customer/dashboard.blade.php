@@ -174,13 +174,13 @@
                 <div class="row">
 
                   <!--total toko order-->
-                  <div class="col-md-4 mb-4">
+                  <div class="col-md-4 mb-4" data-aos="zoom-in">
                     <div class="box-blue">
                       <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
-                          <div class="text-right">
-                            <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                          <div class="text-right mt-1">
+                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
                               {{$order}} / {{$cust_total}}
                             </span>
                             <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -273,13 +273,13 @@
                       @endphp
 
                       <!--jumlah toko pareto-->
-                      <div class="col-md-4 mb-4">
+                      <div class="col-md-4 mb-4" data-aos="zoom-in">
                         <div class="box-blue">
                           <i class="fas fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
                           <div class="info">
                             <div class="media-body align-self-center">
-                              <div class="text-right">
-                                <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                              <div class="text-right mt-1">
+                                <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
                                   {{$target ? count($cust_exists_p) : '0'}} / {{$target ? $cust_total_p : '0'}}
                                 </span>
                                   <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -304,13 +304,13 @@
                   @endif
 
                   <!--Target Sales Total-->
-                  <div class="col-md-4 mb-4">
+                  <div class="col-md-4 mb-4" data-aos="zoom-in">
                     <div class="box-green">
                       <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
-                          <div class="text-right">
-                            <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                          <div class="text-right mt-1">
+                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
                               {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
                             </span>
                             <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -335,13 +335,13 @@
                     
                     @foreach($pareto as $prt)
                       <!--target/pencapaian pareto-->
-                      <div class="col-md-4 mb-4">
+                      <div class="col-md-4 mb-4" data-aos="zoom-in">
                         <div class="box-green">
                           <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
                           <div class="info">
                             <div class="media-body align-self-center">
-                              <div class="text-right">
-                                <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                              <div class="text-right mt-1">
+                                <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
                                   {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
                                 </span>
                                 <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -367,13 +367,13 @@
                   @endif
 
                   <!--prediksi pencapaian-->
-                  <div class="col-md-4 mb-4" style="display:flex;">
+                  <div class="col-md-4 mb-4" style="display:flex;" data-aos="zoom-in">
                     <div class="box-red w-100">
                       <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
-                          <div class="text-right">
-                            <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                          <div class="text-right mt-1">
+                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
                               
                               @if($target && $work_plan)
                                 @php
@@ -404,15 +404,15 @@
 
                     </div>
                   </div>
-
+                  
                   <!--Average Daily-->
-                  <div class="col-md-4 mb-4" style="display:flex;">
+                  <div class="col-md-4 mb-4" data-aos="zoom-in" style="display:flex;">
                     <div class="box-red w-100">
                       <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
-                          <div class="text-right">
-                              <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                          <div class="text-right mt-1">
+                              <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
                                 {{($target && $work_plan) ? singkat_angka($prediksi/$hari_berjalan) : '0'}}
                               </span>
                               <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -447,9 +447,10 @@
                     <div class="container-fluid">
                       <div class="row">
 
-                        <div class="col-md-6 mb-3 d-flex">
+                        <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
                           <div class="box w-100">
-                            <ul class="list-group w-100">
+                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                            border-top-left-radius:20px;">
                               <li class="list-group-item active" 
                                 style="background-color:#1A4066;
                                        border-top-right-radius:20px;
@@ -475,9 +476,10 @@
                           </div>
                         </div>
 
-                        <div class="col-md-6 mb-3 d-flex">
+                        <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
                           <div class="box w-100">
-                            <ul class="list-group w-100">
+                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                            border-top-left-radius:20px;">
                               <li class="list-group-item active" 
                                 style="background-color:#1A4066;
                                        border-top-right-radius:20px;
@@ -509,25 +511,33 @@
         </div>
         
         <div class="row justify-content-center" style="">
-          <div class="col-12" style="z-index: 2;">
-              <section class="statistics">
+          <div class="col-12 mt-2" style="z-index: 2;">
+              <!--<section class="statistics">-->
                   <div class="container-fluid">
                     <div class="row">
-                      <div class="col-md-12">
-                        <div class="box">
-                          
-                            <span>Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</span>
-                            <span class="float-right" style="margin-left:auto;">
-                              <i class="fas fa-chart-bar"></i>
-                            </span>
-                            <hr style="width: 100%;">
-                            <div id="container"></div>
-                          
+                      <div class="col-md-12" data-aos="fade-up">
+                        <div class="box w-100">
+                          <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                            border-top-left-radius:20px;">
+                            <li class="list-group-item active" 
+                                  style="background-color:#1A4066;
+                                        border-top-right-radius:20px;
+                                        border-top-left-radius:20px;
+                                        border-color:#1A4066;
+                                        color:#fff;">
+                              <i class="fas fa-chart-bar bg-white py-1 mr-2"
+                              style="color:#1A4066;border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                              <span class="font-weight-bold" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</span>
+                            </li>
+                            <li class="list-group-item" style="color: #1A4066;">
+                              <div id="container"></div>
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     </div>
                   </div>
-                </section>
+                <!--</section>-->
            </div>
         </div>
         @endif
@@ -536,8 +546,13 @@
     @include('sweetalert::alert')
 @endsection
 @section('footer-scripts')
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script type="text/javascript">
+        // Init AOS
+        AOS.init({
+          duration: 1400,
+        })
         
         if ($(window).width() < 769) {
             $('.modal-dialog-paket').removeClass('modal-lg');
@@ -603,7 +618,7 @@
               dashStyle: 'shortdash',
               width: 2,
               label: {
-                text: 'Maximum'
+                text: ''
               }
             }]
           },
