@@ -464,10 +464,10 @@
                               </li>
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
-                                  <li class="list-group-item"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
+                                  <li class="list-group-item" style="color: #1A4066;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
                                 @endforeach
                               @else
-                                <li class="list-group-item"><b>Nihil</b></li>
+                                <li class="list-group-item" style="color: #1A4066;"><b>Nihil</b></li>
                               @endif  
                             </ul>
                           </div>
