@@ -95,16 +95,7 @@
     } 
   }
   
-/*body {
-    font-family: "Myriad Pro" !important;
-    src: url("//db.onlinewebfonts.com/t/3dd6e9888191722420f62dd54664bc94.eot");
-     src: url("//db.onlinewebfonts.com/t/3dd6e9888191722420f62dd54664bc94.eot?#iefix") format("embedded-opentype"), 
-     url("//db.onlinewebfonts.com/t/3dd6e9888191722420f62dd54664bc94.woff2") format("woff2"), 
-     url("//db.onlinewebfonts.com/t/3dd6e9888191722420f62dd54664bc94.woff") format("woff"), 
-     url("//db.onlinewebfonts.com/t/3dd6e9888191722420f62dd54664bc94.ttf") format("truetype"), 
-     url("//db.onlinewebfonts.com/t/3dd6e9888191722420f62dd54664bc94.svg#Myriad Pro") format("svg"); 
-    background: #e5f1d9;
-}*/
+
 
 @font-face {
   font-family: 'Montserrat', sans-serif;
