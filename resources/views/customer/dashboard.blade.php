@@ -451,7 +451,7 @@
                           <div class="box w-100">
                             <ul class="list-group w-100 " style="border-top-right-radius:20px;
                             border-top-left-radius:20px;">
-                              <li class="list-group-item active" 
+                              <li class="list-group-item active border-right-0 border-left-0" 
                                 style="background-color:#1A4066;
                                        border-top-right-radius:20px;
                                        border-top-left-radius:20px;
@@ -467,11 +467,11 @@
                               </li>
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
-                                  <li class="list-group-item" style="color: #1A4066;border-bottom-right-radius:0;
+                                  <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
                                   border-bottom-left-radius:0;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
                                 @endforeach
                               @else
-                                <li class="list-group-item" style="color: #1A4066;border-bottom-right-radius:0;
+                                <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
                                 border-bottom-left-radius:0;"><b>Nihil</b></li>
                               @endif  
                             </ul>
@@ -482,7 +482,7 @@
                           <div class="box w-100">
                             <ul class="list-group w-100" style="border-top-right-radius:20px;
                             border-top-left-radius:20px;">
-                              <li class="list-group-item active" 
+                              <li class="list-group-item active border-right-0 border-left-0" 
                                 style="background-color:#1A4066;
                                        border-top-right-radius:20px;
                                        border-top-left-radius:20px;
@@ -496,7 +496,7 @@
                               </li>
                               @if(count($cust_exists) > 0 )
                                 @foreach ($cust_exists as $it)
-                                  <li class="list-group-item" 
+                                  <li class="list-group-item border-right-0 border-left-0" 
                                   style="color: #1A4066;
                                         border-bottom-right-radius:0;
                                         border-bottom-left-radius:0;">
@@ -505,7 +505,7 @@
                                   </li>
                                 @endforeach
                               @else
-                                <li class="list-group-item" style="color: #1A4066;border-bottom-right-radius:0;
+                                <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
                                 border-bottom-left-radius:0;"><b>Nihil</b></li>
                               @endif  
                             </ul>
