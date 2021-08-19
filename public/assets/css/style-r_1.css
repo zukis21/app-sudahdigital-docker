@@ -2340,11 +2340,11 @@ footer.footer .cart .count-cart-three {
   /*Dashboard Start welcome */
   
   .welcome {
-    color: #CCC;
+    color: #fff;
   }
 
   .welcome .content {
-    background-color: #313348;
+    background-color: #1A4066;
     padding: 15px;
     margin-top: 25px;
     border-radius: 10px;
@@ -2450,19 +2450,21 @@ footer.footer .cart .count-cart-three {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
 
-  .info-box .box-green {
+  .info-box .box-blue {
     transition: transform 250ms;
-    background-image: linear-gradient(-45deg,  #00b712 0%, #5aff15  100%);
-    border-radius: 5px;
+    /*background-image: linear-gradient(-45deg,  #00b712 0%, #5aff15  100%);*/
+    background:#286699;
+    border-radius: 20px;
     padding: 15px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
 
-  .info-box .box-yellow {
+  .info-box .box-green {
     transition: transform 250ms;
-    background-image: linear-gradient(-45deg,  #fbb034 0%, #ffdd00 100%);
-    border-radius: 5px;
+    /*background-image: linear-gradient(-45deg,  #fbb034 0%, #ffdd00 100%);*/
+    background-color: #8CC63F;
+    border-radius: 20px;
     padding: 15px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -2470,8 +2472,9 @@ footer.footer .cart .count-cart-three {
 
   .info-box .box-red {
     transition: transform 250ms;
-    background-image: linear-gradient(-45deg,  #990000 0%, #ff0000 100%);
-    border-radius: 5px;
+    /*background-image: linear-gradient(-45deg,  #990000 0%, #ff0000 100%);*/
+    background-color: #ED1C24;
+    border-radius:20px;
     padding: 15px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -2485,7 +2488,7 @@ footer.footer .cart .count-cart-three {
     box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
   }
 
-  .info-box .box-green:hover {
+  .info-box .box-blue:hover {
     outline:0px !important;
     -webkit-appearance:none;
     -webkit-transform: translateY(-3px);
@@ -2493,7 +2496,7 @@ footer.footer .cart .count-cart-three {
     box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
   }
 
-  .info-box .box-yellow:hover {
+  .info-box .box-green:hover {
     outline:0px !important;
     -webkit-appearance:none;
     -webkit-transform: translateY(-3px);
@@ -2519,33 +2522,33 @@ footer.footer .cart .count-cart-three {
     font-size: 22px;
   }
 
-  .info-box .box-green > i {
+  .info-box .box-blue > i {
     float: left;
-    color: #FFF;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
+    color: #286699;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
     font-size: 22px;
   }
 
-  .info-box .box-yellow > i {
+  .info-box .box-green > i {
     float: left;
-    color: #FFF;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
+    color: #8CC63F;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
     font-size: 22px;
   }
 
   .info-box .box-red > i {
     float: left;
-    color: #FFF;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
+    color: #ED1C24;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
     font-size: 22px;
   }
 
@@ -2555,13 +2558,13 @@ footer.footer .cart .count-cart-three {
     margin-left: 10px;
   }
 
-  .info-box .box-green .info {
+  .info-box .box-blue .info {
     /*float: left;*/
     width: auto;
     margin-left: 10px;
   }
 
-  .info-box .box-yellow .info {
+  .info-box .box-green .info {
     /*float: left;*/
     width: auto;
     margin-left: 10px;
@@ -2578,12 +2581,12 @@ footer.footer .cart .count-cart-three {
     display: inline-block;
   }
 
-  .info-box .box-green .info h3 {
+  .info-box .box-blue .info h3 {
     margin: 5px 0 5px;
     display: inline-block;
   }
 
-  .info-box .box-yellow .info h3 {
+  .info-box .box-green .info h3 {
     margin: 5px 0 5px;
     display: inline-block;
   }
@@ -2595,9 +2598,9 @@ footer.footer .cart .count-cart-three {
 
   .info-box .box .info p {color:#fff}
 
-  .info-box .box-green .info p {color:#fff}
+  .info-box .box-blue .info p {color:#fff}
 
-  .info-box .box-yellow .info p {color:#fff}
+  .info-box .box-green .info p {color:#fff}
 
   .info-box .box-red .info p {color:#fff}
 

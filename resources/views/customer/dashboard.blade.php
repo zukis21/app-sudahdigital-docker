@@ -19,12 +19,13 @@
   .progress-icon{
     margin-left:auto;
     border-radius:50%;
-    width:20px;
-    height:20px;
-    line-height:
-    20px;
+    width:15px;
+    height:15px;
+    line-height:15px;
     margin-right:-1px;
   }
+
+  
 </style>
 
     <div class="container pb-4" style="">
@@ -44,9 +45,9 @@
                     <div class="container">
                       <div class="row">
                         <div class="col-md-12">
-                          <div class="content">
+                          <div class="content px-4">
                             @if($target)
-                            <h6><b>Dashboard {{Auth::user()->name}} {{date('F'.' Y', strtotime(\Carbon\Carbon::now()))}}</b></h6>
+                            <h6 class="mx-2"><b>{{Auth::user()->name}}<span class="mx-3 lead">|</span>   {{date('F'.' Y', strtotime(\Carbon\Carbon::now()))}}</b></h6>
                             @else
                             <h6>
                                 Dashboard {{Auth::user()->name}} {{date('F'.' Y', strtotime(\Carbon\Carbon::now()))}}
@@ -173,14 +174,16 @@
                 <div class="row">
 
                   <!--total toko order-->
-                  <div class="col-md-4 mb-3">
-                    <div class="box-green">
-                      <i class="fal fa-shopping-cart fa-fw bg-dark" aria-hidden="true"></i>
+                  <div class="col-md-4 mb-4">
+                    <div class="box-blue">
+                      <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
                           <div class="text-right">
-                              <h5 class="font-20 my-0 font-weight-bold"><span data-plugin="counterup">{{$order}} / {{$cust_total}}</span></h5>
-                              <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                              {{$order}} / {{$cust_total}}
+                            </span>
+                            <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                           </div>
                       </div>
                       </div>
@@ -195,9 +198,12 @@
                         </div>
                         --> 
                         <div class="progress progress-sm m-0" style="height: 7px;">
-                          <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$order/$cust_total * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$order/$cust_total * 100}}%">
+                          <div class="progress-bar" role="progressbar" 
+                            aria-valuenow="{{$order/$cust_total * 100}}" aria-valuemin="0" aria-valuemax="100" 
+                            style="width: {{$order/$cust_total * 100}}%;
+                            background-color: #95E0F9 !important;">
                               <span class="sr-only">{{$order/$cust_total * 100}}% Complete</span>
-                              <i class="fas fa-star bg-danger progress-icon" style=""></i>
+                              <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                           </div>
                         </div>
                       </div>
@@ -267,17 +273,15 @@
                       @endphp
 
                       <!--jumlah toko pareto-->
-                      <div class="col-md-4 mb-3">
-                        <div class="box-green">
-                          <i class="fas fa-shopping-cart fa-fw bg-dark" aria-hidden="true"></i>
+                      <div class="col-md-4 mb-4">
+                        <div class="box-blue">
+                          <i class="fas fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
                           <div class="info">
                             <div class="media-body align-self-center">
                               <div class="text-right">
-                                  <h5 class="font-20 my-0 font-weight-bold">
-                                    <span data-plugin="counterup">
-                                      {{$target ? count($cust_exists_p) : '0'}} / {{$target ? $cust_total_p : '0'}}
-                                    </span>
-                                  </h5>
+                                <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                                  {{$target ? count($cust_exists_p) : '0'}} / {{$target ? $cust_total_p : '0'}}
+                                </span>
                                   <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                               </div>
                           </div>
@@ -286,11 +290,11 @@
                             <h6 class="">Total Toko Pareto ({{$prt->pareto_code}})<span class="float-right">{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%</span></h6>
                             <div class="progress progress-sm m-0" style="height: 7px;">
                               
-                                <div class="progress-bar bg-info" role="progressbar" 
+                                <div class="progress-bar" role="progressbar" 
                                     aria-valuenow="{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}" 
-                                    aria-valuemin="0" aria-valuemax="100" style="width: {{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%">
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%;background-color: #95E0F9 !important;">
                                     <span class="sr-only">{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}% Complete</span>
-                                    <i class="fas fa-star bg-danger progress-icon" style=""></i>
+                                    <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                                 </div>
                             </div>
                           </div>
@@ -300,18 +304,16 @@
                   @endif
 
                   <!--Target Sales Total-->
-                  <div class="col-md-4 mb-3">
-                    <div class="box-yellow">
-                      <i class="fal fa-bullseye-arrow fa-fw bg-dark" aria-hidden="true"></i>
+                  <div class="col-md-4 mb-4">
+                    <div class="box-green">
+                      <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
                           <div class="text-right">
-                              <h5 class="font-20 my-0 font-weight-bold">
-                                <span data-plugin="counterup">
-                                  {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
-                                </span>
-                              </h5>
-                              <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                              {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                            </span>
+                            <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                           </div>
                       </div>
                       </div>
@@ -319,9 +321,9 @@
                         <h6 class="">Target Sales Total <span class="float-right">{{round(($total_ach/$target->target_values) * 100 ,2)}}%</span></h6>
                         <div class="progress progress-sm m-0" style="height: 7px;">
                           
-                            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$total_ach/$target->target_values * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$total_ach/$target->target_values * 100}}%">
+                            <div class="progress-bar " role="progressbar" aria-valuenow="{{$total_ach/$target->target_values * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$total_ach/$target->target_values * 100}}%;background-color: #95E0F9 !important;">
                                 <span class="sr-only">{{$total_ach/$target->target_values * 100}}% Complete</span>
-                                <i class="fas fa-star bg-danger progress-icon" style=""></i>
+                                <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                             </div>
                         </div>
                       </div>
@@ -333,18 +335,16 @@
                     
                     @foreach($pareto as $prt)
                       <!--target/pencapaian pareto-->
-                      <div class="col-md-4 mb-3">
-                        <div class="box-yellow">
-                          <i class="fas fa-bullseye-arrow fa-fw bg-dark" aria-hidden="true"></i>
+                      <div class="col-md-4 mb-4">
+                        <div class="box-green">
+                          <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
                           <div class="info">
                             <div class="media-body align-self-center">
                               <div class="text-right">
-                                  <h5 class="font-20 my-0 font-weight-bold">
-                                    <span data-plugin="counterup">
-                                      {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
-                                    </span>
-                                  </h5>
-                                  <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                                  {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
+                                </span>
+                                <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                               </div>
                             </div>
                           </div>
@@ -354,9 +354,9 @@
                               
                                 <div class="progress-bar bg-info" role="progressbar" 
                                     aria-valuenow="{{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}" 
-                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}%">
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}%;background-color: #95E0F9 !important;">
                                     <span class="sr-only">{{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}% Complete</span>
-                                    <i class="fas fa-star bg-danger progress-icon" style=""></i>
+                                    <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                                 </div>
                             </div>
                           </div>
@@ -367,25 +367,25 @@
                   @endif
 
                   <!--prediksi pencapaian-->
-                  <div class="col-md-4 mb-3" style="display:flex;">
+                  <div class="col-md-4 mb-4" style="display:flex;">
                     <div class="box-red w-100">
-                      <i class="fal fa-analytics fa-fw bg-dark" aria-hidden="true" style="align-items: center"></i>
+                      <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
                           <div class="text-right">
-                              <h5 class="font-20 my-0 font-weight-bold">
-                                <span data-plugin="counterup">
-                                  @if($target && $work_plan)
-                                    @php
-                                      $current_day = date('d');
-                                      $hari_berjalan = $current_day - $day_off;
-                                      $hari_kerja = $work_plan->working_days;
-                                      $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
-                                    @endphp
-                                  @endif
-                                  {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
-                                </span>
-                              </h5>
+                            <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                              
+                              @if($target && $work_plan)
+                                @php
+                                  $current_day = date('d');
+                                  $hari_berjalan = $current_day - $day_off;
+                                  $hari_kerja = $work_plan->working_days;
+                                  $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
+                                @endphp
+                              @endif
+                              {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                            </span>
+                              
                               <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                           </div>
                         </div>
@@ -406,17 +406,15 @@
                   </div>
 
                   <!--Average Daily-->
-                  <div class="col-md-4 mb-3" style="display:flex;">
+                  <div class="col-md-4 mb-4" style="display:flex;">
                     <div class="box-red w-100">
-                      <i class="fas fa-tachometer-average fa-fw bg-dark" aria-hidden="true" style="align-items: center"></i>
+                      <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
                       <div class="info">
                         <div class="media-body align-self-center">
                           <div class="text-right">
-                              <h5 class="font-20 my-0 font-weight-bold">
-                                <span data-plugin="counterup">
-                                  {{($target && $work_plan) ? singkat_angka($prediksi/$hari_berjalan) : '0'}}
-                                </span>
-                              </h5>
+                              <span class="border px-2 py-1 font-weight-bold" style="border-radius: 10px;">
+                                {{($target && $work_plan) ? singkat_angka($prediksi/$hari_berjalan) : '0'}}
+                              </span>
                               <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                           </div>
                         </div>
@@ -445,14 +443,23 @@
 
         <div class="row justify-content-center" style="">
             <div class="col-12" style="z-index: 2;">
-                <section class="statistics">
+                <!--<section class="statistics">-->
                     <div class="container-fluid">
                       <div class="row">
 
                         <div class="col-md-6 mb-3 d-flex">
                           <div class="box w-100">
                             <ul class="list-group w-100">
-                              <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
+                              <li class="list-group-item active" 
+                                style="background-color:#1A4066;
+                                       border-top-right-radius:20px;
+                                       border-top-left-radius:20px;
+                                       border-color:#1A4066;
+                                       color:#fff;">
+                               
+                                  <i class="fas fa-times bg-white py-1 px-2 mr-2" 
+                                  style="color:#1A4066;border-radius:5px;"></i>
+                                
                                 <b>Toko Pareto Belum Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
                               @if(count($cust_not_exists) > 0 )
@@ -469,7 +476,17 @@
                         <div class="col-md-6 mb-3 d-flex">
                           <div class="box w-100">
                             <ul class="list-group w-100">
-                              <li class="list-group-item active" style="background-color: #313348;border-color:#313348;color:#CCC">
+                              <li class="list-group-item active" 
+                                style="background-color:#1A4066;
+                                       border-top-right-radius:20px;
+                                       border-top-left-radius:20px;
+                                       border-color:#1A4066;
+                                       color:#fff;">
+                              <i class="fas fa-check bg-white py-1 mr-2" 
+                              style="color:#1A4066;border-radius:5px;
+                              padding-left:6px;
+                              padding-right:6px;"></i>
+                              
                                 <b>Toko Pareto Sudah Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
                               @if(count($cust_exists) > 0 )
@@ -486,7 +503,7 @@
                         </div>
                       </div>
                     </div>
-                  </section>
+                <!--</section>-->
             </div>
         </div>
         
@@ -520,7 +537,7 @@
 @section('footer-scripts')
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script type="text/javascript">
-    
+        
         if ($(window).width() < 769) {
             $('.modal-dialog-paket').removeClass('modal-lg');
             $('.modal-dialog-paket').addClass('modal-dialog-full-width');
