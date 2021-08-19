@@ -467,10 +467,12 @@
                               </li>
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
-                                  <li class="list-group-item" style="color: #1A4066;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
+                                  <li class="list-group-item" style="color: #1A4066;border-bottom-right-radius:0;
+                                  border-bottom-left-radius:0;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
                                 @endforeach
                               @else
-                                <li class="list-group-item" style="color: #1A4066;"><b>Nihil</b></li>
+                                <li class="list-group-item" style="color: #1A4066;border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;"><b>Nihil</b></li>
                               @endif  
                             </ul>
                           </div>
@@ -494,12 +496,17 @@
                               </li>
                               @if(count($cust_exists) > 0 )
                                 @foreach ($cust_exists as $it)
-                                  <li class="list-group-item" style="color: #1A4066;"><b>{{$it->store_name}}</b>,<br>{{$it->address}} 
+                                  <li class="list-group-item" 
+                                  style="color: #1A4066;
+                                        border-bottom-right-radius:0;
+                                        border-bottom-left-radius:0;">
+                                        <b>{{$it->store_name}}</b>,<br>{{$it->address}} 
                                     <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
                                   </li>
                                 @endforeach
                               @else
-                                <li class="list-group-item" style="color: #1A4066;"><b>Nihil</b></li>
+                                <li class="list-group-item" style="color: #1A4066;border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;"><b>Nihil</b></li>
                               @endif  
                             </ul>
                           </div>
