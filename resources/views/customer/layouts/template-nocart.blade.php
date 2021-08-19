@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
@@ -20,7 +20,7 @@
     <script src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <!--Aos Css-->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->

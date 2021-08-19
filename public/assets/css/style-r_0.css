@@ -2397,10 +2397,12 @@ footer.footer .cart .count-cart-three {
   .statistics .box {
     /*background-color: #313348;*/
     background-color:#fff !important;
-    padding: 15px;
+    padding: 0;
     overflow: hidden;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     /*border : 1px solid #ccc;*/
+    border-top-right-radius:20px;
+    border-top-left-radius:20px;
     
   }
   .statistics .box > i {
