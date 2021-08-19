@@ -449,7 +449,7 @@
 
                         <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
                           <div class="box w-100">
-                            <ul class="list-group w-100 " style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                            <ul class="list-group w-100 " style="border-top-right-radius:20px;
                             border-top-left-radius:20px;">
                               <li class="list-group-item active" 
                                 style="background-color:#1A4066;
@@ -478,7 +478,7 @@
 
                         <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
                           <div class="box w-100">
-                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                            <ul class="list-group w-100" style="border-top-right-radius:20px;
                             border-top-left-radius:20px;">
                               <li class="list-group-item active" 
                                 style="background-color:#1A4066;
