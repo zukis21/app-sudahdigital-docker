@@ -491,12 +491,12 @@
                               </li>
                               @if(count($cust_exists) > 0 )
                                 @foreach ($cust_exists as $it)
-                                  <li class="list-group-item"><b>{{$it->store_name}}</b>,<br>{{$it->address}} 
+                                  <li class="list-group-item" style="color: #1A4066;"><b>{{$it->store_name}}</b>,<br>{{$it->address}} 
                                     <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
                                   </li>
                                 @endforeach
                               @else
-                                <li class="list-group-item"><b>Nihil</b></li>
+                                <li class="list-group-item" style="color: #1A4066;"><b>Nihil</b></li>
                               @endif  
                             </ul>
                           </div>
