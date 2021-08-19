@@ -457,10 +457,12 @@
                                        border-color:#1A4066;
                                        color:#fff;">
                                
-                                  <i class="fas fa-times bg-white py-1 px-2 mr-2" 
-                                  style="color:#1A4066;border-radius:5px;"></i>
+                                  <i class="fas fa-times bg-white py-1 px-2 mr-2 my-auto" 
+                                  style="color:#1A4066;border-radius:5px;float: left;"></i>
+                                <span style="display: block; padding-left: 40px;">
+                                  <b>Toko Pareto Belum Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
+                                </span>
                                 
-                                <b>Toko Pareto Belum Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
                               </li>
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
@@ -483,11 +485,10 @@
                                        border-color:#1A4066;
                                        color:#fff;">
                               <i class="fas fa-check bg-white py-1 mr-2" 
-                              style="color:#1A4066;border-radius:5px;
-                              padding-left:6px;
-                              padding-right:6px;"></i>
-                              
+                              style="color:#1A4066;border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                              <span style="display: block; padding-left: 40px;">
                                 <b>Toko Pareto Sudah Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
+                              </span>
                               </li>
                               @if(count($cust_exists) > 0 )
                                 @foreach ($cust_exists as $it)
