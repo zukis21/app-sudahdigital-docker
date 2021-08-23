@@ -15,11 +15,14 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string('m_title');
+            $table->bigInteger('client_id')->unsigned();
+            $table->string('m_tittle');
             $table->string('s_tittle');
-            $table->string('c_titlte');
+            $table->string('c_tittle');
             $table->string('o_tittle');
             $table->timestamps();
+
+            $table->foreign('client_id')->references('id')->on('b2b_client');
         });
     }
 

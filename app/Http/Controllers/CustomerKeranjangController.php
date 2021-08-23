@@ -318,16 +318,17 @@ class CustomerKeranjangController extends Controller
             }
             //$total_ongkir  = 15000;
             //$total_bayar  = $total_pesanan;
+$message = \App\Message::where('client_id',$client_id)->first();
 
-$txt_descwa='*Hello Admin '.$client_name->client_name.'*,
+$txt_descwa='*'.$message->m_tittle.'*,
 
-*Detail Sales*
+*'.$message->s_tittle.'*
 Nama : '.$user->name.',
 Email : '.$user->email.',
 No. Hp : ' .$user->phone.',
 Sales Area : ' .$user->sales_area.',
 
-*Detail Pelanggan*
+*'.$message->c_tittle.'*
 Nama  : '.$customer->name.',
 Email : '.$customer->email.',
 No. WA : '.$customer->phone.',
@@ -354,6 +355,26 @@ Alamat : '.$customer->address.',
                     $target_ach->save();
                 }
 
+                //detil non paket
+                $pesan = DB::table('order_product')
+                        ->join('orders','order_product.order_id','=','orders.id')
+                        ->join('products','order_product.product_id','=','products.id')
+                        ->where('orders.id','=',"$id")
+                        ->where('group_id','=',NULL)
+                        ->where('paket_id','=',NULL)
+                        ->get();
+                
+$ttle_nonpkt='*'.$message->o_tittle.'*
+';              
+                if(count($pesan) > 0){    
+                    $no_urt=0;
+                    foreach($pesan as $key=>$tele){
+                        $no_urt++;
+                        $ttle_nonpkt.= $no_urt.'. '.$tele->Product_name.' = (Qty :'.$tele->quantity.')
+';
+                    }
+                }
+                
                 $groupby_paket = DB::table('order_product')
                                 ->where('order_id',$id)
                                 ->whereNotNull('paket_id')
@@ -363,18 +384,18 @@ Alamat : '.$customer->address.',
                                 ->get(['paket_id','group_id']);
                 $krj_paket=count($groupby_paket);
                 if($krj_paket > 0){
-$ttle_pesan_pkt='*Detail Pesanan Paket*
-';
+$ttle_pesan_pkt='';
 $ttle_bns='*Bonus*
 ';
-$no=0;
+$count_nt_paket = $pesan->count();
+$no=$count_nt_paket;
                     foreach($groupby_paket as $key=>$dtl_pkt){
                         $no++;
                         $paket_name =\App\Paket::where('id',$dtl_pkt->paket_id)
                                     ->first();
                         $group_name =\App\Group::where('id',$dtl_pkt->group_id)
                                     ->first();
-                        $ttle_pesan_pkt.= '*_'.$no.'. '.$paket_name->display_name.' - '.$group_name->display_name.':_*
+                        $ttle_pesan_pkt.= $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :
 ';
                         $data_paket = DB::table('order_product')
                                     ->join('products','order_product.product_id','=','products.id')
@@ -383,8 +404,11 @@ $no=0;
                                     ->where('paket_id','=',$dtl_pkt->paket_id)
                                     ->whereNull('bonus_cat')
                                     ->get();
+
+                        $no_pkt = 0;
                         foreach($data_paket as $key=>$dp){
-                            $ttle_pesan_pkt.='* '.$dp->Product_name.' (Qty :'.$dp->quantity.')
+                            $no_pkt++;
+                            $ttle_pesan_pkt.=strtolower($this->number_to_alphabet($no_pkt)).'. '.$dp->Product_name.' = ( Qty :'.$dp->quantity.')
 ';
                         }
 
@@ -396,40 +420,30 @@ $no=0;
                                     ->where('paket_id','=',$dtl_pkt->paket_id)
                                     ->whereNotNull('bonus_cat')
                                     ->get();
-                        foreach($data_bonus as $db){
-                            $ttle_pesan_pkt.= '* '.$db->Product_name.' (Qty :'.$db->quantity.'~ *Bonus*)
+
+                        $no_bns = $data_paket->count();
+                        foreach($data_bonus as $key => $db){
+                            $no_bns++;
+                            $ttle_pesan_pkt.= strtolower($this->number_to_alphabet($no_bns)).'. '.$db->Product_name.' = (Qty :'.$db->quantity.'~ Bonus)
 ';
                         }
                     }
                 }
                 
-                //detil non paket
-                $pesan = DB::table('order_product')
-                        ->join('orders','order_product.order_id','=','orders.id')
-                        ->join('products','order_product.product_id','=','products.id')
-                        ->where('orders.id','=',"$id")
-                        ->where('group_id','=',NULL)
-                        ->where('paket_id','=',NULL)
-                        ->get();
-                if(count($pesan) > 0){
-$ttle_nonpkt='*Detail Pesanan Non Paket*
-';
-                    foreach($pesan as $key=>$tele){
-                        $ttle_nonpkt.='* '.$tele->Product_name.' (Qty :'.$tele->quantity.')
-';
-                    }
-                }
-                
+
 
                 if($request->get('voucher_code_hide_modal')!= ""){
                     if ($type == 1){
-                        $info_harga = '*Total Pesanan* : Rp.'.number_format(($sum_novoucher), 0, ',', '.').'%0A*Pembayaran* : '.$payment_method;
+                        //$info_harga = '*Total Pesanan* : Rp.'.number_format(($sum_novoucher), 0, ',', '.').'%0APembayaran : '.$payment_method;
+                        $info_harga = 'Pembayaran : '.$payment_method;
                     }else{
-                        $info_harga = '*Total Pesanan* : Rp.'.number_format(($sum_novoucher), 0, ',', '.').'%0A*Pembayaran* : '.$payment_method;
+                        //$info_harga = '*Total Pesanan* : Rp.'.number_format(($sum_novoucher), 0, ',', '.').'%0APembayaran : '.$payment_method;
+                        $info_harga = 'Pembayaran : '.$payment_method;
                     }
                 }
                 else{
-                    $info_harga = '*Total Pesanan* : Rp.'.number_format(($total_pesanan), 0, ',', '.').'%0A*Pembayaran* : '.$payment_method;
+                    //$info_harga = '*Total Pesanan* : Rp.'.number_format(($total_pesanan), 0, ',', '.').'%0APembayaran : '.$payment_method;
+                    $info_harga = 'Pembayaran : '.$payment_method;
                 }
                 if($request->get('notes') != ""){
                     $notes_wa=urlencode($request->get('notes'));
@@ -439,16 +453,16 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
                 } 
 
                 if(($krj_paket > 0) && (count($pesan) > 0)){
-                    $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_pesan_pkt).'%0A'.urlencode($ttle_nonpkt);
+                    $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt).'%0A'.urlencode($ttle_pesan_pkt);
                 }
                 elseif(($krj_paket > 0) && (count($pesan) <= 0)){
-                    $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_pesan_pkt);
+                    $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt).urlencode($ttle_pesan_pkt);
                 }
                 else{
                     $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt);
                 }
 
-                $note_sales = '*Notes* : '.$notes_wa;
+                $note_sales = 'Notes : '.$notes_wa;
                 $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales;
             
                 $url = "https://api.whatsapp.com/send?phone=62$wa_numb&text=$text_wa";
@@ -1328,6 +1342,20 @@ $ttle_nonpkt='*Detail Pesanan Non Paket*
         $order = Order::findorfail($id);
         $order->products()->detach();
         $order->forceDelete();
+    }
+
+    public function number_to_alphabet($number) {
+        $number = intval($number);
+        if ($number <= 0) {
+            return '';
+        }
+        $alphabet = '';
+        while($number != 0) {
+            $p = ($number - 1) % 26;
+            $number = intval(($number - $p) / 26);
+            $alphabet = chr(65 + $p) . $alphabet;
+        }
+        return $alphabet;
     }
 
 }

@@ -28,9 +28,18 @@ class DashboardController extends Controller
         });
     }
 
-    public function home_admin($vendor){
+    public function home_admin($vendor, $msgs = null){
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
-        return view('home',['vendor'=>$vendor,'client'=>$client]);
+
+        $message = \App\Message::where('client_id',$client->id)->first();
+
+        if($msgs){
+            return view('home',['vendor'=>$vendor,'client'=>$client,'message'=>$message,'msgs'=>$msgs]);
+        }else{
+            $msgs = null;
+            return view('home',['vendor'=>$vendor,'client'=>$client,'message'=>$message,'msgs'=>$msgs]);
+        }
+        
     }
 
     public function update(Request $request, $vendor, $id)
@@ -65,5 +74,34 @@ class DashboardController extends Controller
             $request->session()->forget('client_sess');
         }
         return redirect()->route('home_admin',[$vendor])->with('status','Profile Succsessfully Update');
+    }
+
+    public function store_message(Request $request, $vendor){
+        $m_setting = new \App\Message();
+        $m_setting->client_id = \Auth::user()->client_id;
+        $m_setting->m_tittle =$request->get('m_tittle');
+        $m_setting->s_tittle =$request->get('s_tittle');
+        $m_setting->c_tittle =$request->get('c_tittle');
+        $m_setting->o_tittle =$request->get('o_tittle');
+
+        $m_setting->save();
+        if($m_setting->save()){
+            $msgs = 'create-messagesetting-success';
+        }
+        return redirect()->route('home_admin',[$vendor,$msgs])->with('status','Message Tiitle Succsessfully Create');
+    }
+
+    public function update_message(Request $request, $vendor, $id){
+        $m_setting = \App\Message::findOrFail($id);
+        $m_setting->m_tittle =$request->get('m_tittle');
+        $m_setting->s_tittle =$request->get('s_tittle');
+        $m_setting->c_tittle =$request->get('c_tittle');
+        $m_setting->o_tittle =$request->get('o_tittle');
+
+        $m_setting->save();
+        if($m_setting->save()){
+            $msgs = 'update-messagesetting-success';
+        }
+        return redirect()->route('home_admin',[$vendor,$msgs])->with('status','Message Tiitle Succsessfully Update');
     }
 }

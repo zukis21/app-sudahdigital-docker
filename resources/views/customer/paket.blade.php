@@ -1062,12 +1062,19 @@ Paket
                                 </div>
                                 <div class="col-md-12 px-0 mt-2">
                                     <input type="hidden" id="order_id_pesan" name="id" value="{{$item !==null ? $item->id : ''}}"/>
-                                    
-                                    <button type="submit" id="ga_pesan" onclick="pesan_wa()" class="btn btn-success float-right btn-preview-order">
-                                        <i class="fab fa-whatsapp fa-1x" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i>
-                                        &nbsp;{{__('Pesan Sekarang') }}
-                                    </button>
-                                    
+                                    @if($message)
+                                        <button type="submit" id="ga_pesan" onclick="pesan_wa()" class="btn btn-success float-right btn-preview-order">
+                                            <i class="fab fa-whatsapp fa-1x" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i>
+                                            &nbsp;{{__('Pesan Sekarang') }}
+                                        </button>
+                                    @else
+                                        <a id="popoverData" class="btn btn-success float-right btn-preview-order"
+                                            data-trigger="hover" data-container="body" data-placement="top" 
+                                            data-content="Maaf anda tidak dapat mengirim pesanan, format pesan whatsapp belum dibuat.">
+                                            <i class="fab fa-whatsapp fa-1x" aria-hidden="true" style="color: #ffffff !important; font-weight:900;"></i>
+                                            &nbsp;{{__('Pesan Sekarang') }}
+                                        </a>
+                                    @endif
                                 </div>
                             </form>
                             <button type="submit" onclick="cancel_wa()" class="btn btn-danger btn-preview-cancel"
@@ -1075,6 +1082,7 @@ Paket
                                 <i class="fa fa-times fa-1x" aria-hidden="true" style="color:#fff;font-weight:900;">
                                 </i>&nbsp;{{__('Batalkan Pesanan') }}
                             </button>
+                           
                         </div>
                     </div>
                 </div>
@@ -1198,7 +1206,12 @@ Paket
         $('.btn-preview-cancel').addClass('btn-block');
         $('.btn-preview-order').addClass('btn-block').addClass('mt-5')
     }
-     
+    
+    $(function () {
+        $('#popoverData').popover({
+            container: 'body'
+        })
+    });
 </script>
 @endsection
 

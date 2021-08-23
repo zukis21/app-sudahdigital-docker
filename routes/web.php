@@ -107,10 +107,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['prefix' => '/{vendor}'], function()  
 {  
     //home
-    Route::get('/home_admin', 'DashboardController@home_admin')->name('home_admin');
+    Route::get('/home_admin/{msgs?}', 'DashboardController@home_admin')->name('home_admin');
 
     //Client profil
     //Route::get('/shop-profile', 'ProfilClientController@index')->name('profile_client.index');
+    Route::post('/message-tittle-store', 'DashboardController@store_message')->name('message.client.store');
+    Route::put('/message-tittle-update/{id}', 'DashboardController@update_message')->name('message.client.update');
     Route::put('/shop-update-profile/{id}', 'DashboardController@update')->name('profile.client.update');
     
     //Owner

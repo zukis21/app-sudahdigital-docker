@@ -66,7 +66,12 @@
                             <div>
                                 <ul class="nav nav-tabs" role="tablist">
                                     <!--<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Profile Details</a></li>-->
-                                    <li role="presentation"><a href="#" aria-controls="settings" role="tab" data-toggle="tab">Profile Detail & Settings</a></li>
+                                    <li role="presentation"  class="{{$msgs ? '' : 'active'}}">
+                                        <a href="#profile_settings" aria-controls="settings" role="tab" data-toggle="tab">Profile Detail</a>
+                                    </li>
+                                    <li role="presentation" class="{{$msgs ? 'active' : ''}}">
+                                        <a href="#wa_setting" aria-controls="settings" role="tab" data-toggle="tab">WA Ordering Tittle Setting</a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content">
                                     <!--
@@ -136,7 +141,8 @@
                                         </ul>
                                     </div>
                                      -->
-                                    <div role="tabpanel" class="tab-pane fade in active" id="profile_settings">
+                                     <!--profil setting-->
+                                    <div role="tabpanel" class="tab-pane fade in {{$msgs ? '' : 'active'}}" id="profile_settings">
                                         <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{route('profile.client.update',[$vendor,$client->id])}}">
                                             @csrf
                                             <input type="hidden" name="_method" value="PUT">
@@ -276,7 +282,62 @@
                                             </div>
                                         </form>
                                     </div>
-                                    
+
+                                    <!--Wa setting-->
+                                    <div role="tabpanel" class="tab-pane fade in {{$msgs ? 'active' : ''}}" id="wa_setting">
+                                        <form class="form-horizontal" method="POST" enctype="multipart/form-data" 
+                                            action="{{$message ? route('message.client.update',[$vendor,$message->id]) : route('message.client.store',[$vendor])}}">
+                                            @csrf
+                                            @if ($message)
+                                                <input type="hidden" name="_method" value="PUT">
+                                            @endif
+                                            
+                                            <div class="form-group">
+                                                <label for="m_tittle" class="col-sm-3 control-label">Message Tittle</label>
+                                                <div class="col-sm-9">
+                                                    <div class="form-line">
+                                                        <input type="text" class="form-control" id="m_tittle" name="m_tittle" placeholder="Message Tittle" value="{{ $message ? $message->m_tittle : ''}}" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="s_tittle" class="col-sm-3 control-label">Sales Detail Tittle</label>
+                                                <div class="col-sm-9">
+                                                    <div class="form-line">
+                                                        <input type="text" class="form-control" id="s_tittle" name="s_tittle" 
+                                                        placeholder="Sales detail tittle" value="{{$message ? $message->s_tittle : ''}}" 
+                                                        required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="c_tittle" class="col-sm-3 control-label">Customer Detail Tittle</label>
+                                                <div class="col-sm-9">
+                                                    <div class="form-line">
+                                                        <input type="text" class="form-control" id="c_tittle" name="c_tittle" 
+                                                        placeholder="Customer detail tittle" value="{{$message ? $message->c_tittle : ''}}" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="o_tittle" class="col-sm-3 control-label">Order Detail Tittle</label>
+                                                <div class="col-sm-9">
+                                                    <div class="form-line">
+                                                        <input type="text" class="form-control" id="o_tittle" name="o_tittle" 
+                                                        placeholder="Order detail tittle" value="{{$message ? $message->o_tittle : ''}}" 
+                                                        required>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-1 col-sm-11">
+                                                    <button type="submit" value="{{$message ? 'UPDATE' : 'SAVE'}}" class="btn btn-success">{{$message ? 'UPDATE' : 'SAVE'}}</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

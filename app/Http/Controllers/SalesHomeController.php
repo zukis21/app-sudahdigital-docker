@@ -33,6 +33,7 @@ class SalesHomeController extends Controller
 
         $id_user = \Auth::user()->id;
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        $message = \App\Message::where('client_id',$client->id)->first();
         $banner = \App\Banner::where('client_id','=',$client->id)
                 ->orderBy('position', 'ASC')->limit(5)->get();
         /*$categories = \App\Category::where('client_id','=',$client->id)
@@ -142,7 +143,8 @@ class SalesHomeController extends Controller
                 'client'=>$client,
                 //'paket_id'=>$paket_id,
                 'vendor'=>$vendor,
-                'stock_status'=>$stock_status
+                'stock_status'=>$stock_status,
+                'message'=>$message,
             ];
         }else{
             $data=['total_item'=> $total_item, 
@@ -159,7 +161,8 @@ class SalesHomeController extends Controller
                 'banner'=>$banner,
                 'stock_status'=>$stock_status,
                 'vendor'=>$vendor,
-                'client'=>$client
+                'client'=>$client,
+                'message'=>$message,
                 ];  
         }            
         
