@@ -103,7 +103,7 @@ class DashboardSalesController extends Controller
             //dd(json_encode($red_line));
         }else{
             $day_off = null;
-            $rparam_line = 0;
+            $param_line = 0;
         }
         
         //dd($day_off);
