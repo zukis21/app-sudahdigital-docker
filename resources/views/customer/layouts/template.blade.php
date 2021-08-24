@@ -841,6 +841,77 @@
             border-top: 7px solid #8F5408;
         }
 
+        .searchbar {
+            position: relative;
+            min-width: 40px;
+            width: 0%;
+            height: 40px;
+            float: right;
+            overflow: hidden;
+            -webkit-transition: width 0.3s;
+            -moz-transition: width 0.3s;
+            -ms-transition: width 0.3s;
+            -o-transition: width 0.3s;
+            transition: width 0.3s
+        }
+
+        .searchbar-input {
+            top: 0;
+            right: 0;
+            border: 0;
+            outline: 0;
+            background: #fff;
+            width: 100%;
+            height: 40px;
+            margin: 0;
+            font-size: 20px;
+            color: #1A4066;
+            
+        }
+
+        .searchbar-input::-webkit-input-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-input:-moz-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-input::-moz-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-input:-ms-input-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-icon,
+        .searchbar-submit {
+            width: 40px;
+            height: 40px;
+            display: block;
+            position: absolute;
+            top: 0;
+            font-family: Montserrat;
+            font-size: 20px;
+            right: 0;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            outline: 0;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            color: #1A4066;
+            /*background: #1A4066;*/
+            background:#fff;
+            border-left: none;
+        }
+
+        .searchbar-open {
+            width: 100%
+        }
+
         @media(max-width: 768px){
             #product_list .ribbon {
             position: absolute;
@@ -885,7 +956,36 @@
             border-bottom: 3px solid transparent;
             border-top: 3px solid #8F5408;
             }
+
+            
         }
+
+        @media(max-width: 767px){
+            
+            .searchbar-input {
+                height: 25px;
+                font-size: 14px;
+            }
+
+            .searchbar {
+               min-width: 25px;
+               height: 25px;
+            }
+
+            .searchbar-icon,
+            .searchbar-submit {
+                width: 25px;
+                height: 25px;
+                display: block;
+                position: absolute;
+                top: 0;
+                font-size: 14px;
+                line-height: 27px;
+                font-weight: bold;
+                
+            }
+        }
+
     </style>
     
     <script>
@@ -1215,6 +1315,8 @@
                     <i class="fas fa-bars fa-2x d-none d-md-block d-md-none" style="color:#ffffff;"></i>
                     <i class="fas fa-bars fa-1x d-md-none" style="color:#ffffff;"></i>
                 </button>
+                
+                
             </div>
         </nav>
 
@@ -1556,7 +1658,7 @@
         //$('#accordion').collapse('show').height('auto');
         
 
- //=======================================top product scroll horizontal============================================//
+        //=======================================top product scroll horizontal============================================//
         // duration of scroll animation
         var scrollDuration = 800;
         // paddles
@@ -1626,10 +1728,10 @@
         $(leftPaddle).on("click", function () {
             $(".menu").animate({ scrollLeft: "0" }, scrollDuration);
         });
-//=======================================end scroll top product============================================//
+        //=======================================end scroll top product============================================//
 
 
-//=======================================scroll popup paket================================================//
+        //=======================================scroll popup paket================================================//
         // duration of scroll animation
         var scrollDuration_pop = 800;
         // paddles
@@ -1700,10 +1802,10 @@
         $(leftPaddle_pop).on("click", function () {
             $(".menu_pop").animate({ scrollLeft: scrollAmount -= 300 }, scrollDuration_pop);
         });
-//=======================================end scroll popup paket============================================//
+        //=======================================end scroll popup paket============================================//
 
 
-//=======================================scroll popup paket bonus================================================//
+        //=======================================scroll popup paket bonus================================================//
         // duration of scroll animation
         var scrollDuration_pop_bonus = 800;
         // paddles
@@ -1773,7 +1875,7 @@
         $(leftPaddle_pop_bonus).on("click", function () {
             $(".menu_pop_bonus").animate({ scrollLeft: scrollAmount_bonus -= 330 }, scrollDuration_pop_bonus);
         });
-//=======================================end scroll popup paket bonus============================================//
+        //=======================================end scroll popup paket bonus============================================//
         
         //popup first page
         $(document).ready(function(){
@@ -4722,14 +4824,55 @@
                 }
             });
         }
-    /*
+        /*
         window.setTimeout(function() {
         $(".alert").fadeTo(500, 0).slideUp(500, function(){
             $(".alert").slideUp(500); 
         });
         }, 6000);*/
+
     </script>
     <script>
+        $(document).ready(function(){
+            var submitIcon = $('.searchbar-icon');
+            var inputBox = $('.searchbar-input');
+            var searchbar = $('.searchbar');
+            var isOpen = false;
+            submitIcon.click(function(){
+                if(isOpen == false){
+                    searchbar.addClass('searchbar-open');
+                    inputBox.focus();
+                    isOpen = true;
+                } else {
+                    searchbar.removeClass('searchbar-open');
+                    inputBox.focusout();
+                    isOpen = false;
+                }
+            });
+            submitIcon.mouseup(function(){
+                return false;
+            });
+            searchbar.mouseup(function(){
+                return false;
+            });
+            $(document).mouseup(function(){
+                if(isOpen == true){
+                $('.searchbar-icon').css('display','block');
+                submitIcon.click();
+                }
+            });
+        });
+            
+        function buttonUp(){
+            var inputVal = $('.searchbar-input').val();
+            inputVal = $.trim(inputVal).length;
+            if( inputVal !== 0){
+                $('.searchbar-icon').css('display','none');
+            } else {
+                $('.searchbar-input').val('');
+                $('.searchbar-icon').css('display','block');
+            }
+        }
         /*
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}

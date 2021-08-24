@@ -359,7 +359,7 @@ Home
                                         <li><a class="dropdown-item" href="{{route('home_customer', [$vendor,'cat'=>$category->slug])}}">{{$category->name}}</a></li>
                                     @elseif(count($category->subcategory))
                                         <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">{{$category->name}}</a>
-                                        @include('customer.subCategoryList-option',['subcategories' => $category->subcategory])
+                                        @include('customer.subcategoryList-option',['subcategories' => $category->subcategory])
                                     @endif
                                 @endforeach
                             @endif
