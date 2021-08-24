@@ -89,7 +89,7 @@
 					@endif
 					<br>
 					@if($c->pareto_id)
-					<span class="badge bg-orange">{{$c->pareto->pareto_code}}</span>
+						<span class="badge bg-orange">{{$c->pareto_code}}</span>
 					@endif
 				</td>
 				<td>
