@@ -31,6 +31,10 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
 
     Route::group(['prefix' => '/{vendor}'], function()
     {
+        Route::get('/sales-home/search-product', function(Illuminate\Http\Request $request, $vendor){
+            return redirect()->route('search_keyword', [$vendor,'key' => $request['keyword']]);
+        })->name('search_product');
+        Route::get('/sales-home/search/product-name/{key}', 'searchController@index')->name('search_keyword');
         Route::get('/sales-home/{cat?}', 'SalesHomeController@index')->name('home_customer');
         Route::post('/session/store','SessionStore@index')->name('session.store');
         Route::get('/session/clear','SessionStore@clear')->name('session.clear');

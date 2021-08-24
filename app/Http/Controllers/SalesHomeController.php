@@ -56,6 +56,7 @@ class SalesHomeController extends Controller
                     ->where('top_product','=','1')
                     ->where('status','=','PUBLISH')
                     ->orderBy('top_product','ASC')->get();
+                    
         if($cat){
             //$category_id = $request->get('cats');
             $cat_id = \App\Category::whereRaw('BINARY slug = ?',[$cat])->first();

@@ -1315,7 +1315,15 @@
                     <i class="fas fa-bars fa-2x d-none d-md-block d-md-none" style="color:#ffffff;"></i>
                     <i class="fas fa-bars fa-1x d-md-none" style="color:#ffffff;"></i>
                 </button>
-                
+                @if (\Route::currentRouteName() == 'home_customer' || \Route::currentRouteName() == 'search_keyword')
+                    <form class="searchbar form-inline ml-auto mt-n4 mb-n4" action="{{route('search_product',[$vendor])}}"> 
+                        <input type="search" placeholder="Cari Produk" value="{{old('keyword')}}" 
+                            name="keyword" class="searchbar-input pl-3 px-0 rounded-pill" onkeyup="buttonUp();" required /> 
+                        <input type="submit" class="searchbar-submit rounded-circle p-0" value="GO&nbsp;"> <span class="searchbar-icon rounded-circle p-0">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </span> 
+                    </form>
+                @endif
                 
             </div>
         </nav>

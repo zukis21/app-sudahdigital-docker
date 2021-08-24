@@ -322,6 +322,8 @@ $message = \App\Message::where('client_id',$client_id)->first();
 
 $txt_descwa='*'.$message->m_tittle.'*,
 
+Tanggal : '.$this->tgl_indo(date('Y-m-d')).'
+
 *'.$message->s_tittle.'*
 Nama : '.$user->name.',
 Email : '.$user->email.',
@@ -1356,6 +1358,30 @@ $no=$count_nt_paket;
             $alphabet = chr(65 + $p) . $alphabet;
         }
         return $alphabet;
+    }
+
+    public function tgl_indo($tanggal){
+        $bulan = array (
+            1 =>   'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        );
+        $pecahkan = explode('-', $tanggal);
+        
+        // variabel pecahkan 0 = tanggal
+        // variabel pecahkan 1 = bulan
+        // variabel pecahkan 2 = tahun
+     
+        return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     }
 
 }

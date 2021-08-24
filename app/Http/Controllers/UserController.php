@@ -35,6 +35,7 @@ class UserController extends Controller
     public function index(Request $request, $vendor)
     {
         $users = \App\User::where('roles','!=','SALES')
+        ->where('roles','!=','SUPERVISOR')
         ->where('client_id','=',auth()->user()->client_id)
         ->get();//paginate(10);
         $filterkeyword = $request->get('keyword');
