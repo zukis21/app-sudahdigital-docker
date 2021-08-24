@@ -22,6 +22,10 @@ class CreateMessagesTable extends Migration
             $table->string('o_tittle');
             $table->timestamps();
 
+            //$table->foreign('client_id')->references('id')->on('b2b_client');
+        });
+
+        Schema::table('messages', function($table) {
             $table->foreign('client_id')->references('id')->on('b2b_client');
         });
     }
