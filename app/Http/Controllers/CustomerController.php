@@ -40,7 +40,7 @@ class CustomerController extends Controller
             $client_id = \Auth::user()->client_id;
             $spv_id = \Auth::user()->id;
             $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                        u.id as user_id, u.name as user_name FROM customers c left outer join 
+                        u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left outer join 
                         type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
                         ON cat_pareto.id = c.pareto_id,
                         cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
@@ -52,12 +52,12 @@ class CustomerController extends Controller
                             )
                         ");
             
-            
+            //dd($customers);
             $status = $request->get('status');
             
             if($status){
                 $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                u.id as user_id, u.name as user_name FROM customers c left join 
+                u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
                 type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
                 ON cat_pareto.id = c.pareto_id,
                 cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
