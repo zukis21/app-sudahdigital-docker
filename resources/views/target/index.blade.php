@@ -38,7 +38,9 @@
 					<tr>
 						<!--<td>{{$no}}</td>-->
 						<td>
-							{{$u->users ? $u->users->name : ''}}
+							@if($u->users)
+								{{ $u->users->name }}
+							@endif
 						</td>
 						<td>
 							@if($u->users)
