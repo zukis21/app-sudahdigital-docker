@@ -9,7 +9,7 @@
 
 <form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/orders' ? 'active' : ''}}">
 					<a href="{{route('orders.index',[$vendor])}}" aria-expanded="true" >All</a>
@@ -26,9 +26,12 @@
 				<li role="presentation" class="{{Request::get('status') == 'cancel' ?'active' : '' }}">
 					<a href="{{route('orders.index', [$vendor,'status' =>'cancel'])}}">CANCEL</a>
 				</li>
+				<li role="presentation" class="{{Request::get('status') == 'no-order' ?'active' : '' }}">
+					<a href="{{route('orders.index', [$vendor,'status' =>'no-order'])}}">NO-ORDER</a>
+				</li>
 			</ul>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-4">
 			<a href="{{route('orders.export_mapping',[$vendor]) }}" 
 				class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
 				<i class="fas fa-file-excel fa-0x "></i> Export
@@ -71,13 +74,15 @@
 				<td>{{$no}}</td>
 				<td>
 					@if($order->status == "SUBMIT")
-					<span class="badge bg-deep-orange text-light">{{$order->status}}</span>
+					<span class="badge bg-orange text-light">{{$order->status}}</span>
 					@elseif($order->status == "PROCESS")
 					<span class="badge bg-blue text-light">{{$order->status}}</span>
 					@elseif($order->status == "FINISH")
 					<span class="badge bg-green text-light">{{$order->status}}</span>
 					@elseif($order->status == "CANCEL")
 					<span class="badge bg-black text-light">{{$order->status}}</span>
+					@elseif($order->status == "NO-ORDER")
+					<span class="badge bg-red text-light">{{$order->status}}</span>
 					@endif
 				</td>
 				<td>
@@ -117,7 +122,10 @@
 					</ul>
 				</td>
 				-->
-				<td>{{\Auth::user()->roles == 'SUPERVISOR' ? $odr->totalQuantity : $order->totalQuantity}} DUS</td>
+				<td>
+					{{\Auth::user()->roles == 'SUPERVISOR' ? $odr->totalQuantity : $order->totalQuantity}} 
+					{{$order->status == 'NO-ORDER' ? '' : 'DUS'}}
+				</td>
 				<td>{{$order->created_at}}</td>
 				<td>{{number_format($order->total_price)}}</td>
 				

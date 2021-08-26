@@ -77,4 +77,59 @@ class SessionStore extends Controller
         $request->session()->forget('ses_order');
         return redirect()->route('home_customer',[$vendor]);
     }
+
+    public function checkout_no_order(Request $request, $vendor){
+        $user_id = \Auth::user()->id;
+        $client_id = \Auth::user()->client_id;
+        $ses_order = $request->session()->get('ses_order');
+        if($ses_order->customer_id == null){
+            $name = $ses_order->name;
+            $store_name = $ses_order->store_name;
+            $addr_for_ses = $ses_order->address;
+
+            $new_cust = new \App\Customer;
+            $new_cust->name = $name;
+            $new_cust->phone = $ses_order->phone;
+            $new_cust->phone_owner = $ses_order->phone_owner;
+            $new_cust->phone_store = $ses_order->phone_store;
+            $new_cust->store_name = $store_name;
+            $new_cust->address = $ses_order->address;
+            $new_cust->user_id = $user_id;
+            $new_cust->client_id = $client_id;
+            $new_cust->status = 'NEW';
+            $new_cust->save();
+            if ( $new_cust->save()){
+                $sel_cust = \App\Customer::where('client_id','=',$client_id)
+                            ->whereRaw('BINARY name = ?',[$name])
+                            ->where('phone','=',$ses_order->phone)
+                            ->where('phone_owner','=',$ses_order->phone_owner)
+                            ->where('phone_store','=',$ses_order->phone_store)
+                            ->whereRaw('BINARY store_name = ?',[$store_name])
+                            ->whereRaw('BINARY address = ?',[$addr_for_ses])
+                            ->where('user_id','=',$user_id)
+                            ->first();
+                //dd($sel_cust->id);
+                $customer = \App\Customer::findOrfail($sel_cust->id);
+            }
+        }else{
+            $customer = \App\Customer::findOrfail($ses_order->customer_id);
+        }
+
+        $order = new \App\Order;
+        $order->user_id = $user_id;
+        $order->user_loc = $ses_order->user_loc;
+        $order->client_id = $client_id;
+        $order->customer_id = $customer->id;
+        $order->notes_no_order = $request->get('notes_no_order');
+        //$order->quantity = $quantity;
+        $order->invoice_number = date('YmdHis');
+        $order->total_price = 0;
+        $order->status = 'NO-ORDER';
+        $order->reasons_id = $request->get('reasons_id');
+        $order->save();
+        if($order->save()){
+            $request->session()->forget('ses_order');
+            return redirect()->route('home_customer',[$vendor]);
+        }
+    }
 }

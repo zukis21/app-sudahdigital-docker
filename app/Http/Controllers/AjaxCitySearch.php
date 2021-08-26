@@ -118,4 +118,12 @@ class AjaxCitySearch extends Controller
 
         return response()->json($response);
     }
+
+    public function ajax_reasons(Request $request){
+        $keyword = $request->get('q');
+        $reasons = \App\ReasonsCheckout::where('client_id','=',auth()->user()->client_id)
+                    ->where('reasons_name','LIKE',"%$keyword%")
+                    ->orderBy('position','ASC')->get();
+        return $reasons;
+    }
 }

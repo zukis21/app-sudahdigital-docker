@@ -46,7 +46,6 @@
     })(window,document,'script','dataLayer','GTM-MSWC453');</script>
     <!-- End Google Tag Manager -->
     <style type="text/css">
-
         .btn-circle {
             float: right;
             width: 30px;
@@ -215,6 +214,23 @@
         }
 
         #LocationForm .modal-content-full-width  {
+            height: auto !important;
+            min-height: 100% !important;
+            border-radius: 0 !important;
+            background-color: #1A4066 !important 
+        }
+
+        #cekOut .modal-dialog-full-width {
+            position:absolute;
+            right:0;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width:none !important;
+        }
+
+        #cekOut .modal-content-full-width  {
             height: auto !important;
             min-height: 100% !important;
             border-radius: 0 !important;
@@ -637,6 +653,7 @@
                 left: 20%;
                 top: 20%;
             }
+
         }
 
         @media (max-width: 600px){
@@ -1230,6 +1247,74 @@
         </div>
     </div>
 
+    <!--Modal confirm cekout tanpa order-->
+    <div class="modal fade right" id="cekOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+        <div class="modal-dialog-full-width modal-dialog momodel modal-fluid" role="document">
+            <div class="modal-content-full-width modal-content ">
+                <div class="modal-body">
+                    <button type="button" class="btn  btn-circle" data-dismiss="modal" style="position:absolute;z-index:99999;background:#fff;"><i class="fa fa-times text-primary"></i></button>
+                    <img src="{{ asset('assets/image/dot-top-right.png') }}" class="dot-top-right"  
+                    style="" alt="dot-top-right">
+                    <img src="{{ asset('assets/image/dot-bottom-left.png') }}" class="dot-bottom-left"  
+                    style="" alt="dot-bottom-left">
+                    <img src="{{ asset('assets/image/shape-bottom-right.png') }}" class="shape-bottom-right"  
+                    style="" alt="shape-bottom-right">
+                    <div class="container">
+                        <div class="d-flex justify-content-center mx-auto">
+                            <div class="col-md-2 image-logo-login" style="z-index: 2">
+                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 login-label pt-4" style="z-index: 2">
+                        <h5 class="text-center text-white">Konfirmasi Check Out</h5>
+                    </div>
+                    
+                    <div class="row justify-content-center  d-flex">
+                        <div class="col-md-5 login-label" style="z-index: 2">
+                            
+                            <div id="PreviewToko_CheckOut" style="overflow: hidden;">
+                                
+                            </div>
+                            <form method="POST" action="{{route('checkout.no_order',[$vendor])}}">
+                                @csrf
+                                
+                                <div class="row mt-3">
+                                    
+                                    <div class="col-select col-lg-12 pl-3">
+                                        <div class="form-group">
+                                            <select name="reasons_id"  id="reasons_id" class="form-control" style="width:100%;" required></select>
+                                        </div>
+                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-select col-lg-12 pl-3">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <textarea name="notes_no_order" class="form-control p-3" rows="3" placeholder="Catatan..."
+                                                style="width: 100%;
+                                                border-top-left-radius:25px;
+                                                border-top-right-radius:25px;
+                                                border-bottom-right-radius:0;
+                                                border-bottom-left-radius:0;
+                                                font-weight: 500;" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mx-auto text-center">
+                                    <button type="submit" id="ga_checkout"class="btn btn_login_form" >{{ __('Konfirmasi') }}</button>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--preloader-->
     <div class="preloader" id="preloader">
         <div class="loading">
@@ -1310,9 +1395,10 @@
                 <li>
 
                 <li>
-                    <a class="btn logout ">
+                    <a class="btn logout" data-toggle="modal" onclick="show_modal_chekout()">
                         Chek Out Tanpa Order
                     </a>
+                    
                 <li>
             </ul>
             
@@ -1481,9 +1567,9 @@
             templateResult: formatText
         });
 
-        //Select2 city
-        /*$('#city_id').select2({
-        placeholder: 'Pilih Kota',
+        //Select2 Reasons check out
+        $('#reasons_id').select2({
+        placeholder: 'Pilih Alasan',
         language: {
         noResults: function() {
             return '&nbsp;Data Tidak Ditemukan';
@@ -1493,21 +1579,21 @@
             return markup;
         },
         ajax: {
-            url: '{{URL::to('/ajax/city')}}',
+            url: '{{URL::to('/ajax/reasons')}}',
             
             processResults: function (data) {
             return {
                 results:  $.map(data, function (item) {
                     return {
                             id: item.id,
-                            text: item.city_name,
+                            text: item.reasons_name,
                             
                     }
                 })
             };
             }
         }
-        });*/
+        });
         
         //onchange select city
         function getval(sel)
@@ -4641,6 +4727,7 @@
                 }
             });
         }
+        
 
         function open_detail_pkt(order_id,paket_id,group_id)
         {
@@ -4840,6 +4927,28 @@
                     $('#loader').addClass('hidden');
                 },
                 
+                error: function (response) {
+                console.log('Error:', response);
+                }
+            });
+        }
+
+        function show_modal_chekout(){
+            $.ajax({
+                url : '{{URL::to('/keranjang/preview_checkout')}}',
+                
+                              
+                success: function (response){
+                    //$("#modalDetilList").modal('show');
+                    $("#cekOut").modal('show');
+                    $('#sidebar').removeClass('active');
+                    $('.overlay').removeClass('active');
+                    $('#PreviewToko_CheckOut' ).html(response);
+                    var diswa = $('#dsbl_btn_checkout' ).val();
+                    if (diswa.length > 0) {
+                        $('#ga_checkout').attr("disabled", 'disabled');
+                    }
+                },
                 error: function (response) {
                 console.log('Error:', response);
                 }

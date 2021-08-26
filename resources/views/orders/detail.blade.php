@@ -39,7 +39,12 @@
                 <label class="form-label">Order date</label>
             </div>
         </div>
+        
         <label class="form-label">Product Orders</label>
+        @if($order->status == 'NO-ORDER')
+        <br>
+          --No Product--
+        @endif
         @if(count($order->products_nonpaket) > 0)
             <div class="form-group">
                 <table width="100%" class="table table-hover">
@@ -190,19 +195,28 @@
         <label class="form-label">Status</label>
         <div class="form-group">
             <input type="radio" value="SUBMIT" name="status" id="SUBMIT" {{$order->status == 'SUBMIT' ? 'checked' : ''}} 
-            {{$order->status == 'CANCEL' ? 'disabled' : ''}}>
+            {{$order->status == 'CANCEL' || $order->status == 'NO-ORDER' ? 'disabled' : ''}}>
             <label for="SUBMIT">SUBMIT</label>
             &nbsp;
             <input type="radio" value="PROCESS" name="status" id="PROCESS" {{$order->status == 'PROCESS' ? 'checked' : ''}}
-            {{$order->status == 'CANCEL' ? 'disabled' : ''}}>
+            {{$order->status == 'CANCEL' || $order->status == 'NO-ORDER' ? 'disabled' : ''}}>
             <label for="PROCESS">PROCESS</label>
             &nbsp;
             <input type="radio" value="FINISH" name="status" id="FINISH" {{$order->status == 'FINISH' ? 'checked' : ''}}
-            {{$order->status == 'CANCEL' ? 'disabled' : ''}}>
+            {{$order->status == 'CANCEL' || $order->status == 'NO-ORDER' ? 'disabled' : ''}}>
             <label for="FINISH">FINISH</label>
             &nbsp;
-            <input type="radio" value="CANCEL" name="status" id="CANCEL" {{$order->status == 'CANCEL' ? 'checked' : ''}}>
+            <input type="radio" value="CANCEL" name="status" id="CANCEL" {{$order->status == 'CANCEL' ? 'checked' : ''}}
+            {{$order->status == 'NO-ORDER' ? 'disabled' : ''}}>
             <label for="CANCEL">CANCEL</label>
+            &nbsp;
+            <input type="radio" value="NO-ORDER" name="status" id="NO-ORDER" {{$order->status == 'NO-ORDER' ? 'checked' : ''}}
+            {{$order->status == 'CANCEL' || 
+              $order->status == 'FINISH' ||
+              $order->status == 'PROCESS' ||
+              $order->status == 'SUBMIT' ? 'disabled' : ''}}>
+            <label for="NO-ORDER">NO-ORDER</label>
+
         </div>
 
         <div class="form-group"  style="{{$order->status == 'CANCEL' ? 'display: block' : 'display:none'}}" id="notes_cancel">
@@ -218,6 +232,20 @@
                 @endif
             </div>
         </div>
+
+        <div class="form-group"  style="{{$order->status == 'NO-ORDER' ? 'display: block' : 'display:none'}}">
+            <div class="form-line">
+                <input type="text" class="form-control"  autocomplete="off"  value="{{$order->reasons_id ? $order->reasons->reasons_name : ''}}" disabled>
+                <label class="form-label">Reasons</label>
+            </div>
+        </div>
+
+        <div class="form-group"  style="{{$order->status == 'NO-ORDER' ? 'display: block' : 'display:none'}}">
+            <div class="form-line">
+                <input type="text" class="form-control"  autocomplete="off"  value="{{$order->notes_no_order ? $order->notes_no_order : ''}}" disabled>
+                <label class="form-label">Notes</label>
+            </div>
+        </div>
         <br>
         @if($order->status == 'CANCEL')
         <div class="form-group form-float">
@@ -227,8 +255,11 @@
             </div>
         </div>
         @endif
-        <input type="submit" class="btn btn-primary waves-effect" value="UPDATE" {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}>
-        
+        @if($order->status == 'NO-ORDER')
+            <input type="submit" class="btn btn-primary waves-effect" value="UPDATE" disabled>
+        @else
+            <input type="submit" class="btn btn-primary waves-effect" value="UPDATE" {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}>
+        @endif
     </form>
     <!-- #END#  -->		
 

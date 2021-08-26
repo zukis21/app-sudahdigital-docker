@@ -1338,6 +1338,59 @@ $no=$count_nt_paket;
         
     }
 
+    public function preview_checkout(Request $request)
+    {
+        
+        $ses_order = $request->session()->get('ses_order');
+        //dd($ses_order->store_name);
+        if($ses_order->customer_id == null){
+            $customer = $request->session()->get('ses_order');
+            $toko = $customer->store_name;
+            $disable_button = '';
+            $ps_error_toko = '';
+        }else{
+            $customer = Customer::where('id',$ses_order->customer_id)
+                        ->where('status','ACTIVE')->first();
+            if($customer == null){
+                $toko = '';
+                $disable_button = 'disabled';
+                $ps_error_toko = '<small>
+                                    <small>
+                                        <p class="my-2 pl-2" style="line-height:1.3;color:white;font-weight:400;text-align:left">
+                                            Toko yang dipilih telah dihapus atau dinonaktifkan, mohon untuk menghubungi admin terkait.
+                                        </p>
+                                    </small>
+                                </small>';
+            }
+            else{
+                $disable_button = '';
+                $ps_error_toko = '';
+                $toko = $customer->store_name;
+            }
+        }
+        
+        echo'
+        <div id="PreviewToko_CheckOut" style="overflow: hidden;">
+            <div class="row px-3 mt-4">
+                <div class="col-lg-12 p-0">
+                    <div class="panel panel-custom panel-default">
+                        <div class="panel-body px-2">
+                            <small>
+                                <small>
+                                <p class="my-2 pl-2" style="line-height:1.3;color:#000;font-weight:400;text-align:left">
+                                    '.$toko.'
+                                </p>
+                                </small>
+                            </small>
+                            '.$ps_error_toko.'
+                         </div>
+                    </div>
+                </div>
+                <input type="hidden" id="dsbl_btn_checkout" value="'.$disable_button.'">
+            </div>
+        </div>';
+    }
+
     public function delete_allcart(Request $request)
     {
         $id = $request->get('order_id');

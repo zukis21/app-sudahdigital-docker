@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::get('/pesanan/{status?}','TransaksiSalesController@index')->name('pesanan');
         Route::post('/pesanan/cancel','TransaksiSalesController@change_status')->name('cancel_status');
         Route::get('/sales-dashboard','DashboardSalesController@index')->name('dash-sales');
+        Route::post('/checkout/no-order','SessionStore@checkout_no_order')->name('checkout.no_order');
     });
 
     Route::get('/success/send/order','SessionStore@OrderSuccess');
@@ -55,6 +56,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::post('/pesanan/detail','AjaxDetailPesananSales@detail');
     Route::get('/home_cart', 'CustomerKeranjangController@ajax_cart');
     Route::get('/pesanan/cancel/success','AjaxDetailPesananSales@cancel_success');
+    Route::get('/ajax/reasons', 'AjaxCitySearch@ajax_reasons');
 
 
     Route::group(['prefix' => '/keranjang'], function()
@@ -64,6 +66,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::post('/simpan','CustomerKeranjangController@simpan')->name('customer.keranjang.simpan');
         Route::post('/cek_order','CustomerKeranjangController@cek_order');
         Route::post('/preview_order','CustomerKeranjangController@preview_order');
+        Route::get('/preview_checkout','CustomerKeranjangController@preview_checkout');
         Route::post('/delete_allcart','CustomerKeranjangController@delete_allcart');
         Route::post('/kurang','CustomerKeranjangController@kurang')->name('customer.keranjang.kurang');
         Route::post('/tambah','CustomerKeranjangController@tambah')->name('customer.keranjang.tambah');

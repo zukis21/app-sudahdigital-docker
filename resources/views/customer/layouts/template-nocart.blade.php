@@ -35,6 +35,46 @@
             border-top-right-radius: 15px !important;
         }*/
 
+        .btn-circle {
+            float: right;
+            width: 30px;
+            height: 30px;
+            padding: 2px 0px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 15px;
+            line-height: 1.42857;
+            right:2rem;
+            top: 2rem;
+            border: none;
+        }
+
+        #cekOut .modal-dialog-full-width {
+            position:absolute;
+            right:0;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width:none !important;
+        }
+
+        #cekOut .modal-content-full-width  {
+            height: auto !important;
+            min-height: 100% !important;
+            border-radius: 0 !important;
+            background-color: #1A4066 !important 
+        }
+
+        .panel-custom>.panel-body {
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-color: #ddd;
+            color:#000;
+        }
+
         .alert{
             position:fixed;
             top:5%; 
@@ -364,6 +404,15 @@
                 left: 5%;
                 top: 5%;
             }
+
+            .btn-circle{
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+                padding: 3px 0px;
+                right:1rem;
+                top: 1rem;
+            }
             
         }
 
@@ -458,51 +507,51 @@
         }
     
         #product_list .ribbon {
-        position: absolute;
-        left: -5px; top: -5px;
-        z-index: 1;
-        overflow: hidden;
-        width: 200px; height: 200px;
-        text-align: right;
+            position: absolute;
+            left: -5px; top: -5px;
+            z-index: 1;
+            overflow: hidden;
+            width: 200px; height: 200px;
+            text-align: right;
         }
 
         #product_list .span-ribbon {
-        font-size: 20px;
-        font-weight: bold;
-        color: #FFF;
-        text-transform: uppercase;
-        text-align: center;
-        line-height: 40px;
-        transform: rotate(-45deg);
-        -webkit-transform: rotate(-45deg);
-        width: 225px;
-        display: block;
-        background: #79A70A;
-        background: linear-gradient(#F79E05 0%, #8F5408 100%);
-        box-shadow: 0 6px 10px -5px rgba(0, 0, 0, 1);
-        position: absolute;
-        top: 40px; left: -52px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFF;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 40px;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            width: 225px;
+            display: block;
+            background: #79A70A;
+            background: linear-gradient(#F79E05 0%, #8F5408 100%);
+            box-shadow: 0 6px 10px -5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 40px; left: -52px;
         }
 
         #product_list .span-ribbon::before {
-        content: "";
-        position: absolute; left: 0px; top: 100%;
-        z-index: -1;
-        border-left: 7px solid #8F5408;
-        border-right: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        border-top: 7px solid #8F5408;
+            content: "";
+            position: absolute; left: 0px; top: 100%;
+            z-index: -1;
+            border-left: 7px solid #8F5408;
+            border-right: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-top: 7px solid #8F5408;
         
         }
         
         #product_list .span-ribbon::after {
-        content: "";
-        position: absolute; right: 0px; top: 100%;
-        z-index: -1;
-        border-left: 7px solid transparent;
-        border-right: 7px solid #8F5408;
-        border-bottom: 7px solid transparent;
-        border-top: 7px solid #8F5408;
+            content: "";
+            position: absolute; right: 0px; top: 100%;
+            z-index: -1;
+            border-left: 7px solid transparent;
+            border-right: 7px solid #8F5408;
+            border-bottom: 7px solid transparent;
+            border-top: 7px solid #8F5408;
         
         }
 
@@ -559,6 +608,74 @@
     </script>
 </head>
 <body>
+    <!--Modal confirm cekout tanpa order-->
+    <div class="modal fade right" id="cekOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+        <div class="modal-dialog-full-width modal-dialog momodel modal-fluid" role="document">
+            <div class="modal-content-full-width modal-content ">
+                <div class="modal-body">
+                    <button type="button" class="btn btn-warning btn-circle" data-dismiss="modal" style="position:absolute;z-index:99999;background:#fff;"><i class="fa fa-times text-primary"></i></button>
+                    <img src="{{ asset('assets/image/dot-top-right.png') }}" class="dot-top-right"  
+                    style="" alt="dot-top-right">
+                    <img src="{{ asset('assets/image/dot-bottom-left.png') }}" class="dot-bottom-left"  
+                    style="" alt="dot-bottom-left">
+                    <img src="{{ asset('assets/image/shape-bottom-right.png') }}" class="shape-bottom-right"  
+                    style="" alt="shape-bottom-right">
+                    <div class="container">
+                        <div class="d-flex justify-content-center mx-auto">
+                            <div class="col-md-2 image-logo-login" style="z-index: 2">
+                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 login-label pt-4" style="z-index: 2">
+                        <h5 class="text-center text-white">Konfirmasi Check Out</h5>
+                    </div>
+                    
+                    <div class="row justify-content-center  d-flex">
+                        <div class="col-md-5 login-label" style="z-index: 2">
+                            
+                            <div id="PreviewToko_CheckOut" style="overflow: hidden;">
+                                
+                            </div>
+                            <form method="POST" action="{{route('checkout.no_order',[$vendor])}}">
+                                @csrf
+                                
+                                <div class="row mt-3">
+                                    
+                                    <div class="col-select col-lg-12 pl-3">
+                                        <div class="form-group">
+                                            <select name="reasons_id"  id="reasons_id" class="form-control" style="width:100%;" required></select>
+                                        </div>
+                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-select col-lg-12 pl-3">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <textarea name="notes_no_order" class="form-control p-3" rows="3" placeholder="Catatan..."
+                                                style="width: 100%;
+                                                border-top-left-radius:25px;
+                                                border-top-right-radius:25px;
+                                                border-bottom-right-radius:0;
+                                                border-bottom-left-radius:0;
+                                                font-weight: 500;" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mx-auto text-center">
+                                    <button type="submit" id="ga_checkout"class="btn btn_login_form" >{{ __('Konfirmasi') }}</button>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--preloader-->
     <div class="preloader" id="preloader">
         <div class="loading">
@@ -623,18 +740,37 @@
                 <li>
                     <a href="{{URL::route('pesanan',[$vendor])}}">Pesanan</a>
                 </li>
+
+                <li class="mt-4">
+                    @if(\Auth::user())
+                        
+                        @csrf
+                        <a href="{{ route('logout') }}" class="btn logout"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Keluar Aplikasi
+                        </a>
+                        
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    @endif
+                <li>
+
+                <li>
+                    @if (!session()->has('ses_order'))
+                        <a href="{{ url('/') }}" class="btn logout">
+                            Chek Out Tanpa Order
+                        </a>
+                    @else
+                        <a class="btn logout" data-toggle="modal" onclick="show_modal_chekout()">
+                            Chek Out Tanpa Order
+                        </a>
+                    @endif
+                    
+                <li>
                 
             </ul>
-            @if(\Auth::user())
-                <form action="{{route('logout')}}" method="POST">
-                    @csrf
-                    <div id="log">   
-                        <button class="btn logout">
-                            Keluar
-                        </button>
-                    </div>
-                </form>
-             @endif
+            
              <img src="{{ asset('assets/image/sp-sidebar-bottom.jpg') }}" class="sidebar-dot-bottom"  
              style="" alt="sp-sidebar-bottom"> 
         </nav>
@@ -730,7 +866,33 @@
             $('a[aria-expanded=true]').attr('aria-expanded', 'false');
         });
 
-        //
+        //Select2 Reasons check out
+        $('#reasons_id').select2({
+        placeholder: 'Pilih Alasan',
+        language: {
+        noResults: function() {
+            return '&nbsp;Data Tidak Ditemukan';
+            },
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        },
+        ajax: {
+            url: '{{URL::to('/ajax/reasons')}}',
+            
+            processResults: function (data) {
+            return {
+                results:  $.map(data, function (item) {
+                    return {
+                            id: item.id,
+                            text: item.reasons_name,
+                            
+                    }
+                })
+            };
+            }
+        }
+        });
         
         
         function show_modal()
@@ -864,7 +1026,27 @@
             }
         }
 
-        
+        function show_modal_chekout(){
+            $.ajax({
+                url : '{{URL::to('/keranjang/preview_checkout')}}',
+                
+                              
+                success: function (response){
+                    //$("#modalDetilList").modal('show');
+                    $("#cekOut").modal('show');
+                    $('#sidebar').removeClass('active');
+                    $('.overlay').removeClass('active');
+                    $('#PreviewToko_CheckOut' ).html(response);
+                    var diswa = $('#dsbl_btn_checkout' ).val();
+                    if (diswa.length > 0) {
+                        $('#ga_checkout').attr("disabled", 'disabled');
+                    }
+                },
+                error: function (response) {
+                console.log('Error:', response);
+                }
+            });
+        }
 
     /*
         window.setTimeout(function() {

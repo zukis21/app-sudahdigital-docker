@@ -65,6 +65,10 @@ class Order extends Model
         return $this->belongsTo('App\User','canceled_by','id');
     }
 
+    public function reasons(){
+        return $this->belongsTo('App\ReasonsCheckout','reasons_id');
+    }
+
     public function getTotalQuantityAttribute(){
         $total_quantity = 0;
         foreach($this->products as $p){
