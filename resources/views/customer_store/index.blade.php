@@ -124,8 +124,8 @@
 				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
 					<td>@if($c->user_id > 0)
 							@php
-								if($u->users->count() > 0){
-									echo $c->users->name
+								if($c->users->count() > 0){
+									echo $c->users->name;
 								}else{
 									echo '';
 								}
