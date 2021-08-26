@@ -200,6 +200,6 @@ class BannerController extends Controller
         ->with('status', 'Banner Slide permanently deleted');
 
             }
-        }
+    }
     
 }

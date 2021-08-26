@@ -385,14 +385,19 @@
 					
 					<td>
 						@if($u->spv->count() > 0)
+							
 							@foreach($u->spv as $spv)
 								@php
 									$name = \App\User::where('id',$spv->sls_id)->first();
 								@endphp
+								@if($name)
 									<li><small>{{$name->name}}</small></li>
+								@else
+									
+								@endif
 							@endforeach
 						@else
-							--No member active--
+							
 						@endif
 					</td>
 					<td>

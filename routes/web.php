@@ -268,6 +268,13 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/export_mapping', 'OrderController@export_mapping')->name('orders.export_mapping') ;
     Route::get('/orders/add-new-customer/{id}/{payment}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
     Route::put('/orders/new-customer/{id}/update', 'OrderController@save_new_customer')->name('orders.newcustomer.update');
+    //reasons
+    Route::get('/orders/checkout-reason/list', 'CheckoutReasonsController@index')->name('reasons.index');
+    Route::get('/orders/checkout-reason/create', 'CheckoutReasonsController@create')->name('reasons.create');
+    Route::post('/orders/checkout-reason/store', 'CheckoutReasonsController@store')->name('reasons.store');
+    Route::get('/orders/checkout-reason/{id}/edit', 'CheckoutReasonsController@edit')->name('reasons.edit');
+    Route::put('/orders/checkout-reason/{id}/update', 'CheckoutReasonsController@update')->name('reasons.update');
+    Route::get('/orders/checkout-reason/{id}/delete-permanent', 'CheckoutReasonsController@delete_permanent')->name('reasons.delete_permanent');
 
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
@@ -280,6 +287,7 @@ Route::get('/ajax/users_email/search', 'AjaxAdminSearch@email_search');
 Route::get('/ajax/cities/search', 'AjaxAdminSearch@CitySearch');
 Route::post('/ajax/post-sortable','AjaxAdminSearch@post_sortable');
 Route::post('/ajax/post-sortable-pareto','AjaxAdminSearch@post_sortable_pareto');
+Route::post('/ajax/post-sortable-reasons','AjaxAdminSearch@post_sortable_reasons');
 Route::get('/ajax/products/code/search', 'AjaxAdminSearch@CodeProductSearch');
 Route::get('/ajax/categories/search', 'AjaxAdminSearch@CategorySearch');
 Route::get('/products/change_status_stock', 'AjaxAdminSearch@OnOff_stock');

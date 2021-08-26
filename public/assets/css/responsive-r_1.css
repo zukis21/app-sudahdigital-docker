@@ -143,6 +143,7 @@
 
     #log .logout {
         margin-left: 8rem;
+        margin-right: 8rem;
     }
 
    .sidebar-dot-bottom {
@@ -301,6 +302,7 @@
 
     #log .logout {
         margin-left: 6rem;
+        margin-right: 6rem;
     }
 
     .sidebar-dot-bottom {
@@ -447,6 +449,7 @@
 
     #log .logout {
         margin-left: 5rem;
+        margin-right: 5rem;
     }
 
     .sidebar-dot-bottom {
@@ -606,6 +609,7 @@
     #log .logout {
         padding:8px 40px;
         margin-left: 4rem;
+        margin-right: 4rem;
     }
 
     .sidebar-dot-top-right {
@@ -809,6 +813,7 @@
     #log .logout {
         padding:8px 40px;
         margin-left: 4rem;
+        margin-right: 4rem;
     }
 
     .sidebar-dot-top-right {
@@ -1029,6 +1034,7 @@
     #log .logout {
         padding:8px 40px;
         margin-left: 3rem;
+        margin-right: 3rem;
     }
 
     .sidebar-dot-top-right {
@@ -1286,6 +1292,7 @@
     #log .logout {
         padding:8px 40px;
         margin-left: 3rem;
+        margin-right: 3rem;
     }
 
     .sidebar-dot-top-right {
@@ -1547,6 +1554,7 @@
     #log .logout {
         padding:8px 40px;
         margin-left: 3rem;
+        margin-right: 3rem;
     }
 
     .sidebar-dot-top-right {
@@ -1847,6 +1855,7 @@
     #log .logout {
         padding:8px 30px;
         margin-left: 2rem;
+        margin-right: 2rem;
         font-size: 14px;
     }
 
@@ -2150,6 +2159,7 @@
     #log .logout {
         padding:8px 30px;
         margin-left: 2rem;
+        margin-right: 2rem;
         font-size: 14px;
     }
 
@@ -2482,6 +2492,7 @@
     #log .logout {
         padding:6px 30px;
         margin-left: 2rem;
+        margin-right: 2rem;
         font-size: 14px;
     }
 
@@ -2841,6 +2852,7 @@
     #log .logout {
         padding:6px 25px;
         margin-left: 2rem;
+        margin-right: 2rem;
         font-size: 14px;
     }
 
@@ -3213,6 +3225,7 @@
     #log .logout {
         padding:6px 25px;
         margin-left: 2rem;
+        margin-right: 2rem;
         font-size: 13px;
     }
 
@@ -3569,6 +3582,7 @@
     #log .logout {
         padding:6px 25px;
         margin-left: 2rem;
+        margin-right: 2rem;
         font-size: 13px;
     }
 

@@ -246,4 +246,16 @@ class AjaxAdminSearch extends Controller
         echo 'not_taken';
       }
   }
+
+  public function post_sortable_reasons(Request $request){
+    $reasons= \App\ReasonsCheckout::all();
+
+    foreach ($reasons as $ban) {
+        foreach ($request->posit as $order) {
+            if ($order['id'] == $ban->id) {
+                $ban->update(['position' => $order['position']]);
+            }
+        }
+    }
+  }
 }

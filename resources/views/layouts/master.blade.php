@@ -305,7 +305,7 @@
                             </li>
                         @endif
 
-                        <li class="{{request()->routeIs('orders.index') ? 'active' : ''}}">
+                        <li class="{{(request()->routeIs('orders.index')) || (request()->routeIs('reasons.index')) ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">shopping_cart</i>
                                 <span>Manage Orders</span>
@@ -314,6 +314,11 @@
                                 <li class="{{request()->routeIs('orders.index') ? 'active' : '' }}">
                                     <a href="{{route('orders.index',[$vendor])}}">Orders</a>
                                 </li>
+                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                    <li class="{{request()->routeIs('reasons.index') ? 'active' : '' }}">
+                                        <a href="{{route('reasons.index',[$vendor])}}">Checkout Reasons List</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

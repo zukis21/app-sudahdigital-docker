@@ -11,8 +11,8 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_2.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_0.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_1.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
@@ -906,6 +906,7 @@
             /*background: #1A4066;*/
             background:#fff;
             border-left: none;
+            font-weight: bold;
         }
 
         .searchbar-open {
@@ -1292,20 +1293,32 @@
                 <li>
                     <a href="{{URL::route('pesanan',[$vendor])}}">Pesanan</a>
                 </li>
-                
+
+                <li class="mt-4">
+                    @if(\Auth::user())
+                        
+                        @csrf
+                        <a href="{{ route('logout') }}" class="btn logout"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Keluar Aplikasi
+                        </a>
+                        
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    @endif
+                <li>
+
+                <li>
+                    <a class="btn logout ">
+                        Chek Out Tanpa Order
+                    </a>
+                <li>
             </ul>
-            @if(\Auth::user())
-                <form action="{{route('logout')}}" method="POST">
-                    @csrf
-                    <div id="log">   
-                        <button class="btn logout">
-                            Keluar
-                        </button>
-                    </div>
-                </form>
-             @endif
-             <img src="{{ asset('assets/image/sp-sidebar-bottom.jpg') }}" class="sidebar-dot-bottom"  
-             style="" alt="sp-sidebar-bottom"> 
+            
+            <img src="{{ asset('assets/image/sp-sidebar-bottom.jpg') }}" class="sidebar-dot-bottom"  
+             style="" alt="sp-sidebar-bottom">
+             
         </nav>
         <div class="overlay"></div>
         
