@@ -41,15 +41,20 @@
 							{{$u->users ? $u->users->name : ''}}
 						</td>
 						<td>
-							@php
-								$customer = \App\Customer::where('user_id',$u->user_id)->count();
-							@endphp
-							{{$customer.' Customers'}}
+							@if($u->users)
+								@php
+									$customer = \App\Customer::where('user_id',$u->user_id)->count();
+								@endphp
+								{{$customer.' Customers'}}
+							@endif
 						</td>
 						<td>
+							@if($u->users)
 							{{number_format($u->target_values)}}
+							@endif
 						</td>
 						<td>
+							@if($u->users)
 							@php
 								$month= date('m', strtotime($u->period));
 								$year= date('Y', strtotime($u->period));
@@ -67,22 +72,31 @@
 										echo number_format($total_ach);
 							@endphp
 							<!--{{number_format($u->target_achievement)}}-->
+							@endif
 						</td>
 						<td>
+							@if($u->users)
 							{{date('M-Y', strtotime($u->period))}}
+							@endif
 						</td>
 						<td>
-							{{$u->created_by ? $u->created_of->name : ''}}
-							<br>
-							{{$u->created_by ? $u->created_at : ''}}
+							@if($u->users)
+								{{$u->created_by ? $u->created_of->name : ''}}
+								<br>
+								{{$u->created_by ? $u->created_at : ''}}
+							@endif
 						</td>
 						<td>
-							{{$u->updated_by ? $u->updated_of->name : ''}}
-							<br>
-							{{$u->updated_by ? $u->updated_at : ''}}
+							@if($u->users)
+								{{$u->updated_by ? $u->updated_of->name : ''}}
+								<br>
+								{{$u->updated_by ? $u->updated_at : ''}}
+							@endif
 						</td>
 						<td>
+							@if($u->users)
 							<a class="btn btn-info btn-xs" href="{{route('sales.edit_target',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
+							@endif
 						</td>
 					</tr>
 				@endforeach
