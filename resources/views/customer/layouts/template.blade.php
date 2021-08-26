@@ -1396,7 +1396,7 @@
 
                 <li>
                     <a class="btn logout" data-toggle="modal" onclick="show_modal_chekout()">
-                        Chek Out Tanpa Order
+                        Check Out Tanpa Order
                     </a>
                     
                 <li>

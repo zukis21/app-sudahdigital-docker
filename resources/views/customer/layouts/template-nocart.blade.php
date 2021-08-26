@@ -759,11 +759,11 @@
                 <li>
                     @if (!session()->has('ses_order'))
                         <a href="{{ url('/') }}" class="btn logout">
-                            Chek Out Tanpa Order
+                            Check Out Tanpa Order
                         </a>
                     @else
                         <a class="btn logout" data-toggle="modal" onclick="show_modal_chekout()">
-                            Chek Out Tanpa Order
+                            Check Out Tanpa Order
                         </a>
                     @endif
                     
