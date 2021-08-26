@@ -64,7 +64,7 @@
         
         @if($target)
         @php
-          function singkat_angka($n, $presisi=2) {
+          function singkat_angka($n, $presisi=1) {
             if ($n < 900) {
               $format_angka = number_format($n, $presisi);
               $simbol = '';
