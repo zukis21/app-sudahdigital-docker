@@ -154,8 +154,11 @@
                     <a href="{{route('pesanan', [$vendor,'status' =>'finish'])}}">
                         <span class="style-badge badge {{Request::is($vendor.'/pesanan/finish')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">FINISH</span>
                     </a>
-                    <a href="{{route('pesanan', [$vendor,'status' =>'cancel'])}}" class="mr-2">
+                    <a href="{{route('pesanan', [$vendor,'status' =>'cancel'])}}" class="">
                         <span class="style-badge badge {{Request::is($vendor.'/pesanan/cancel')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">CANCEL</span>
+                    </a>
+                    <a href="{{route('pesanan', [$vendor,'status' =>'no-order'])}}" class="mr-2">
+                        <span class="style-badge badge {{Request::is($vendor.'/pesanan/no-order')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">NO-ORDER</span>
                     </a>
                     <a class="ml-2 txt-reset" href="{{route('pesanan',[$vendor])}}">
                         <span class="style-badge  badge  txt-reset ">Reset Filter</span>
@@ -210,6 +213,8 @@
                                             <span class="style-badge  badge bg-success text-light status-order">{{$order->status}}</span>
                                             @elseif($order->status == "CANCEL")
                                             <span class="style-badge badge bg-danger text-light status-order">{{$order->status}}</span>
+                                            @elseif($order->status == "NO-ORDER")
+                                            <span class="style-badge badge bg-dark text-light status-order">{{$order->status}}</span>
                                             @endif
                                         </td>
                                         <td width="50%">

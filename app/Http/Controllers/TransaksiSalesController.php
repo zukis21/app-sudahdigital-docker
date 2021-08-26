@@ -80,6 +80,7 @@ class TransaksiSalesController extends Controller
                             //->where('client_id',$client_id)
                             ->whereMonth('period', $month)
                             ->whereYear('period', $year)->first();
+                //dd($target_ach);
                 if($target_ach){
                     $target_ach->target_achievement -=  $order_wa->total_price;
                     $target_ach->save();

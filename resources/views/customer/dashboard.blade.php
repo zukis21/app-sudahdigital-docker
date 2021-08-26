@@ -64,7 +64,7 @@
         
         @if($target)
         @php
-          function singkat_angka($n, $presisi=1) {
+          function singkat_angka($n, $presisi=2) {
             if ($n < 900) {
               $format_angka = number_format($n, $presisi);
               $simbol = '';
@@ -188,21 +188,14 @@
                       </div>
                       </div>
                       <div class="ml-1 mt-4" >
-                        <h6 class="">Total Toko Order <span class="float-right">{{round($order/$cust_total * 100,2)}}%</span></h6>
-                        <!--
-                        <div class="progress progress-sm m-0" style="height: 5px;">
-                          
-                            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{$order/$cust_total * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$order/$cust_total * 100}}%">
-                                <span class="sr-only">{{$order/$cust_total * 100}}% Complete</span>
-                            </div>
-                        </div>
-                        --> 
+                        <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
+                        
                         <div class="progress progress-sm m-0" style="height: 7px;">
                           <div class="progress-bar" role="progressbar" 
-                            aria-valuenow="{{$order/$cust_total * 100}}" aria-valuemin="0" aria-valuemax="100" 
-                            style="width: {{$order/$cust_total * 100}}%;
+                            aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
+                            style="width: {{($order/$cust_total) * 100}}%;
                             background-color: #95E0F9 !important;">
-                              <span class="sr-only">{{$order/$cust_total * 100}}% Complete</span>
+                              <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
                               <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                           </div>
                         </div>
@@ -210,7 +203,7 @@
                     </div>
                   </div>
 
-                  <!--target sales total-->
+                  
                   @if($pareto)
                     @php
                       $user_id = \Auth::user()->id;
@@ -272,7 +265,7 @@
                         }
                       @endphp
 
-                      <!--jumlah toko pareto-->
+                      <!--Total toko pareto-->
                       <div class="col-md-4 mb-4" data-aos="zoom-in">
                         <div class="box-blue">
                           <i class="fas fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
@@ -287,13 +280,13 @@
                           </div>
                           </div>
                           <div class="ml-1 mt-4" >
-                            <h6 class="">Total Toko Pareto ({{$prt->pareto_code}})<span class="float-right">{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%</span></h6>
+                            <h6 class="">Total Toko Pareto ({{$prt->pareto_code}})<span class="float-right">{{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}%</span></h6>
                             <div class="progress progress-sm m-0" style="height: 7px;">
                               
                                 <div class="progress-bar" role="progressbar" 
-                                    aria-valuenow="{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}" 
-                                    aria-valuemin="0" aria-valuemax="100" style="width: {{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}%;background-color: #95E0F9 !important;">
-                                    <span class="sr-only">{{count($cust_exists_p) ? round(count($cust_exists_p)/$cust_total_p  * 100,2): '0'}}% Complete</span>
+                                    aria-valuenow="{{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                    <span class="sr-only">{{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}% Complete</span>
                                     <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                                 </div>
                             </div>
@@ -318,11 +311,11 @@
                       </div>
                       </div>
                       <div class="ml-1 mt-4" >
-                        <h6 class="">Target Sales Total <span class="float-right">{{round(($total_ach/$target->target_values) * 100 ,2)}}%</span></h6>
+                        <h6 class="">Target Sales Total <span class="float-right">{{round((($total_ach/$target->target_values) * 100) ,2)}}%</span></h6>
                         <div class="progress progress-sm m-0" style="height: 7px;">
                           
-                            <div class="progress-bar " role="progressbar" aria-valuenow="{{$total_ach/$target->target_values * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$total_ach/$target->target_values * 100}}%;background-color: #95E0F9 !important;">
-                                <span class="sr-only">{{$total_ach/$target->target_values * 100}}% Complete</span>
+                            <div class="progress-bar " role="progressbar" aria-valuenow="{{($total_ach/$target->target_values) * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($total_ach/$target->target_values) * 100}}%;background-color: #95E0F9 !important;">
+                                <span class="sr-only">{{($total_ach/$target->target_values) * 100}}% Complete</span>
                                 <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                             </div>
                         </div>
@@ -349,13 +342,13 @@
                             </div>
                           </div>
                           <div class="ml-1 mt-4">
-                            <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_target) ? round(($total_ach_pareto/$total_target  * 100) ,2) : '0'}}%</span></h6>
+                            <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_target) ? round((($total_ach_pareto/$total_target)  * 100) ,2) : '0'}}%</span></h6>
                             <div class="progress progress-sm m-0" style="height: 7px;">
                               
                                 <div class="progress-bar bg-info" role="progressbar" 
-                                    aria-valuenow="{{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}" 
-                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}%;background-color: #95E0F9 !important;">
-                                    <span class="sr-only">{{$period_par && $total_target ? round($total_ach_pareto/$total_target  * 100): '0'}}% Complete</span>
+                                    aria-valuenow="{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                    <span class="sr-only">{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}% Complete</span>
                                     <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
                                 </div>
                             </div>
@@ -378,7 +371,7 @@
                               @if($target && $work_plan)
                                 @php
                                   $current_day = date('d');
-                                  $hari_berjalan = $current_day - $day_off;
+                                  $hari_berjalan = ((int)$current_day) - $day_off;
                                   $hari_kerja = $work_plan->working_days;
                                   $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
                                 @endphp

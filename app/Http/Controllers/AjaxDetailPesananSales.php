@@ -78,6 +78,9 @@ class AjaxDetailPesananSales extends Controller
                 else if($order->status == "CANCEL"){
                     $color_badge = 'bg-danger';
                 }
+                else if($order->status == "NO-ORDER"){
+                    $color_badge = 'bg-dark';
+                }
 
                 
 

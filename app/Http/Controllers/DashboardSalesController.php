@@ -99,7 +99,7 @@ class DashboardSalesController extends Controller
             $day_off = \App\Holiday::where('wp_id',$work_plan->id)
                   ->where('date_holiday','<=',$date_now)->count();
             $day = date('d');
-            $param_line = round(($day/$work_plan->working_days) * 100 ,2);
+            $param_line = round((($day/$work_plan->working_days) * 100) ,2);
             //dd(json_encode($red_line));
         }else{
             $day_off = null;
@@ -122,7 +122,16 @@ class DashboardSalesController extends Controller
         $red_line = [];
         foreach ($cartuser as $userval) {
             $user_value[]= $userval->users->name;
-            $percentage[]= round(($userval->target_achievement / $userval->target_values) * 100 ,2);
+            $targ_ach = \App\Order::where('user_id',$userval->user_id)
+                        ->whereNotNull('customer_id')
+                        ->where('status','!=','CANCEL')
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');
+            $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+            $ach_value = $ach[0];            
+            $percentage[]= round(($ach_value / $userval->target_values) * 100 ,2);
             $red_line[]= $param_line;
         }
         $users_display = array_unique($user_value);
