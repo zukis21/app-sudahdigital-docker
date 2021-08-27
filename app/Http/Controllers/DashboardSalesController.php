@@ -94,19 +94,25 @@ class DashboardSalesController extends Controller
         $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
                     ->whereMonth('work_period', '=', $month)
                     ->whereYear('work_period', '=', $year)->first();
+
+        $tgl = date('d');
+        $jumHari = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $day = (int)$tgl;
+        $param_line = round((($day/(int)$jumHari) * 100) ,2);
         
         if($work_plan){
             $day_off = \App\Holiday::where('wp_id',$work_plan->id)
                   ->where('date_holiday','<=',$date_now)->count();
-            $day = date('d');
-            $param_line = round((($day/$work_plan->working_days) * 100) ,2);
+            //$tgl = date('d');
+            //$day = (int)$tgl;
+            //$param_line = round((($day/$work_plan->working_days) * 100) ,2);
             //dd(json_encode($red_line));
         }else{
             $day_off = null;
-            $param_line = 0;
+            //$param_line = 0;
         }
         
-        //dd($day_off);
+        //dd($day);
         //$current_day = date('d');
         //$work_current = $current_day - $day_off;
         //dd($work_plan->working_days);
