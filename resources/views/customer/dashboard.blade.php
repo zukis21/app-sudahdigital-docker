@@ -230,6 +230,7 @@
                                                   ->whereMonth('created_at', '=', $month)
                                                   ->whereYear('created_at', '=', $year)
                                                   ->where('status','!=','CANCEL')
+                                                  ->where('status','!=','NO-ORDER')
                                                   ->groupBy('customer_id');
                                       })
                                       ->where('pareto_id',$prt->id)
@@ -263,6 +264,7 @@
                                       ->whereMonth('created_at', '=', $month)
                                       ->whereYear('created_at', '=', $year)
                                       ->where('status','!=','CANCEL')
+                                      ->where('status','!=','NO-ORDER')
                                       ->selectRaw('sum(total_price) as sum')
                                       ->pluck('sum');
                           $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);

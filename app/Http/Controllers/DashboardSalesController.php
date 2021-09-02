@@ -41,7 +41,9 @@ class DashboardSalesController extends Controller
                 ->whereNotNull('customer_id')
                 ->whereMonth('created_at', '=', $month)
                 ->whereYear('created_at', '=', $year)
-                ->where('status','!=','CANCEL')->get();
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->get();
 
         $cust_total = \App\Customer::where('user_id',\Auth::user()->id)->count();
         $order = \App\Order::where('user_id',\Auth::user()->id)
@@ -49,6 +51,7 @@ class DashboardSalesController extends Controller
                 ->whereMonth('created_at', '=', $month)
                 ->whereYear('created_at', '=', $year)
                 ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
                 ->distinct()->get(['customer_id'])->count();
 
         $pareto = \App\CatPareto::where('client_id',(auth()->user()->client_id))
@@ -63,7 +66,8 @@ class DashboardSalesController extends Controller
                             ->where('user_id','=',"$user_id")
                             ->whereMonth('created_at', '=', $month)
                             ->whereYear('created_at', '=', $year)
-                            ->where('status','!=','CANCEL');
+                            ->where('status','!=','CANCEL')
+                            ->where('status','!=','NO-ORDER');
                             
                 })
                 ->where('client_id',\Auth::user()->client_id)
@@ -78,6 +82,7 @@ class DashboardSalesController extends Controller
                             ->whereMonth('created_at', '=', $month)
                             ->whereYear('created_at', '=', $year)
                             ->where('status','!=','CANCEL')
+                            ->where('status','!=','NO-ORDER')
                             ->groupBy('customer_id');
                 })
                 ->where('client_id',\Auth::user()->client_id)
@@ -132,6 +137,7 @@ class DashboardSalesController extends Controller
             $targ_ach = \App\Order::where('user_id',$userval->user_id)
                         ->whereNotNull('customer_id')
                         ->where('status','!=','CANCEL')
+                        ->where('status','!=','NO-ORDER')
                         ->whereMonth('created_at', $month)
                         ->whereYear('created_at', $year)
                         ->selectRaw('sum(total_price) as sum')
