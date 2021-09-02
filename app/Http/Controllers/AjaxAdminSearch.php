@@ -258,4 +258,5 @@ class AjaxAdminSearch extends Controller
         }
     }
   }
+
 }

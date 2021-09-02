@@ -22,9 +22,9 @@
 				<tr>
 					<!--<th>No</th>-->
 					<th>Name</th>
-					<th>Customers Total</th>
-					<th>Target Values (IDR)</th>
-					<th>Target Achievement (IDR)</th>
+					<th>VAT(PPN)</th>
+					<th>Target Val.(IDR)</th>
+					<th>Achieve. (IDR)</th>
 					<th>Period</th>
 					<th>Created By</th>
 					<th>Updated By</th>
@@ -44,10 +44,11 @@
 						</td>
 						<td>
 							
-								@php
-									$customer = \App\Customer::where('user_id',$u->user_id)->count();
-								@endphp
-								{{$customer.' Customers'}}
+							@if ($u->ppn == 1)
+								<span class="badge bg-green">Y</span>
+							@else
+							<span class="badge bg-red">N</span>
+							@endif	
 							
 						</td>
 						<td>
@@ -71,15 +72,24 @@
 												$total_ach += $p->total_price;
 											}
 										//return $total_ach;
-										echo number_format($total_ach);
+										
+										if($u->ppn == 1){
+											echo number_format($total_ach / 1.1);
+										}
+										else{
+											echo number_format($total_ach);
+										}
 							@endphp
 							<!--{{number_format($u->target_achievement)}}-->
-							
 						</td>
 						<td>
 							
 							{{date('M-Y', strtotime($u->period))}}
-							
+							<br>
+							@php
+								$customer = \App\Customer::where('user_id',$u->user_id)->count();
+							@endphp
+							<small><b>{{$customer.' Customers'}}</b></small>
 						</td>
 						<td>
 							

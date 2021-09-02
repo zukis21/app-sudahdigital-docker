@@ -94,9 +94,15 @@
             $sisa = $target->target_values - $target->target_achievement;
           }*/
 
-          $total_ach = 0;
+          $total_ach_ppn = 0;
           foreach($order_ach as $p){
-            $total_ach += $p->total_price;
+            $total_ach_ppn += $p->total_price;
+          }
+
+          if($target->ppn == 1){
+            $total_ach = $total_ach_ppn/1.1;
+          }else{
+            $total_ach = $total_ach_ppn;
           }
           //return $total_ach;
           //echo number_format($total_ach);
@@ -203,7 +209,6 @@
                     </div>
                   </div>
 
-                  
                   @if($pareto)
                     @php
                       $user_id = \Auth::user()->id;
@@ -261,7 +266,12 @@
                                       ->selectRaw('sum(total_price) as sum')
                                       ->pluck('sum');
                           $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
-                          $total_ach_pareto = $total_ap[0];
+                          $total_ach_pareto_ppn = $total_ap[0];
+                          if($target->ppn == 1){
+                            $total_ach_pareto = $total_ach_pareto_ppn/1.1;
+                          }else{
+                            $total_ach_pareto = $total_ach_pareto_ppn;
+                          }
                         }
                       @endphp
 

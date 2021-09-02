@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_1.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
@@ -46,6 +46,125 @@
     })(window,document,'script','dataLayer','GTM-MSWC453');</script>
     <!-- End Google Tag Manager -->
     <style type="text/css">
+        #product_list .ribbon {
+            position: absolute;
+            left: -5px; top: -5px;
+            z-index: 1;
+            overflow: hidden;
+            width: 200px; height: 200px;
+            text-align: right;
+        }
+
+        #product_list .span-ribbon {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFF;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 40px;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            width: 225px;
+            display: block;
+            background: #79A70A;
+            background: linear-gradient(#F79E05 0%, #8F5408 100%);
+            box-shadow: 0 6px 10px -5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 40px; left: -52px;
+        }
+
+        #product_list .span-ribbon::before {
+            content: "";
+            position: absolute; left: 0px; top: 100%;
+            z-index: -1;
+            border-left: 7px solid #8F5408;
+            border-right: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-top: 7px solid #8F5408;
+        }
+        
+        #product_list .span-ribbon::after {
+            content: "";
+            position: absolute; right: 0px; top: 100%;
+            z-index: -1;
+            border-left: 7px solid transparent;
+            border-right: 7px solid #8F5408;
+            border-bottom: 7px solid transparent;
+            border-top: 7px solid #8F5408;
+        }
+
+        .searchbar {
+            position: relative;
+            min-width: 40px;
+            width: 0%;
+            height: 40px;
+            float: right;
+            overflow: hidden;
+            -webkit-transition: width 0.3s;
+            -moz-transition: width 0.3s;
+            -ms-transition: width 0.3s;
+            -o-transition: width 0.3s;
+            transition: width 0.3s
+        }
+
+        .searchbar-input {
+            top: 0;
+            right: 0;
+            border: 0;
+            outline: 0;
+            background: #fff;
+            width: 100%;
+            height: 40px;
+            margin: 0;
+            font-size: 20px;
+            color: #1A4066;
+            
+        }
+
+        .searchbar-input::-webkit-input-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-input:-moz-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-input::-moz-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-input:-ms-input-placeholder {
+            color: #1A4066
+        }
+
+        .searchbar-icon,
+        .searchbar-submit {
+            width: 40px;
+            height: 40px;
+            display: block;
+            position: absolute;
+            top: 0;
+            font-family: Montserrat;
+            font-size: 20px;
+            right: 0;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            outline: 0;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            color: #1A4066;
+            /*background: #1A4066;*/
+            background:#fff;
+            border-left: none;
+            font-weight: bold;
+        }
+
+        .searchbar-open {
+            width: 95%
+        }
+
         .btn-circle {
             float: right;
             width: 30px;
@@ -57,21 +176,6 @@
             line-height: 1.42857;
             right:2rem;
             top: 2rem;
-        }
-
-        @media only screen and (max-width: 600px){
-            .btn-circle{
-                width: 20px;
-                height: 20px;
-                font-size: 10px;
-                padding: 3px 0px;
-                right:1rem;
-                top: 1rem;
-            }
-
-            .dropfilter{
-                margin-top: 11px;
-            }
         }
 
         .btn-warning {
@@ -144,16 +248,6 @@
             border-top-left-radius: 15px !important;
             border-top-right-radius: 15px !important;
         }*/
-        @media only screen and (max-width: 600px) {
-            .col-md-2{
-                width: 40%;
-            }
-            
-            #beli_sekarang{
-                margin-bottom: 0;
-            }
-        }
-
         .panel-custom>.panel-body {
             border-top-right-radius: 20px;
             border-top-left-radius: 20px;
@@ -272,18 +366,6 @@
         }
 
         
-        /*.close {
-            float: right;
-            font-size: 40px;
-            font-weight: 500;
-            line-height: 1;
-            color: #ffffff !important;
-            text-shadow: 0 1px 0 #fff;
-            filter: alpha(opacity=20);
-            opacity: 1;
-            outline:none;
-        }*/
-
         .borderless td, .borderless th {
             border: none;
         }
@@ -409,40 +491,6 @@
             display: none;
         }
 
-        @media only screen and (max-width: 540px){
-            .left-paddle {
-             left: 10px;
-            }
-
-            .paddle_pop{
-                top:27%;
-            }
-
-            .paddle_pop_bonus{
-                bottom:13%;
-            }
-
-            .left-paddle_pop {
-                left: -1rem;
-            }
-
-            .left-paddle_pop_bonus {
-                left: -1rem;
-            }
-
-            .right-paddle_pop {
-                right: -1rem;
-            }
-
-            .right-paddle_pop_bonus {
-                right: -1rem;
-            }
-
-            .right-paddle {
-                right: -10px;
-            }
-        }
-
         .row::-webkit-scrollbar {
             height: 8px;
         }
@@ -479,15 +527,7 @@
             z-index: 9999;
             transition: all 0.5s;
         }
-        @media(min-width:1366px){
-            .overlay_ajax {
-            left: 47%;
-            }
-            .preloader .loading {
-            left: 40%;
-            top: 40%;
-            }  
-        }
+        
         
         .preloader{
             position: fixed;
@@ -502,59 +542,12 @@
 
         .preloader .loading {
             position: absolute;
-            left: 53%;
+            left: 50%;
             top: 50%;
             transform: translate(-50%,-50%);
             font: 14px arial;
         }
 
-        #fvpp-blackout {
-            display: none;
-            z-index: 9997;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: #000;
-            opacity: 0.8;
-        }
-
-        #my-welcome-message {
-            display: none;
-            z-index: 9998;
-            position: fixed;
-            border-radius: 10px;
-            width: 42%;
-            left: 29%;
-            top: 5%;
-            padding: 0;
-            background: #FDD8AF;
-            box-shadow: 5px 10px 18px #0000;
-        }
-
-        .button_welcome {
-            background: linear-gradient(to bottom, #6a3137, #6a3137); 
-            color:white; 
-            padding: 5px 15px; 
-            border:none; 
-            box-shadow: 2px 2px 2px grey; 
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 800; 
-            position: absolute;
-            top: 70px;
-            right: 20px;
-        }
-
-        .button_welcome:hover {
-            outline:0px !important;
-            -webkit-appearance:none;
-            -webkit-transform: translateY(-3px);
-            transform: translateY(-3px);
-            box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3); 
-        }
-        
         @media (max-width: 2560px){
             .button_welcome {
                 font-size: 34px;
@@ -565,11 +558,6 @@
                 border-radius: 20px;
             }
 
-            #my-welcome-message {
-                width: 42%;
-                left: 29%;
-                top: 5%;
-            }
         }
 
         @media (max-width: 1920px){
@@ -582,11 +570,6 @@
                 border-radius: 17px;
             }
 
-            #my-welcome-message {
-                width: 42%;
-                left: 29%;
-                top: 5%;
-            }
         }
 
         @media (max-width: 1440px){
@@ -599,11 +582,6 @@
                 border-radius: 15px;
             }
 
-            #my-welcome-message {
-                width: 42%;
-                left: 29%;
-                top: 5%;
-            }
         }
 
         @media (max-width: 1366px){
@@ -615,11 +593,14 @@
                 font-weight: 600;
             }
 
-            #my-welcome-message {
-                width: 42%;
-                left: 29%;
-                top: 5%;
+            .overlay_ajax {
+            left: 47%;
             }
+
+            .preloader .loading {
+            left: 50%;
+            top: 50%;
+            }  
         }
 
         @media (max-width: 1024px){
@@ -631,11 +612,6 @@
                 font-weight: 600;
             }
 
-            #my-welcome-message {
-                width: 42%;
-                left: 29%;
-                top: 10%;
-            }
         }
 
         @media (max-width: 768px){
@@ -648,12 +624,83 @@
                 border-radius: 14px;
             }
 
-            #my-welcome-message {
-                width: 60%;
-                left: 20%;
-                top: 20%;
+            .searchbar-open {
+                width: 92%
             }
 
+            #product_list .ribbon {
+            position: absolute;
+            left: -5px; top: -5px;
+            z-index: 1;
+            overflow: hidden;
+            width: 75px; height: 75px;
+            text-align: right;
+            }
+
+            #product_list .span-ribbon {
+            font-size: 10px;
+            font-weight: bold;
+            color: #FFF;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 20px;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            width: 100px;
+            display: block;
+            background: #79A70A;
+            background: linear-gradient(#F79E05 0%, #8F5408 100%);
+            box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 19px; left: -21px;
+            }
+
+            #product_list .span-ribbon::before {
+            content: "";
+            position: absolute; left: 0px; top: 100%;
+            z-index: -1;
+            border-left: 3px solid #8F5408;
+            border-right: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            border-top: 3px solid #8F5408;
+            }
+
+            #product_list .span-ribbon::after {
+            content: "";
+            position: absolute; right: 0px; top: 100%;
+            z-index: -1;
+            border-left: 3px solid transparent;
+            border-right: 3px solid #8F5408;
+            border-bottom: 3px solid transparent;
+            border-top: 3px solid #8F5408;
+            }
+
+        }
+
+        @media(max-width: 767px){
+            
+            .searchbar-input {
+                height: 25px;
+                font-size: 14px;
+            }
+
+            .searchbar {
+               min-width: 25px;
+               height: 25px;
+            }
+
+            .searchbar-icon,
+            .searchbar-submit {
+                width: 25px;
+                height: 25px;
+                display: block;
+                position: absolute;
+                top: 0;
+                font-size: 14px;
+                line-height: 27px;
+                font-weight: bold;
+                
+            }
         }
 
         @media (max-width: 600px){
@@ -665,18 +712,67 @@
                 font-weight: 600;
             }
 
-            #my-welcome-message {
-                width: 90%;
-                left: 5%;
-                top: 5%;
-            }
-
             .swal2-toast{
                 /*font-size: 10px !important;*/
                 width:420px !important;
                 max-width: 100% !important;
             }
+
+            .btn-circle{
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+                padding: 3px 0px;
+                right:1rem;
+                top: 1rem;
+            }
+
+            .dropfilter{
+                margin-top: 11px;
+            }
             
+        }
+
+        @media (max-width: 540px){
+            .left-paddle {
+             left: 10px;
+            }
+
+            .paddle_pop{
+                top:27%;
+            }
+
+            .paddle_pop_bonus{
+                bottom:13%;
+            }
+
+            .left-paddle_pop {
+                left: -1rem;
+            }
+
+            .left-paddle_pop_bonus {
+                left: -1rem;
+            }
+
+            .right-paddle_pop {
+                right: -1rem;
+            }
+
+            .right-paddle_pop_bonus {
+                right: -1rem;
+            }
+
+            .right-paddle {
+                right: -10px;
+            }
+
+            .col-md-2{
+                width: 40%;
+            }
+            
+            #beli_sekarang{
+                margin-bottom: 0;
+            }
         }
 
         @media (max-width: 480px){
@@ -688,10 +784,6 @@
                 font-weight: 600;
             }
 
-            #my-welcome-message {
-                top: 2%;
-            }
-
             .swal2-toast{
                 /*font-size: 10px !important;*/
                 width:400px !important;
@@ -700,18 +792,16 @@
         }
 
         @media (max-width: 425px){
+            .searchbar-open {
+                width: 90%
+            }
+
             .button_welcome {
                 font-size: 11px;
                 padding: 7px 15px;
                 top: 19rem;
                 right: 12%;
                 font-weight: 600;
-            }
-
-            #my-welcome-message {
-                width: 90%;
-                left: 5%;
-                top: 5%;
             }
 
             .swal2-toast{
@@ -783,6 +873,10 @@
                 width:320px !important;
                 max-width: 100% !important;
             }
+
+            .searchbar-open {
+                width: 89%
+            }
         }
 
         @media (max-width: 338px){
@@ -811,198 +905,9 @@
             }
         }
     
-        #product_list .ribbon {
-            position: absolute;
-            left: -5px; top: -5px;
-            z-index: 1;
-            overflow: hidden;
-            width: 200px; height: 200px;
-            text-align: right;
-        }
-
-        #product_list .span-ribbon {
-            font-size: 20px;
-            font-weight: bold;
-            color: #FFF;
-            text-transform: uppercase;
-            text-align: center;
-            line-height: 40px;
-            transform: rotate(-45deg);
-            -webkit-transform: rotate(-45deg);
-            width: 225px;
-            display: block;
-            background: #79A70A;
-            background: linear-gradient(#F79E05 0%, #8F5408 100%);
-            box-shadow: 0 6px 10px -5px rgba(0, 0, 0, 1);
-            position: absolute;
-            top: 40px; left: -52px;
-        }
-
-        #product_list .span-ribbon::before {
-            content: "";
-            position: absolute; left: 0px; top: 100%;
-            z-index: -1;
-            border-left: 7px solid #8F5408;
-            border-right: 7px solid transparent;
-            border-bottom: 7px solid transparent;
-            border-top: 7px solid #8F5408;
-        }
         
-        #product_list .span-ribbon::after {
-            content: "";
-            position: absolute; right: 0px; top: 100%;
-            z-index: -1;
-            border-left: 7px solid transparent;
-            border-right: 7px solid #8F5408;
-            border-bottom: 7px solid transparent;
-            border-top: 7px solid #8F5408;
-        }
 
-        .searchbar {
-            position: relative;
-            min-width: 40px;
-            width: 0%;
-            height: 40px;
-            float: right;
-            overflow: hidden;
-            -webkit-transition: width 0.3s;
-            -moz-transition: width 0.3s;
-            -ms-transition: width 0.3s;
-            -o-transition: width 0.3s;
-            transition: width 0.3s
-        }
-
-        .searchbar-input {
-            top: 0;
-            right: 0;
-            border: 0;
-            outline: 0;
-            background: #fff;
-            width: 100%;
-            height: 40px;
-            margin: 0;
-            font-size: 20px;
-            color: #1A4066;
-            
-        }
-
-        .searchbar-input::-webkit-input-placeholder {
-            color: #1A4066
-        }
-
-        .searchbar-input:-moz-placeholder {
-            color: #1A4066
-        }
-
-        .searchbar-input::-moz-placeholder {
-            color: #1A4066
-        }
-
-        .searchbar-input:-ms-input-placeholder {
-            color: #1A4066
-        }
-
-        .searchbar-icon,
-        .searchbar-submit {
-            width: 40px;
-            height: 40px;
-            display: block;
-            position: absolute;
-            top: 0;
-            font-family: Montserrat;
-            font-size: 20px;
-            right: 0;
-            padding: 0;
-            margin: 0;
-            border: 0;
-            outline: 0;
-            line-height: 40px;
-            text-align: center;
-            cursor: pointer;
-            color: #1A4066;
-            /*background: #1A4066;*/
-            background:#fff;
-            border-left: none;
-            font-weight: bold;
-        }
-
-        .searchbar-open {
-            width: 100%
-        }
-
-        @media(max-width: 768px){
-            #product_list .ribbon {
-            position: absolute;
-            left: -5px; top: -5px;
-            z-index: 1;
-            overflow: hidden;
-            width: 75px; height: 75px;
-            text-align: right;
-            }
-            #product_list .span-ribbon {
-            font-size: 10px;
-            font-weight: bold;
-            color: #FFF;
-            text-transform: uppercase;
-            text-align: center;
-            line-height: 20px;
-            transform: rotate(-45deg);
-            -webkit-transform: rotate(-45deg);
-            width: 100px;
-            display: block;
-            background: #79A70A;
-            background: linear-gradient(#F79E05 0%, #8F5408 100%);
-            box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
-            position: absolute;
-            top: 19px; left: -21px;
-            }
-            #product_list .span-ribbon::before {
-            content: "";
-            position: absolute; left: 0px; top: 100%;
-            z-index: -1;
-            border-left: 3px solid #8F5408;
-            border-right: 3px solid transparent;
-            border-bottom: 3px solid transparent;
-            border-top: 3px solid #8F5408;
-            }
-            #product_list .span-ribbon::after {
-            content: "";
-            position: absolute; right: 0px; top: 100%;
-            z-index: -1;
-            border-left: 3px solid transparent;
-            border-right: 3px solid #8F5408;
-            border-bottom: 3px solid transparent;
-            border-top: 3px solid #8F5408;
-            }
-
-            
-        }
-
-        @media(max-width: 767px){
-            
-            .searchbar-input {
-                height: 25px;
-                font-size: 14px;
-            }
-
-            .searchbar {
-               min-width: 25px;
-               height: 25px;
-            }
-
-            .searchbar-icon,
-            .searchbar-submit {
-                width: 25px;
-                height: 25px;
-                display: block;
-                position: absolute;
-                top: 0;
-                font-size: 14px;
-                line-height: 27px;
-                font-weight: bold;
-                
-            }
-        }
+        
 
     </style>
     
@@ -1127,7 +1032,7 @@
                                     <button type="submit" class="btn btn_login_form" >{{ __('Masuk') }}</button>
                                 </div>
                                 <div class="row justify-content-center mt-4">
-                                    <a href="{{route('log-out')}}"><p>Keluar</p></a>
+                                    <a href="{{route('log-out')}}" onclick="logout_record()"><p>Keluar</p></a>
                                     <h4 class="ml-2 mt-n1 grip-on" style="font-weight: 100;color:#f0f0f0;">|</h4>
                                     <!--<a href="{{URL::route('pesanan',[$vendor])}}"><p class="ml-2">Dashboard</p></a>
                                     <h4 class="ml-2 mt-n1 grip-on" style="font-weight: 100;color:#f0f0f0;">|</h4>-->
@@ -1323,8 +1228,10 @@
         </div>
     </div>
 
+    <!--
     <div id="loader" class="lds-dual-ring hidden overlay_ajax"><img class="hidden" src="{{ asset('assets/image/preloader.gif') }}" width="80" alt="preloader"></div>
-    
+    -->
+
     <div class="wrapper">
         <!-- Sidebar  -->
         <nav id="sidebar">
@@ -1379,26 +1286,17 @@
                     <a href="{{URL::route('pesanan',[$vendor])}}">Pesanan</a>
                 </li>
 
-                <li class="mt-4">
-                    @if(\Auth::user())
-                        
-                        @csrf
-                        <a href="{{ route('logout') }}" class="btn logout"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Keluar Aplikasi
-                        </a>
-                        
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    @endif
                 <li>
-
-                <li>
-                    <a class="btn logout" data-toggle="modal" onclick="show_modal_chekout()">
-                        Check Out Tanpa Order
+                    <a class="btn logout mt-4" data-toggle="modal" onclick="show_modal_chekout()">
+                        Check Out 
                     </a>
                     
+                <li>
+
+                <li class="mt-4">
+                    <a href="{{route('log-out')}}" onclick="logout_record()">
+                        <i class="fas fa-sign-out-alt "></i> Keluar
+                    </a>
                 <li>
             </ul>
             
@@ -4952,6 +4850,12 @@
                 error: function (response) {
                 console.log('Error:', response);
                 }
+            });
+        }
+
+        function logout_record(){
+            $.ajax({
+                url : '{{URL::to('/sales/logout-record')}}',
             });
         }
         /*

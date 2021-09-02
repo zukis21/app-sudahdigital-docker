@@ -12,7 +12,7 @@ class WelcomeController extends Controller
     
 
     public function index()
-    {   
-       return redirect('/login');
+    {  
+        return redirect('/login');
     }
 }

@@ -167,6 +167,7 @@
                     </li>
                     
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                    <!--manage-users-->
                     <li class="{{request()->routeIs('users.index') || 
                                  request()->routeIs('sales.index') || 
                                  request()->routeIs('spv.index') || 
@@ -208,6 +209,7 @@
                     @endif
 
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                    <!--manage banners-->
                     <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">insert_photo</i>
@@ -220,6 +222,7 @@
                         </ul>
                     </li>
                     
+                    <!--manage categories-->
                     <li class="{{request()->routeIs('categories.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">label</i>
@@ -232,6 +235,7 @@
                         </ul>
                     </li>
 
+                    <!--manage products-->
                     <li class="{{request()->routeIs('products.index') || request()->routeIs('groups.index') || request()->routeIs('paket.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">hardware</i>
@@ -252,6 +256,7 @@
                     @endif
                     
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                        <!--manage customers-->
                         <li class="{{(request()->routeIs('customers.index')) || 
                                     (request()->routeIs('type_customers.index_type')) ||
                                     (request()->routeIs('customers.index_target')) ||
@@ -281,7 +286,8 @@
                         </li>
                         
                         @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-                            <li class="{{request()->routeIs('workplan.index') ? 'active' : ''}}">
+                            <!--work calender-->
+                                <li class="{{request()->routeIs('workplan.index') || request()->routeIs('sales_login.index')? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="material-icons">date_range</i>
                                     <span>Work Calender</span>
@@ -290,8 +296,13 @@
                                     <li class="{{request()->routeIs('workplan.index') ? 'active' : '' }}">
                                         <a href="{{route('workplan.index',[$vendor])}}">Work Calender List</a>
                                     </li>
+                                    <li class="{{request()->routeIs('sales_login.index') ? 'active' : '' }}">
+                                        <a href="{{route('sales_login.index',[$vendor])}}">Sales Login List</a>
+                                    </li>
                                 </ul>
                             </li>
+
+                            <!--manange target-->
                             <li class="{{request()->routeIs('target.index') ? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="fa fa-bullseye-arrow fa-fw" aria-hidden="true" style="font-size:20px;margin-top:6px;"></i>
@@ -304,7 +315,8 @@
                                 </ul>
                             </li>
                         @endif
-
+                        
+                        <!--manage order-->
                         <li class="{{(request()->routeIs('orders.index')) || (request()->routeIs('reasons.index')) ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">shopping_cart</i>
@@ -322,7 +334,8 @@
                             </ul>
                         </li>
                     @endif
-
+                    
+                    <!--manage -client-->
                     @if(Gate::check('isOwner'))
                     <li class="{{request()->routeIs('client_so.index') ? 'active' : ''}}">
                         <a href="javascript:void(0);" class="menu-toggle">

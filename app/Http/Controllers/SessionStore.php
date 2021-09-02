@@ -132,4 +132,22 @@ class SessionStore extends Controller
             return redirect()->route('home_customer',[$vendor]);
         }
     }
+
+    public function logout_record(){
+        $year = date('Y');
+        $month = date('m');
+        $day = date('d');
+        $loged_out = \Carbon\Carbon::now();
+        $log_time = $loged_out->toDateTimeString();
+        //dd($log_time);
+        $log_record = \App\LoginRecord::whereYear('logged_in',$year)
+                    ->whereMonth('logged_in',$month)
+                    ->whereDay('logged_in',$day)
+                    ->where('user_id',auth()->user()->id)
+                    ->where('client_id',auth()->user()->client_id)->first();
+        if($log_record) {
+            $log_record->logged_out = $log_time;
+            $log_record->save();
+        }
+    }
 }

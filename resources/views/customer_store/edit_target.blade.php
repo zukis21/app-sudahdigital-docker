@@ -123,7 +123,7 @@
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input type="text" class="form-control" name="target_value[]" id="currency-field" 
-                                        pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{old('target_value',number_format($u->target_values))}}" 
+                                        value="{{old('target_value',number_format($u->target_values))}}" 
                                         data-type="currency" placeholder="" autocomplete="off">
                                     </div>
                                 </div>

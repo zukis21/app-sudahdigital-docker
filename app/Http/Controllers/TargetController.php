@@ -116,6 +116,11 @@ class TargetController extends Controller
     {
         $user_id = $request->get('user_id');
         $date_period = $request->get('period');
+        if($request->has('ppn')){
+            $ppn=$request->get('ppn');
+        }else{
+            $ppn = 0;
+        }
         $date_explode = explode('-',$date_period);
         $year = $date_explode[0];
         $month = $date_explode[1];
@@ -135,7 +140,12 @@ class TargetController extends Controller
                         ->pluck('sum');
                 //$ach = json_encode($targ_ach,JSON_NUMERIC_CHECK);
                 $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
-                $ach_value = $ach[0];
+                $ach_value_param = $ach[0];
+                if($ppn > 0){
+                    $ach_value = $ach_value_param / 1.1;
+                }else{
+                    $ach_value = $ach_value_param;
+                }
                 //dd($ach_value);
         }else{
             $ach_value = 0;
@@ -144,11 +154,12 @@ class TargetController extends Controller
         $new_t = new \App\Sales_Targets;
         $new_t->client_id = $request->get('client_id');
         $new_t->user_id = $user_id;
-        $new_t->target_values = $request->get('target_value');
+        $new_t->target_values = str_replace(',', '', $request->get('target_value'));
         $new_t->target_achievement = $ach_value;
         $period = $date_period.'-01';
         $new_t->period = $period;
         $new_t->created_by = \Auth::user()->id;
+        $new_t->ppn =$ppn;
         $new_t->save();
         if ( $new_t->save()){
             return redirect()->route('sales.create_target',[$vendor])->with('status','Target Succsessfully Created');
@@ -307,6 +318,11 @@ class TargetController extends Controller
         $id_target = $request->get('target_id');
         $new_t = \App\Sales_Targets::findorFail($id_target);
         $date_period = $request->get('period');
+        if($request->has('ppn')){
+            $ppn=$request->get('ppn');
+        }else{
+            $ppn = 0;
+        }
         $date_explode = explode('-',$date_period);
         $year = $date_explode[0];
         $month = $date_explode[1];
@@ -326,17 +342,22 @@ class TargetController extends Controller
                         ->pluck('sum');
                 //$ach = json_encode($targ_ach,JSON_NUMERIC_CHECK);
                 $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
-                $ach_value = $ach[0];
-                //dd($ach_value);
+                $ach_value_param = $ach[0];
+                if($ppn > 0){
+                    $ach_value = $ach_value_param / 1.1;
+                }else{
+                    $ach_value = $ach_value_param;
+                }
         }else{
             $ach_value = 0;
         }
 
-        $new_t->target_values = $request->get('target_value');
+        $new_t->target_values = str_replace(',', '', $request->get('target_value'));
         $new_t->target_achievement = $ach_value;
         $period = $date_period.'-01';
         $new_t->period = $period;
         $new_t->updated_by = \Auth::user()->id;
+        $new_t->ppn = $ppn;
         $new_t->save();
         if ( $new_t->save()){
             return redirect()->route('sales.edit_target',[$vendor, \Crypt::encrypt($id_target)])->with('status','Target Succsessfully Update');

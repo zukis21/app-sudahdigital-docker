@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_1.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
@@ -111,9 +111,6 @@
             background:transparent;
             font-weight: 600;
         }
-
-       
-        
 
         #LocationForm .modal-dialog-full-width {
             position:absolute;
@@ -412,6 +409,10 @@
                 padding: 3px 0px;
                 right:1rem;
                 top: 1rem;
+            }
+
+            #cekOut .col-md-2{
+                width: 40%;
             }
             
         }
@@ -742,33 +743,23 @@
                 </li>
 
                 <li class="mt-4">
-                    @if(\Auth::user())
-                        
-                        @csrf
-                        <a href="{{ route('logout') }}" class="btn logout"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Keluar Aplikasi
-                        </a>
-                        
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    @endif
-                <li>
-
-                <li>
                     @if (!session()->has('ses_order'))
                         <a href="{{ url('/') }}" class="btn logout">
-                            Check Out Tanpa Order
+                            Check Out
                         </a>
                     @else
                         <a class="btn logout" data-toggle="modal" onclick="show_modal_chekout()">
-                            Check Out Tanpa Order
+                            Check Out
                         </a>
                     @endif
                     
                 <li>
                 
+                <li class="mt-4">
+                    <a href="{{route('log-out')}}" onclick="logout_record()">
+                        <i class="fas fa-sign-out-alt "></i> Keluar
+                    </a>
+                <li>
             </ul>
             
              <img src="{{ asset('assets/image/sp-sidebar-bottom.jpg') }}" class="sidebar-dot-bottom"  

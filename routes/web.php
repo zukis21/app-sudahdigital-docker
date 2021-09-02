@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     });
 
     Route::get('/success/send/order','SessionStore@OrderSuccess');
+    Route::get('/sales/logout-record','SessionStore@logout_record');
     Route::post('/ajax/city', 'AjaxCitySearch@ajax_city');
     Route::post('/ajax/store', 'AjaxCitySearch@ajax_store');
     Route::post('/sales/order_search','AjaxDetailPesananSales@search_order');
@@ -144,6 +145,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/sales/{id}/update', 'SalesController@update')->name('sales.update');
     Route::get('/sales/{id}/destroy', 'SalesController@destroy')->name('sales.destroy');
     Route::get('/sales/export', 'SalesController@export')->name('sales.export');
+    
     //sales target
     Route::get('/sales/target', 'TargetController@index')->name('target.index');
     Route::get('/sales/create-target', 'TargetController@create_target')->name('sales.create_target');
@@ -263,6 +265,17 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::delete('/paket/{id}/destroy', 'PaketController@destroy')->name('paket.destroy');
     Route::post('/paket/edit_status', 'PaketController@update_status')->name('paket.edit_status');
 
+    //login sales records
+    Route::get('/work-plan/sales-login', 'SalesLoginController@index')->name('sales_login.index');
+    Route::post('/work-plan/filter-list-login', function(Illuminate\Http\Request $request, $vendor){
+        $get_users = \App\User::findOrFail($request['user_id']);
+        $text_name =  $get_users->name;
+        $replace_name = str_replace(" ", "-", $text_name);
+        return redirect()->route('sales_log.getfilter', [$vendor,'period' => $request['period'],'user_name'=>$replace_name,'user_id'=>\Crypt::encrypt($request['user_id'])]);
+    })->name('sales_log.postfilter');
+    Route::get('/work-plan/sales-login/period/{period}/sales/{user_name?}/{user_id}', 'SalesLoginController@filter_login')->name('sales_log.getfilter');
+    Route::post('/work-plan/export', 'SalesLoginController@export')->name('sales_login.export');
+
     //Order
     Route::get('/orders', 'OrderController@index')->name('orders.index');
     Route::put('/orders/{id}/update', 'OrderController@update')->name('orders.update');
@@ -307,6 +320,7 @@ Route::get('/ajax/exist_user/search', 'AjaxAdminSearch@UserExistSearch');
 Route::get('/ajax/exist_date/search', 'AjaxAdminSearch@DateExistSearch');
 Route::get('/ajax/workplan/search', 'AjaxAdminSearch@WorkPlanExistSearch');
 Route::get('/ajax/exist_user_edit/search', 'AjaxAdminSearch@UserExistEditSearch');
+
 
 /*===route group unique product===*/
 //Route::get('/ajax/groups/search', 'GroupController@ajaxSearch');

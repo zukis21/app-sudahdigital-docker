@@ -137,7 +137,12 @@ class DashboardSalesController extends Controller
                         ->selectRaw('sum(total_price) as sum')
                         ->pluck('sum');
             $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
-            $ach_value = $ach[0];            
+            $ach_value_ppn = $ach[0];
+            if($userval->ppn == 1){
+                $ach_value = $ach_value_ppn/1.1;
+            }else{
+                $ach_value = $ach_value_ppn;
+            }            
             $percentage[]= round(($ach_value / $userval->target_values) * 100 ,2);
             $red_line[]= $param_line;
         }
