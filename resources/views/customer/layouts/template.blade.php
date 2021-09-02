@@ -1026,8 +1026,8 @@
                                         <label class="custom-control-label" for="off_location" style="color:#ffffff;font-weight:600;">Off Location</label>
                                     </div>
                                 </div>
-                                <input type="hidden" id="lat" name="lat">
-                                <input type="hidden" id="lng" name="lng">
+                                <input type="text" id="lat" name="lat">
+                                <input type="text" id="lng" name="lng">
                                 <div class="mx-auto text-center">
                                     <button type="submit" class="btn btn_login_form" >{{ __('Masuk') }}</button>
                                 </div>
@@ -1888,7 +1888,7 @@
         });
 
        //geolocation
-       /* $('#LocationForm').on('show.bs.modal', function () {
+       $('#LocationForm').on('show.bs.modal', function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(savePosition, positionError, {timeout:10000});
         } else {
@@ -1910,7 +1910,7 @@
                 $('#lng').val(position.coords.longitude);
                 //$("#LocationForm").modal('hide');    
             }
-        });*/
+        });
 
         /*
         $(function () {
