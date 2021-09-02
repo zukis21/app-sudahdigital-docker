@@ -905,9 +905,9 @@
             }
         }
     
-        
-
-        
+        .carousel-inner{
+            max-height: 800px;
+        }
 
     </style>
     
