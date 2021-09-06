@@ -15,10 +15,10 @@
         
     }
 </style>
-    <div class="container pt-5">
+    <div class="container pt-4">
         <div class="d-flex justify-content-center mx-auto" >
-            <div class="col-md-3 image-logo-login" style="z-index: 2;">
-               <img src="{{ asset('assets/image/Logo_SudahOnline.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="Logo_SudahOnline">  
+            <div class="col-md-4 image-logo-login" style="z-index: 2;">
+               <img src="{{ asset('assets/image/Logo_SudahDigital.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="Logo_SudahDigital">  
             </div>
             
         </div>
