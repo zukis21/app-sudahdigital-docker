@@ -56,6 +56,14 @@
 
             <div class="form-group form-float">
                 <div class="form-line">
+                    <input type="text" id="latlng" class="form-control" value="{{old('latlng',$cust->lat.', '.$cust->lng)}}"
+                    name="latlng" required>
+                    <label class="form-label">Coordinate</label>
+                </div>
+            </div>
+
+            <div class="form-group form-float">
+                <div class="form-line">
                     <input id="txtNumber" value="{{old('phone', $cust->phone)}}" class="form-control" onkeypress="return isNumberKey(event)"  type="text" name="phone" minlength="10" maxlength="13" autocomplete="off">
                     <label class="form-label">Whatsapp Number</label>
                 </div>

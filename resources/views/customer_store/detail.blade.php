@@ -39,6 +39,13 @@
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>
         <li>
+            <label class="form-label">Coordinate</label>
+        </li>
+        <small class="text-muted">{{$customer->lat ? $customer->lat.', '.$customer->lng : '-'}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
             <label class="form-label">Phone</label>
         </li>
         <small><i class="fas fa-chevron-right text-danger"></i><b> Whatsapp :</b> {{$customer->phone ? "$customer->phone" : '-'}}</small><br>

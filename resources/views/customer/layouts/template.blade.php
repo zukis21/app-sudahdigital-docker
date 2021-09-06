@@ -1888,7 +1888,7 @@
         });
 
        //=======geolocation========//
-       /*$('#LocationForm').on('show.bs.modal', function () {
+       $('#LocationForm').on('show.bs.modal', function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(savePosition, positionError, {timeout:10000});
         } else {
@@ -1910,7 +1910,7 @@
                 $('#lng').val(position.coords.longitude);
                 //$("#LocationForm").modal('hide');    
             }
-        });*/
+        });
 
         /*
         $(function () {

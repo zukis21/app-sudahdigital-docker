@@ -179,7 +179,14 @@ class CustomerController extends Controller
         }
         $new_cust->user_id = $request->get('user');
         $new_cust->client_id = $request->get('client_id');
-        
+
+        $date_explode = explode(',',$request->get('latlng'));
+        $lat = $date_explode[0];
+        $lng = $date_explode[1];
+
+        $new_cust->lat = $lat;
+        $new_cust->lng = $lng;
+
         $new_cust->save();
         if ( $new_cust->save()){
             return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');
@@ -316,6 +323,13 @@ class CustomerController extends Controller
                 $cust->payment_term = $request->get('payment_term');
             }
             $cust->user_id = $request->get('user');
+
+            $date_explode = explode(',',$request->get('latlng'));
+            $lat = $date_explode[0];
+            $lng = $date_explode[1];
+
+            $cust->lat = $lat;
+            $cust->lng = $lng;
         }
         else{
             $cust->cust_type = $request->get('cust_type');
