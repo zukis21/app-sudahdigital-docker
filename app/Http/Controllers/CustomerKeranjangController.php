@@ -322,22 +322,22 @@ $message = \App\Message::where('client_id',$client_id)->first();
 
 $txt_descwa='*'.$message->m_tittle.'*,
 
-Tanggal : '.$this->tgl_indo(date('Y-m-d')).'
+Tanggal        : '.$this->tgl_indo(date('Y-m-d')).'
 
 *'.$message->s_tittle.'*
-Nama : '.$user->name.',
-Email : '.$user->email.',
-No. Hp : ' .$user->phone.',
-Sales Area : ' .$user->sales_area.',
+Nama           : '.$user->name.',
+Email            : '.$user->email.',
+No. Hp         : '.$user->phone.',
+Sales Area    : '.$user->sales_area.',
 
 *'.$message->c_tittle.'*
-Nama  : '.$customer->name.',
-Email : '.$customer->email.',
-No. WA : '.$customer->phone.',
-No. Owner : '.$customer->phone_owner.',
-No. Toko : '.$customer->phone_store.',
-Nama Toko : '.$customer->store_name.',
-Alamat : '.$customer->address.',
+Nama           : '.$customer->name.',
+Email            : '.$customer->email.',
+No. WA        : '.$customer->phone.',
+No. Owner   : '.$customer->phone_owner.',
+No. Toko      : '.$customer->phone_store.',
+Nama Toko  : '.$customer->store_name.',
+Alamat         : '.$customer->address.',
 ';
 
                 //$href=urlencode($txt_wa);
@@ -464,7 +464,7 @@ $no=$count_nt_paket;
                     $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt);
                 }
 
-                $note_sales = 'Notes : '.$notes_wa;
+                $note_sales = 'Notes            : '.$notes_wa;
                 $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales;
             
                 $url = "https://api.whatsapp.com/send?phone=62$wa_numb&text=$text_wa";

@@ -45,7 +45,7 @@
         <br>
           --No Product--
         @endif
-        @if(count($order->products_nonpaket) > 0)
+        @if((count($order->products_nonpaket) > 0) && $order->status !== 'NO-ORDER' )
             <div class="form-group">
                 <table width="100%" class="table table-hover">
                     <thead>

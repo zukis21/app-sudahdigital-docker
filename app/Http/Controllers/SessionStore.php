@@ -81,6 +81,34 @@ class SessionStore extends Controller
     public function checkout_no_order(Request $request, $vendor){
         $user_id = \Auth::user()->id;
         $client_id = \Auth::user()->client_id;
+        
+        // cek id product 
+        $checkout_product = \App\product::whereNull('client_id')
+                            ->where('slug','=','no-product-for-checkout')
+                            ->first();
+        if($checkout_product){
+            $id_pr_check = $checkout_product->id;
+        }else{
+            $new_product = new \App\product();
+            $new_product->Product_name = 'No Product';
+            $new_product->description = 'No Product';
+            $new_product->price = 0.00;
+            $new_product->price_promo = 0.00;
+            $new_product->discount = 0.00;
+            $new_product->stock = 0;
+            $new_product->low_stock_treshold = 0;
+            $new_product->top_product = 0;
+            $new_product->slug = 'no-product-for-checkout';
+            $new_product->save();
+            if ($new_product->save()){
+                $checkout_product = \App\product::whereNull('client_id')
+                            ->where('slug','=','no-product-for-checkout')
+                            ->first();
+                $id_pr_check = $checkout_product->id;
+            }
+        }
+
+        //session get
         $ses_order = $request->session()->get('ses_order');
         if($ses_order->customer_id == null){
             $name = $ses_order->name;
@@ -114,7 +142,6 @@ class SessionStore extends Controller
         }else{
             $customer = \App\Customer::findOrfail($ses_order->customer_id);
         }
-
         $order = new \App\Order;
         $order->user_id = $user_id;
         $order->user_loc = $ses_order->user_loc;
@@ -127,7 +154,12 @@ class SessionStore extends Controller
         $order->status = 'NO-ORDER';
         $order->reasons_id = $request->get('reasons_id');
         $order->save();
+
+        //attcah pivot
+        $order->products()->attach($id_pr_check);
+
         if($order->save()){
+            
             $request->session()->forget('ses_order');
             return redirect()->route('home_customer',[$vendor]);
         }

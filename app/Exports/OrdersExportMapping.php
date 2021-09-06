@@ -3,7 +3,9 @@
 namespace App\Exports;
 
 use App\Order;
+//use App\Order;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -16,10 +18,10 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
     */
     public function collection()
     {
-        return Order::with('products')
-        ->where('client_id','=',auth()->user()->client_id)
+        return Order::where('client_id','=',auth()->user()->client_id)
         ->whereNotNull('customer_id')
         ->orderBy('created_at', 'DESC')->get();
+        
     }
 
     public function map($order) : array {
@@ -32,11 +34,23 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $diskon = 0;
                 $total= $p->pivot->price_item * $p->pivot->quantity;
             }
-
+            
+            if($order->status == 'NO-ORDER'){
+                $product_name = null;
+            }else{
+                $product_name = $p->Product_name;
+            }
+        
             if($order->canceled_by != null){
                 $canceled_by = $order->canceledBy['name'];
             }else{
                 $canceled_by = null;
+            }
+
+            if($order->reasons_id != null){
+                $reasons = $order->reasons['reasons_name'];
+            }else{
+                $reasons = null;
             }
             
             array_push($rows,[
@@ -47,7 +61,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $order->customers->name,
                 $order->users()->first()['name'],
                 $order->user_loc,
-                $p->Product_name,
+                $product_name,
                 $p->pivot->quantity,
                 $p->pivot->price_item,
                 $p->pivot->paket_id,
@@ -59,6 +73,8 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $order->finish_time,
                 $order->cancel_time,
                 $order->notes_cancel,
+                $reasons,
+                $order->notes_no_order,
                 $canceled_by,
                 //Carbon::parse($order->created_at)->toFormattedDateString()
             ]);
@@ -78,8 +94,8 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
            'Product',
            'Quantity',
            'Price',
-           'Paket_id',
-           'Group_id',
+           'Paket Id',
+           'Group Id',
            'Bonus Product',
            'Note',
            'Order Date',
@@ -87,6 +103,8 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
            'Finish Date',
            'Cancel Date',
            'Note Cancel Order',
+           'Reasons Check Out',
+           'Note No Order',
            'Canceled By'
         ] ;
     }
