@@ -144,14 +144,13 @@
                 </div>
             </div>
 
-            <!--
+            
             <h2 class="card-inside-title">Image</h2>
             <div class="form-group">
             <div class="form-line">
                 <input type="file" name="avatar" class="form-control" id="avatar" autocomplete="off">
                 </div>
             </div>
-            -->
             
             <div class="form-group form-float">
                 <div class="form-line" id="email_" class="email_">

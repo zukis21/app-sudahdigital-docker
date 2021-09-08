@@ -27,7 +27,17 @@
             </div>
         </div>
 
-        <div class="form-group form-float">
+        <p>
+            <b>Customer Type</b>
+        </p>
+        <select name="cust_type"  id="cust_type" class="form-control" required>
+            <option></option>
+            @foreach($type as $ty)
+                <option value="{{$ty->id}}">{{$ty->name}}</option>
+            @endforeach
+        </select>
+
+        <div class="form-group form-float m-t-30">
             <div class="form-line">
                 <input type="email" class="form-control" value="{{old('email')}}" name="email" autocomplete="off">
                 <label class="form-label">Email</label>
@@ -144,6 +154,9 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+    $('#cust_type').select2({
+        placeholder: 'Select a Customer Type',
+    });
     $('document').ready(function(){
         document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;
      });

@@ -122,7 +122,8 @@ class CustomerController extends Controller
     public function create($vendor)
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
-            return view('customer_store.create',['vendor'=>$vendor]);
+            $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
+            return view('customer_store.create',['vendor'=>$vendor,'type'=>$type]);
         }
         else{
             abort(403, 'Anda tidak memiliki cukup hak akses');
@@ -186,7 +187,7 @@ class CustomerController extends Controller
 
         $new_cust->lat = $lat;
         $new_cust->lng = $lng;
-
+        $new_cust->cust_type = $request->get('cust_type');
         $new_cust->save();
         if ( $new_cust->save()){
             return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');
@@ -266,12 +267,12 @@ class CustomerController extends Controller
         $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
                     ->orderBy('position', 'ASC')
                     ->get();
-
+        $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
         if(Gate::check('isSpv')){
-            $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
+           
             return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'type'=>$type]);
         }else{
-            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term,'pareto'=>$pareto]);
+            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term,'pareto'=>$pareto,'type'=>$type]);
         }
         
     }
@@ -330,6 +331,7 @@ class CustomerController extends Controller
 
             $cust->lat = $lat;
             $cust->lng = $lng;
+            $cust->cust_type = $request->get('cust_type');
         }
         else{
             $cust->cust_type = $request->get('cust_type');

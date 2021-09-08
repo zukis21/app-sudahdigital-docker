@@ -129,6 +129,19 @@
                 </div>
             </div>
 
+            <h2 class="card-inside-title">Image</h2>
+            <div class="form-group">
+            <div class="form-line">
+                
+                <img src="{{ asset('storage/'.(($user->avatar !='') ? $user->avatar : 'image-noprofile.png').'') }}" width="120px"/>
+                
+                <input type="file" name="avatar" class="form-control" id="avatar" autocomplete="off">
+                <small
+                    class="text-muted">Leave it blank if you don't want to change your avatar
+                </small>
+                </div>
+            </div>
+
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="email" value="{{$user->email}}" class="form-control" name="email" autocomplete="off" disabled="disabled" required>

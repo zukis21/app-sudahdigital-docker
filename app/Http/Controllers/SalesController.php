@@ -103,7 +103,10 @@ class SalesController extends Controller
         $new_user->address = $request->get('address');
         $new_user->phone = $request->get('phone');
         $new_user->sales_area = $request->get('sales_area');
-        
+        if($request->file('avatar')){
+            $file = $request->file('avatar')->store('avatars','public');
+        $new_user->avatar =$file;
+        }
         $new_user->save();
         if ( $new_user->save()){
             return redirect()->route('sales.create',[$vendor])->with('status','Sales Succsessfully Created');
@@ -155,6 +158,14 @@ class SalesController extends Controller
         $user->address = $request->get('address');
         $user->sales_area = $request->get('sales_area');
         $user->status = $request->get('status');
+        if($request->file('avatar')){
+            if($user->avatar && file_exists(storage_path('app/public/'.$user->avatar)))
+            {
+                \Storage::delete('public/'.$user->avatar);
+            }
+            $file = $request->file('avatar')->store('avatars','public');
+            $user->avatar =$file;
+        }
         $user->save();
         return redirect()->route('sales.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Sales Succsessfully Update');
     }

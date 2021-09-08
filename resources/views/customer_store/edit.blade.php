@@ -16,7 +16,7 @@
 		</div>
 	@endif
    
-	<!-- Form Create -->
+	<!-- Form Edit -->
     <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.update',[$vendor,$cust->id])}}">
     	@csrf
         <input type="hidden" name="_method" value="PUT">
@@ -35,8 +35,20 @@
                     <label class="form-label">Name</label>
                 </div>
             </div>
-
-            <div class="form-group form-float">
+        @endif
+        @if(Gate::check('isSpv') || Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+            <p>
+                <b>Customer Type</b>
+            </p>
+            <select name="cust_type"  id="cust_type" class="form-control" required>
+                <option></option>
+                @foreach($type as $ty)
+                    <option value="{{$ty->id}}" {{$ty->id == $cust->cust_type ? 'selected' : ''}}>{{$ty->name}}</option>
+                @endforeach
+            </select>
+        @endif
+        @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+            <div class="form-group form-float m-t-30">
                 <div class="form-line">
                     <input type="email" class="form-control" value="{{old('email',$cust->email)}}" name="email" autocomplete="off">
                     <label class="form-label">Email</label>
@@ -163,18 +175,8 @@
             </div>
            
         @endif
-        @if(Gate::check('isSpv'))
-            <p>
-                <b>Customer Type</b>
-            </p>
-            <select name="cust_type"  id="cust_type" class="form-control" required>
-                <option></option>
-                @foreach($type as $ty)
-                    <option value="{{$ty->id}}" {{$ty->id == $cust->cust_type ? 'selected' : ''}}>{{$ty->name}}</option>
-                @endforeach
-            </select>
-        @endif
-        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
+        
+        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">UPDATE</button>
     </form>
     <!-- #END#  -->
     		
