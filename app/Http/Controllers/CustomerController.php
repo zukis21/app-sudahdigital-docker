@@ -180,9 +180,9 @@ class CustomerController extends Controller
         $new_cust->user_id = $request->get('user');
         $new_cust->client_id = $request->get('client_id');
 
-        $date_explode = explode(',',$request->get('latlng'));
-        $lat = $date_explode[0];
-        $lng = $date_explode[1];
+        $latln_explode = explode(',',$request->get('latlng'));
+        $lat = $latln_explode[0];
+        $lng = $latln_explode[1];
 
         $new_cust->lat = $lat;
         $new_cust->lng = $lng;
@@ -324,9 +324,9 @@ class CustomerController extends Controller
             }
             $cust->user_id = $request->get('user');
 
-            $date_explode = explode(',',$request->get('latlng'));
-            $lat = $date_explode[0];
-            $lng = $date_explode[1];
+            $latln_explode = explode(',',$request->get('latlng'));
+            $lat = $latln_explode[0];
+            $lng = $latln_explode[1];
 
             $cust->lat = $lat;
             $cust->lng = $lng;

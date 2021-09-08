@@ -1017,7 +1017,7 @@
 
                                 <div class="row justify-content-center mt-2 mb-2">
                                     <div class="custom-control custom-radio mr-4">
-                                        <input type="radio" name="user_loc" class="custom-control-input" id="on_location" value="On Location"  required>
+                                        <input type="radio" name="user_loc" class="custom-control-input" id="on_location" value="On Location" required>
                                         <label class="custom-control-label" for="on_location" style="color:#ffffff;font-weight:600;">On Location</label>
                                     </div>
                                     
@@ -1503,6 +1503,31 @@
         function getct(sel)
         {
             $( '#store_id_select' ).val(sel.value);
+            //var store_id = ();
+            var lat = $('#lat').val();
+            var lng = $('#lng').val();
+            $.ajax({
+                url: '{{URL::to('/ajax/latlon/search')}}',
+                type: 'get',
+                data: {
+                    lat : lat,
+                    lng : lng,
+                    store_id: sel.value,
+                },
+                success: function(response){
+                    //$('#lat').val(response);
+                    if (response == 'taken') {
+                        $("#on_location").prop("checked", true);
+                        $('#on_location').prop('disabled', false);
+                        $('#off_location').prop('disabled', true);
+                    }
+                    else if(response == 'not_taken') {
+                        $("#on_location").prop("checked", false);
+                        $('#on_location').prop('disabled', true);
+                        $('#off_location').prop('checked', true);
+                    }
+                }
+            });
         }
 
         //Select2 city

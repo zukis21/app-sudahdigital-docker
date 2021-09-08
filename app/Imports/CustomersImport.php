@@ -35,6 +35,14 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
                 $customer->city_id = $rows['city_id'];
             }
             $customer->address = $rows['address'];
+            if(!empty( $rows['coordinate'])){
+                $latln_explode = explode(',',$rows['coordinate']);
+                $lat = $latln_explode[0];
+                $lng = $latln_explode[1];
+
+                $customer->lat = $lat;
+                $customer->lng = $lng;
+            }
             if(!empty( $rows['customer_type'])){
                 $customer->cust_type = $rows['customer_type'];
             }
@@ -72,6 +80,14 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
                 $customer->city_id = $rows['city_id'];
             }
             $customer->address = $rows['address'];
+            if(!empty( $rows['coordinate'])){
+                $latln_explode = explode(',',$rows['coordinate']);
+                $lat = $latln_explode[0];
+                $lng = $latln_explode[1];
+
+                $customer->lat = $lat;
+                $customer->lng = $lng;
+            }
             if(!empty( $rows['customer_type'])){
                 $customer->cust_type = $rows['customer_type'];
             }

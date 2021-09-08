@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::get('/home_cart', 'CustomerKeranjangController@ajax_cart');
     Route::get('/pesanan/cancel/success','AjaxDetailPesananSales@cancel_success');
     Route::get('/ajax/reasons', 'AjaxCitySearch@ajax_reasons');
+    Route::get('/ajax/latlon/search', 'AjaxCitySearch@get_latlon');
 
 
     Route::group(['prefix' => '/keranjang'], function()

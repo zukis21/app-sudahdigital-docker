@@ -106,6 +106,9 @@
 							{{$c->city_name}}
 						@endif
 					@endif
+					@if($c->lat && $c->lng)
+						<span class="badge bg-blue">with coordinate</span>
+					@endif
 				</td>
 				<td>
 					<small class="text-primary"><b> Wa : </b>{{$c->phone != NULL ? "$c->phone" : '-'}}</small><br>

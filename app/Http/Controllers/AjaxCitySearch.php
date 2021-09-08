@@ -126,4 +126,100 @@ class AjaxCitySearch extends Controller
                     ->orderBy('position','ASC')->get();
         return $reasons;
     }
+
+    public function get_latlon(Request $request){
+        $store_id = $request->get('store_id');
+        
+        $custlatlng = \App\Customer::findOrFail($store_id);
+        
+        if($custlatlng->lat != null){
+            $latitudeFrom = $request->get('lat');
+            $longitudeFrom = $request->get('lng');
+
+            $latitudeTo = $custlatlng->lat;
+            $longitudeTo = $custlatlng->lng;
+
+            $distance = $this->vincentyGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo);
+            if ($distance < 100) {
+                echo "taken";	
+            }else{
+                echo 'not_taken';
+            }
+        }else{
+            echo "null";
+        }
+        
+        //return response()->json(round($distance,2));
+    }
+
+    public function vincentyGreatCircleDistance(
+        $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000)
+    {
+        // convert from degrees to radians
+        $latFrom = deg2rad($latitudeFrom);
+        $lonFrom = deg2rad($longitudeFrom);
+        $latTo = deg2rad($latitudeTo);
+        $lonTo = deg2rad($longitudeTo);
+      
+        $lonDelta = $lonTo - $lonFrom;
+        $a = pow(cos($latTo) * sin($lonDelta), 2) +
+          pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
+        $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
+      
+        $angle = atan2(sqrt($a), $b);
+        return $angle * $earthRadius;
+    }
+
+    function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+      
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
+      }
+
+      function circle_distance($lat1, $lon1, $lat2, $lon2) {
+        $rad = M_PI / 180;
+        return acos(sin($lat2*$rad) * sin($lat1*$rad) + cos($lat2*$rad) * cos($lat1*$rad) * cos($lon2*$rad - $lon1*$rad)) * 6371000;// Kilometers
+      }
+
+      function getDistanceBetweenPointsNew($latitude1, $longitude1, $latitude2, $longitude2, $unit = 'kilometers') {
+        $theta = $longitude1 - $longitude2; 
+        $distance = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2))) + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta))); 
+        $distance = acos($distance); 
+        $distance = rad2deg($distance); 
+        $distance = $distance * 60 * 1.1515; 
+        switch($unit) { 
+          case 'miles': 
+            break; 
+          case 'kilometers' : 
+            $distance = $distance * 1.609344; 
+        } 
+        return (round($distance,2)); 
+      }
+
+      function getDistanceBetween($latitude1, $longitude1, $latitude2, $longitude2, $unit = 'Km') 
+      { 
+          $theta = $longitude1 - $longitude2; 
+          $distance = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2)))  + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta))); 
+          $distance = acos($distance); 
+          $distance = rad2deg($distance); 
+          $distance = $distance * 60 * 1.1515; 
+          switch($unit) 
+          { 
+              case 'Mi': break; 
+              case 'Km' : $distance = $distance * 1.609344;
+          } 
+          return (round($distance,2)); 
+      }
 }
