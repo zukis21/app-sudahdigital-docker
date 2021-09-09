@@ -30,7 +30,7 @@
         <p>
             <b>Customer Type</b>
         </p>
-        <select name="cust_type"  id="cust_type" class="form-control" required>
+        <select name="cust_type"  id="cust_type" class="form-control">
             <option></option>
             @foreach($type as $ty)
                 <option value="{{$ty->id}}">{{$ty->name}}</option>

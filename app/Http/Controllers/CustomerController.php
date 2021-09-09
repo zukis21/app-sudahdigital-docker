@@ -187,6 +187,7 @@ class CustomerController extends Controller
 
         $new_cust->lat = $lat;
         $new_cust->lng = $lng;
+        
         $new_cust->cust_type = $request->get('cust_type');
         $new_cust->save();
         if ( $new_cust->save()){

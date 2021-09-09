@@ -25,7 +25,84 @@
     margin-right:-1px;
   }
 
-  
+  /* Tabs*/
+  section {
+      padding: 15 0;
+  }
+
+  section .section-title {
+      text-align: center;
+      color: #ffff;
+      margin-bottom: 50px;
+      text-transform: uppercase;
+  }
+
+  #tabs{
+    background: #ffffff;
+    color: #1A4066;
+  }
+
+  #tabs .tab-pane{
+    font-weight: normal;
+    color: #1A4066;
+  }
+
+   #tabs .nav-item{
+    font-weight: 600;
+  }
+
+  #tabs .nav-item{
+    border-top-right-radius:20px;
+    border-top-left-radius:20px;
+    background-color: #eee;
+  }
+
+  #tabs .nav-link{
+    border-top-right-radius:20px;
+    border-top-left-radius:20px;
+  }
+
+  #tabs .nav-link i{
+    color: #ffff;
+    background-color: #1A4066;
+  }
+
+  #tabs .nav-tabs {
+    background-color: #ffff;
+    border-top-right-radius:20px;
+    border-top-left-radius:20px;
+    
+  }
+
+  #tabs .nav-link.active {
+      background-color: #1A4066;
+      border: 1px solid transparent;
+      border-top-right-radius:20px;
+      border-top-left-radius:20px;
+      color: #eee;
+      font-weight: bold;
+  }
+
+  #tabs .nav-link.active  i{
+    color: #1A4066;
+    background-color: #ffff;
+  }
+
+  #tabs .nav-fill > a {
+    border-top-right-radius:20px;
+    border-top-left-radius:20px;
+  }
+
+  #tabs .tab-content {
+    background-color: #fff;
+    padding : 5px 15px;
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3);
+    font-weight: normal;
+  }
+
+  #tabs .tab-pane{
+    font-size: 16px;
+  }
 </style>
 
     <div class="container pb-4" style="">
@@ -446,6 +523,90 @@
           
         </div>
 
+        <!--
+        <div class="row justify-content-center mb-4" style="">
+            <div class="col-12" style="z-index: 2;">
+                <!//-- Tabs --//>
+                <section id="tabs">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12" data-aos="fade-up">
+                        <nav>
+                          <div class="nav nav-tabs nav-fill border-0" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-no-have-order-tab" data-toggle="tab" href="#nav-no-have-order" role="tab"  aria-selected="true">
+                              <span style="float: left;">
+                                <i class="fas fa-times py-1 px-2 mr-2 my-auto" 
+                                  style="border-radius:5px;"></i>
+                                Toko Pareto Belum Order
+                              </span>
+                            </a>
+                            <a class="nav-item nav-link" id="nav-have-order-tab" data-toggle="tab" href="#nav-have-order" role="tab"  aria-selected="false">
+                              <span style="float: left;">  
+                                <i class="fas fa-check py-1 mr-2" 
+                                  style="border-radius:5px;padding-left:6px;padding-right:6px;"></i>
+                              Toko Pareto Sudah Order
+                              </span>
+                            </a>
+                            <a class="nav-item nav-link" id="nav-no-have-process-tab" data-toggle="tab" href="#nav-no-have-process" role="tab"  aria-selected="false">
+                              <span style="float: left;">
+                              <i class="fas fa-shipping-timed py-1 px-1 mr-2 my-auto" 
+                                  style="border-radius:5px;"></i>  
+                                Order Belum Kirim > 5 Hari
+                              <span style="float: left;">
+                            </a>
+                            
+                        </nav>
+                        <div class="tab-content py-3 px-3" id="nav-tabContent">
+                          <div class="tab-pane fade show active" id="nav-no-have-order" role="tabpanel" aria-labelledby="nav-no-have-order-tab">
+                            <ul class="list-group w-100 ">
+                              @if(count($cust_not_exists) > 0 )
+                                @foreach ($cust_not_exists as $item)
+                                  <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                  border-bottom-left-radius:0;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
+                                @endforeach
+                              @else
+                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;"><b>Nihil</b></li>
+                              @endif  
+                            </ul>
+                          </div>
+
+                          <div class="tab-pane fade" id="nav-have-order" role="tabpanel" aria-labelledby="nav-have-order-tab">
+                            <ul class="list-group w-100">
+                              
+                              @if(count($cust_exists) > 0 )
+                                @foreach ($cust_exists as $it)
+                                  <li class="list-group-item border-right-0 border-left-0" 
+                                  style="color: #1A4066;
+                                        border-bottom-right-radius:0;
+                                        border-bottom-left-radius:0;">
+                                        <b>{{$it->store_name}}</b>,<br>{{$it->address}} 
+                                    <//!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>//--//>
+                                  </li>
+                                @endforeach
+                              @else
+                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;"><b>Nihil</b></li>
+                              @endif  
+                            </ul>
+                          </div>
+                          
+                          <div class="tab-pane fade" id="nav-no-have-process" role="tabpanel" aria-labelledby="nav-no-have-process-tab">
+                            Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.
+                          </div>
+                          
+                        </div>
+                      
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                <//!-- ./Tabs --//>
+            </div>
+        </div>
+        -->
+        
+        
         <div class="row justify-content-center" style="">
             <div class="col-12" style="z-index: 2;">
                 <section class="statistics">
@@ -486,7 +647,7 @@
                         <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
                           <div class="box w-100">
                             <ul class="list-group w-100" style="border-top-right-radius:20px;
-                            border-top-left-radius:20px;">
+                              border-top-left-radius:20px;">
                               <li class="list-group-item active border-right-0 border-left-0" 
                                 style="background-color:#1A4066;
                                        border-top-right-radius:20px;
@@ -522,6 +683,7 @@
             </div>
         </div>
         
+
         <div class="row justify-content-center" style="">
           <div class="col-12 mt-2" style="z-index: 2;">
               <!--<section class="statistics">-->
@@ -565,6 +727,10 @@
         AOS.init({
           duration: 1400,
         })
+
+        if ($(window).width() < 995) {
+            $('#nav-no-have-order-tab, #nav-have-order-tab, #nav-no-have-process-tab').addClass('mb-2');
+        }
         
         if ($(window).width() < 769) {
             $('.modal-dialog-paket').removeClass('modal-lg');

@@ -80,9 +80,15 @@ class CategoryController extends Controller
             $newCategory->image_category = $image_path;
         }
         $newCategory->create_by = \Auth::user()->id;
-        $newCategory->slug = \Str::slug($name,'-');
+        
         if($request->has('parent_id')){
             $newCategory->parent_id = $request->get('parent_id');
+            $categories = \App\Category::findOrFail($request->get('parent_id'));
+            $newCategory->slug = \Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
+        }
+        else{
+            $newCategory->parent_id = null;
+            $newCategory->slug = \Str::slug($name,'-');
         }
         $newCategory->save();
         return redirect()->route('categories.create',[$vendor])->with('status','Category Succesfully Created'); 
@@ -139,11 +145,19 @@ class CategoryController extends Controller
             $new_image = $request->file('image')->store('category_images','public');
             $category->image_category = $new_image;
         }
+        
         if($request->has('parent_id')){
             $category->parent_id = $request->get('parent_id');
+            $categories = \App\Category::findOrFail($request->get('parent_id'));
+            $category->slug = \Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
         }
+        else{
+            $category->parent_id = null;
+            $category->slug = \Str::slug($name,'-');
+        }
+            
             $category->update_by = \Auth::user()->id;
-            $category->slug = \Str::slug($name);
+            
             $category->save();
             return redirect()->route('categories.edit', [$vendor,\Crypt::encrypt($id)])->with('status','Category Succsessfully Update');
     }

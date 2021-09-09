@@ -40,7 +40,8 @@
             <p>
                 <b>Customer Type</b>
             </p>
-            <select name="cust_type"  id="cust_type" class="form-control" required>
+            <select name="cust_type"  id="cust_type" class="form-control" 
+                {{Gate::check('isSuperadmin') || Gate::check('isAdmin') ? '' : 'required'}}>
                 <option></option>
                 @foreach($type as $ty)
                     <option value="{{$ty->id}}" {{$ty->id == $cust->cust_type ? 'selected' : ''}}>{{$ty->name}}</option>
@@ -68,7 +69,7 @@
 
             <div class="form-group form-float">
                 <div class="form-line">
-                    <input type="text" id="latlng" class="form-control" value="{{old('latlng',$cust->lat.', '.$cust->lng)}}"
+                    <input type="text" id="latlng" class="form-control" value="{{old('latlng', $cust->lat ? $cust->lat.', '.$cust->lng : '')}}"
                     name="latlng" required>
                     <label class="form-label">Coordinate</label>
                 </div>
