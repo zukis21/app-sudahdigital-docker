@@ -81,7 +81,7 @@ class CategoryController extends Controller
         }
         $newCategory->create_by = \Auth::user()->id;
         
-        if($request->has('parent_id')){
+        if(!empty($request->get('parent_id'))){
             $newCategory->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
             $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
@@ -146,7 +146,7 @@ class CategoryController extends Controller
             $category->image_category = $new_image;
         }
 
-        if($request->has('parent_id')){
+        if(!empty($request->get('parent_id'))){
             $category->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
             $category->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
