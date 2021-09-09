@@ -84,7 +84,7 @@ class CategoryController extends Controller
         if($request->has('parent_id')){
             $newCategory->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
-            $newCategory->slug = \Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
+            $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
         }
         else{
             $newCategory->parent_id = null;
@@ -145,11 +145,11 @@ class CategoryController extends Controller
             $new_image = $request->file('image')->store('category_images','public');
             $category->image_category = $new_image;
         }
-        
+
         if($request->has('parent_id')){
             $category->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
-            $category->slug = \Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
+            $category->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
         }
         else{
             $category->parent_id = null;
