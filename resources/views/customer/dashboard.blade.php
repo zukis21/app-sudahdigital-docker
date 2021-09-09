@@ -103,6 +103,42 @@
   #tabs .tab-pane{
     font-size: 16px;
   }
+
+  @media (max-width : 425px){
+    #tabs{
+      font-size:14px;
+    }
+    
+    #tabs i{
+      font-size:12px;
+    }
+
+    #tabs .list-group {
+      font-size:13px;
+    }
+
+    .dashboard i{
+      font-size:12px;
+    }
+
+    .dashboard-tittle{
+      font-size:14px;
+    }
+  }
+
+  @media (max-width : 338px){
+    #tabs{
+      font-size:12px;
+    }
+
+    #tabs i{
+      font-size:12px;
+    }
+
+    #tabs .list-group {
+      font-size:12px;
+    }
+  }
 </style>
 
     <div class="container pb-4" style="">
@@ -523,10 +559,10 @@
           
         </div>
 
-        <!--
+        
         <div class="row justify-content-center mb-4" style="">
             <div class="col-12" style="z-index: 2;">
-                <!//-- Tabs --//>
+                <!-- Tabs -->
                 <section id="tabs">
                   <div class="container-fluid">
                     <div class="row">
@@ -539,6 +575,7 @@
                                   style="border-radius:5px;"></i>
                                 Toko Pareto Belum Order
                               </span>
+                              <span class="badge badge-danger my-auto" style="float:right;font-size:14px;">{{count($cust_not_exists)}}</span>
                             </a>
                             <a class="nav-item nav-link" id="nav-have-order-tab" data-toggle="tab" href="#nav-have-order" role="tab"  aria-selected="false">
                               <span style="float: left;">  
@@ -546,13 +583,15 @@
                                   style="border-radius:5px;padding-left:6px;padding-right:6px;"></i>
                               Toko Pareto Sudah Order
                               </span>
+                              <span class="badge badge-success my-auto" style="float:right;font-size:14px;">{{count($cust_exists)}}</span>
                             </a>
                             <a class="nav-item nav-link" id="nav-no-have-process-tab" data-toggle="tab" href="#nav-no-have-process" role="tab"  aria-selected="false">
                               <span style="float: left;">
-                              <i class="fas fa-shipping-timed py-1 px-1 mr-2 my-auto" 
+                                <i class="fas fa-shipping-timed py-1 px-1 mr-2 my-auto" 
                                   style="border-radius:5px;"></i>  
                                 Order Belum Kirim > 5 Hari
-                              <span style="float: left;">
+                              </span>
+                              <span class="badge badge-warning my-auto" style="float:right;font-size:14px;">{{count($order_overday)}}</span>
                             </a>
                             
                         </nav>
@@ -581,7 +620,7 @@
                                         border-bottom-right-radius:0;
                                         border-bottom-left-radius:0;">
                                         <b>{{$it->store_name}}</b>,<br>{{$it->address}} 
-                                    <//!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>//--//>
+                                    <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
                                   </li>
                                 @endforeach
                               @else
@@ -592,7 +631,17 @@
                           </div>
                           
                           <div class="tab-pane fade" id="nav-no-have-process" role="tabpanel" aria-labelledby="nav-no-have-process-tab">
-                            Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.
+                            <ul class="list-group w-100 ">
+                              @if(count($order_overday) > 0 )
+                                @foreach ($order_overday as $over)
+                                  <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                  border-bottom-left-radius:0;"><b>{{$over->store_name}}</b>,<br>{{$over->address}}</li>
+                                @endforeach
+                              @else
+                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                border-bottom-left-radius:0;"><b>Nihil</b></li>
+                              @endif  
+                            </ul>
                           </div>
                           
                         </div>
@@ -601,12 +650,12 @@
                     </div>
                   </div>
                 </section>
-                <//!-- ./Tabs --//>
+                <!-- ./Tabs -->
             </div>
         </div>
-        -->
+       
         
-        
+        <!--
         <div class="row justify-content-center" style="">
             <div class="col-12" style="z-index: 2;">
                 <section class="statistics">
@@ -667,7 +716,7 @@
                                         border-bottom-right-radius:0;
                                         border-bottom-left-radius:0;">
                                         <b>{{$it->store_name}}</b>,<br>{{$it->address}} 
-                                    <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
+                                    <//!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>--//>
                                   </li>
                                 @endforeach
                               @else
@@ -682,9 +731,9 @@
                 </section>
             </div>
         </div>
-        
+        -->
 
-        <div class="row justify-content-center" style="">
+        <div class="row justify-content-center dashboard" style="">
           <div class="col-12 mt-2" style="z-index: 2;">
               <!--<section class="statistics">-->
                   <div class="container-fluid">
@@ -701,7 +750,7 @@
                                         color:#fff;">
                               <i class="fas fa-chart-bar bg-white py-1 mr-2"
                               style="color:#1A4066;border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
-                              <span class="font-weight-bold" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</span>
+                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</span>
                             </li>
                             <li class="list-group-item" style="color: #1A4066;">
                               <div id="container"></div>

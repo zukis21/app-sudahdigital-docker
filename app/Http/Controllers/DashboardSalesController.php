@@ -89,6 +89,19 @@ class DashboardSalesController extends Controller
                 ->whereNotNull('pareto_id')
                 ->get();
 
+        //order > 5 days
+        $order_minday = date('Y-m-d', strtotime("-5 day", strtotime(date("Y-m-d"))));
+        $order_overday = \App\Customer::whereHas('orders',function($q) use($user_id,$order_minday)
+                {
+                    return $q->where('user_id','=',"$user_id")
+                            ->whereNotNull('customer_id')
+                            ->where('created_at', '<', $order_minday)
+                            ->where('status','=','SUBMIT');
+                })
+                ->where('client_id',\Auth::user()->client_id)
+                //->whereNotNull('pareto_id')
+                ->where('user_id',$user_id)->get();
+
         //target pareto
         $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
                      ->where('period','<=',$date_now)
@@ -232,6 +245,7 @@ class DashboardSalesController extends Controller
             'work_plan'=>$work_plan,
             'day_off'=>$day_off,
             'param_line'=>$param_line,
+            'order_overday'=>$order_overday,
             //'order_chart'=>$order_chart
             ];
         
