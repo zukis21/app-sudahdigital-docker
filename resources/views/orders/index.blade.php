@@ -41,20 +41,9 @@
 </form>	
 <hr>
 <div class="table-responsive">
-	<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+	<table class="table table-bordered table-striped table-hover order-table">
 		<thead>
-			<!--
-			<tr>
-				<th width="1%">No</th>
-				<th width="2%">Status</th>
-				<th width="25%">Customer</th>
-				<th width="15%">Order Product</th>
-				<th width="2%">Total quantity</th>
-				<th width="10%">Order date</th>
-				<th>Total price</th>
-				<th width="5%">Action</th>
-			</tr>
-			-->
+			
 			<tr>
 				<th>#Order</th>
 				<th>Status</th>
@@ -67,9 +56,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php $no=0;?>
+			
 			@foreach($orders as $order)
-			<?php $no++;?>
+			
 			<tr>
 				<td>{{$order->invoice_number}}</td>
 				<td>
@@ -142,4 +131,14 @@
 
 </div>
 
+@endsection
+@section('footer-scripts')
+
+<script>
+	$(document).ready(function() {
+		$('.order-table').DataTable( {
+			"order": [[ 4, "desc" ]]
+		});
+	});
+</script>
 @endsection

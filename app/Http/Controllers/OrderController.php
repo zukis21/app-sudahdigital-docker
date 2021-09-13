@@ -63,7 +63,8 @@ class OrderController extends Controller
             ->whereNotNull('customer_id')
             ->where('status',strtoupper($status))
             ->where('created_at','>=',$datefrom)
-            ->orderBy('created_at', 'DESC')->get();//paginate(10);
+            ->orderBy('created_at', 'desc')
+            ->get();//paginate(10);
             }
             else{
                 $orders = \App\Order::with('products')
@@ -71,7 +72,8 @@ class OrderController extends Controller
                 ->where('client_id','=',$client_id)
                 ->whereNotNull('customer_id')
                 ->where('created_at','>=',$datefrom)
-                ->orderBy('created_at', 'DESC')->get();
+                ->orderBy('created_at', 'desc')
+                ->get();
             //dd($orders);
             }
         }
