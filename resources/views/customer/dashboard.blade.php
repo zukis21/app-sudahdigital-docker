@@ -665,7 +665,12 @@
                               @if(count($order_overday) > 0 )
                                 @foreach ($order_overday as $over)
                                   <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                  border-bottom-left-radius:0;"><b>{{$over->store_name}}</b>,<br>{{$over->address}}</li>
+                                     border-bottom-left-radius:0;">
+                                      <b class="text-success mb-3">#{{$over->invoice_number}}</b><br>  
+                                        
+                                      <b>{{$over->customer_id ? $over->customers->store_name : ''}}</b>,<br>
+                                        {{$over->customer_id ? $over->customers->address :''}}
+                                  </li>
                                 @endforeach
                               @else
                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;

@@ -93,6 +93,13 @@ class DashboardSalesController extends Controller
         $from = date('2021-06-01');
         $order_minday = date('Y-m-d', strtotime("-5 day", strtotime(date("Y-m-d"))));
         //dd($order_minday);
+        $order_overday = \App\Order::where('user_id',\Auth::user()->id)
+                        ->whereNotNull('customer_id')
+                        ->whereBetween('created_at', [$from,$order_minday])
+                        ->where('status','=','SUBMIT')
+                        ->orderBy('created_at','DESC')
+                        ->get();
+        /*==========================================
         $order_overday = \App\Customer::whereHas('orders',function($q) use($user_id,$order_minday,$from)
                 {
                     return $q->where('user_id','=',"$user_id")
@@ -104,6 +111,7 @@ class DashboardSalesController extends Controller
                 ->where('client_id',\Auth::user()->client_id)
                 //->whereNotNull('pareto_id')
                 ->where('user_id',$user_id)->get();
+        =============================================*/
 
         //target pareto
         $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
