@@ -20,6 +20,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
     {
         return Order::where('client_id','=',auth()->user()->client_id)
         ->whereNotNull('customer_id')
+        ->where('created_at','>=','2021-06-01')
         ->orderBy('created_at', 'DESC')->get();
         
     }
@@ -54,7 +55,8 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
             }
             
             array_push($rows,[
-                $order->id,
+                //$order->id,
+                $order->invoice_number,
                 $order->status,
                 $order->customers->store_code,
                 $order->customers->store_name,
@@ -84,7 +86,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
 
     public function headings() : array {
         return [
-           'Order Id',
+           '#Order',
            'Status',
            'Cust. Code',
            'Name',
@@ -112,6 +114,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
     public function columnFormats(): array
     {
         return [
+            'A' => '0',
             'F' =>'0',
         ];
         

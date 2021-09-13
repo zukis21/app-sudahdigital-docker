@@ -35,17 +35,21 @@ class OrderController extends Controller
         $user =\Auth::user()->roles;
         $id_user =\Auth::user()->id;
         $client_id = \Auth::user()->client_id;
+        $datefrom = date('2021-06-01');
         //dd($client_id);
         if($user == 'SUPERVISOR'){
             $status = $request->get('status');
             if($status){
             $stts = strtoupper($status);
-            $orders = \DB::select("SELECT * FROM orders WHERE client_id = $client_id AND customer_id IS NOT NULL AND status='$stts' AND EXISTS 
+            $orders = \DB::select("SELECT * FROM orders WHERE 
+                        client_id = $client_id AND customer_id IS NOT NULL AND 
+                        status='$stts' AND created_at >= $datefrom AND EXISTS 
                     (SELECT spv_id,sls_id FROM spv_sales WHERE 
                     spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
             }
             else{
-                $orders = \DB::select("SELECT * FROM orders WHERE client_id = $client_id AND customer_id IS NOT NULL AND EXISTS 
+                $orders = \DB::select("SELECT * FROM orders WHERE client_id = $client_id AND 
+                customer_id IS NOT NULL AND created_at >= $datefrom AND EXISTS 
                 (SELECT spv_id,sls_id FROM spv_sales WHERE 
                 spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
                 //dd($orders);
@@ -58,6 +62,7 @@ class OrderController extends Controller
             ->where('client_id','=',$client_id)
             ->whereNotNull('customer_id')
             ->where('status',strtoupper($status))
+            ->where('created_at','>=',$datefrom)
             ->orderBy('created_at', 'DESC')->get();//paginate(10);
             }
             else{
@@ -65,6 +70,7 @@ class OrderController extends Controller
                 ->with('customers')
                 ->where('client_id','=',$client_id)
                 ->whereNotNull('customer_id')
+                ->where('created_at','>=',$datefrom)
                 ->orderBy('created_at', 'DESC')->get();
             //dd($orders);
             }

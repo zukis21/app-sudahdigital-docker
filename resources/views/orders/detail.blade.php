@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Details Order @endsection
+@section('title') Details Order #{{$order->invoice_number}}@endsection
 @section('content')
 
 	@if(session('status'))

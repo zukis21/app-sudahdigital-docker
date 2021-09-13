@@ -56,14 +56,14 @@
 			</tr>
 			-->
 			<tr>
-				<th width="1%">No</th>
-				<th width="">Status</th>
-				<th width="">Customer</th>
+				<th>#Order</th>
+				<th>Status</th>
+				<th >Customer</th>
 				<!--<th width="15%">Order Product</th>-->
-				<th width="">Total quantity</th>
-				<th width="">Order date</th>
+				<th>Total quantity</th>
+				<th>Order date</th>
 				<th>Total price</th>
-				<th width="">Action</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -71,7 +71,7 @@
 			@foreach($orders as $order)
 			<?php $no++;?>
 			<tr>
-				<td>{{$no}}</td>
+				<td>{{$order->invoice_number}}</td>
 				<td>
 					@if($order->status == "SUBMIT")
 					<span class="badge bg-orange text-light">{{$order->status}}</span>
