@@ -45,7 +45,26 @@
   #tabs .tab-pane{
     font-weight: normal;
     color: #1A4066;
+    height:300px;
+    overflow-y:auto;
   }
+
+  /*.style-7::-webkit-scrollbar
+  {
+    width: 5px;
+    background-color: #eee;
+  }
+
+  .style-7::-webkit-scrollbar-thumb
+  {
+    border-radius: 10px;
+    background-image: -webkit-gradient(linear,
+                      left bottom,
+                      left top,
+                      color-stop(0.44, rgb(194, 198, 206)),
+                      color-stop(0.72, rgb(180, 186, 192)),
+                      color-stop(0.86, rgb(169, 171, 179)));
+  }*/
 
    #tabs .nav-item{
     font-weight: 600;
@@ -596,7 +615,8 @@
                             
                         </nav>
                         <div class="tab-content py-3 px-3" id="nav-tabContent">
-                          <div class="tab-pane fade show active" id="nav-no-have-order" role="tabpanel" aria-labelledby="nav-no-have-order-tab">
+                          <div class="tab-pane fade show active " id="nav-no-have-order" 
+                            role="tabpanel" aria-labelledby="nav-no-have-order-tab" >
                             <ul class="list-group w-100 ">
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)

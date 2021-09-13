@@ -241,18 +241,41 @@ class productController extends Controller
         'Product successfully updated');
     }
 
+    public function actorderact(Request $request, $vendor, $id)
+    {
+        $product = \App\product::findOrFail($id);
+        $product->status = $request->get('status');
+        $product->save();
+        $status_page = $request->get('status_page');
+        if($status_page == 'low_stock'){
+            return redirect()->route('products.low_stock', [$vendor])->with('status',
+            'Product successfully '. $request->get('status'));
+        }else{
+            return redirect()->route('products.index', [$vendor, 'status' =>$status_page])->with('status',
+            'Product successfully '. $request->get('status'));
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($vendor, $id)
+    public function destroy(Request $request,$vendor, $id)
     {
         $product = \App\product::findOrFail($id);
+        $status_page = $request->get('status_page');
         $product->delete();
-        return redirect()->route('products.index',[$vendor])->with('status', 'Product moved to
-        trash');
+        
+        if($status_page == 'low_stock'){
+            return redirect()->route('products.low_stock', [$vendor])->with('status', 'Product moved to
+            trash');
+        }else{
+            return redirect()->route('products.index',[$vendor,'status'=>$status_page])->with('status', 'Product moved to
+            trash');
+        }
+        
     }
 
     public function trash($vendor){
@@ -282,9 +305,13 @@ class productController extends Controller
         if(!$product->trashed()){
         return redirect()->route('products.trash',[$vendor])->with('status', 'Product is not in trash!')->with('status_type', 'alert');
         } else {
-        $product->categories()->detach();
-        $product->forceDelete();
-        return redirect()->route('products.trash',[$vendor])->with('status', 'Product permanently deleted!');
+            if($product->orders()->count()){
+                return back()->with('error','Cannot delete, product has orders records');
+            }else{
+                $product->categories()->detach();
+                $product->forceDelete();
+                return redirect()->route('products.trash',[$vendor])->with('status', 'Product permanently deleted!');
+            }
         }
 
     }

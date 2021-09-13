@@ -8,7 +8,11 @@
 			{{session('status')}}
 		</div>
 	@endif
-
+	@if(session('error'))
+		<div class="alert alert-danger">
+			{{session('error')}}
+		</div>
+	@endif
 	<form action="{{route('users.index',[$vendor])}}">
 		<div class="row">
 			<!--
@@ -152,6 +156,11 @@
 	@if(session('status'))
 		<div class="alert alert-success">
 			{{session('status')}}
+		</div>
+	@endif
+	@if(session('error'))
+		<div class="alert alert-danger">
+			{{session('error')}}
 		</div>
 	@endif
 
@@ -325,7 +334,11 @@
 			{{session('status')}}
 		</div>
 	@endif
-
+	@if(session('error'))
+		<div class="alert alert-danger">
+			{{session('error')}}
+		</div>
+	@endif
 	<form action="{{route('spv.index',[$vendor])}}">
 		<div class="row">
 			<!--
@@ -392,12 +405,8 @@
 								@endphp
 								@if($name)
 									<li><small>{{$name->name}}</small></li>
-								@else
-									
 								@endif
 							@endforeach
-						@else
-							
 						@endif
 					</td>
 					<td>

@@ -6,7 +6,25 @@
 		{{session('status')}}
 	</div>
 @endif
+<style>
+	/* Scrollbar Styling 
+	::-webkit-scrollbar {
+		width: 5px;
+	}
+	
+	::-webkit-scrollbar-track {
+		background-color: #ebebeb;
+		-webkit-border-radius: 10px;
+		border-radius: 10px;
+	}
 
+	::-webkit-scrollbar-thumb {
+		-webkit-border-radius: 10px;
+		border-radius: 10px;
+		background: #ebebeb; 
+	}
+	*/
+</style>
 <form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		<!--
@@ -21,7 +39,7 @@
 			<input type="submit" class="btn bg-blue pull-left" value="Filter">
 		</div>
 		-->
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/products' ? 'active' : ''}}">
 					<a href="{{route('products.index',[$vendor])}}" aria-expanded="true" >All</a>
@@ -39,12 +57,15 @@
 						</li>
 					@endif
 				@endif
+				<li role="presentation" class="{{Request::get('status') == 'inactive' ?'active' : '' }}">
+					<a href="{{route('products.index', [$vendor,'status' =>'inactive'])}}">INACTIVE</a>
+				</li>
 				<li role="presentation" class="">
 					<a href="{{route('products.trash',[$vendor])}}" >TRASH</a>
 				</li>
 			</ul>
 		</div>
-		<div class="col-md-6">&nbsp;</div>
+		
 		<div class="col-md-12">
 			<div class="demo-switch">
 				<a href="{{route('products.import_products',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Import</a>&nbsp;
@@ -61,14 +82,14 @@
 </form>	
 <hr>
 <div class="table-responsive">
-	<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+	<table class="table table-bordered table-striped table-hover dataTable js-basic-example" style="width:100%">
 		<thead>
 			<tr>
-				<th>No</th>
+				<!--<th>No</th>-->
 				<th>Product Image</th>
 				<th>Product Code</th>
 				<th>Product Name</th>
-				<th>Descritption</th>
+				<!--<th>Descritption</th>-->
 				<th>Category</th>
 				@if($stock_status && $stock_status->stock_status == 'ON')
 					<th>Stock</th>
@@ -76,7 +97,7 @@
 				@endif
 				<th>Price</th>
 				<th>Status</th>
-				<th width="25%">Action</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -84,7 +105,7 @@
 			@foreach($products as $p)
 			<?php $no++;?>
 			<tr>
-				<td>{{$no}}</td>
+				<!--<td>{{$no}}</td>-->
 				<td>@if($p->image)
 					<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
 					@else
@@ -93,7 +114,6 @@
 				</td>
 				<td>{{$p->product_code}}</td>
 				<td>{{$p->Product_name}}</td>
-				<td>{{$p->description}}</td>
 				<td>
 					@foreach($p->categories as $category)
 						{{$category->name}}
@@ -118,9 +138,11 @@
 				</td>
 				<td>
 					@if($p->status=="DRAFT")
-					<span class="badge bg-dark text-white">{{$p->status}}</span>
-						@else
-					<span class="badge bg-green">{{$p->status}}</span>
+						<span class="badge bg-dark text-white">{{$p->status}}</span>
+					@elseif($p->status=="INACTIVE")
+						<span class="badge bg-red">{{$p->status}}</span>
+					@else
+						<span class="badge bg-green">{{$p->status}}</span>	
 					@endif
 
 					@if($p->top_product==1)
@@ -134,9 +156,47 @@
 					@endif
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
+					<div class="dropdown">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+							<i class="material-icons" >apps</i>
+						</a>
+						<ul class="dropdown-menu pull-right">
+							
+							@if($p->status == 'PUBLISH')
+							<li>
+								<a href="javascript:void(0);" class=" waves-effect waves-block"
+								data-toggle="modal" data-target="#activeModal{{$p->id}}">Deactivate</a>
+							</li>
+							@elseif($p->status == 'INACTIVE')
+							<li>
+								<a href="javascript:void(0);" class=" waves-effect waves-block"
+								data-toggle="modal" data-target="#activeModal{{$p->id}}">Activate</a>
+							</li>
+							@endif
+							<li>
+								<a href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}" 
+								class=" waves-effect waves-block">
+									Edit
+								</a>
+							</li>
+							<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+								data-toggle="modal" data-target="#deleteModal{{$p->id}}">
+								Delete
+								</a>
+							</li>
+							<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+								data-toggle="modal" data-target="#detailModal{{$p->id}}">
+								Detail
+								</a>
+							</li>
+						</ul>
+					</div>
+					
+					<!--
+					<a class="btn btn-info btn-xs " href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>
-					<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$p->id}}" style="padding: 4px 8px;"><small>Detail</small></button>
+					<button type="button" class="btn bg-grey waves-effect btn-xs" data-toggle="modal" data-target="#detailModal{{$p->id}}" ><i class="material-icons">list</i></button>
+					-->
 
 					<!-- Modal Delete -->
 		            <div class="modal fade" id="deleteModal{{$p->id}}" tabindex="-1" role="dialog">
@@ -152,6 +212,15 @@
 		                        	<form action="{{route('products.destroy',[$vendor,$p->id])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
+										@if(Request::get('status') == NULL && Request::path() == $vendor.'/products')
+											<input type="hidden" name="status_page" value="">
+										@elseif(Request::get('status') == 'publish')
+											<input type="hidden" name="status_page" value="publish">
+										@elseif(Request::get('status') == 'inactive')
+											<input type="hidden" name="status_page" value="inactive">
+										@elseif(Request::get('status') == 'draft')
+											<input type="hidden" name="status_page" value="draft">	
+										@endif
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>
 										<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
 									</form>
@@ -229,12 +298,41 @@
 		                    </div>
 		                </div>
 		            </div>
+
+					<!-- Modal deactivate -->
+					<div class="modal fade" id="activeModal{{$p->id}}" tabindex="-1" role="dialog">
+						<div class="modal-dialog modal-sm" role="document">
+							<div class="modal-content modal-col-{{$p->status == 'PUBLISH' ? 'orange' : 'cyan'}}">
+								<div class="modal-header">
+									<h4 class="modal-title">{{$p->status == 'PUBLISH' ? 'Deactivate Product' : 'Activate Product'}}</h4>
+								</div>
+								<div class="modal-body">
+									{{$p->status == 'PUBLISH' ? 'Deactivate this product ?' : 'Activate this product ?'}}
+								</div>
+								<div class="modal-footer">
+									<form action="{{route('products.actorderact',[$vendor,$p->id])}}" method="POST">
+										@csrf
+										<input type="hidden" name="_method" value="PUT">
+										@if(Request::get('status') == NULL && Request::path() == $vendor.'/products')
+											<input type="hidden" name="status_page" value="">
+										@elseif(Request::get('status') == 'publish')
+											<input type="hidden" name="status_page" value="publish">
+										@elseif(Request::get('status') == 'inactive')
+											<input type="hidden" name="status_page" value="inactive">
+										@endif
+										<input type="hidden" name="status" value="{{$p->status == 'PUBLISH' ? 'INACTIVE' : 'PUBLISH'}}">
+										<button type="submit" name="save" value="{{$p->status == 'PUBLISH' ? 'DEACTIVATE' : 'ACTIVATE'}}" class="btn btn-link waves-effect">{{$p->status == 'PUBLISH' ? 'Deactivate' : 'Activate'}}</button>
+										<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
 				</td>
 			</tr>
 			@endforeach
 		</tbody>
 	</table>
-
 </div>
 
 @endsection

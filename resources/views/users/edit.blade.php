@@ -357,8 +357,9 @@
                             @endif
                         </tbody>
                     </table>
-                    <button type="button" class="btn bg-deep-purple waves-effect" data-toggle="modal" data-target="#addItemModal" style="margin-left:20px;margin-bottom:20px;">
-                        <i class="material-icons" style="font-size:1.2em;">add</i>Add Sales Team Member 
+                    <button type="button" class="btn bg-deep-purple waves-effect" data-toggle="modal" data-target="#addItemModal" 
+                       style="margin-left:20px;margin-bottom:20px;" {{$user->status == 'INACTIVE' ? 'disabled' : ''}}>
+                        <i class="material-icons" style="font-size:1.2em;" >add</i>Add Sales Team Member 
                     </button>
                 </div>
             </div>

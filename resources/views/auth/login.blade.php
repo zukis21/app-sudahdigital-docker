@@ -17,7 +17,7 @@
 </style>
     <div class="container pt-4">
         <div class="d-flex justify-content-center mx-auto" >
-            <div class="col-md-4 image-logo-login" style="z-index: 2;">
+            <div class="col-md-4 image-logo-login mb-n4" style="z-index: 2;">
                <img src="{{ asset('assets/image/Logo_SudahDigital.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="Logo_SudahDigital">  
             </div>
             
@@ -84,8 +84,9 @@
     if($(window).width() < 600){
         $('.login-label').removeClass('mt-4').addClass('mt-3');
         $('.image-logo-login').addClass('px-5');
-        $('.container').removeClass('pt-5').addClass('pt-4');
+        //$('.container').removeClass('pt-4').addClass('pt-4');
         //$('img-thumbnail').addClass('mx-5');
     }
+
 </script>
 @endsection

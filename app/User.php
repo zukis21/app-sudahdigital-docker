@@ -37,7 +37,7 @@ class User extends Authenticatable
     }
 
     public function customers(){
-        return $this->belongsTo('App\customer','user_id');
+        return $this->hasMany('App\customer','user_id');
     }
 
     public function spv(){
@@ -54,6 +54,10 @@ class User extends Authenticatable
 
     public function targets_nominal(){
         return $this->hasOne('App\Sales_Targets','user_id');
+    }
+
+    public function login_records(){
+        return $this->hasMany('App\LoginRecord','user_id');
     }
 
     

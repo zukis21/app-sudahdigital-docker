@@ -181,8 +181,24 @@ class SalesController extends Controller
     public function destroy($vendor, $id)
     {
         $user = \App\User::findOrFail($id);
-        $user->delete();
-        return redirect()->route('sales.index',[$vendor])->with('status','Sales Succsessfully Delete');
+
+        if($user->orders()->count()){
+            return back()->with('error','Cannot delete, sales has orders records');
+        }
+        elseif($user->customers()->count()){
+            return back()->with('error','Cannot delete, sales has customers records');
+        }
+        elseif($user->sls()->count()){
+            return back()->with('error','Cannot delete, sales has member SPV records');
+        }
+        elseif($user->login_records()->count()){
+            return back()->with('error','Cannot delete, sales has login records');
+        }
+        else{
+           //$user->delete();
+            return redirect()->route('sales.index',[$vendor])->with('status','Sales Succsessfully Delete'); 
+        }
+        
     }
 
     public function export($vendor) {

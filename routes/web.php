@@ -178,7 +178,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/categories/create', 'CategoryController@create')->name('categories.create');
     Route::post('/categories/store', 'CategoryController@store')->name('categories.store');
     Route::get('/categories/{id}/update', 'CategoryController@update')->name('categories.update');
-    Route::get('/categoriess/{id}/edit', 'CategoryController@edit')->name('categories.edit');
+    Route::get('/categories/{id}/edit', 'CategoryController@edit')->name('categories.edit');
     Route::delete('/categories/{id}/destroy', 'CategoryController@destroy')->name('categories.destroy');
     Route::get('/categories/export', 'CategoryController@export')->name('categories.export');
     Route::get('/categories/trash', 'CategoryController@trash')->name('categories.trash');
@@ -202,6 +202,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/products/export_all', 'productController@export_all')->name('products.export_all');
     Route::get('/products/{id}/restore', 'productController@restore')->name('products.restore');
     Route::delete('/products/{products}/delete-permanent','productController@deletePermanent')->name('products.delete-permanent');
+    Route::put('/products/{id}/activate_or_deactivate', 'productController@actorderact')->name('products.actorderact');
 
     //Group-paket
     Route::get('/groups', 'GroupController@index')->name('groups.index');

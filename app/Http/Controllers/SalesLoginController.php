@@ -43,7 +43,7 @@ class SalesLoginController extends Controller
         return view ('workplan.login_list',['saleslogin'=>$saleslogin,'vendor'=>$vendor,'users'=>$users]);
     }
 
-    public function filter_login(Request $request, $vendor, $period, $user_name = null, $user_id){
+    public function filter_login(Request $request, $vendor, $period, $user_name , $user_id){
         $date_explode = explode('-',$period);
         $year = $date_explode[0];
         $month = $date_explode[1];

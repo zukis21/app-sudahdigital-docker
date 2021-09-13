@@ -72,7 +72,8 @@ class Spvcontroller extends Controller
         $users = \DB::select("SELECT * FROM users u WHERE u.status='ACTIVE' AND u.client_id = $client_slsid AND u.roles='SALES' AND NOT EXISTS
                                         (
                                             SELECT * FROM  spv_sales s
-                                            WHERE   s.sls_id = u.id
+                                            WHERE /*s.status = 'ACTIVE' AND*/
+                                            s.sls_id = u.id
                                         )
                                     ");
         return view('users.create',['users'=>$users,'vendor'=>$vendor]);
@@ -149,8 +150,9 @@ class Spvcontroller extends Controller
         $sales_list = \DB::select("SELECT * FROM users u WHERE u.status='ACTIVE' AND u.client_id = $client_slsid AND u.roles='SALES' AND NOT EXISTS
                                         (
                                             SELECT * FROM  spv_sales s
-                                            WHERE   s.sls_id = u.id
-                                            AND s.spv_id = '$id'
+                                            WHERE   s.sls_id = u.id 
+                                            /*AND s.status = 'ACTIVE'*/
+                                            /*AND s.spv_id = '$id'*/
                                         )
                                     ");
         return view('users.edit',['user'=>$user,'sales_list'=>$sales_list, 'vendor'=>$vendor]);
@@ -208,6 +210,9 @@ class Spvcontroller extends Controller
                 $user->avatar =$file;
             }
             $user->save();
+            if($user->save()){
+                $spv= \App\Spv_sales::where('spv_id',$id)->update(['status'=>$request->get('status')]);
+            }
             return redirect()->route('spv.edit', [$vendor,\Crypt::encrypt($id)])->with('status_user',
             'Supervisor successfully update');
         }
@@ -222,15 +227,22 @@ class Spvcontroller extends Controller
     public function destroy(Request $request, $vendor, $id)
     {   
         //$del_id = $request->input('del_id');
-        $spv = \DB::table('spv_sales')->where('spv_id',$id)->count();
-        if($spv > 0){
-            $delete_spvsls = \DB::table('spv_sales')->where('spv_id',$id)->delete();
-            if($delete_spvsls){
-                $user = \App\User::findOrFail($id);
-                $user->delete();
+        $spv_target = \App\Sales_Targets::where('created_by',$id)->orWhere('updated_by',$id)->count();
+        if($spv_target > 0){
+            return back()->with('error','Cannot delete, Spv has sales target records');
+        }
+        else{
+            $spv = \DB::table('spv_sales')->where('spv_id',$id)->count();
+            if($spv > 0){
+                $delete_spvsls = \DB::table('spv_sales')->where('spv_id',$id)->delete();
+                if($delete_spvsls){
+                    $user = \App\User::findOrFail($id);
+                    $user->delete();
+                }
             }
+            
+            return redirect()->route('spv.index',[$vendor])->with('status','Supervisor Successfully Delete');
         }
         
-        return redirect()->route('spv.index',[$vendor])->with('status','Supervisor Succsessfully Delete');
     }
 }

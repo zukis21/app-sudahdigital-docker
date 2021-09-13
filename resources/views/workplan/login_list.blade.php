@@ -95,7 +95,7 @@
 						{{date('H:i:s', strtotime($sl->logged_in))}}
 					</td>
 					<td>
-						{{date('H:i:s', strtotime($sl->logged_out))}}
+						{{$sl->logged_out ? date('H:i:s', strtotime($sl->logged_out)) : ''}}
 					</td>
 				</tr>
 				@endforeach

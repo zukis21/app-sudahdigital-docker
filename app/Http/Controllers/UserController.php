@@ -170,10 +170,17 @@ class UserController extends Controller
      */
     public function destroy($vendor, $id)
     {
-        $user = \App\User::findOrFail($id);
-        $user->delete();
-        //$client=\App\B2b_client::findOrfail(auth()->user()->client_id); 
-        return redirect()->route('users.index',[$vendor])->with('status','User Succsessfully Delete');
+        $admin_target = \App\Sales_Targets::where('created_by',$id)->orWhere('updated_by',$id)->count();
+        if($admin_target > 0){
+            return back()->with('error','Cannot delete, This user has sales target records');
+        }
+        else{
+            $user = \App\User::findOrFail($id);
+            $user->delete();
+            //$client=\App\B2b_client::findOrfail(auth()->user()->client_id); 
+            return redirect()->route('users.index',[$vendor])->with('status','User Successfully Delete');
+        }
+        
     }
 
 }

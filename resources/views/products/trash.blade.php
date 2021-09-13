@@ -6,7 +6,11 @@
 		{{session('status')}}
 	</div>
 @endif
-
+@if(session('error'))
+	<div class="alert alert-danger">
+		{{session('error')}}
+	</div>
+@endif
 <form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		<!--
@@ -21,7 +25,7 @@
 			<input type="submit" class="btn bg-blue pull-left" value="Filter">
 		</div>
 		-->
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<ul class="nav nav-tabs tab-col-pink pull-left" role="tablist">
 				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'products' ? 'active' : ''}}">
 					<a href="{{route('products.index',[$vendor])}}" aria-expanded="true" >All</a>
@@ -39,12 +43,14 @@
 					</li>
 					@endif
 				@endif
+				<li role="presentation" class="{{Request::get('status') == 'inactive' ?'active' : '' }}">
+					<a href="{{route('products.index', [$vendor,'status' =>'inactive'])}}">INACTIVE</a>
+				</li>
 				<li role="presentation" class="active">
 					<a href="{{route('products.trash',[$vendor])}}">TRASH</a>
 				</li>
 			</ul>
 		</div>
-		<div class="col-md-6">&nbsp;</div>
 		<div class="col-md-12">
 			<div class="demo-switch">
 				<a href="{{route('products.import_products',[$vendor])}}" class="btn btn-success "><i class="fas fa-file-excel fa-0x "></i> Import</a>&nbsp;
@@ -64,10 +70,10 @@
 	<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
 		<thead>
 			<tr>
-				<th>No</th>
+				<!--<th>No</th>-->
 				<th>Product Image</th>
+				<th>Product Code</th>
 				<th>Product Name</th>
-				<th>Descritption</th>
 				<th>Category</th>
 				@if($stock_status && $stock_status->stock_status == 'ON')
 					<th>Stock</th>
@@ -75,7 +81,7 @@
 				@endif
 				<th>Price</th>
 				<th>Status</th>
-				<th width="20%">Action</th>
+				<th >Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -83,15 +89,15 @@
 			@foreach($products as $p)
 			<?php $no++;?>
 			<tr>
-				<td>{{$no}}</td>
+				<!--<td>{{$no}}</td>-->
 				<td>@if($p->image)
 					<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
 					@else
 					N/A
 					@endif
 				</td>
+				<td>{{$p->product_code}}</td>
 				<td>{{$p->Product_name}}</td>
-				<td>{{$p->description}}</td>
 				<td>
 					@foreach($p->categories as $category)
 						{{$category->name}}
@@ -111,15 +117,45 @@
 				</td>
 				<td>
 					@if($p->status=="DRAFT")
-					<span class="badge bg-dark text-white">{{$p->status}}</span>
-						@else
-					<span class="badge bg-green">{{$p->status}}</span>
+						<span class="badge bg-dark text-white">{{$p->status}}</span>
+					@elseif($p->status=="INACTIVE")
+						<span class="badge bg-red">{{$p->status}}</span>
+					@else
+						<span class="badge bg-green">{{$p->status}}</span>	
+					@endif
+
+					@if($p->top_product==1)
+					<span class="badge bg-purple text-white">Top Product</span>
+					@else
+					@endif
+
+					@if($p->discount > 0)
+					<span class="badge bg-orange text-white">{{$p->discount}}% OFF</span>
+					@else
 					@endif
 				</td>
 				<td>
+					<div class="dropdown">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+							<i class="material-icons" >apps</i>
+						</a>
+						<ul class="dropdown-menu pull-right">
+							<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+								data-toggle="modal" data-target="#restoreModal{{$p->id}}">
+								Restore
+								</a>
+							</li>
+							<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+								data-toggle="modal" data-target="#deleteModal{{$p->id}}">
+								Delete
+								</a>
+							</li>
+						</ul>
+					</div>
+					<!--
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>&nbsp;
 					<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#restoreModal{{$p->id}}">Restore</button>
-
+					-->
 					<!-- Modal Delete -->
 		            <div class="modal fade" id="deleteModal{{$p->id}}" tabindex="-1" role="dialog">
 		                <div class="modal-dialog modal-sm" role="document">
