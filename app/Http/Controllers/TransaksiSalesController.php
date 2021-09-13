@@ -31,6 +31,7 @@ class TransaksiSalesController extends Controller
     public function index(Request $request, $vendor, $status = null){
         $user_id = \Auth::user()->id;
         //$categories = \App\Category::all();//paginate(10);
+        $datefrom = date('2021-06-01');
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
         $paket = \App\Paket::where('client_id',\Auth::user()->client_id)->first();
         if($status){
@@ -38,12 +39,14 @@ class TransaksiSalesController extends Controller
                     ->whereNotNull('customer_id')
                     ->where('user_id','=',"$user_id")
                     //->where('client_id',\Auth::user()->client_id)
+                    ->where('created_at','>=',$datefrom)
                     ->where('status',strtoupper($status))
                     ->orderBy('created_at', 'DESC')->get();//paginate(10);
         }else{
             $orders = \App\Order::with('products')
                     ->whereNotNull('customer_id')
                     ->where('user_id','=',"$user_id")
+                    ->where('created_at','>=',$datefrom)
                     //->where('client_id',\Auth::user()->client_id)
                     ->orderBy('created_at', 'DESC')->get();//->paginate(20);
         }

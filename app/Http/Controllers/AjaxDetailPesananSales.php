@@ -11,11 +11,12 @@ class AjaxDetailPesananSales extends Controller
         $output = '';
         $user_id = \Auth::user()->id;
         $query = $request->get('query');
+        $datefrom = date('2021-06-01');
         if($query != '' ){
             $orders = \DB::select("SELECT orders.* ,customers.id as cs_id, customers.store_name, customers.status as cs
                                 FROM orders INNER JOIN customers ON orders.customer_id=customers.id
-                                WHERE orders.user_id='$user_id' AND (customers.store_name LIKE '%$query%'
-                                OR orders.status LIKE '%$query%' OR orders.created_at LIKE '%$query%')");
+                                WHERE orders.user_id='$user_id' AND orders.created_at >= $datefrom AND (customers.store_name LIKE '%$query%'
+                                OR orders.status LIKE '%$query%' OR orders.created_at LIKE '%$query%') ORDER BY orders.created_at DESC");
                     /*DB::table('orders')
                     ->join('customers','orders.customer_id','=','customers.id')
                     ->whereNotNull('customer_id')
@@ -39,6 +40,8 @@ class AjaxDetailPesananSales extends Controller
         else{
             $orders = \App\Order::with('customers')->whereNotNull('customer_id')
                     ->where('user_id','=',"$user_id")
+                    ->where('created_at','>=',$datefrom)
+                    ->orderBy('created_at', 'desc')
                     ->get();
         }
         if($orders != null ){
@@ -86,10 +89,15 @@ class AjaxDetailPesananSales extends Controller
 
                 $output.='
                 <tr>
+                    <!--
                     <td width="20%" style="padding-left:7px;">
                         <span class="style-badge badge '.$color_badge.' text-white status-order">'.$order->status.'</span>
-                    </td>
-                    <td width="50%">
+                    </td>-->
+                    <td width="60%">
+                        <span class="data-list-order"><p class="mb-n1">Nmr. Order</p></span>
+                        <b class="data-list-order">'.$order->invoice_number.'</b><br>
+                        <span class="data-list-order"><p class="mb-n1 mt-2">Status</p></span>
+                        <span class="status-style badge '.$color_badge.' text-white status-order">'.$order->status.'</span>
                         <span class="data-list-order"><p class="mb-n1">Tanggal Order</p></span>
                         <b class="data-list-order mb-4">'.$order->created_at.'</b><br>
 
@@ -106,7 +114,7 @@ class AjaxDetailPesananSales extends Controller
                             </span>
                         </a>
                     </td>
-                    <td width="30%">
+                    <td width="40%">
                         <span class="data-list-order">'.$customer_store.'</span>
                         '.$c_bdge_new.'
                     </td>
@@ -161,11 +169,15 @@ class AjaxDetailPesananSales extends Controller
             $bg_badge = 'bg-danger';
             $txt= 'ORDER CANCELED';
         }
+        else if($order->status == 'NO-ORDER'){
+            $bg_badge = 'bg-dark';
+            $txt= 'ORDER CANCELED';
+        }
                 //dd($paket_list);
         //return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
         echo'
         <div id="DataListOrder">
-            <small style="color:#1A4066;"><b>Detail Order</b></small>
+            <small style="color:#1A4066;"><b>Detail Order  &nbsp;#'.$order->invoice_number.'</b></small>
             <hr>
             <div style="color:#000;">
                 <small><b>Tanggal Order</b> <br>

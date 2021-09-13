@@ -34,6 +34,10 @@
         border-bottom-left-radius:0;
     }
 
+    .status-style{
+        padding:5px 8px;
+    }
+
     #tbl_ tbody {
         display:block;
         height:380px;
@@ -82,6 +86,11 @@
         padding-right:10px;
     }
 
+    .data-list-order{
+        font-size:16px;
+        
+    }
+
     @media (max-width: 540px){
         .col-list-order{
             margin-left: -1.3rem;
@@ -92,7 +101,7 @@
         }*/
 
         .data-list-order{
-            font-size:12px;
+            font-size:14px;
             
         }
 
@@ -176,9 +185,9 @@
                         <table class="table table-striped" style="font-size:13px;">
                             <thead>
                                 <tr>
-                                    <th width="20%">Status</th>
-                                    <th width="50%">Order</th>
-                                    <th width="30%">Toko</th>
+                                    <!--<th width="20%">Status</th>-->
+                                    <th width="60%">Order</th>
+                                    <th width="40%">Toko</th>
                                     
                                 </tr>
                             </thead>
@@ -194,9 +203,9 @@
                             <table class="table table-striped" style="font-size:13px;">
                                 <thead>
                                     <tr>
-                                        <th width="20%">Status</th>
-                                        <th width="50%">Order</th>
-                                        <th width="30%">Toko</th>
+                                        <!--<th width="20%">Status</th>-->
+                                        <th width="60%">Order</th>
+                                        <th width="40%">Toko</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -204,20 +213,23 @@
                                     @foreach($orders as $order)
                                     <?php $no++;?>
                                     <tr>
-                                        <td width="20%" style="padding-left:7px;">
+                                        <td width="60%" style="padding-left:10px;">
+                                            <span class="data-list-order"><p class="mb-n1">Nmr. Order</p></span>
+                                            <b class="data-list-order"> {{$order->invoice_number}}</b><br>
+                                            <span class="data-list-order"><p class="mb-n1 mt-2">Status</p></span>
                                             @if($order->status == "SUBMIT")
-                                            <span class="style-badge badge bg-warning text-white status-order">{{$order->status}}</span>
+                                            <span class="status-style badge bg-warning text-white status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "PROCESS")
-                                            <span class="style-badge style-badge badge bg-info text-light status-order">{{$order->status}}</span>
+                                            <span class="status-style badge bg-info text-light status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "FINISH")
-                                            <span class="style-badge  badge bg-success text-light status-order">{{$order->status}}</span>
+                                            <span class="status-style badge bg-success text-light status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "CANCEL")
-                                            <span class="style-badge badge bg-danger text-light status-order">{{$order->status}}</span>
+                                            <span class="status-style badge bg-danger text-light status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "NO-ORDER")
-                                            <span class="style-badge badge bg-dark text-light status-order">{{$order->status}}</span>
+                                            <span class="status-style badge bg-dark text-light status-order mb-2">{{$order->status}}</span>
                                             @endif
-                                        </td>
-                                        <td width="50%">
+                                        <!--</td>
+                                        <td width="50%">-->
                                             <span class="data-list-order"><p class="mb-n1">Tanggal Order</p></span>
                                             <b class="data-list-order mb-4"> {{$order->created_at}}</b><br>
 
@@ -235,7 +247,7 @@
                                             </a>
                                             
                                         </td>
-                                        <td width="30%">
+                                        <td width="40%">
                                             <span class="data-list-order">{{$order->customers->store_name}}</span>
                                             @if($order->customers->status == 'NEW')<span class="badge bg-pink">New</span>@endif
                                         </td>
