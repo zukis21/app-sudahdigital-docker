@@ -2,6 +2,10 @@
 @section('title') Dashboard @endsection
 @section('content')
 <style>
+  .popover{
+    background: #ececec;
+  }
+
   .progress {
     overflow: visible;
   }
@@ -82,8 +86,8 @@
   }
 
   #tabs .nav-link i{
-    color: #ffff;
-    background-color: #1A4066;
+    color: #1A4066;
+    /*background-color: #1A4066;*/
   }
 
   #tabs .nav-tabs {
@@ -103,8 +107,9 @@
   }
 
   #tabs .nav-link.active  i{
-    color: #1A4066;
-    background-color: #ffff;
+    
+    color: #ffff;
+    /*background-color: #ffff;*/
   }
 
   #tabs .nav-fill > a {
@@ -595,40 +600,57 @@
                           <div class="nav nav-tabs nav-fill border-0" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-no-have-order-tab" data-toggle="tab" href="#nav-no-have-order" role="tab"  aria-selected="true">
                               <span style="float: left;">
-                                <i class="fas fa-times py-1 px-2 mr-2 my-auto" 
-                                  style="border-radius:5px;"></i>
+                                <i class="fal fa-store mr-2"></i>
+                                <i class="fas fa-times" style="position: absolute;margin-left:-20px;margin-top:2px;font-weight:100"></i>
                                 Toko Pareto Belum Order
                               </span>
-                              <span class="badge badge-danger my-auto" style="float:right;font-size:14px;">{{count($cust_not_exists)}}</span>
+                              <span class="badge badge-danger my-auto badge-pill" style="float:right;font-size:14px;">{{count($cust_not_exists)}}</span>
                             </a>
                             <a class="nav-item nav-link" id="nav-have-order-tab" data-toggle="tab" href="#nav-have-order" role="tab"  aria-selected="false">
                               <span style="float: left;">  
-                                <i class="fas fa-check py-1 mr-2" 
-                                  style="border-radius:5px;padding-left:6px;padding-right:6px;"></i>
-                              Toko Pareto Sudah Order
+                                <i class="fal fa-store mr-2"></i>
+                                <i class="fas fa-check" style="position: absolute;margin-left:-20px;margin-top:2px;font-weight:100"></i>
+                                Toko Pareto Sudah Order
                               </span>
-                              <span class="badge badge-success my-auto" style="float:right;font-size:14px;">{{count($cust_exists)}}</span>
+                              <span class="badge badge-success my-auto badge-pill" style="float:right;font-size:14px;">{{count($cust_exists)}}</span>
                             </a>
                             <a class="nav-item nav-link" id="nav-no-have-process-tab" data-toggle="tab" href="#nav-no-have-process" role="tab"  aria-selected="false">
                               <span style="float: left;">
-                                <i class="fas fa-shipping-timed py-1 px-1 mr-2 my-auto" 
-                                  style="border-radius:5px;"></i>  
+                                <i class="fal fa-shipping-timed mr-2"></i>  
                                 Order Belum Kirim > 5 Hari
                               </span>
-                              <span class="badge badge-warning my-auto" style="float:right;font-size:14px;">{{count($order_overday)}}</span>
+                              <span class="badge badge-warning my-auto badge-pill" style="float:right;font-size:14px;border-ra">{{count($order_overday)}}</span>
                             </a>
-                            
                         </nav>
 
-                        <!--toko belum order--->
+                        
                         <div class="tab-content py-3 px-3" id="nav-tabContent">
+                          <!--toko belum order--->
                           <div class="tab-pane fade show active " id="nav-no-have-order" 
                             role="tabpanel" aria-labelledby="nav-no-have-order-tab" >
                             <ul class="list-group w-100 ">
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
                                   <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                    border-bottom-left-radius:0;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}<br>
+                                    border-bottom-left-radius:0;"><b>{{$item->store_code}} - {{$item->store_name}}</b>,<br>{{$item->address}}<br>
+                                    @php
+                                        $month = date('m');
+                                        $year = date('Y');
+                                        $visit = \App\Order::where('customer_id',$item->id)
+                                                ->where('status','NO-ORDER')
+                                                ->whereMonth('created_at',$month)
+                                                ->whereYear('created_at',$year)
+                                                ->count();
+                                        //echo $visit;
+                                    @endphp
+                                    @if($visit > 0 )
+                                    <a class="pe-auto popoverData" data-container="body" 
+                                      data-toggle="popover" data-placement="top" 
+                                      data-content="Visit tanpa order." 
+                                      data-trigger="hover">
+                                      <i class="fas fa-times-circle text-danger mr-1"></i><b class="text-secondary">{{$visit}}</b>
+                                    </a>
+                                    @endif 
                                   </li>
                                 @endforeach
                               @else
@@ -648,8 +670,39 @@
                                   style="color: #1A4066;
                                         border-bottom-right-radius:0;
                                         border-bottom-left-radius:0;">
-                                        <b>{{$it->store_name}}</b>,<br>{{$it->address}} 
+                                        <b>{{$it->store_code}} - {{$it->store_name}}</b>,<br>{{$it->address}}<br> 
                                     <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
+                                    @php
+                                        $month = date('m');
+                                        $year = date('Y');
+                                        $visit_noorder = \App\Order::where('customer_id',$it->id)
+                                                ->where('status','NO-ORDER')
+                                                ->whereMonth('created_at',$month)
+                                                ->whereYear('created_at',$year)
+                                                ->count();
+                                        $order_visit = \App\Order::where('customer_id',$it->id)
+                                                ->where('status','!=','NO-ORDER')
+                                                ->whereMonth('created_at',$month)
+                                                ->whereYear('created_at',$year)
+                                                ->count();
+                                    @endphp
+                                    @if($visit_noorder > 0 )
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order." 
+                                        data-trigger="hover">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                        <b class="text-secondary  mr-3">{{$visit_noorder}}</b>
+                                      </a>
+                                    @endif
+                                    @if($order_visit > 0 )
+                                    <a class="pe-auto popoverData"  data-container="body" 
+                                      data-toggle="popover" data-placement="top" 
+                                      data-content="Visit & order." 
+                                      data-trigger="hover">
+                                      <i class="fas fa-check-circle mr-1" style="color:#1A4066"></i><b class="text-secondary">{{$order_visit}}</b>
+                                    </a>
+                                      @endif
                                   </li>
                                 @endforeach
                               @else
@@ -783,8 +836,8 @@
                                         border-top-left-radius:20px;
                                         border-color:#1A4066;
                                         color:#fff;">
-                              <i class="fas fa-chart-bar bg-white py-1 mr-2"
-                              style="color:#1A4066;border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                              <i class="fal fa-chart-bar py-1 mr-2"
+                              style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
                               <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</span>
                             </li>
                             <li class="list-group-item" style="color: #1A4066;">
@@ -807,6 +860,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script type="text/javascript">
+        //Popover
+        $('.popoverData').popover();
+
         // Init AOS
         AOS.init({
           duration: 1400,
