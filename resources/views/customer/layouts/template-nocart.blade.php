@@ -1039,6 +1039,12 @@
             });
         }
 
+        function logout_record(){
+            $.ajax({
+                url : '{{URL::to('/sales/logout-record')}}',
+            });
+        }
+
     /*
         window.setTimeout(function() {
         $(".alert").fadeTo(500, 0).slideUp(500, function(){
