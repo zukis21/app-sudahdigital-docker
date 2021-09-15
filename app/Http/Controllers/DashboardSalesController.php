@@ -196,7 +196,7 @@ class DashboardSalesController extends Controller
             $max = $mx->total;
         }
         //ppn max day/ per day
-        if($target->ppn == 1){
+        if($target && $target->ppn == 1){
             $max_day = round(($max/1.1),2);
             $get_per_day = round(($get_daily/1.1),2);
         }else{
