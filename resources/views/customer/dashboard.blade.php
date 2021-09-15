@@ -2,6 +2,14 @@
 @section('title') Dashboard @endsection
 @section('content')
 <style>
+  .highcharts-credits {
+    display: none !important;
+  }
+
+  .height-chart{
+    height: 350px;
+  }
+
   .popover{
     background: #ececec;
   }
@@ -742,7 +750,6 @@
             </div>
         </div>
        
-        
         <!--
         <div class="row justify-content-center" style="">
             <div class="col-12" style="z-index: 2;">
@@ -826,7 +833,30 @@
               <!--<section class="statistics">-->
                   <div class="container-fluid">
                     <div class="row">
-                      <div class="col-md-12" data-aos="fade-up">
+                      <!--chart daily max--->
+                      <div class="col-md-4 mb-4" data-aos="fade-up">
+                        <div class="box w-100">
+                          <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                            border-top-left-radius:20px;">
+                            <li class="list-group-item active" 
+                                  style="background-color:#1A4066;
+                                        border-top-right-radius:20px;
+                                        border-top-left-radius:20px;
+                                        border-color:#1A4066;
+                                        color:#fff;">
+                              <i class="fal fa-chart-bar py-1 mr-2"
+                              style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Daily Max <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
+                            </li>
+                            <li class="list-group-item" style="color: #1A4066;">
+                              <div id="container_daily" style="height: 350px;"></div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <!--chart all sales--->
+                      <div class="col-md-8" data-aos="fade-up">
                         <div class="box w-100">
                           <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
                             border-top-left-radius:20px;">
@@ -841,7 +871,7 @@
                               <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
                             </li>
                             <li class="list-group-item" style="color: #1A4066;">
-                              <div id="container" style="height: 350px;"></div>
+                              <div id="container" class="height-chart"></div>
                             </li>
                           </ul>
                         </div>
@@ -860,6 +890,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script type="text/javascript">
         //Popover
         $('.popoverData').popover();
@@ -877,6 +908,7 @@
             $('.modal-dialog-paket').removeClass('modal-lg');
             $('.modal-dialog-paket').addClass('modal-dialog-full-width');
             $('.modal-content-paket').addClass('modal-content-full-width');
+            $('#container').removeClass('height-chart');
         }
 
         if ($(window).width() <= 600) {
@@ -892,19 +924,26 @@
             $('.btn-preview-cancel').addClass('btn-block').addClass('mt-5');
             //$('.contact-row').addClass('mt-5');
         }
+      
+      
+      
 
+      //all sales chart
       $(function () {
         var achievement = <?php echo $percent ?>;
         var sales = <?php echo $users_display ?>;
         var red_line = <?php echo $red_line ?>;
         var param_line = <?php echo $param_line ?>;
        
-        //var colors = ['#dc3545', '#6c757d'];
         let d = new Date(); // 2020-06-21
         let longMonth = d.toLocaleString('en-us', { month: 'long' });
         let longYear = d.getFullYear();
         //var colors1 = ['#1A4066'];
         //var colors2 = ['#08f3ff'];
+
+        var max_daily = <?php echo $max_day ?>;
+        var today = <?php echo $get_per_day ?>;
+        
 
         if ($(window).width() <= 600) {
           var type = 'bar';
@@ -912,13 +951,14 @@
           var type = 'column';
         }
         
+        //all sales chart
         $('#container').highcharts({
           chart: {
             type: type,
             /*type: 'bar'*/
           },
           title: {
-            text: '<span style="font-size: 14px">Pencapaian '+longMonth+'  '+longYear+'</span>'
+            text: 'Pencapaian '+longMonth+'  '+longYear
           },
           xAxis: {
             categories: sales
@@ -954,7 +994,7 @@
                 	color: '#1A4066' // Values from 10 (including) and up have the color red
                 }]
             }
-        },
+          },
           series: [/*{
             name: 'Target',
             data: target
@@ -964,6 +1004,62 @@
           }
           ]
         });
+
+      //daily max chart
+      Highcharts.chart('container_daily', {
+          chart: {
+              type: 'column'
+          },
+          title: {
+              text: 'Daily Max '+longMonth+'  '+longYear
+          },
+          
+          xAxis: {
+              categories: [
+                  'Daily max' , 
+                  'Hari ini',
+              ],
+              crosshair: true
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  text: 'Capaian (Rp)'
+              },
+              labels: {
+                formatter: function () {
+                    return Highcharts.numberFormat(this.value,0);
+                }
+            },
+            
+          },
+          
+          plotOptions: {
+              column: {
+                  pointPadding: 0.2,
+                  borderWidth: 0
+              },
+              
+          },
+          series: [{
+            showInLegend: false,             
+            name: 'Capaian (Rp)',
+              data: [{
+                  y: max_daily,
+                  color: '#8CC63F'
+              }, {
+                  y: today,
+                  color: '#286699'
+              }]
+          }]
+          /*series: [
+            {
+              data:[max_daily,today]
+            }
+            
+          ]*/
+      });
+
       });
     </script> 
 @endsection

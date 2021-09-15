@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+
 
 class DashboardSalesController extends Controller
 {
@@ -92,26 +94,13 @@ class DashboardSalesController extends Controller
         //order > 5 days
         $from = date('2021-06-01');
         $order_minday = date('Y-m-d', strtotime("-5 day", strtotime(date("Y-m-d"))));
-        //dd($order_minday);
         $order_overday = \App\Order::where('user_id',\Auth::user()->id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])
                         ->where('status','=','SUBMIT')
                         ->orderBy('created_at','DESC')
                         ->get();
-        /*==========================================
-        $order_overday = \App\Customer::whereHas('orders',function($q) use($user_id,$order_minday,$from)
-                {
-                    return $q->where('user_id','=',"$user_id")
-                            ->whereNotNull('customer_id')
-                            ->whereBetween('created_at', [$from,$order_minday])
-                            ->where('status','=','SUBMIT');
-                            //->groupBy('customer_id');
-                })
-                ->where('client_id',\Auth::user()->client_id)
-                //->whereNotNull('pareto_id')
-                ->where('user_id',$user_id)->get();
-        =============================================*/
+        
 
         //target pareto
         $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
@@ -147,7 +136,7 @@ class DashboardSalesController extends Controller
         //$work_current = $current_day - $day_off;
         //dd($work_plan->working_days);
 
-       $cartuser = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
+        $cartuser = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
                         ->whereMonth('period', '=', $month)
                         ->whereYear('period', '=', $year)
                         ->orderBy('user_id', 'ASC')->get();
@@ -177,13 +166,47 @@ class DashboardSalesController extends Controller
             $red_line[]= $param_line;
         }
         $users_display = array_unique($user_value);
-        //$percentcart = json_encode($percentage);
-        //dd($users_display);
-        //dd($red_line);
-        
-        /* target order ---
 
-        //---Target & Ach chart yearly----//
+        //daily achievement
+        $daily_ach = \App\Order::where('user_id',$user_id)
+                        ->whereNotNull('customer_id')
+                        ->where('status','!=','CANCEL')
+                        ->whereRaw('DATE(created_at) = ?', [$date_now])
+                        ->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');
+        if($daily_ach == NULL){
+            $get_daily = 0;
+        }else{
+            $daily_ach_value = json_decode($daily_ach,JSON_NUMERIC_CHECK);
+            $get_daily = $daily_ach_value[0];
+        }
+        
+
+        //max daily
+        $max_daily = \DB::select("SELECT  SUM(total_price) AS total
+                        FROM orders WHERE user_id = 3 
+                        AND month(created_at)= '$month' 
+                        AND Year(created_at)='$year'
+                        AND status != 'CANCEL'
+                        AND customer_id IS NOT NULL
+                        GROUP BY DATE(created_at) 
+                        ORDER BY total DESC LIMIT 1");
+        $max=0;
+        foreach($max_daily as $mx){
+            $max = $mx->total;
+        }
+        //ppn max day/ per day
+        if($target->ppn == 1){
+            $max_day = round(($max/1.1),2);
+            $get_per_day = round(($get_daily/1.1),2);
+        }else{
+            $max_day = round($max,2);
+            $get_per_day = round($get_daily,2);
+        }
+        
+        //dd($max_day);
+        /* target order ---
+        //===========Target & Ach chart yearly=============//
         $target_order = \App\Sales_Targets::where('user_id',\Auth::user()->id)
                         ->whereYear('period', '=', $year)
                         ->orderBy('period', 'ASC')
@@ -262,7 +285,9 @@ class DashboardSalesController extends Controller
         
         return view('customer.dashboard',$data) ->with('percent',json_encode($percentage,JSON_NUMERIC_CHECK))
                                                 ->with('users_display',json_encode($users_display))
-                                                ->with('red_line',json_encode($red_line));
+                                                ->with('red_line',json_encode($red_line))
+                                                ->with('get_per_day',json_encode($get_per_day))
+                                                ->with('max_day',json_encode($max_day));
                                                 /*
                                                 ->with('target_order',json_encode($target_order,JSON_NUMERIC_CHECK))
                                                 ->with('months',json_encode($months))
