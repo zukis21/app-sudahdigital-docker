@@ -184,7 +184,7 @@ class DashboardSalesController extends Controller
 
         //max daily
         $max_daily = \DB::select("SELECT  SUM(total_price) AS total
-                        FROM orders WHERE user_id = 3 
+                        FROM orders WHERE user_id = '$user_id' 
                         AND month(created_at)= '$month' 
                         AND Year(created_at)='$year'
                         AND status != 'CANCEL'
