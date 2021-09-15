@@ -838,10 +838,10 @@
                                         color:#fff;">
                               <i class="fal fa-chart-bar py-1 mr-2"
                               style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
-                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</span>
+                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
                             </li>
                             <li class="list-group-item" style="color: #1A4066;">
-                              <div id="container"></div>
+                              <div id="container" style="height: 350px;"></div>
                             </li>
                           </ul>
                         </div>
@@ -858,7 +858,8 @@
 @endsection
 @section('footer-scripts')
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
     <script type="text/javascript">
         //Popover
         $('.popoverData').popover();
@@ -897,8 +898,11 @@
         var sales = <?php echo $users_display ?>;
         var red_line = <?php echo $red_line ?>;
         var param_line = <?php echo $param_line ?>;
+       
         //var colors = ['#dc3545', '#6c757d'];
-
+        let d = new Date(); // 2020-06-21
+        let longMonth = d.toLocaleString('en-us', { month: 'long' });
+        let longYear = d.getFullYear();
         //var colors1 = ['#1A4066'];
         //var colors2 = ['#08f3ff'];
 
@@ -914,7 +918,7 @@
             /*type: 'bar'*/
           },
           title: {
-            text: 'Persentase Pencapaian'
+            text: '<span style="font-size: 14px">Pencapaian '+longMonth+'  '+longYear+'</span>'
           },
           xAxis: {
             categories: sales
