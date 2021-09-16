@@ -574,7 +574,7 @@
                         <div class="media-body align-self-center">
                           <div class="text-right mt-1">
                               <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_day)}}
+                                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_av)}}
                               </span>
                               <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                           </div>
@@ -584,7 +584,7 @@
                       <div class="ml-1 mt-4">
                         <div class="page-header">
                           <div class="float-left">
-                            <h6 class="">Daily Average / Daily Max</h6>
+                            <h6 class="">Average Daily / Average Max Daily </h6>
                           </div>
                           <div class="float-right">
                             

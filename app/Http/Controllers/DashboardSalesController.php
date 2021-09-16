@@ -167,6 +167,57 @@ class DashboardSalesController extends Controller
         }
         $users_display = array_unique($user_value);
 
+        //==========max average yearly=============/
+        if($year < 2022){
+            $mxx = [];
+            for($i=6;$i<13;$i++){
+                $mxx[] = \DB::select("SELECT AVG(total) as total_average
+                            FROM
+                            (
+                                SELECT created_at , user_id, SUM(total_price) AS total
+                                FROM orders WHERE user_id = '$user_id' 
+                                AND month(created_at)= '$i'
+                                AND Year(created_at)='$year'
+                                AND status != 'CANCEL'
+                                AND customer_id IS NOT NULL
+                                GROUP BY DATE(created_at) 
+                                ORDER BY total
+                            ) as inner_query;");
+                
+            }
+        }else{
+            $mxx = [];
+            for($i=1;$i<13;$i++){
+                $mxx[] = \DB::select("SELECT AVG(total) as total_average
+                            FROM
+                            (
+                                SELECT created_at , user_id, SUM(total_price) AS total
+                                FROM orders WHERE user_id = '$user_id' 
+                                AND month(created_at)= '$i'
+                                AND Year(created_at)='$year'
+                                AND status != 'CANCEL'
+                                AND customer_id IS NOT NULL
+                                GROUP BY DATE(created_at) 
+                                ORDER BY total 
+                            ) as inner_query;");
+                
+            }
+        }
+        $collect_average =  max($mxx);
+        $max=0;
+        foreach($collect_average as $mx){
+            $max = $mx->total_average;
+        }
+        //ppn max day/ per day
+        if($target && $target->ppn == 1){
+            $max_av = $max/1.1;
+            //$get_per_day = round(($get_daily/1.1),2);
+        }else{
+            $max_av = $max;
+           //$get_per_day = round($get_daily,2);
+        }
+        //=============end max average yearly===============//
+        
         //=======daily achievement=====//
         /*$daily_ach = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
@@ -182,8 +233,8 @@ class DashboardSalesController extends Controller
         }*/
         
 
-        //max daily
-        $max_daily = \DB::select("SELECT  SUM(total_price) AS total
+        //================max daily==============//
+        /*$max_daily = \DB::select("SELECT  SUM(total_price) AS total
                         FROM orders WHERE user_id = '$user_id' 
                         AND month(created_at)= '$month' 
                         AND Year(created_at)='$year'
@@ -191,6 +242,7 @@ class DashboardSalesController extends Controller
                         AND customer_id IS NOT NULL
                         GROUP BY DATE(created_at) 
                         ORDER BY total DESC LIMIT 1");
+        //dd($max_daily);
         $max=0;
         foreach($max_daily as $mx){
             $max = $mx->total;
@@ -202,7 +254,7 @@ class DashboardSalesController extends Controller
         }else{
             $max_day = $max;
            //$get_per_day = round($get_daily,2);
-        }
+        }*/
         
         //dd($max_day);
         /* target order ---
@@ -280,7 +332,7 @@ class DashboardSalesController extends Controller
             'day_off'=>$day_off,
             'param_line'=>$param_line,
             'order_overday'=>$order_overday,
-            'max_day'=>$max_day,
+            'max_av'=>$max_av,
             //'order_chart'=>$order_chart
             ];
         
