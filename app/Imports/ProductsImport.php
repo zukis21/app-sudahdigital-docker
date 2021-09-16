@@ -79,11 +79,15 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
                 $product->discount = 0.00;
                 $product->updated_by = \Auth::user()->id;
                 if($stock_status->stock_status == 'ON'){
-                    if(!empty( $rows['stock'])){
-                        $product->stock = $rows['stock'];
+                    $stock = $rows['stock'];
+                    $low_stock = $rows['low_stock_treshold'];
+                    if( $stock !== null){
+                        $stock = (int)$stock;
+                        $product->stock = $stock;
                     }
-                    if(!empty( $rows['low_stock_treshold'])){
-                        $product->low_stock_treshold = $rows['low_stock_treshold'];
+                    if($low_stock !== null){
+                        $low_stock = (int)$low_stock;
+                        $product->low_stock_treshold = $low_stock;
                     }
                 }
                 //$product->low_stock_treshold = $rows['low_stock_treshold']== NULL ? null : $rows['low_stock_treshold'];
@@ -102,11 +106,15 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
                 $product->discount = 0.00;
                 $product->created_by = \Auth::user()->id;
                 if($stock_status->stock_status == 'ON'){
-                    if(!empty( $rows['stock'])){
-                        $product->stock = $rows['stock'];
+                    $stock = $rows['stock'];
+                    $low_stock = $rows['low_stock_treshold'];
+                    if( $stock !== null){
+                        $stock = (int)$stock;
+                        $product->stock = $stock;
                     }
-                    if(!empty( $rows['low_stock_treshold'])){
-                        $product->low_stock_treshold = $rows['low_stock_treshold'];
+                    if($low_stock !== null){
+                        $low_stock = (int)$low_stock;
+                        $product->low_stock_treshold = $low_stock;
                     }
                 }
                 //$product->low_stock_treshold = $rows['low_stock_treshold']== NULL ? null : $rows['low_stock_treshold'];
