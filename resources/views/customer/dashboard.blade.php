@@ -16,10 +16,12 @@
 
   .progress {
     overflow: visible;
+    
   }
 
   .progress-bar {
-      overflow: visible
+      overflow: visible;
+      border-radius: 5px;
   }
 
   /*img {
@@ -31,9 +33,9 @@
   .progress-icon{
     margin-left:auto;
     border-radius:50%;
-    width:15px;
-    height:15px;
-    line-height:15px;
+    width:19px;
+    height:19px;
+    line-height:19px;
     margin-right:-1px;
   }
 
@@ -343,16 +345,17 @@
                           </div>
                       </div>
                       </div>
-                      <div class="ml-1 mt-4" >
+                      <div class="mt-4" >
                         <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
                         
-                        <div class="progress progress-sm m-0" style="height: 7px;">
+                        <div class="progress progress-sm m-0 " style="height: 10px;">
                           <div class="progress-bar" role="progressbar" 
                             aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
                             style="width: {{($order/$cust_total) * 100}}%;
                             background-color: #95E0F9 !important;">
                               <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
-                              <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
+                              <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                              <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
                           </div>
                         </div>
                       </div>
@@ -441,15 +444,16 @@
                               </div>
                           </div>
                           </div>
-                          <div class="ml-1 mt-4" >
+                          <div class=" mt-4" >
                             <h6 class="">Total Toko Pareto ({{$prt->pareto_code}})<span class="float-right">{{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}%</span></h6>
-                            <div class="progress progress-sm m-0" style="height: 7px;">
+                            <div class="progress progress-sm m-0" style="height: 10px;">
                               
                                 <div class="progress-bar" role="progressbar" 
                                     aria-valuenow="{{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}" 
                                     aria-valuemin="0" aria-valuemax="100" style="width: {{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
                                     <span class="sr-only">{{count($cust_exists_p) ? round(((count($cust_exists_p)/$cust_total_p)  * 100),2): '0'}}% Complete</span>
-                                    <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
+                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
                                 </div>
                             </div>
                           </div>
@@ -472,13 +476,14 @@
                           </div>
                       </div>
                       </div>
-                      <div class="ml-1 mt-4" >
+                      <div class="mt-4" >
                         <h6 class="">Target Sales Total <span class="float-right">{{round((($total_ach/$target->target_values) * 100) ,2)}}%</span></h6>
-                        <div class="progress progress-sm m-0" style="height: 7px;">
+                        <div class="progress progress-sm m-0" style="height: 10px;">
                           
                             <div class="progress-bar " role="progressbar" aria-valuenow="{{($total_ach/$target->target_values) * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($total_ach/$target->target_values) * 100}}%;background-color: #95E0F9 !important;">
                                 <span class="sr-only">{{($total_ach/$target->target_values) * 100}}% Complete</span>
-                                <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
+                                <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
                             </div>
                         </div>
                       </div>
@@ -503,15 +508,16 @@
                               </div>
                             </div>
                           </div>
-                          <div class="ml-1 mt-4">
+                          <div class=" mt-4">
                             <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_target) ? round((($total_ach_pareto/$total_target)  * 100) ,2) : '0'}}%</span></h6>
-                            <div class="progress progress-sm m-0" style="height: 7px;">
+                            <div class="progress progress-sm m-0" style="height: 10px;">
                               
                                 <div class="progress-bar bg-info" role="progressbar" 
                                     aria-valuenow="{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}" 
                                     aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
                                     <span class="sr-only">{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}% Complete</span>
-                                    <i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>
+                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
                                 </div>
                             </div>
                           </div>
@@ -568,7 +574,7 @@
                         <div class="media-body align-self-center">
                           <div class="text-right mt-1">
                               <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}}
+                                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_day)}}
                               </span>
                               <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                           </div>
@@ -578,7 +584,7 @@
                       <div class="ml-1 mt-4">
                         <div class="page-header">
                           <div class="float-left">
-                            <h6 class="">Daily Average</h6>
+                            <h6 class="">Daily Average / Daily Max</h6>
                           </div>
                           <div class="float-right">
                             
@@ -833,7 +839,7 @@
               <!--<section class="statistics">-->
                   <div class="container-fluid">
                     <div class="row">
-                      <!--chart daily max--->
+                      <!--chart daily max//>
                       <div class="col-md-4 mb-4" data-aos="fade-up">
                         <div class="box w-100">
                           <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
@@ -846,7 +852,7 @@
                                         color:#fff;">
                               <i class="fal fa-chart-bar py-1 mr-2"
                               style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
-                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Daily Max <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
+                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Daily Max <//--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--//></span>
                             </li>
                             <li class="list-group-item" style="color: #1A4066;">
                               <div id="container_daily" style="height: 350px;"></div>
@@ -854,9 +860,10 @@
                           </ul>
                         </div>
                       </div>
+                      -->
 
                       <!--chart all sales--->
-                      <div class="col-md-8" data-aos="fade-up">
+                      <div class="col-md-12" data-aos="fade-up">
                         <div class="box w-100">
                           <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
                             border-top-left-radius:20px;">
@@ -889,8 +896,10 @@
 @section('footer-scripts')
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <!--
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    -->
     <script type="text/javascript">
         //Popover
         $('.popoverData').popover();
@@ -940,10 +949,6 @@
         let longYear = d.getFullYear();
         //var colors1 = ['#1A4066'];
         //var colors2 = ['#08f3ff'];
-
-        var max_daily = <?php echo $max_day ?>;
-        var today = <?php echo $get_per_day ?>;
-        
 
         if ($(window).width() <= 600) {
           var type = 'bar';
@@ -1005,7 +1010,7 @@
           ]
         });
 
-      //daily max chart
+      /*daily max chart
       Highcharts.chart('container_daily', {
           chart: {
               type: 'column'
@@ -1057,8 +1062,8 @@
               data:[max_daily,today]
             }
             
-          ]*/
-      });
+          ]*==/
+      });*/
 
       });
     </script> 

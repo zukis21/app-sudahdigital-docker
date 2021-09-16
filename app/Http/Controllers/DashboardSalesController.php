@@ -167,8 +167,8 @@ class DashboardSalesController extends Controller
         }
         $users_display = array_unique($user_value);
 
-        //daily achievement
-        $daily_ach = \App\Order::where('user_id',$user_id)
+        //=======daily achievement=====//
+        /*$daily_ach = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->where('status','!=','CANCEL')
                         ->whereRaw('DATE(created_at) = ?', [$date_now])
@@ -179,7 +179,7 @@ class DashboardSalesController extends Controller
         }else{
             $daily_ach_value = json_decode($daily_ach,JSON_NUMERIC_CHECK);
             $get_daily = $daily_ach_value[0];
-        }
+        }*/
         
 
         //max daily
@@ -197,11 +197,11 @@ class DashboardSalesController extends Controller
         }
         //ppn max day/ per day
         if($target && $target->ppn == 1){
-            $max_day = round(($max/1.1),2);
-            $get_per_day = round(($get_daily/1.1),2);
+            $max_day = $max/1.1;
+            //$get_per_day = round(($get_daily/1.1),2);
         }else{
-            $max_day = round($max,2);
-            $get_per_day = round($get_daily,2);
+            $max_day = $max;
+           //$get_per_day = round($get_daily,2);
         }
         
         //dd($max_day);
@@ -280,14 +280,15 @@ class DashboardSalesController extends Controller
             'day_off'=>$day_off,
             'param_line'=>$param_line,
             'order_overday'=>$order_overday,
+            'max_day'=>$max_day,
             //'order_chart'=>$order_chart
             ];
         
         return view('customer.dashboard',$data) ->with('percent',json_encode($percentage,JSON_NUMERIC_CHECK))
                                                 ->with('users_display',json_encode($users_display))
-                                                ->with('red_line',json_encode($red_line))
-                                                ->with('get_per_day',json_encode($get_per_day))
-                                                ->with('max_day',json_encode($max_day));
+                                                ->with('red_line',json_encode($red_line));
+                                                //->with('get_per_day',json_encode($get_per_day))
+                                                //->with('max_day',json_encode($max_day));
                                                 /*
                                                 ->with('target_order',json_encode($target_order,JSON_NUMERIC_CHECK))
                                                 ->with('months',json_encode($months))
