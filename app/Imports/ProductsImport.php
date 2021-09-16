@@ -29,7 +29,6 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
             return [
                 'product_code' => 'required',
                 'stock' => 'max:999999999|numeric',
-                
             ];
         }else{
             return [
