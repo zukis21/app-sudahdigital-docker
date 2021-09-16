@@ -158,8 +158,9 @@ $no=$count_nt_paket;
                                     ->first();
                         $ttle_pesan_pkt.= $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :
 ';
-                        $ttl_email_pkt .='<tr><td height="1" colspan="3">'. $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :</td></tr>';
                         
+                        $ttl_email_pkt .='<tr><td height="1" colspan="3">'. $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :</td></tr>';
+                       
                         $data_paket = DB::table('order_product')
                                     ->join('products','order_product.product_id','=','products.id')
                                     ->where('order_id','=',$order_wa->id)
@@ -196,7 +197,10 @@ $no=$count_nt_paket;
                             $ttl_email_pkt .='<tr><td height="1" colspan="3">'. strtolower($this->number_to_alphabet($no_bns)).'. '.$db->Product_name.' = (Qty :'.$db->quantity.'~ Bonus)</td></tr>';
                         }
                     }
+                }else{
+                    $ttl_email_pkt=''; 
                 }
+                
                 
                 $info_harga = 'Pembayaran : '.$order_wa->payment_method;
                 
@@ -334,7 +338,7 @@ $no=$count_nt_paket;
             }else{
                 $email_spv = 'admin@sudahonline.com';
             }
-            
+
         \Mail::send([], [], function ($message) use ( $mail_cncl,$email_spv) {
             $message->to($email_spv)
             ->subject('Cancel Order')
