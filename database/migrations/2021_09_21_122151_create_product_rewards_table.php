@@ -25,7 +25,7 @@ class CreateProductRewardsTable extends Migration
             //$table->enum('status',['ACTIVE','EXPIRED']);//jika ada perubahan nilai point atau quantity product
             $table->timestamps();
 
-            $table->foreign('client_id')->references('id')->on('b2b_client');
+            //$table->foreign('client_id')->references('id')->on('b2b_client');
             //$table->foreign('period_id')->references('id')->on('target_periods');
             //$table->foreign('product_id')->references('id')->on('products');
         });
