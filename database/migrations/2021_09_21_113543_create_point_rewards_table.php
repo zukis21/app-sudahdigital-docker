@@ -23,7 +23,7 @@ class CreatePointRewardsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('client_id')->references('id')->on('b2b_client');
+            //$table->foreign('client_id')->references('id')->on('b2b_client');
             //$table->foreign('period_id')->references('id')->on('target_periods');
         });
     }
