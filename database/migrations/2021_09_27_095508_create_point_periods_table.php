@@ -21,7 +21,7 @@ class CreatePointPeriodsTable extends Migration
             $table->timestamp( 'expires_at' )->nullable();
             $table->timestamps();
 
-            $table->foreign('client_id')->references('id')->on('b2b_client');
+            //$table->foreign('client_id')->references('id')->on('b2b_client');
         });
     }
 
