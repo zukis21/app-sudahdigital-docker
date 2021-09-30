@@ -39,6 +39,9 @@
 				<li role="presentation" class="{{Request::get('status') == 'nonactive' ?'active' : '' }}">
 					<a href="{{route('customers.index', [$vendor,'status' =>'nonactive'])}}">INACTIVE</a>
 				</li>
+				<li role="presentation" class="{{Request::get('status') == 'reg_point' ?'active' : '' }}">
+					<a href="{{route('customers.index', [$vendor,'status' =>'reg_point'])}}">REGISTERED POINT</a>
+				</li>
 			</ul>
 		</div>
 		<div class="col-md-6">&nbsp;</div>
@@ -145,12 +148,35 @@
 					@endif
 				@endif
 				<td>
-					<a class="btn bg-grey waves-effect btn-xs" href="{{route('customers.detail',[$vendor,Crypt::encrypt($c->id)])}}" style="margin-bottom:2px;"><i class="material-icons">list</i></a>&nbsp;
-					<a class="btn btn-info waves-effect btn-xs" href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}" style="margin-bottom:2px;"><i class="material-icons">edit</i></a>
-					<!--gate check-->
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-					&nbsp;
-					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$c->id}}" style=""><i class="material-icons">delete</i></button>&nbsp;
+					<div class="dropdown">
+						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+							<i class="material-icons" >apps</i>
+						</a>
+						<ul class="dropdown-menu pull-right">
+							<li>
+								<a href="{{route('customers.detail',[$vendor,Crypt::encrypt($c->id)])}}" 
+								class=" waves-effect waves-block">
+									Details
+								</a>
+							</li>
+							<li>
+								<a href="{{route('customers.edit',[$vendor,Crypt::encrypt($c->id)])}}" 
+								class=" waves-effect waves-block">
+									Edit
+								</a>
+							</li>
+							@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+								<li>
+									<a  
+										data-toggle="modal" data-target="#deleteModal{{$c->id}}"
+										class=" waves-effect waves-block">
+										Delete
+									</a>
+								</li>
+							@endif
+						</ul>
+					</div>
+					
 					<!-- Modal Delete -->
 		            <div class="modal fade" id="deleteModal{{$c->id}}" tabindex="-1" role="dialog">
 		                <div class="modal-dialog modal-sm" role="document">
@@ -172,7 +198,7 @@
 		                    </div>
 		                </div>
 		            </div>
-					@endif
+					
 		        </td>
 			</tr>
 			@endforeach

@@ -56,6 +56,33 @@ class CustomerController extends Controller
             $status = $request->get('status');
             
             if($status){
+                if($status == 'reg_point'){
+                    $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
+                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
+                    type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
+                    ON cat_pareto.id = c.pareto_id,
+                    cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                    AND c.user_id = u.id AND c.city_id = ct.id AND c.reg_point = 'Y' AND EXISTS
+                        (
+                            SELECT * FROM  spv_sales
+                            WHERE   spv_sales.sls_id = c.user_id
+                            AND spv_sales.spv_id ='$spv_id'
+                        )
+                    ");
+                }else{
+                    $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
+                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
+                    type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
+                    ON cat_pareto.id = c.pareto_id,
+                    cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                    AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
+                        (
+                            SELECT * FROM  spv_sales
+                            WHERE   spv_sales.sls_id = c.user_id
+                            AND spv_sales.spv_id ='$spv_id'
+                        )
+                    ");
+                }
                 $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
                 u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
                 type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
@@ -77,10 +104,16 @@ class CustomerController extends Controller
             //$filterkeyword = $request->get('keyword');
             $status = $request->get('status');
             
-            if($status){
-                $customers = \App\Customer::with('users')->with('cities')->with('type_cust')
-                ->where('client_id','=',auth()->user()->client_id)
-                ->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
+            if($status) {
+                if($status == 'reg_point'){
+                    $customers = \App\Customer::with('users')->with('cities')->with('type_cust')
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->where('reg_point', 'Y')->orderBy('id','DESC')->get();//paginate(10);
+                }else{
+                    $customers = \App\Customer::with('users')->with('cities')->with('type_cust')
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->where('status', 'Like', "%$status")->orderBy('id','DESC')->get();//paginate(10);
+                }
             }
         }
         
@@ -189,6 +222,7 @@ class CustomerController extends Controller
         $new_cust->lng = $lng;
         
         $new_cust->cust_type = $request->get('cust_type');
+        $new_cust->reg_point = $request->get('reg_point');
         $new_cust->save();
         if ( $new_cust->save()){
             return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');
@@ -318,6 +352,9 @@ class CustomerController extends Controller
             $cust->address = $request->get('address');
             $pay_trm = $request->get('payment_term');
             $cust->pareto_id = $request->get('pareto_id');
+            $cust->status = $request->get('status');
+            $cust->reg_point = $request->get('reg_point');
+            
             //$cust->target_store = $request->get('target_store');
             if($pay_trm == 'TOP'){
                 $cust->payment_term = $request->get('pay_cust').' Days';

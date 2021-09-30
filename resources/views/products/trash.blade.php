@@ -178,25 +178,25 @@
 		                </div>
 		            </div>
 
-		           <!-- Modal Resotore -->
-				   <div class="modal fade" id="restoreModal{{$p->id}}" tabindex="-1" role="dialog">
-					<div class="modal-dialog modal-sm" role="document">
-						<div class="modal-content modal-col-green">
-							<div class="modal-header">
-								<h4 class="modal-title" id="restoreModalLabel">Restore Product</h4>
-							</div>
-							<div class="modal-body">
-							   Restore this product ..? 
-							</div>
-							<div class="modal-footer">
-								
-									<a href="{{route('products.restore', [$vendor,$p->id])}}" class="btn bg-deep-orange">Restore</a>
-									<button type="button" class="btn bg-deep-orange" data-dismiss="modal">Close</button>
-								
+		           	<!-- Modal Resotore -->
+				   	<div class="modal fade" id="restoreModal{{$p->id}}" tabindex="-1" role="dialog">
+						<div class="modal-dialog modal-sm" role="document">
+							<div class="modal-content modal-col-green">
+								<div class="modal-header">
+									<h4 class="modal-title" id="restoreModalLabel">Restore Product</h4>
+								</div>
+								<div class="modal-body">
+								Restore this product ..? 
+								</div>
+								<div class="modal-footer">
+									
+										<a href="{{route('products.restore', [$vendor,$p->id])}}" class="btn bg-deep-orange">Restore</a>
+										<button type="button" class="btn bg-deep-orange" data-dismiss="modal">Close</button>
+									
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 				</td>
 			</tr>
 			@endforeach

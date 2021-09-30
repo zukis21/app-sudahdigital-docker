@@ -142,6 +142,15 @@
             <small id="name-error" class="error merah" for="user">{{ $errors->first('user')}}</small>
         </div>
         <br>
+
+        <h2 class="card-inside-title">Registered Points</h2>
+        <div class="form-group">
+            <input type="radio" value="Y" name="reg_point" id="Y" >
+            <label for="Y">Y</label>
+                            &nbsp;
+            <input type="radio" value="N" name="reg_point" id="N" checked>
+            <label for="N">N</label>
+        </div>
         
         <button id="save" class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
     </form>

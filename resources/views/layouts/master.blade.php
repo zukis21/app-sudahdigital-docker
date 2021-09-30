@@ -167,92 +167,92 @@
                     </li>
                     
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
-                    <!--manage-users-->
-                    <li class="{{request()->routeIs('users.index') || 
-                                 request()->routeIs('sales.index') || 
-                                 request()->routeIs('spv.index') || 
-                                 (request()->routeIs('target.index') && Gate::check('isSpv')) ? 'active' : ''}}">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">people</i>
-                            <span>{{Gate::check('isSpv') ? 'Sales' : 'Manage Users'}}</span>
-                        </a>
-                       
-                        <ul class="ml-menu">
-                            <!--@can('isSuperadmin')@endcan-->
-                            @if(Gate::check('isSuperadmin'))
-                                <li class="{{request()->routeIs('users.index') ? 'active' : '' }}">
-                                    <a href="{{route('users.index',[$vendor])}}">Admin List</a>
-                                </li>
-                            @endif
-                            
-                            @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
-                                <li class="{{request()->routeIs('sales.index') ? 'active' : '' }}">
-                                    <a href="{{route('sales.index',[$vendor])}}">
-                                        {{Gate::check('isSpv') ? 'Sales Team List' : 'Sales List'}}
-                                    </a>
-                                </li>
-                            @endif
-                            @if(Gate::check('isSpv'))
-                                <li class="{{request()->routeIs('target.index') ? 'active' : '' }}">
-                                    <a href="{{route('target.index',[$vendor])}}">
-                                        Sales Target List
-                                    </a>
-                                </li>
-                            @endif
-                            @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-                                <li class="{{request()->routeIs('spv.index') ? 'active' : '' }}">
-                                    <a href="{{route('spv.index',[$vendor])}}">SPV List</a>
-                                </li>
-                            @endif
-                        </ul>
-                    </li>
+                        <!--manage-users-->
+                        <li class="{{request()->routeIs('users.index') || 
+                                    request()->routeIs('sales.index') || 
+                                    request()->routeIs('spv.index') || 
+                                    (request()->routeIs('target.index') && Gate::check('isSpv')) ? 'active' : ''}}">
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">people</i>
+                                <span>{{Gate::check('isSpv') ? 'Sales' : 'Manage Users'}}</span>
+                            </a>
+                        
+                            <ul class="ml-menu">
+                                <!--@can('isSuperadmin')@endcan-->
+                                @if(Gate::check('isSuperadmin'))
+                                    <li class="{{request()->routeIs('users.index') ? 'active' : '' }}">
+                                        <a href="{{route('users.index',[$vendor])}}">Admin List</a>
+                                    </li>
+                                @endif
+                                
+                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                                    <li class="{{request()->routeIs('sales.index') ? 'active' : '' }}">
+                                        <a href="{{route('sales.index',[$vendor])}}">
+                                            {{Gate::check('isSpv') ? 'Sales Team List' : 'Sales List'}}
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(Gate::check('isSpv'))
+                                    <li class="{{request()->routeIs('target.index') ? 'active' : '' }}">
+                                        <a href="{{route('target.index',[$vendor])}}">
+                                            Sales Target List
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                    <li class="{{request()->routeIs('spv.index') ? 'active' : '' }}">
+                                        <a href="{{route('spv.index',[$vendor])}}">SPV List</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
                     @endif
 
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-                    <!--manage banners-->
-                    <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">insert_photo</i>
-                            <span>Manage Banner</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                                <a href="{{route('banner.index',[$vendor])}}">List Slide Banner</a>
-                            </li>
-                        </ul>
-                    </li>
-                    
-                    <!--manage categories-->
-                    <li class="{{request()->routeIs('categories.index') ? 'active' : ''}}">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">label</i>
-                            <span>Manage Categories</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li class="{{request()->routeIs('categories.index') ? 'active' : '' }}">
-                                <a href="{{route('categories.index',[$vendor])}}">Categories</a>
-                            </li>
-                        </ul>
-                    </li>
+                        <!--manage banners-->
+                        <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">insert_photo</i>
+                                <span>Manage Banner</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
+                                    <a href="{{route('banner.index',[$vendor])}}">List Slide Banner</a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <!--manage categories-->
+                        <li class="{{request()->routeIs('categories.index') ? 'active' : ''}}">
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">label</i>
+                                <span>Manage Categories</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="{{request()->routeIs('categories.index') ? 'active' : '' }}">
+                                    <a href="{{route('categories.index',[$vendor])}}">Categories</a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <!--manage products-->
-                    <li class="{{request()->routeIs('products.index') || request()->routeIs('groups.index') || request()->routeIs('paket.index') ? 'active' : ''}}">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">hardware</i>
-                            <span>Manage Products</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
-                                <a href="{{route('products.index',[$vendor])}}">Products</a>
-                            </li>
-                            <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
-                                <a href="{{route('groups.index',[$vendor])}}">Group</a>
-                            </li>
-                            <li class="{{request()->routeIs('paket.index') ? 'active' : '' }}">
-                                <a href="{{route('paket.index',[$vendor])}}">Paket</a>
-                            </li>
-                        </ul>
-                    </li>
+                        <!--manage products-->
+                        <li class="{{request()->routeIs('products.index') || request()->routeIs('groups.index') || request()->routeIs('paket.index') ? 'active' : ''}}">
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">hardware</i>
+                                <span>Manage Products</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
+                                    <a href="{{route('products.index',[$vendor])}}">Products</a>
+                                </li>
+                                <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
+                                    <a href="{{route('groups.index',[$vendor])}}">Group</a>
+                                </li>
+                                <li class="{{request()->routeIs('paket.index') ? 'active' : '' }}">
+                                    <a href="{{route('paket.index',[$vendor])}}">Paket</a>
+                                </li>
+                            </ul>
+                        </li>
                     @endif
                     
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
@@ -286,8 +286,31 @@
                         </li>
                         
                         @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                            <!--Voucher points-->
+                            <li class="{{request()->routeIs('points.index') ||
+                                         /*request()->routeIs('points_periods.index') ||*/
+                                         request()->routeIs('pr_points.index') ? 'active' : ''}}">
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="fas fa-gift-card " style="font-size:18px;margin-top:6px;margin-left:3px;"></i>
+                                    <span>Point Vouchers</span>
+                                </a>
+                                <ul class="ml-menu">
+                                    <!--
+                                    <li class="{{request()->routeIs('points_periods.index') ? 'active' : '' }}">
+                                        <a href="{{route('points_periods.index',[$vendor])}}">Point Periods</a>
+                                    </li>
+                                    -->
+                                    <li class="{{request()->routeIs('points.index') ? 'active' : '' }}">
+                                        <a href="{{route('points.index',[$vendor])}}">Point Lists</a>
+                                    </li>
+                                    <li class="{{request()->routeIs('pr_points.index') ? 'active' : '' }}">
+                                        <a href="{{route('pr_points.index',[$vendor])}}">Product Points</a>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <!--work calender-->
-                                <li class="{{request()->routeIs('workplan.index') || request()->routeIs('sales_login.index')? 'active' : ''}}">
+                            <li class="{{request()->routeIs('workplan.index') || request()->routeIs('sales_login.index')? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="material-icons">date_range</i>
                                     <span>Work Calender</span>
@@ -317,7 +340,9 @@
                         @endif
                         
                         <!--manage order-->
-                        <li class="{{(request()->routeIs('orders.index')) || (request()->routeIs('reasons.index')) ? 'active' : ''}}">
+                        <li class="{{(request()->routeIs('orders.index')) || 
+                                    (request()->routeIs('reasons.index')) ||
+                                    (request()->routeIs('customers_points.index')) ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">shopping_cart</i>
                                 <span>Manage Orders</span>
@@ -327,6 +352,9 @@
                                     <a href="{{route('orders.index',[$vendor])}}">Orders</a>
                                 </li>
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                    <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
+                                        <a href="{{route('customers_points.index',[$vendor])}}">Points</a>
+                                    </li>
                                     <li class="{{request()->routeIs('reasons.index') ? 'active' : '' }}">
                                         <a href="{{route('reasons.index',[$vendor])}}">Checkout Reasons List</a>
                                     </li>
@@ -337,17 +365,17 @@
                     
                     <!--manage -client-->
                     @if(Gate::check('isOwner'))
-                    <li class="{{request()->routeIs('client_so.index') ? 'active' : ''}}">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">group_work</i>
-                            <span>Manage Client</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li class="{{request()->routeIs('client_so.index') ? 'active' : '' }}">
-                                <a href="{{route('client_so.index',[$vendor])}}">Client List</a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li class="{{request()->routeIs('client_so.index') ? 'active' : ''}}">
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">group_work</i>
+                                <span>Manage Client</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="{{request()->routeIs('client_so.index') ? 'active' : '' }}">
+                                    <a href="{{route('client_so.index',[$vendor])}}">Client List</a>
+                                </li>
+                            </ul>
+                        </li>
                     @endif
 
                 </ul>

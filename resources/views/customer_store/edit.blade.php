@@ -169,10 +169,31 @@
                 <span class="input-group-addon">IDR</span>
             </div>
             -->
-
+            
             <div class="col-sm-12" style="padding:0;">
                 <h2 class="card-inside-title">Sales Representative</h2>
                 <select name="user"  id="user" class="form-control" required></select>
+            </div>
+
+            <h2 class="card-inside-title">Status</h2>
+            <div class="form-group">
+                <input type="radio" value="NEW" name="status" id="NEW" {{$cust->status == 'NEW' ? 'checked' : ''}} disabled>
+                <label for="NEW">NEW</label>
+                    &nbsp;
+                <input type="radio" value="ACTIVE" name="status" id="ACTIVE" {{$cust->status == 'ACTIVE' ? 'checked' : ''}}>
+                <label for="ACTIVE">ACTIVE</label>
+                                &nbsp;
+                <input type="radio" value="NONACTIVE" name="status" id="INACTIVE" {{$cust->status == 'NONACTIVE' ? 'checked' : ''}}>
+                <label for="INACTIVE">INACTIVE</label>
+            </div>
+
+            <h2 class="card-inside-title">Registered Points</h2>
+            <div class="form-group">
+                <input type="radio" value="Y" name="reg_point" id="Y" {{$cust->reg_point == 'Y' ? 'checked' : ''}}>
+                <label for="Y">Y</label>
+                                &nbsp;
+                <input type="radio" value="N" name="reg_point" id="N" {{$cust->reg_point == 'N' ? 'checked' : ''}}>
+                <label for="N">N</label>
             </div>
            
         @endif

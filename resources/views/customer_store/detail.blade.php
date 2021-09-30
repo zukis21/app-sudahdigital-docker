@@ -104,6 +104,20 @@
         <small class="text-muted">-</small>
         @endif
     </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Status</label>
+        </li>
+        <small class="text-muted">{{$customer->status}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Registered Point</label>
+        </li>
+        <small class="text-muted">{{$customer->reg_point == 'Y' ? 'Registerd' : 'Not Registered'}}</small>
+    </ul>
 
 @endsection
 

@@ -47,7 +47,7 @@
             </div>
         </form>
     </div>
-	<!-- Modal Delete -->
+	<!-- Modal export -->
     <div class="modal fade" id="ExportModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
