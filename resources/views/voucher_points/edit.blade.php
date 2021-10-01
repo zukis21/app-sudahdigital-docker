@@ -79,7 +79,8 @@
                                 <div class="modal-footer">
                                     <form action="{{route('points.delete-permanent',[$vendor,$point->id,$PointPeriod->id])}}" method="POST">
                                         @csrf
-                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_method" value="PUT">
+                                        
                                         <button type="submit" name="save_action" value="DELETE_ITEM" class="btn-link waves-effect">Delete</button>
                                         <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
                                     </form>

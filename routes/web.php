@@ -325,7 +325,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/point-vouchers/{id}/details', 'PointVouchersController@edit')->name('points.details');
     Route::delete('/point-vouchers/{id}/destroy', 'PointVouchersController@destroy')->name('points.destroy');
     Route::get('/point-vouchers/{id}/restore', 'PointVouchersController@restore')->name('points.restore');
-    Route::delete('point-vouchers/{points}/{id}/delete-permanent','PointVouchersController@deletePermanent')->name('points.delete-permanent');
+    Route::put('point-vouchers/{points}/{id}/delete-permanent','PointVouchersController@deletePermanent')->name('points.delete-permanent');
     
     //product points
     Route::get('/points-products', 'ProductPointController@index')->name('pr_points.index');

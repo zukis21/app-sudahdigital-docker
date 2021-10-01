@@ -124,8 +124,6 @@ class ProductPointController extends Controller
         $del_item = \App\ProductReward::findOrFail($id);
         $del_item->delete();
 
-        
-
         return redirect()->route('pr_points.index', [$vendor])->with('status',
         'Item successfully delete');
     }
