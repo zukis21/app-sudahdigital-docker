@@ -61,9 +61,10 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
     {
             //dd($rows);
             $code = $rows['product_code'];
-            //$cek = product::where('product_code','=',$rows['product_code'])->count();
-            $cek = \DB::select("SELECT COUNT (*) FROM products WHERE product_code LIKE '%$code%'");
-             
+            $cek = product::where('product_code',$code)->count();
+            //$cek = \DB::select("SELECT COUNT (product_code) FROM products WHERE product_code = (select
+            //product_code from products where )");
+            //dd($cek);
             $stock_status= \DB::table('product_stock_status')
             ->where('client_id','=',auth()->user()->client_id)
             ->first();
