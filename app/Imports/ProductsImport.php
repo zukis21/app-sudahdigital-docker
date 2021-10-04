@@ -61,7 +61,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
     {
             //dd($rows);
             $code = $rows['product_code'];
-            $cek = product::where('product_code',$code)->count();
+            $cek = product::where('product_code',"$code")->count();
             //$cek = \DB::select("SELECT COUNT (product_code) FROM products WHERE product_code = (select
             //product_code from products where )");
             //dd($cek);
