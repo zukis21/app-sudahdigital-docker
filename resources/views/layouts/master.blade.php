@@ -619,7 +619,7 @@
         $(".alert").fadeTo(500, 0).slideUp(500, function(){
             $(this).remove(); 
         });
-        }, 3000);
+        }, 7000);
     </script>
     @yield('footer-scripts')
 </body>
