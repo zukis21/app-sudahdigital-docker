@@ -64,7 +64,7 @@
 					{{$c->sales_name}}
 				</td>
 				<td>
-					{{number_format($c->totalpoint,2)}}	
+					{{number_format($c->grand_total,2)}}	
 		        </td>
 			</tr>
 			@endforeach

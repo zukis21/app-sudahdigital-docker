@@ -60,7 +60,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
     public function model(array $rows)
     {
             //dd($rows);
-            $cek = product::where('product_code','=',$rows['product_code'])->count();
+            $cek = product::where('product_code','=',$rows['product_code'])->count(\DB::raw('DISTINCT product_code'));
             $stock_status= \DB::table('product_stock_status')
             ->where('client_id','=',auth()->user()->client_id)
             ->first();
