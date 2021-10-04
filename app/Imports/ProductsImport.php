@@ -68,8 +68,8 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
             
             if($cek > 0){
                 $code = $rows['product_code'];
-                //$product = product::where('product_code','=',$rows['product_code'])->first();
-                $product = \DB::select("SELECT * FROM products WHERE product_code = '$code' LIMIT 1");
+                $product = product::where('product_code','=',"$code")->first();
+                //$product = \DB::select("SELECT * FROM products WHERE product_code = '$code' LIMIT 1");
                 $product->client_id = $stock_status->client_id;
                 $product->product_code = $rows['product_code'];
                 $product->Product_name = $rows['product_name'];
