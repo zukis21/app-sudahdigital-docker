@@ -69,35 +69,43 @@ class PointPeriodController extends Controller
         
         $PointPeriod = \App\PointPeriod::findorFail(\Crypt::decrypt($id));
         
-        $get_date_start = \App\PointPeriod::where('client_id',auth()->user()->client_id)
+        if($PointPeriod->point_reward()->count()){
+            return back()->with('error','Cannot edit, period has cash back point records');
+        }elseif($PointPeriod->point_customers()->count()){
+            return back()->with('error','Cannot edit, period has customer point records');
+        }
+        else{
+            $get_date_start = \App\PointPeriod::where('client_id',auth()->user()->client_id)
                         ->whereDate('expires_at','<',$PointPeriod->starts_at)
                         ->orderBy('expires_at','DESC')->first();
 
-        $get_date_end = \App\PointPeriod::where('client_id',auth()->user()->client_id)
-                        ->whereDate('starts_at','>',$PointPeriod->expires_at)
-                        ->orderBy('starts_at','ASC')->first();
-                        
+            $get_date_end = \App\PointPeriod::where('client_id',auth()->user()->client_id)
+                            ->whereDate('starts_at','>',$PointPeriod->expires_at)
+                            ->orderBy('starts_at','ASC')->first();
+                            
 
-        //dd($get_date_end);
-        if($get_date_start){
-            $start_date =  date('Y-m-d', strtotime($get_date_start->expires_at. ' + 1 days'));
-        }else{
-            $start_date = '';
-        }
+            //dd($get_date_end);
+            if($get_date_start){
+                $start_date =  date('Y-m-d', strtotime($get_date_start->expires_at. ' + 1 days'));
+            }else{
+                $start_date = '';
+            }
 
-        if($get_date_end){
-            $end_date =  date('Y-m-d', strtotime($get_date_end->starts_at. ' - 1 days'));
-        }else{
-            $end_date = '';
+            if($get_date_end){
+                $end_date =  date('Y-m-d', strtotime($get_date_end->starts_at. ' - 1 days'));
+            }else{
+                $end_date = '';
+            }
+            //dd($end_date);
+            return view('points_periods.edit',
+                        [
+                            'vendor'=>$vendor,
+                            'PointPeriod'=>$PointPeriod,
+                            'start_date'=>$start_date,
+                            'end_date'=>$end_date,
+                        ]);
         }
-        //dd($end_date);
-        return view('points_periods.edit',
-                    [
-                        'vendor'=>$vendor,
-                        'PointPeriod'=>$PointPeriod,
-                        'start_date'=>$start_date,
-                        'end_date'=>$end_date,
-                    ]);
+        
     }
 
     public function update(Request $request, $vendor, $id){

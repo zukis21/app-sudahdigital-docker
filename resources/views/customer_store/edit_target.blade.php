@@ -112,10 +112,14 @@
                                 
                             </td>
                             <td>
-                                @php
-                                    $prt = \App\CatPareto::findorFail($u->customers->pareto_id);
-                                @endphp
+                                @if($u->customers->pareto_id)
+                                    @php
+                                        $prt = \App\CatPareto::findorFail($u->customers->pareto_id);
+                                    @endphp
                                 {{$prt->pareto_code}}
+                                @else
+                                    Not Pareto
+                                @endif
                             </td>
                             <td>
                                 <input type="hidden" name="id[]" value="{{$u->id}}">

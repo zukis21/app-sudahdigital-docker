@@ -136,6 +136,16 @@
         </div>
         -->
         <div class="col-sm-12" style="padding:0;">
+            <h2 class="card-inside-title">Pareto Code</h2>
+            <select name="pareto_id"  id="pareto_id" class="form-control">
+                <option></option>
+                @foreach($pareto as $ty)
+                    <option value="{{$ty->id}}" >{{$ty->pareto_code}}</option>
+                @endforeach
+            </select>
+        </div>
+        <br>
+        <div class="col-sm-12" style="padding:0;">
             <h2 class="card-inside-title">Sales Representative</h2>
             <select name="user"  id="user" class="form-control">
             </select>
@@ -143,6 +153,7 @@
         </div>
         <br>
 
+        <!--
         <h2 class="card-inside-title">Registered Points</h2>
         <div class="form-group">
             <input type="radio" value="Y" name="reg_point" id="Y" >
@@ -151,7 +162,7 @@
             <input type="radio" value="N" name="reg_point" id="N" checked>
             <label for="N">N</label>
         </div>
-        
+        -->
         <button id="save" class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">SAVE</button>
     </form>
     <!-- #END#  -->		
@@ -165,6 +176,9 @@
 <script>
     $('#cust_type').select2({
         placeholder: 'Select a Customer Type',
+    });
+    $('#pareto_id').select2({
+        placeholder: 'Select a Pareto Code',
     });
     $('document').ready(function(){
         document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;

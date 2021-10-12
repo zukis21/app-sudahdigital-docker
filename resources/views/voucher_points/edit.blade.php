@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Details Point @endsection
+@section('title') Cash Back Lists @endsection
 @section('content')
 
 	@if(session('status'))
@@ -7,6 +7,11 @@
 			{{session('status')}}
 		</div>
 	@endif
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{session('error')}}
+        </div>
+    @endif
 	<!-- Form Create -->
     <form class="needs-validation" novalidate method="POST"  action="{{route('points.update',[$vendor,$PointPeriod->id])}}">
     	@csrf
@@ -14,33 +19,34 @@
         <div class="form-group form-float">
             <div class="form-line" >
                 <input type="text" class="form-control" name="name"
-                value="{{old('name',$PointPeriod->name)}}" autocomplete="off" required>
+                value="{{old('name',$PointPeriod->name)}}" autocomplete="off" required readonly>
                 <label class="form-label">Name</label>
             </div>
         </div>
-        <div class="input-daterange input-group" id="">
+        <div class=" input-group" id="">
             <div class="form-line">
                 <input type="text"  name="starts_at" value="{{old('starts_at',date('Y-m-d', strtotime($PointPeriod->starts_at)))}}"
                 class="start_date form-control" 
-                readonly required placeholder="Date start...">
+                readonly required placeholder="Date start..." readonly>
             </div>
             <span class="input-group-addon">to</span>
-            <div class="form-line">
+            <div class="form-line  m-l-10">
                 <input type="text" name="expires_at" value="{{old('expires_at',date('Y-m-d', strtotime($PointPeriod->expires_at)))}}"
                 class="expires_date form-control" 
-                readonly required placeholder="Date end...">
+                readonly required placeholder="Date end..." readonly>
             </div>
         </div>
 
         <table class="table table-responsive table-striped">
             <thead>
                 <tr>
-                    <th>Point Rules</th>
-                    <th>Bonus Amount</th>
+                    <th>Point Rules (Points)</th>
+                    <th>Bonus Amount (IDR)</th>
                     <th>#</th>
                 </tr>
             </thead>
             <tbody id="TextBoxContainer">
+            
              @foreach ($PointPeriod->point_reward as $point)
              <tr>
                 <td>
@@ -64,7 +70,7 @@
                 </td>
                 
                 <td>
-                    @if(count($PointPeriod->point_reward) > 1)
+                    
                     <button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$point->id}}"><i class="material-icons">delete</i></button>
                     <!-- Modal Delete -->
                     <div class="modal fade" id="deleteModal{{$point->id}}" tabindex="-1" role="dialog">
@@ -77,18 +83,16 @@
                                     Delete this item ?
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="{{route('points.delete-permanent',[$vendor,$point->id,$PointPeriod->id])}}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="_method" value="PUT">
-                                        
-                                        <button type="submit" name="save_action" value="DELETE_ITEM" class="btn-link waves-effect">Delete</button>
-                                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
-                                    </form>
+                                   
+                                    <a href="{{route('points.delete-permanent',[$vendor,$point->id])}}" 
+                                        type="submit"  class="btn btn-link waves-effect">Delete</a>
+                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
+                                   
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @endif
+                   
                 </td>
               </tr> 
              @endforeach   

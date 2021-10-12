@@ -288,14 +288,14 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/add-new-customer/{id}/{payment}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
     Route::put('/orders/new-customer/{id}/update', 'OrderController@save_new_customer')->name('orders.newcustomer.update');
     //Order point
-    Route::get('/orders/customer-point', 'CustomerPointController@index')->name('customers_points.index');
+    Route::get('/orders/customer-point', 'CustomerPointOrderController@index')->name('customers_points.index');
     Route::post('/orders/filter-list-point', function(Illuminate\Http\Request $request, $vendor){
         $get_period = \App\PointPeriod::findOrFail($request['period']);
         $text_name =  $get_period->name;
         $replace_name = str_replace(" ", "-", $text_name);
         return redirect()->route('periodpoint.getfilter', [$vendor,'period_name'=>$replace_name,'period_id'=>\Crypt::encrypt($request['period'])]);
     })->name('periodpoint.postfilter');
-    Route::get('/orders/customer-point/period/{period_name?}/{period_id}', 'CustomerPointController@filter_period')->name('periodpoint.getfilter');
+    Route::get('/orders/customer-point/period/{period_name?}/{period_id}', 'CustomerPointOrderController@filter_period')->name('periodpoint.getfilter');
     //reasons
     Route::get('/orders/checkout-reason/list', 'CheckoutReasonsController@index')->name('reasons.index');
     Route::get('/orders/checkout-reason/create', 'CheckoutReasonsController@create')->name('reasons.create');
@@ -305,27 +305,24 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/checkout-reason/{id}/delete-permanent', 'CheckoutReasonsController@delete_permanent')->name('reasons.delete_permanent');
 
     //point periods
-    Route::get('/point-vouchers/point-periods', 'PointPeriodController@index')->name('points_periods.index');
-    //Route::get('/point-vouchers/trash', 'PointVouchersController@trash')->name('points.trash');
-    Route::get('/point-vouchers/point-periods/create', 'PointPeriodController@create')->name('points_periods.create');
-    Route::post('/point-vouchers/point-periods/post-period', 'PointPeriodController@postCreatePeriod')->name('points_periods.step_one');
-    Route::post('/point-vouchers/point-periods/store', 'PointPeriodController@store')->name('points_periods.store');
-    Route::put('/point-vouchers/point-periods/{id}/update', 'PointPeriodController@update')->name('points_periods.update');
-    Route::get('/point-vouchers/point-periods/{id}/edit', 'PointPeriodController@edit')->name('points_periods.edit');
-    //Route::delete('/point-vouchers/{id}/destroy', 'PointVouchersController@destroy')->name('points.destroy');
-    //Route::get('/point-vouchers/{id}/restore', 'PointVouchersController@restore')->name('points.restore');
-    //Route::delete('point-vouchers/{points}/delete-permanent','PointVouchersController@deletePermanent')->name('points.delete-permanent');
+    Route::get('/point-periods', 'PointPeriodController@index')->name('points_periods.index');
+    Route::get('/point-periods/create', 'PointPeriodController@create')->name('points_periods.create');
+    Route::post('/point-periods/post-period', 'PointPeriodController@postCreatePeriod')->name('points_periods.step_one');
+    Route::post('/point-periods/store', 'PointPeriodController@store')->name('points_periods.store');
+    Route::put('/point-periods/{id}/update', 'PointPeriodController@update')->name('points_periods.update');
+    Route::get('/point-periods/{id}/edit', 'PointPeriodController@edit')->name('points_periods.edit');
+    
 
     //point rewards
     Route::get('/point-vouchers', 'PointVouchersController@index')->name('points.index');
     Route::get('/point-vouchers/trash', 'PointVouchersController@trash')->name('points.trash');
-    Route::get('/point-vouchers/create', 'PointVouchersController@create')->name('points.create');
+    Route::get('/point-vouchers/create/{id}', 'PointVouchersController@create')->name('points.create');
     Route::post('/point-vouchers/store', 'PointVouchersController@store')->name('points.store');
     Route::put('/point-vouchers/{id}/update', 'PointVouchersController@update')->name('points.update');
     Route::get('/point-vouchers/{id}/details', 'PointVouchersController@edit')->name('points.details');
     Route::delete('/point-vouchers/{id}/destroy', 'PointVouchersController@destroy')->name('points.destroy');
     Route::get('/point-vouchers/{id}/restore', 'PointVouchersController@restore')->name('points.restore');
-    Route::put('point-vouchers/{points}/{id}/delete-permanent','PointVouchersController@deletePermanent')->name('points.delete-permanent');
+    Route::get('/point-vouchers/{id}/delete-permanent','PointVouchersController@deletePermanent')->name('points.delete-permanent');
     
     //product points
     Route::get('/points-products', 'ProductPointController@index')->name('pr_points.index');
@@ -334,6 +331,14 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::put('/points-products/{id}/update', 'ProductPointController@update')->name('pr_points.update');
     Route::get('/points-products/{id}/edit', 'ProductPointController@edit')->name('pr_points.edit');
     Route::delete('/points-products/{id}/destroy', 'ProductPointController@destroy')->name('pr_points.destroy');
+
+    //customer point
+    Route::get('/customers-point', 'CustomerPointController@index')->name('CustomerPoints.index');
+    Route::get('/customers-point/create/{id}', 'CustomerPointController@create')->name('CustomerPoints.create');
+    Route::post('/customers-point/store', 'CustomerPointController@store')->name('CustomerPoints.store');
+    Route::put('/customers-point/{id}/update', 'CustomerPointController@update')->name('CustomerPoints.update');
+    Route::get('/customers-point/{id}/details', 'CustomerPointController@edit')->name('CustomerPoints.details');
+    Route::get('/customers-point/{id}/delete-permanent','CustomerPointController@deletePermanent')->name('Customer_Points.delete-permanent');
     
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');

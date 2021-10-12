@@ -17,7 +17,7 @@ class CustomerPointController extends Controller
                     \Request::session()->put('client_sess',
                     ['client_name' => $client->client_name,'client_image' => $client->client_image]);
                 }
-                if(Gate::allows('point-customers')) return $next($request);
+                if(Gate::allows('customers-point')) return $next($request);
                 abort(403, 'Anda tidak memiliki cukup hak akses');
             }else{
                 abort(404, 'Tidak ditemukan');
@@ -25,85 +25,184 @@ class CustomerPointController extends Controller
         });
     }
 
-    public function index($vendor)
-    {   
-        $date = date('Y-m-d');
-        $client_id = \Auth::user()->client_id;
-
-        $period_list = \App\PointPeriod::where('client_id',$client_id)->get();
-
-        $period = \App\PointPeriod::where('client_id',$client_id)
-                    ->whereDate('starts_at', '<=', $date)
-                    ->whereDate('expires_at', '>=', $date)->first();
-        
-        $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
-        FROM
-        (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at, 
-                    sum(case when o.finish_time between '$period->starts_at' and '$period->expires_at' 
-                     then 
-                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
-                    FROM orders as o 
-                    JOIN order_product as op ON o.id = op.order_id 
-                    JOIN products on products.id = op.product_id 
-                    JOIN product_rewards as pr on pr.product_id = products.id
-                    JOIN customers as cs on cs.id = o.customer_id
-                    JOIN users as u on u.id = cs.user_id
-                    
-                    WHERE
-                    pr.created_at = (SELECT MAX(created_at) FROM 
-                                    product_rewards GROUP BY product_id HAVING 
-                                    product_id = pr.product_id) AND  
-                    cs.reg_point ='Y' AND
-                    o.created_at between '$period->starts_at' and '$period->expires_at' AND
-                    o.status != 'CANCEL' AND o.status != 'NO-ORDER'
-                    GROUP by o.customer_id 
-        ) as points
-        LEFT JOIN (SELECT pc.customer_id, prpc.period_id as ppid, sum(case when pc.Type = 1 then -(ifnull(pc.override_points, prpc.point_rule)) 
-                        when pc.Type = 2 then ifnull(pc.override_points,prpc.point_rule)
-                       else 0 end) Pointreward 
-                   from point_claims as pc 
-                   JOIN point_rewards as prpc on pc.reward_id = prpc.id
-                   Group by pc.customer_id) pointsRewards
-         on points.csid = pointsRewards.customer_id;");
-        //dd($customers);         
-        
-        return view ('customer_point.index',['customers'=>$customers,'vendor'=>$vendor,'period_list'=>$period_list]);
+    public function index(Request $request, $vendor){
+        $period = \App\PointPeriod::with('point_customers')
+                ->where('client_id',auth()->user()->client_id)
+                ->orderBy('id','DESC')
+                ->get();
+        /*$pointlist = \App\PointReward::where('client_id',auth()->user()->client_id)
+                ->orderBy('id','DESC')
+                ->get();*/
+        return view ('customer_points.index',['period'=>$period,'vendor'=>$vendor]);
     }
 
-    public function filter_period($vendor, $period_name, $period_id)
+    public function create($vendor, $id)
     {   
-        //dd(\Crypt::decrypt($period_id));
-        $client_id = \Auth::user()->client_id;
+        $get_date = \App\PointPeriod::findOrFail(\Crypt::decrypt($id));
+        /*$get_date = \App\PointPeriod::whereDoesntHave('point_customers', function($q){
+                        $q->where('client_id',auth()->user()->client_id);
+                    })
+                    ->where('client_id',auth()->user()->client_id)
+                    ->get();*/
+        $customers = \App\Customer::where('client_id',auth()->user()->client_id)
+                    ->where('status','=','ACTIVE')
+                    ->get();
+        return view('customer_points.create',['vendor'=>$vendor,'get_date'=>$get_date,'customers'=>$customers]);
+    }
 
-        $period_list = \App\PointPeriod::where('client_id',$client_id)->get();
+    public function store(Request $request, $vendor){
+        
+        $choice_check = $request->get('sel_input');
+        if($choice_check == 'customer_select'){
+            if($request->has('customer_id')){
+                if(count($request->customer_id) > 0) {
+                    $sum = 0;
+                    
+                    foreach ($request->customer_id as $i => $v){
+                        
+                        $newCustomerPoint = new \App\CustomerPoint();
+                        $newCustomerPoint->client_id = \Auth::user()->client_id;
+                        $newCustomerPoint->customer_id = $request->customer_id[$i];
+                        $newCustomerPoint->period_id = $request->period_id;
+                        
+                        if($request->hasFile('file_name')){
+                            $file = $request->file('file_name')[$i] ?? '';
+                            if($file != ''){
+                                $file_path = $file->store('customer-file-reg-point', 'public');
+                        
+                                $newCustomerPoint->file = $file_path;
+                            }
+                            
+                        }
+                        
+                        $newCustomerPoint->save();
+    
+                    }
+                }
+                return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])->with('status','Points Customers Succsessfully Created');
+            }
+            else{
+                return back()->withInput()->with('error','Failed to save, no customer added');
+            } 
+        }elseif($choice_check == 'all_customer'){
+            $customer = \App\Customer::where('client_id',\Auth::user()->client_id)
+                        ->where('status','ACTIVE')->get();
+            foreach($customer as $cs){
+                $newCustomerPoint = new \App\CustomerPoint();
+                $newCustomerPoint->client_id = \Auth::user()->client_id;
+                $newCustomerPoint->customer_id = $cs->id;
+                $newCustomerPoint->period_id = $request->period_id;
+                $newCustomerPoint->save();
+            }
+            return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])->with('status','Points Customers Succsessfully Created');
+        }
+        elseif($choice_check == 'customer_pareto'){
+                $customer = \App\Customer::where('client_id',\Auth::user()->client_id)
+                        ->whereNotNull('pareto_id')
+                        ->where('status','ACTIVE')->get();
+                foreach($customer as $cs){
+                    $newCustomerPoint = new \App\CustomerPoint();
+                    $newCustomerPoint->client_id = \Auth::user()->client_id;
+                    $newCustomerPoint->customer_id = $cs->id;
+                    $newCustomerPoint->period_id = $request->period_id;
+                    $newCustomerPoint->save();
+                }
+            return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])->with('status','Points Customers Succsessfully Created');
+        }
+    }
 
-        $period = \App\PointPeriod::findOrFail(\Crypt::decrypt($period_id));
+    public function edit($vendor,$id)
+    {
         
-        //dd($period);
-        $customers =\DB::select("SELECT o.id,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
-            sum(case when o.finish_time between '$period->starts_at' and '$period->expires_at' then 
-            (pr.prod_point_val/pr.quantity_rule) * op.quantity else 0 end) totalpoint
-            FROM orders as o 
-            JOIN order_product as op ON o.id = op.order_id 
-            JOIN products on products.id = op.product_id 
-            JOIN product_rewards as pr on pr.product_id = products.id
-            JOIN customers as cs on cs.id = o.customer_id
-            JOIN users as u on u.id = cs.user_id
-            WHERE 
-            pr.created_at = (SELECT MAX(created_at) FROM 
-                            product_rewards where created_at <= '$period->starts_at' GROUP BY 
-                            product_id HAVING 
-                            product_id = pr.product_id) AND
-            o.client_id = '$client_id' AND
-            cs.reg_point ='Y' AND
-            o.created_at between '$period->starts_at' and '$period->expires_at' AND
-            o.status != 'CANCEL' AND o.status != 'NO-ORDER'
-            GROUP by o.customer_id;"); 
-        //dd($customers);         
+        $get_date = \App\PointPeriod::findOrFail(\Crypt::decrypt($id));
         
-        return view ('customer_point.index',['customers'=>$customers,
-                                            'vendor'=>$vendor,
-                                            'period_list'=>$period_list,
-                                            'period'=>$period->id]);
+        /*
+        $param_id = \Crypt::decrypt($id);
+        $period = \App\PointPeriod::findorFail($param_id);
+        $get_date = \App\PointPeriod::whereDoesntHave('point_customers', function($q) use ($param_id) {
+                        $q->where('client_id',auth()->user()->client_id)
+                        ->where('period_id','!=',$param_id);
+                    })
+                    ->where('client_id',auth()->user()->client_id)
+                    ->get();
+        */
+        $customers = \App\Customer::where('client_id',auth()->user()->client_id)
+                ->where('status','=','ACTIVE')
+                ->get();
+       
+        //dd($end_date);
+        return view('customer_points.edit',
+                    [
+                        'vendor'=>$vendor,
+                        'get_date'=>$get_date,
+                        'customers'=>$customers
+                    ]);
+    }
+
+    public function update(Request $request, $vendor, $id){
+        
+        if($request->has('customer_id')){
+            if(count($request->customer_id) > 0) {
+                $sum = 0;
+                
+                foreach ($request->customer_id as $i => $v){
+                    $cek = \App\CustomerPoint::where('id',$request->id[$i])->count();
+                    if($cek > 0){
+                        $Points = \App\CustomerPoint::findOrFail($request->id[$i]);
+                        $Points->customer_id = $request->customer_id[$i];
+                        $Points->period_id = $request->period_id;
+                        
+                        if($request->hasFile('file_name')){
+                            $file = $request->file('file_name')[$i] ?? '';
+                            if($file != ''){
+                                $file_path = $file->store('customer-file-reg-point', 'public');
+                        
+                                $Points->file = $file_path;
+                            }
+                            
+                        }
+                        
+                        $Points->save();
+                    }else{
+                        $newCustomerPoint = new \App\CustomerPoint();
+                        $newCustomerPoint->client_id = \Auth::user()->client_id;
+                        $newCustomerPoint->customer_id = $request->customer_id[$i];
+                        $newCustomerPoint->period_id = $request->period_id;
+                        if($request->hasFile('file_name')){
+                            $file = $request->file('file_name')[$i] ?? '';
+                            if($file != ''){
+                                $file_path = $file->store('customer-file-reg-point', 'public');
+                        
+                                $newCustomerPoint->file = $file_path;
+                            }
+                            
+                        }
+                    
+                        $newCustomerPoint->save();
+
+                    }
+                }
+            }
+            return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($id)])->with('status','Points Customers Succsessfully Updated');
+        }
+        else{
+            return back()->withInput()->with('error','Failed to save, no customer added');
+        }
+    }
+
+    public function deletePermanent($vendor, $id){
+
+        $point = \App\CustomerPoint::findOrFail($id);
+        $period = \App\PointPeriod::findOrFail($point->period_id);
+            if($point->point_claim()->count()){
+                return back()->with('error','Cannot delete, customer has claim records');
+            }else{
+                
+                $point->forceDelete();
+                return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($period->id)])
+                ->with('status', 'Customer permanently deleted!');
+            }
+        
+
     }
 }

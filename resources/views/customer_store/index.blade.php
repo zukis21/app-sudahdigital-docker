@@ -39,9 +39,11 @@
 				<li role="presentation" class="{{Request::get('status') == 'nonactive' ?'active' : '' }}">
 					<a href="{{route('customers.index', [$vendor,'status' =>'nonactive'])}}">INACTIVE</a>
 				</li>
+				<!--
 				<li role="presentation" class="{{Request::get('status') == 'reg_point' ?'active' : '' }}">
 					<a href="{{route('customers.index', [$vendor,'status' =>'reg_point'])}}">REGISTERED POINT</a>
 				</li>
+				-->
 			</ul>
 		</div>
 		<div class="col-md-6">&nbsp;</div>

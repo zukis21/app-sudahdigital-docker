@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Customer Points Lists @endsection
+@section('title')Points Order Lists {{$period != null ? $period_name : '(Current period has not been created)'}}@endsection
 @section('content')
 @if(session('status'))
 	<div class="alert alert-success">
@@ -12,6 +12,7 @@
 		{{session('error')}}
 	</div>
 @endif
+
 <div class="row">
 	<form id="form_validation" action="{{route('periodpoint.postfilter',[$vendor])}}" method="POST">
 		@csrf 
@@ -46,28 +47,38 @@
 <div class="table-responsive">
 	<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
 		<thead>
-			<tr>
-				<th>Customer</th>
+			<tr><th>Customer</th>
 				<th>Sales</th>
-				<th>Total Point</th>
+				<th>Starting Points</th>
+				<th>Points In Periods</th>
+				<th>Total Points</th>
 			</tr>
 		</thead>
 		<tbody>
-			
-			@foreach($customers as $c)
-			
-			<tr>
-				<td>
-					{{$c->store_name ? "$c->store_name" : '-'}}
-				</td>
-				<td>
-					{{$c->sales_name}}
-				</td>
-				<td>
-					{{number_format($c->grand_total,2)}}	
-		        </td>
-			</tr>
-			@endforeach
+			@if($period != null)
+				@foreach($customers as $c)
+					<tr>
+						<td>
+							{{$c->store_name ? "$c->store_name" : '-'}}
+						</td>
+						<td>
+							{{$c->sales_name}}
+						</td>
+						<td>
+							@php
+								$rest = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
+								echo number_format($rest,2);
+							@endphp
+						</td>
+						<td>
+							{{number_format($c->grand_total,2)}}	
+						</td>
+						<td>
+							{{number_format($c->grand_total + $rest ,2)}}	
+						</td>
+					</tr>
+				@endforeach
+			@endif
 		</tbody>
 	</table>
 

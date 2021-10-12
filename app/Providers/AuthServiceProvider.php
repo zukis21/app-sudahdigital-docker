@@ -136,7 +136,12 @@ class AuthServiceProvider extends ServiceProvider
             return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
         });
 
-        Gate::define('point-customers', function($user){
+        Gate::define('customers-point', function($user){
+            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+        });
+
+        Gate::define('point-order-customers', function($user){
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
             return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
         });

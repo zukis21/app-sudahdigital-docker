@@ -16,36 +16,44 @@
     <form class="needs-validation" novalidate method="POST"  action="{{route('points.store',[$vendor])}}">
     	@csrf
         
-        
+        <!--
         <div class="form-group form-float">
             <div class="form-line" >
                 <input type="text" class="form-control" name="name" 
-                value="{{old('name',$get_date->name)}}"
-                autocomplete="off" required readonly>
+                value="{{old('name')}}"
+                autocomplete="off" required>
                 <label class="form-label">Name</label>
             </div>
         </div>
 
         <div class="input-daterange input-group" id="">
             <div class="form-line">
-                <input type="text"  name="starts_at" value="{{old('starts_at',date('Y-m-d', strtotime($get_date->starts_at)))}}"
+                <input type="text"  name="starts_at" value="{{old('starts_at')}}"
                 class="start_date form-control" 
-                readonly required placeholder="Date start..." readonly>
+                readonly required placeholder="Date start...">
             </div>
             <span class="input-group-addon">to</span>
             <div class="form-line">
-                <input type="text" name="expires_at" value="{{old('expires_at',date('Y-m-d', strtotime($get_date->expires_at)))}}"
+                <input type="text" name="expires_at" value="{{old('expires_at')}}"
                 class="expires_date form-control" 
-                readonly required placeholder="Date end..." readonly>
+                readonly required placeholder="Date end...">
             </div>
         </div>
-        <input type="hidden" value="{{$get_date->id}}" name="period_id">
-        
+        -->
+        <div class="form-group form-float">
+            <div class="form-line" >
+                <select name="period_id" class="form-control periods" required>
+                    <option></option>
+                    <option value="{{$get_date->id}}">{{$get_date->name}}</option>
+                </select>
+            </div>
+        </div>
+    
         <table class="table table-responsive table-striped">
             <thead>
                 <tr>
-                    <th>Point Rules (Points)</th>
-                    <th>Bonus Amount (IDR)</th>
+                    <th>Point Rules</th>
+                    <th>Bonus Amount</th>
                     <th>#</th>
                 </tr>
             </thead>
@@ -73,7 +81,28 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
-    
+    /*
+    var start_date = <?php echo json_encode($start_date); ?>;
+    if(start_date != ''){
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            startDate: new Date(start_date),
+            autoclose: true,
+        });
+    }else{
+        $('.input-daterange').datepicker({
+            autoclose: true,
+        });
+    }
+
+     $('.points-periods').select2({
+        placeholder: 'Select period',
+    });
+    */
+
+    $('.periods').select2({
+        placeholder: 'Select period',
+    });
 
     $(function () {
         $("#btnAdd").bind("click", function () {

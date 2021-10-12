@@ -35,9 +35,12 @@ class PointVouchersController extends Controller
         return view ('voucher_points.index',['PointsPeriods'=>$PointsPeriods,'vendor'=>$vendor]);
     }
 
-    public function create($vendor)
+    public function create($vendor, $id)
     {   
-        $get_date = \App\PointPeriod::where('client_id',auth()->user()->client_id)
+        
+        $get_date = \App\PointPeriod::findOrFail(\Crypt::decrypt($id));
+        
+        /* $get_date = \App\PointPeriod::where('client_id',auth()->user()->client_id)
                        ->orderBy('expires_at','DESC')->first();
         if($get_date){
             $start_date =  date('Y-m-d', strtotime($get_date->expires_at. ' + 1 days'));
@@ -54,13 +57,13 @@ class PointVouchersController extends Controller
         ->orderBy('id','DESC')
         ->get();
         */
-        return view('voucher_points.create',['vendor'=>$vendor,'start_date'=>$start_date]);
+        return view('voucher_points.create',['vendor'=>$vendor,'get_date'=>$get_date]);
     }
 
     public function store(Request $request, $vendor)
     {
         if($request->has('point_rule')){
-            $PointPeriod = new \App\PointPeriod();
+            /*$PointPeriod = new \App\PointPeriod();
             $PointPeriod->client_id = \Auth::user()->client_id;
             $PointPeriod->name = $request->get('name');
             $originalDateStart = $request->get('starts_at');
@@ -70,7 +73,7 @@ class PointVouchersController extends Controller
             $PointPeriod->starts_at = $newDateStart;
             $PointPeriod->expires_at = $newDateExpires;
             $PointPeriod->save();
-
+            */
             if(count($request->point_rule) > 0) {
                 $sum = 0;
                 
@@ -83,7 +86,8 @@ class PointVouchersController extends Controller
                     );*/
                     $new_voucher = new \App\PointReward();
                     $new_voucher->client_id = \Auth::user()->client_id;
-                    $new_voucher->point_period()->associate($PointPeriod);
+                    /*$new_voucher->point_period()->associate($PointPeriod);*/
+                    $new_voucher->period_id = $request->period_id;   
                     $new_voucher->point_rule = $request->point_rule[$i] ?? '0';
                     $new_voucher->bonus_amount = str_replace(',', '',$request->bonus_amount[$i]) ?? '0';
                     
@@ -92,7 +96,7 @@ class PointVouchersController extends Controller
                 }
             }
 
-            return redirect()->route('points.create',[$vendor])->with('status','Point successfully saved');
+            return redirect()->route('points.details',[$vendor,\Crypt::encrypt($request->period_id)])->with('status','Point Cash Back successfully saved');
         }
         else{
             return back()->withInput()->with('error','Failed to save, no point added');
@@ -138,6 +142,7 @@ class PointVouchersController extends Controller
     public function update(Request $request, $vendor, $id)
     {
         if($request->has('point_rule')){
+            /*
             $PointPeriod = \App\PointPeriod::findOrFail($id);
             $PointPeriod->name = $request->get('name');
             $originalDateStart = $request->get('starts_at');
@@ -147,7 +152,7 @@ class PointVouchersController extends Controller
             $PointPeriod->starts_at = $newDateStart;
             $PointPeriod->expires_at = $newDateExpires;
             $PointPeriod->save();
-
+            */
             if(count($request->point_rule) > 0) {
                 $sum = 0;
                 
@@ -223,16 +228,16 @@ class PointVouchersController extends Controller
 
     }*/
 
-    public function deletePermanent($vendor, $point, $id){
+    public function deletePermanent($vendor, $id){
 
-        $points = \App\PointReward::findOrFail($point);
-        
+        $points = \App\PointReward::findOrFail($id);
+        $period = \App\PointPeriod::findOrFail($points->period_id);
             if($points->point_claim()->count()){
                 return back()->with('error','Cannot delete, point has claim records');
             }else{
                 
                 $points->forceDelete();
-                return redirect()->route('points.details',[$vendor,\Crypt::encrypt($id)])->with('status', 'Point permanently deleted!');
+                return redirect()->route('points.details',[$vendor,\Crypt::encrypt($period->id)])->with('status', 'Point permanently deleted!');
             }
         
 

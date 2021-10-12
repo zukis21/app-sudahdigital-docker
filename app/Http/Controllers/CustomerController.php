@@ -156,7 +156,10 @@ class CustomerController extends Controller
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
             $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
-            return view('customer_store.create',['vendor'=>$vendor,'type'=>$type]);
+            $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
+                    ->orderBy('position', 'ASC')
+                    ->get();
+            return view('customer_store.create',['vendor'=>$vendor,'type'=>$type,'pareto'=>$pareto]);
         }
         else{
             abort(403, 'Anda tidak memiliki cukup hak akses');
@@ -206,6 +209,9 @@ class CustomerController extends Controller
         $new_cust->city_id = $request->get('city');
         $new_cust->address = $request->get('address');
         $pay_trm = $request->get('payment_term');
+
+        $new_cust->pareto_id = $request->get('pareto_id');
+
         if($pay_trm == 'TOP'){
             $new_cust->payment_term = $request->get('pay_cust').' Days';
         }else{
@@ -222,7 +228,7 @@ class CustomerController extends Controller
         $new_cust->lng = $lng;
         
         $new_cust->cust_type = $request->get('cust_type');
-        $new_cust->reg_point = $request->get('reg_point');
+        //$new_cust->reg_point = $request->get('reg_point');
         $new_cust->save();
         if ( $new_cust->save()){
             return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');
@@ -351,9 +357,15 @@ class CustomerController extends Controller
             $cust->city_id = $request->get('city');
             $cust->address = $request->get('address');
             $pay_trm = $request->get('payment_term');
-            $cust->pareto_id = $request->get('pareto_id');
+            $pareto_code = $request->get('pareto_id');
+            if($pareto_code == 0){
+                $cust->pareto_id = NULL;
+            }else{
+                $cust->pareto_id = $pareto_code;
+            }
+            
             $cust->status = $request->get('status');
-            $cust->reg_point = $request->get('reg_point');
+            //$cust->reg_point = $request->get('reg_point');
             
             //$cust->target_store = $request->get('target_store');
             if($pay_trm == 'TOP'){

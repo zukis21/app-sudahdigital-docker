@@ -288,24 +288,30 @@
                         @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                             <!--Voucher points-->
                             <li class="{{request()->routeIs('points.index') ||
-                                         /*request()->routeIs('points_periods.index') ||*/
+                                         request()->routeIs('points_periods.index') ||
+                                         request()->routeIs('CustomerPoints.index') ||
                                          request()->routeIs('pr_points.index') ? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="fas fa-gift-card " style="font-size:18px;margin-top:6px;margin-left:3px;"></i>
                                     <span>Point Vouchers</span>
                                 </a>
                                 <ul class="ml-menu">
-                                    <!--
                                     <li class="{{request()->routeIs('points_periods.index') ? 'active' : '' }}">
                                         <a href="{{route('points_periods.index',[$vendor])}}">Point Periods</a>
                                     </li>
-                                    -->
+                                    <!--
                                     <li class="{{request()->routeIs('points.index') ? 'active' : '' }}">
-                                        <a href="{{route('points.index',[$vendor])}}">Point Lists</a>
+                                        <a href="{{route('points.index',[$vendor])}}">Point Cash Back</a>
                                     </li>
+                                    -->
                                     <li class="{{request()->routeIs('pr_points.index') ? 'active' : '' }}">
                                         <a href="{{route('pr_points.index',[$vendor])}}">Product Points</a>
                                     </li>
+                                    <!--
+                                    <li class="{{request()->routeIs('CustomerPoints.index') ? 'active' : '' }}">
+                                        <a href="{{route('CustomerPoints.index',[$vendor])}}">Customer Points</a>
+                                    </li>
+                                    -->
                                 </ul>
                             </li>
 
@@ -353,7 +359,7 @@
                                 </li>
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                     <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
-                                        <a href="{{route('customers_points.index',[$vendor])}}">Points</a>
+                                        <a href="{{route('customers_points.index',[$vendor])}}">Order Points</a>
                                     </li>
                                     <li class="{{request()->routeIs('reasons.index') ? 'active' : '' }}">
                                         <a href="{{route('reasons.index',[$vendor])}}">Checkout Reasons List</a>
@@ -619,7 +625,7 @@
         $(".alert").fadeTo(500, 0).slideUp(500, function(){
             $(this).remove(); 
         });
-        }, 7000);
+        }, 3000);
     </script>
     @yield('footer-scripts')
 </body>

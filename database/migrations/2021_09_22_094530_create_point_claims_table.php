@@ -15,9 +15,10 @@ class CreatePointClaimsTable extends Migration
     {
         Schema::create('point_claims', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('customer_id')->unsigned();
+            $table->bigInteger('custpoint_id')->unsigned();
             $table->integer('reward_id')->unsigned();
-            $table->timestamp('claim_date');
+            $table->integer('type');
+            $table->float('override_points')->nullable();
             $table->timestamps();
 
             //$table->foreign('customer_id')->references('id')->on('customers');

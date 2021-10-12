@@ -152,6 +152,9 @@
                 <h2 class="card-inside-title">Pareto Code</h2>
                 <select name="pareto_id"  id="pareto_id" class="form-control">
                     <option></option>
+                    @if ($cust->pareto_id)
+                        <option value="0">Not Pareto</option>
+                    @endif
                     @foreach($pareto as $ty)
                         <option value="{{$ty->id}}" {{$ty->id == $cust->pareto_id ? 'selected' : ''}}>{{$ty->pareto_code}}</option>
                     @endforeach
@@ -187,6 +190,7 @@
                 <label for="INACTIVE">INACTIVE</label>
             </div>
 
+            <!--
             <h2 class="card-inside-title">Registered Points</h2>
             <div class="form-group">
                 <input type="radio" value="Y" name="reg_point" id="Y" {{$cust->reg_point == 'Y' ? 'checked' : ''}}>
@@ -195,7 +199,7 @@
                 <input type="radio" value="N" name="reg_point" id="N" {{$cust->reg_point == 'N' ? 'checked' : ''}}>
                 <label for="N">N</label>
             </div>
-           
+            -->
         @endif
         
         <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">UPDATE</button>

@@ -10,4 +10,11 @@ class PointPeriod extends Model
     {
     	return $this->hasMany('App\PointReward','period_id');
     }
+
+    public function point_customers()
+    {
+    	return $this->hasMany('App\CustomerPoint','period_id');
+    }
+
+    
 }
