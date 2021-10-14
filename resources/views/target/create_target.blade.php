@@ -49,10 +49,33 @@
                 </div>
             </div>
             <br>
-            
-            <div class="form-group form-float">
+
+            <div class="form-group form-radio">
+                <input type="radio" class="form-check-inline" value="1" 
+                    name="target_type" id="quantity_target" onclick='showQty();' required>
+                <label for="quantity_target">Quantity Target</label>
+                <br>
+                <input type="radio" class="form-check-inline" value="2" 
+                    name="target_type" id="nominal_target" onclick='showNml();'>
+                <label for="nominal_target">Nominal Target</label>
+                <br>
+                <input type="radio" class="form-check-inline" value="3" 
+                    name="target_type" id="qty_nml_target" onclick='showQtyNml();'>
+                <label for="qty_nml_target">Quantity & Nominal Target</label>
+            </div>
+
+            <div class="form-group form-float" id="inputQtyTarget" style="display: none">
                 <div class="form-line">
-                    <input type="text" class="form-control" name="target_value" value="{{old('target_value')}}" 
+                    <input type="number" class="form-control target_quantity" min='0' name="target_quantity" 
+                    value="{{old('target_quantity')}}" autocomplete="off">
+                    
+                    <label class="form-label">Monthly Target Quantity (BOX)</label>
+                </div>
+            </div>
+            
+            <div class="form-group form-float" id="InputNominalTarget" style="display: none"    >
+                <div class="form-line">
+                    <input type="text" class="form-control target_nominal" name="target_value" value="{{old('target_value')}}" 
                     id="currency-field" data-type="currency" autocomplete="off" required>
                     
                     <label class="form-label">Monthly Target Value (IDR)</label>
@@ -75,6 +98,34 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script type="text/javascript">
+        function showQty()
+        {
+            var x = document.getElementById('inputQtyTarget');
+            var y = document.getElementById('InputNominalTarget');
+            x.style.display = 'block';
+            y.style.display = 'none';
+            $('.target_quantity').prop('required',true);
+            $('.target_nominal').prop('required',false);
+        }
+        function showNml()
+        {
+            var x = document.getElementById('inputQtyTarget');
+            var y = document.getElementById('InputNominalTarget');
+            x.style.display = 'none';
+            y.style.display = 'block';
+            $('.target_quantity').prop('required',false);
+            $('.target_nominal').prop('required',true);
+        }
+        function showQtyNml()
+        {
+            var x = document.getElementById('inputQtyTarget');
+            var y = document.getElementById('InputNominalTarget');
+            x.style.display = 'block';
+            y.style.display = 'block';
+            $('.target_quantity').prop('required',true);
+            $('.target_nominal').prop('required',true);
+        }
+
         $("input[data-type='currency']").on({
             keyup: function() {
             formatCurrency($(this));

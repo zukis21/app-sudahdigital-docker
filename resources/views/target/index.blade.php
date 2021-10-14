@@ -23,11 +23,15 @@
 					<!--<th>No</th>-->
 					<th>Name</th>
 					<th>VAT(PPN)</th>
+					<th>Target Type</th>
+					<th>Target Qty(BOX)</th>
 					<th>Target Val.(IDR)</th>
 					<th>Achieve. (IDR)</th>
 					<th>Period</th>
+					<!--
 					<th>Created By</th>
 					<th>Updated By</th>
+					-->
 					<th>#</th>
 				</tr>
 			</thead>
@@ -52,9 +56,29 @@
 							
 						</td>
 						<td>
-							
-							{{number_format($u->target_values)}}
-							
+							@if($u->target_type == 1)
+								Qty
+							@elseif($u->target_type == 2)
+								Nominal
+							@elseif($u->target_type == 3)
+								Qty & Nominal
+							@else
+							-
+							@endif
+						</td>
+						<td>
+							@if ($u->target_type == 1 || $u->target_type == 3)
+								{{$u->target_quantity}}
+							@else
+								-
+							@endif
+						</td>
+						<td>
+							@if ($u->target_type == 2 || $u->target_type == 3)
+								{{number_format($u->target_values)}}
+							@else
+								-
+							@endif
 						</td>
 						<td>
 							
@@ -91,6 +115,7 @@
 							@endphp
 							<small><b>{{$customer.' Customers'}}</b></small>
 						</td>
+						<!--
 						<td>
 							
 								{{$u->created_by ? $u->created_of->name : ''}}
@@ -105,6 +130,7 @@
 								{{$u->updated_by ? $u->updated_at : ''}}
 							
 						</td>
+						-->
 						<td>
 							
 							<a class="btn btn-info btn-xs" href="{{route('sales.edit_target',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;

@@ -130,7 +130,7 @@ Home
         }
     }
 
- </style>
+</style>
 
     @if(session('sukses_peesan'))
     <div class="alert alert-success">

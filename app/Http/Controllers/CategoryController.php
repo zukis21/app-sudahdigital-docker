@@ -73,6 +73,7 @@ class CategoryController extends Controller
     {
         $name = $request->get('name');
         $newCategory = new \App\Category;
+        
         $newCategory->client_id = $request->get('client_id');
         $newCategory->name = $name;
         if($request->file('image')){
@@ -81,10 +82,11 @@ class CategoryController extends Controller
         }
         $newCategory->create_by = \Auth::user()->id;
         
-        if($request->has('parent_id')){
+        if($request->get('parent_id') != ''){
             $newCategory->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
             $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
+            //dd($categories);
         }
         else{
             $newCategory->parent_id = null;

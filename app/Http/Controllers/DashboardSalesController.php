@@ -161,8 +161,12 @@ class DashboardSalesController extends Controller
                 $ach_value = $ach_value_ppn/1.1;
             }else{
                 $ach_value = $ach_value_ppn;
+            }
+
+            if($userval->target_values > 0){
+                $percentage[]= round(($ach_value / $userval->target_values) * 100 ,2);
             }            
-            $percentage[]= round(($ach_value / $userval->target_values) * 100 ,2);
+            
             $red_line[]= $param_line;
         }
         $users_display = array_unique($user_value);
@@ -346,4 +350,20 @@ class DashboardSalesController extends Controller
                                                 ->with('months',json_encode($months))
                                                 ->with('target_ach',json_encode($target_ach,JSON_NUMERIC_CHECK));*/
     }
+
+    /*
+    public static function total_pareto($user_id,$pareto_id){
+        $date_now = date('Y-m-d');
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                     ->where('period','<=',$date_now)
+                     ->max('period');
+        //dd($period_par);
+        $count_pareto = \App\Store_Targets::whereHas('customers', function($q) use ($user_id){
+                            return $q->where('user_id',$user_id);
+                        })
+                        ->where('client_id',\Auth::user()->client_id)
+                        ->where('period',$period_par)->count();
+
+        return $count_pareto;
+    }*/
 }

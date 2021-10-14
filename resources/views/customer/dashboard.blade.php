@@ -375,6 +375,10 @@
                         $cust_total_p = \App\Customer::where('user_id',$user_id)
                                       ->where('pareto_id',$prt->id)
                                       ->count();
+                        /*              
+                        $rest = App\Http\Controllers\DashboardSalesController::starting_point($user_id,$prt->id);
+                        echo number_format($rest,2);*/
+							
                         
                         $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
                                       {
@@ -477,11 +481,11 @@
                       </div>
                       </div>
                       <div class="mt-4" >
-                        <h6 class="">Target Sales Total <span class="float-right">{{round((($total_ach/$target->target_values) * 100) ,2)}}%</span></h6>
+                        <h6 class="">Target Sales Total <span class="float-right">{{($target->values > 0 ) ? round((($total_ach/$target->target_values) * 100) ,2) : '0'}}%</span></h6>
                         <div class="progress progress-sm m-0" style="height: 10px;">
                           
-                            <div class="progress-bar " role="progressbar" aria-valuenow="{{($total_ach/$target->target_values) * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($total_ach/$target->target_values) * 100}}%;background-color: #95E0F9 !important;">
-                                <span class="sr-only">{{($total_ach/$target->target_values) * 100}}% Complete</span>
+                            <div class="progress-bar " role="progressbar" aria-valuenow="{{($target->values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($target->values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}%;background-color: #95E0F9 !important;">
+                                <span class="sr-only">{{($target->values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}% Complete</span>
                                 <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
                                 <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
                             </div>

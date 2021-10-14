@@ -154,12 +154,28 @@ class TargetController extends Controller
         $new_t = new \App\Sales_Targets;
         $new_t->client_id = $request->get('client_id');
         $new_t->user_id = $user_id;
-        $new_t->target_values = str_replace(',', '', $request->get('target_value'));
+
+        $new_t->target_type = $request->get('target_type');
+        $target_value = $request->get('target_value');
+        if($target_value == ''){
+            $new_t->target_values = 0;
+        }else{
+            $new_t->target_values = str_replace(',', '', $target_value);
+        }
+        
         $new_t->target_achievement = $ach_value;
         $period = $date_period.'-01';
         $new_t->period = $period;
         $new_t->created_by = \Auth::user()->id;
         $new_t->ppn =$ppn;
+
+        $target_qty = $request->get('target_quantity');
+        if($target_qty == ''){
+            $new_t->target_quantity = 0;
+        }else{
+            $new_t->target_quantity = $target_qty;
+        }
+        
         $new_t->save();
         if ( $new_t->save()){
             return redirect()->route('sales.create_target',[$vendor])->with('status','Target Succsessfully Created');
@@ -352,12 +368,37 @@ class TargetController extends Controller
             $ach_value = 0;
         }
 
-        $new_t->target_values = str_replace(',', '', $request->get('target_value'));
+        $target_type = $request->get('target_type');
+        $new_t->target_type = $target_type;
+        if($target_type == '1'){
+            $target_qty = $request->get('target_quantity');
+            $new_t->target_quantity = $target_qty;
+            $new_t->target_values = 0;
+        }elseif($target_type == '2'){
+            $new_t->target_quantity = 0;
+            $target_value = $request->get('target_value');
+            $new_t->target_values = str_replace(',', '', $target_value);
+        }else{
+            $target_qty = $request->get('target_quantity');
+            $target_value = $request->get('target_value');
+            $new_t->target_quantity = $target_qty;
+            $new_t->target_values = str_replace(',', '', $target_value);
+        }
+        
+        /*$target_value = $request->get('target_value');
+        if($target_value == ''){
+            $new_t->target_values = 0;
+        }else{
+            $new_t->target_values = str_replace(',', '', $target_value);
+        }*/
+
+        //$new_t->target_values = str_replace(',', '', $request->get('target_value'));
         $new_t->target_achievement = $ach_value;
         $period = $date_period.'-01';
         $new_t->period = $period;
         $new_t->updated_by = \Auth::user()->id;
         $new_t->ppn = $ppn;
+
         $new_t->save();
         if ( $new_t->save()){
             return redirect()->route('sales.edit_target',[$vendor, \Crypt::encrypt($id_target)])->with('status','Target Succsessfully Update');

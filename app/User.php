@@ -37,7 +37,7 @@ class User extends Authenticatable
     }
 
     public function customers(){
-        return $this->hasMany('App\customer','user_id');
+        return $this->hasMany('App\Customer','user_id');
     }
 
     public function spv(){
