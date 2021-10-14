@@ -90,7 +90,9 @@ class CategoryController extends Controller
         }
         else{
             $newCategory->parent_id = null;
-            $newCategory->slug = \Str::slug($name,'-');
+            $categories_id =  \App\Category::max('id');
+            //dd($categories);
+            $newCategory->slug = \Str::slug($name,'-').'-'.$categories_id+1;
         }
         $newCategory->save();
         return redirect()->route('categories.create',[$vendor])->with('status','Category Succesfully Created'); 
