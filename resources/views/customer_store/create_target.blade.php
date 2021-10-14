@@ -62,6 +62,7 @@
                             </td>
                             <td>
                                 <input type="hidden" name="customer_id[]" value="{{$u->id}}">
+                                <input type="hidden" name="version_pareto[]" value="{{$u->pareto->id}}">
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         

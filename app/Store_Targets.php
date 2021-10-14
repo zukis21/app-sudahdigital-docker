@@ -15,7 +15,8 @@ class Store_Targets extends Model
         'target_achievement',
         'period',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'version_pareto'
     ];
 
     public function customers(){
@@ -28,5 +29,9 @@ class Store_Targets extends Model
 
     public function updated_of(){
         return $this->belongsTo('App\User','updated_by');
+    }
+
+    public function pareto(){
+        return $this->belongsTo('App\CatPareto','version_pareto');
     }
 }

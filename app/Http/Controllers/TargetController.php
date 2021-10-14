@@ -196,6 +196,7 @@ class TargetController extends Controller
                     'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
                     'period'=>$request->period.'-01',
                     'created_by'=>\Auth::user()->id,
+                    'version_pareto'=>$request->version_pareto[$i],
                 );
                 $new_t = new \App\Store_Targets;
                 $new_t->create($data_target);
@@ -291,6 +292,7 @@ class TargetController extends Controller
                     'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
                     'period'=>$period,
                     'created_by'=>\Auth::user()->id,
+                    'version_pareto'=>$request->version_pareto[$i],
                 );
                 $new_t = new \App\Store_Targets;
                 $new_t->create($data_target);

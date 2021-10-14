@@ -96,6 +96,7 @@ class CustomerController extends Controller
                     )
                 ");
             }
+            //dd($customers);
         }
         else{
             $customers = \App\Customer::with('users')->with('cities')->with('type_cust')

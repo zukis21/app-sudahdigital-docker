@@ -93,9 +93,16 @@
 					-
 					@endif
 					<br>
-					@if($c->pareto_id)
-						<span class="badge bg-orange">{{$c->pareto->pareto_code}}</span>
+					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+						@if($c->pareto_id)
+							<span class="badge bg-orange">{{$c->pareto->pareto_code}}</span>
+						@endif
+					@else
+						@if($c->pareto_id)
+							<span class="badge bg-orange">{{$c->pareto_code}}</span>
+						@endif
 					@endif
+
 				</td>
 				<td>
 					<small class="text-primary"><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>

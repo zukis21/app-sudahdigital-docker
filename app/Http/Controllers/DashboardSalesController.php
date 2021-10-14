@@ -351,7 +351,7 @@ class DashboardSalesController extends Controller
                                                 ->with('target_ach',json_encode($target_ach,JSON_NUMERIC_CHECK));*/
     }
 
-    /*
+    
     public static function total_pareto($user_id,$pareto_id){
         $date_now = date('Y-m-d');
         $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
@@ -361,9 +361,30 @@ class DashboardSalesController extends Controller
         $count_pareto = \App\Store_Targets::whereHas('customers', function($q) use ($user_id){
                             return $q->where('user_id',$user_id);
                         })
+                        ->where('version_pareto',$pareto_id)
                         ->where('client_id',\Auth::user()->client_id)
                         ->where('period',$period_par)->count();
 
         return $count_pareto;
-    }*/
+    }
+
+    public static function amountParetoOrder($user_id,$month,$year,$pareto_id){
+        $date_now = date('Y-m-d');
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                     ->where('period','<=',$date_now)
+                     ->max('period');
+        //dd($period_par);
+        $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
+                                      {
+                                          return $q->where('user_id','=',"$user_id")
+                                                  ->whereNotNull('customer_id')
+                                                  ->whereMonth('created_at', '=', $month)
+                                                  ->whereYear('created_at', '=', $year)
+                                                  ->where('status','!=','CANCEL')
+                                                  ->where('status','!=','NO-ORDER')
+                                                  ->groupBy('customer_id');
+                                      })
+                                      ->where('pareto_id',$prt->id)
+                                      ->get();
+    }
 }

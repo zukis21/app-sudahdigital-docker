@@ -375,12 +375,12 @@
                         $cust_total_p = \App\Customer::where('user_id',$user_id)
                                       ->where('pareto_id',$prt->id)
                                       ->count();
-                        /*              
-                        $rest = App\Http\Controllers\DashboardSalesController::starting_point($user_id,$prt->id);
-                        echo number_format($rest,2);*/
-							
+                                      
+                        //$cust_total_p = App\Http\Controllers\DashboardSalesController::total_pareto($user_id,$prt->id);
+
+                        //$cust_exists_p = App\Http\Controllers\DashboardSalesController::amountParetoOrder($user_id,$month,$year,$prt->id);
                         
-                        $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
+							          $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
                                       {
                                           return $q->where('user_id','=',"$user_id")
                                                   ->whereNotNull('customer_id')
