@@ -401,7 +401,8 @@ class DashboardSalesController extends Controller
                         ts.version_pareto = '$pareto_id' AND
                         EXISTS (SELECT o.customer_id as ocs, o.client_id as oc, o.user_id, o.created_at, o.status FROM 
                         orders as o 
-                        WHERE 
+                        WHERE
+                        o.customer_id != NULL AND
                         o.user_id = '$user_id' AND
                         o.customer_id = ts.customer_id AND
                         MONTH (o.created_at) = '$month' AND

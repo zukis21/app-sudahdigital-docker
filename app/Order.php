@@ -70,7 +70,7 @@ class Order extends Model
     }
 
     public function store_target(){
-        return $this->belongsTo('App\Store_Targets','customer_id');
+        return $this->belongsToMany('App\Store_Targets','customer_id');
     }
 
     public function getTotalQuantityAttribute(){
