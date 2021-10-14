@@ -323,6 +323,7 @@ class TargetController extends Controller
                              return $q->where('period',$id)
                                      ->where('client_id',auth()->user()->client_id);
                          })
+                      ->where('client_id',auth()->user()->client_id)
                       ->get();
             //dd(count($exist_store));
             
