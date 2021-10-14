@@ -69,6 +69,10 @@ class Order extends Model
         return $this->belongsTo('App\ReasonsCheckout','reasons_id');
     }
 
+    public function store_target(){
+        return $this->belongsTo('App\Store_Targets','customer_id');
+    }
+
     public function getTotalQuantityAttribute(){
         $total_quantity = 0;
         foreach($this->products as $p){

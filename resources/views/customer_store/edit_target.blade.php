@@ -113,9 +113,9 @@
                                 
                             </td>
                             <td>
-                                @if($u->customers->pareto_id)
+                                @if($u->version_pareto)
                                     @php
-                                        $prt = \App\CatPareto::findorFail($u->customers->pareto_id);
+                                        $prt = \App\CatPareto::findorFail($u->version_pareto);
                                     @endphp
                                 {{$prt->pareto_code}}
                                 @else

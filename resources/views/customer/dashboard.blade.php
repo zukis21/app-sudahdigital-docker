@@ -372,65 +372,21 @@
                     @foreach($pareto as $prt)
                       @php
                         //jumlah toko pareto
-                        $cust_total_p = \App\Customer::where('user_id',$user_id)
-                                      ->where('pareto_id',$prt->id)
-                                      ->count();
-                                      
-                        //$cust_total_p = App\Http\Controllers\DashboardSalesController::total_pareto($user_id,$prt->id);
+                        $cust_total_p = App\Http\Controllers\DashboardSalesController::total_pareto($user_id,$prt->id);
 
-                        //$cust_exists_p = App\Http\Controllers\DashboardSalesController::amountParetoOrder($user_id,$month,$year,$prt->id);
+                        $cust_exists_p = App\Http\Controllers\DashboardSalesController::amountParetoOrder($user_id,$month,$year,$prt->id);
                         
-							          $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
-                                      {
-                                          return $q->where('user_id','=',"$user_id")
-                                                  ->whereNotNull('customer_id')
-                                                  ->whereMonth('created_at', '=', $month)
-                                                  ->whereYear('created_at', '=', $year)
-                                                  ->where('status','!=','CANCEL')
-                                                  ->where('status','!=','NO-ORDER')
-                                                  ->groupBy('customer_id');
-                                      })
-                                      ->where('pareto_id',$prt->id)
-                                      ->get();
-                        
-                        //target/pencapaian pareto
+							          //target/pencapaian pareto
                         if($period_par != null){
                             $pr = $prt->id;
-                            $target_str = \App\Store_Targets::
-                                        whereHas('customers', function($q) use($user_id,$pr)
-                                        {
-                                            return $q->where('pareto_id',$pr)
-                                                      ->where('user_id',$user_id);
-                                            
-                                        })
-                                        ->where('period',$period_par)
+                            $target_str = \App\Store_Targets::where('period',$period_par)
+                                        ->where('version_pareto',$prt->id)
                                         ->selectRaw('sum(target_values) as sum')
                                         ->pluck('sum');
 
                             $total_tp = json_decode($target_str,JSON_NUMERIC_CHECK);
                             $total_target = $total_tp[0];
                           //dd($total_target);
-                        
-                          //ach pareto
-                          $ach_p = \App\Order::whereHas('customers', function($q) use($user_id,$pr)
-                                      {
-                                          return $q->where('pareto_id',$pr);
-                                      })
-                                      ->where('user_id','=',"$user_id")
-                                      ->whereNotNull('customer_id')
-                                      ->whereMonth('created_at', '=', $month)
-                                      ->whereYear('created_at', '=', $year)
-                                      ->where('status','!=','CANCEL')
-                                      ->where('status','!=','NO-ORDER')
-                                      ->selectRaw('sum(total_price) as sum')
-                                      ->pluck('sum');
-                          $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
-                          $total_ach_pareto_ppn = $total_ap[0];
-                          if($target->ppn == 1){
-                            $total_ach_pareto = $total_ach_pareto_ppn/1.1;
-                          }else{
-                            $total_ach_pareto = $total_ach_pareto_ppn;
-                          }
                         }
                       @endphp
 
@@ -498,6 +454,23 @@
                   @if($pareto)
                     
                     @foreach($pareto as $prt)
+                    @php
+                    //target/pencapaian pareto
+                    if($period_par != null){
+                        $pr = $prt->id;
+                      
+                      //ach pareto
+                      $ach_p = App\Http\Controllers\DashboardSalesController::achUserPareto($user_id,$month,$year,$pr);
+                      
+                      $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
+                      $total_ach_pareto_ppn = $total_ap[0];
+                      if($target->ppn == 1){
+                        $total_ach_pareto = $total_ach_pareto_ppn/1.1;
+                      }else{
+                        $total_ach_pareto = $total_ach_pareto_ppn;
+                      }
+                    }
+                    @endphp
                       <!--target/pencapaian pareto-->
                       <div class="col-md-4 mb-4" data-aos="zoom-in">
                         <div class="box-green">

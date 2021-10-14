@@ -38,6 +38,10 @@ class DashboardSalesController extends Controller
                 ->whereMonth('period', '=', $month)
                 ->whereYear('period', '=', $year)
                 ->first();
+        //parameter pareto period
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                ->where('period','<=',$date_now)
+                ->max('period');
 
         $order_ach = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
@@ -72,11 +76,14 @@ class DashboardSalesController extends Controller
                             ->where('status','!=','NO-ORDER');
                             
                 })
+                ->whereHas('store_targets', function ($query) use($period_par) {
+                    return $query->where('period', $period_par)
+                    ->where('client_id',\Auth::user()->client_id);
+                })
                 ->where('client_id',\Auth::user()->client_id)
-                ->whereNotNull('pareto_id')
                 ->where('user_id',$user_id)->get();
-
         //dd($cus_not_exists);
+
         $cust_exists = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
                 {
                     return $q->where('user_id','=',"$user_id")
@@ -86,6 +93,10 @@ class DashboardSalesController extends Controller
                             ->where('status','!=','CANCEL')
                             ->where('status','!=','NO-ORDER')
                             ->groupBy('customer_id');
+                })
+                ->whereHas('store_targets', function ($query) use($period_par) {
+                    return $query->where('period', $period_par)
+                    ->where('client_id',\Auth::user()->client_id);
                 })
                 ->where('client_id',\Auth::user()->client_id)
                 ->whereNotNull('pareto_id')
@@ -101,13 +112,6 @@ class DashboardSalesController extends Controller
                         ->orderBy('created_at','DESC')
                         ->get();
         
-
-        //target pareto
-        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
-                     ->where('period','<=',$date_now)
-                     ->max('period');
-        //dd($period_par);
-            
         //--hari berjalan
         $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
                     ->whereMonth('work_period', '=', $month)
@@ -353,6 +357,9 @@ class DashboardSalesController extends Controller
 
     
     public static function total_pareto($user_id,$pareto_id){
+        /*$cust_total_p = \App\Customer::where('user_id',$user_id)
+                                      ->where('pareto_id',$prt->id)
+                                      ->count();*/
         $date_now = date('Y-m-d');
         $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
                      ->where('period','<=',$date_now)
@@ -369,12 +376,7 @@ class DashboardSalesController extends Controller
     }
 
     public static function amountParetoOrder($user_id,$month,$year,$pareto_id){
-        $date_now = date('Y-m-d');
-        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
-                     ->where('period','<=',$date_now)
-                     ->max('period');
-        //dd($period_par);
-        $cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
+        /*$cust_exists_p = \App\Customer::whereHas('orders', function($q) use($user_id,$month,$year)
                                       {
                                           return $q->where('user_id','=',"$user_id")
                                                   ->whereNotNull('customer_id')
@@ -385,6 +387,50 @@ class DashboardSalesController extends Controller
                                                   ->groupBy('customer_id');
                                       })
                                       ->where('pareto_id',$prt->id)
-                                      ->get();
+                                      ->get();*/
+        $client_id = \Auth::user()->client_id;
+        $date_now = date('Y-m-d');
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                     ->where('period','<=',$date_now)
+                     ->max('period');
+        //dd($period_par);
+        $cust_exists_p = \DB::select("SELECT ts.client_id, ts.customer_id, ts.period, ts.version_pareto FROM store_target as ts
+                        WHERE 
+                        ts.period ='$period_par'AND
+                        ts.client_id = '$client_id' AND
+                        ts.version_pareto = '$pareto_id' AND
+                        EXISTS (SELECT o.customer_id as ocs, o.client_id as oc, o.user_id, o.created_at, o.status FROM 
+                        orders as o 
+                        WHERE 
+                        o.user_id = '$user_id' AND
+                        o.customer_id = ts.customer_id AND
+                        MONTH (o.created_at) = '$month' AND
+                        YEAR (o.created_at) = '$year' AND
+                        o.status != 'CANCEL' AND o.status != 'NO-ORDER' 
+                        GROUP BY o.customer_id);");
+        
+        return $cust_exists_p;
+    }
+
+    public static function achUserPareto($user_id,$month,$year,$pr)
+    {
+        $date_now = date('Y-m-d');
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                     ->where('period','<=',$date_now)
+                     ->max('period');
+        $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+                {
+                    return $q->where('version_pareto',$pr)
+                    ->where('period',$period_par);
+                })
+                ->where('user_id',$user_id)
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->selectRaw('sum(total_price) as sum')
+                ->pluck('sum');
+        return $ach_p;             
     }
 }
