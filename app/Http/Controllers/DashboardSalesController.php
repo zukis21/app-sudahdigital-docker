@@ -406,7 +406,7 @@ class DashboardSalesController extends Controller
                         o.customer_id = ts.customer_id AND
                         MONTH (o.created_at) = '$month' AND
                         YEAR (o.created_at) = '$year' AND
-                        o.status != 'CANCEL' AND o.status != 'NO-ORDER'
+                        o.status != 'CANCEL' AND o.status != 'NO-ORDER' AND
                         o.customer_id IS NOT NULL 
                         GROUP BY o.customer_id);");
         
