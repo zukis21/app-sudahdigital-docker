@@ -140,7 +140,7 @@ class AjaxCitySearch extends Controller
             $longitudeTo = $custlatlng->lng;
 
             $distance = $this->vincentyGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo);
-            if ($distance < 200) {
+            if ($distance < 100) {
                 echo "taken";	
             }else{
                 echo 'not_taken';

@@ -62,6 +62,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
             //dd($rows);
             $code = $rows['product_code'];
             $cek = product::withTrashed()
+                  ->where('client_id','=',auth()->user()->client_id)
                   ->where('product_code',$code)->count();
             //$cek = \DB::select("SELECT COUNT (product_code) FROM products WHERE product_code = (select
             //product_code from products where )");
@@ -74,6 +75,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
             if($cek > 0){
                 //$code = $rows['product_code'];
                 $product = product::withTrashed()
+                         ->where('client_id','=',auth()->user()->client_id)
                          ->where('product_code','=',"$code")->first();
                 //$product = \DB::select("SELECT * FROM products WHERE product_code = '$code' LIMIT 1");
                 $product->client_id = $stock_status->client_id;
