@@ -402,7 +402,7 @@ class DashboardSalesController extends Controller
                         EXISTS (SELECT o.customer_id as ocs, o.client_id as oc, o.user_id, o.created_at, o.status FROM 
                         orders as o 
                         WHERE
-                        o.customer_id != NULL AND
+                        ocs IS NOT NULL AND
                         o.user_id = '$user_id' AND
                         o.customer_id = ts.customer_id AND
                         MONTH (o.created_at) = '$month' AND
