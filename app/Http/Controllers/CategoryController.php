@@ -85,7 +85,8 @@ class CategoryController extends Controller
         if($request->get('parent_id') != ''){
             $newCategory->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
-            $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
+            $categories_id =  \App\Category::max('id');
+            $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-').'-'.$categories_id+1;
             //dd($categories);
         }
         else{
@@ -153,7 +154,7 @@ class CategoryController extends Controller
         if($request->get('parent_id') != ''){
             $category->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
-            $category->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
+            $category->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-').'-'.$category->id;
         }
         else{
             $category->parent_id = null;
