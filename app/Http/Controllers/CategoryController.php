@@ -86,14 +86,14 @@ class CategoryController extends Controller
             $newCategory->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
             $categories_id =  \App\Category::max('id');
-            $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-').'-'.floatval($categories_id)+1;
+            $newCategory->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-').'-'.((int)$categories_id)+1;
             //dd($categories);
         }
         else{
             $newCategory->parent_id = null;
             $categories_id =  \App\Category::max('id');
             //dd($categories);
-            $newCategory->slug = \Str::slug($name,'-').'-'.floatval($categories_id)+1;
+            $newCategory->slug = \Str::slug($name,'-').'-'.((int)$categories_id)+1;
         }
         $newCategory->save();
         return redirect()->route('categories.create',[$vendor])->with('status','Category Succesfully Created'); 
