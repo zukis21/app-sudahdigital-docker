@@ -150,14 +150,14 @@ class CategoryController extends Controller
             $category->image_category = $new_image;
         }
 
-        if($request->has('parent_id')){
+        if($request->get('parent_id') != ''){
             $category->parent_id = $request->get('parent_id');
             $categories = \App\Category::findOrFail($request->get('parent_id'));
             $category->slug = $categories->id.'-'.\Str::slug($categories->name,'-').'-'.\Str::slug($name,'-');
         }
         else{
             $category->parent_id = null;
-            $category->slug = \Str::slug($name,'-');
+            $category->slug = \Str::slug($name,'-').'-'.$category->id;
         }
             
             $category->update_by = \Auth::user()->id;
