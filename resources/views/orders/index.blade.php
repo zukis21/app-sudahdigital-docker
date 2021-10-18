@@ -88,8 +88,10 @@
 							{{$odr->payment_method}}
 						</small>	
 					@else
-						@if($order->customers->status == 'NEW')
+						@if($order->customers->status == 'NEW' && $order->status != 'NO-ORDER')
 							<a href="{{route('orders.addnew_customer',[$vendor,Crypt::encrypt($order->customers->id),$order->payment_method])}}"><span class="badge bg-pink">New Customer</span></a><br>
+						@else
+							<a href="{{route('orders.addnew_customer',[$vendor,Crypt::encrypt($order->customers->id)])}}"><span class="badge bg-pink">New Customer</span></a><br>
 						@endif
 						
 						<small><b>Name :</b> {{$order->customers->store_name}}</small><br>

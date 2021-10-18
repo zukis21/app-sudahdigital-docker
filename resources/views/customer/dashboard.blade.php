@@ -327,41 +327,79 @@
           -->
           
           <div class="col-12 mb-3" style="z-index: 2;">
-            <section class="info-box  ">
+            <section class="info-box">
               <div class="container">
                 <div class="row">
 
                   <!--total toko order-->
                   <div class="col-md-4 mb-4" data-aos="zoom-in">
-                    <div class="box-blue">
-                      <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
-                      <div class="info">
-                        <div class="media-body align-self-center">
-                          <div class="text-right mt-1">
-                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                              {{$order}} / {{$cust_total}}
-                            </span>
-                            <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
-                          </div>
-                      </div>
-                      </div>
-                      <div class="mt-4" >
-                        <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
-                        
-                        <div class="progress progress-sm m-0 " style="height: 10px;">
-                          <div class="progress-bar" role="progressbar" 
-                            aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
-                            style="width: {{($order/$cust_total) * 100}}%;
-                            background-color: #95E0F9 !important;">
-                              <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
-                              <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
-                              <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                    <div class="flip-container"><!--onclick="flip()">-->
+                      <div class="flipper">
+                        <div class="front">
+                          <div class="box-blue">
+                            <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
+                            <div class="info">
+                              <div class="media-body align-self-center">
+                                <div class="text-right mt-1">
+                                  <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                    {{$order}} / {{$cust_total}}
+                                  </span>
+                                  <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="mt-4" >
+                              <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
+                              
+                              <div class="progress progress-sm m-0 " style="height: 10px;">
+                                <div class="progress-bar" role="progressbar" 
+                                  aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
+                                  style="width: {{($order/$cust_total) * 100}}%;
+                                  background-color: #95E0F9 !important;">
+                                    <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
+                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                        <!--
+                        <div class="back">
+                          <div class="box-red">
+                            <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
+                            <div class="info">
+                              <div class="media-body align-self-center">
+                                <div class="text-right mt-1">
+                                  <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                    {{$order}} / {{$cust_total}}
+                                  </span>
+                                  <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="mt-4" >
+                              <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
+                              
+                              <div class="progress progress-sm m-0 " style="height: 10px;">
+                                <div class="progress-bar" role="progressbar" 
+                                  aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
+                                  style="width: {{($order/$cust_total) * 100}}%;
+                                  background-color: #95E0F9 !important;">
+                                    <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
+                                    <//!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>--//>
+                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        -->
+                      </div> 
+                    </div> 
                   </div>
 
+                  
                   @if($pareto)
                     @php
                       $user_id = \Auth::user()->id;
@@ -911,9 +949,10 @@
             //$('.contact-row').addClass('mt-5');
         }
       
-      
-      
-
+      function flip() {
+          $('.flip-container').toggleClass('hover');
+      }
+              
       //all sales chart
       $(function () {
         var achievement = <?php echo $percent ?>;

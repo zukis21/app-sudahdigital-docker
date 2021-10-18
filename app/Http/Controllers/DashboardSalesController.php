@@ -151,6 +151,19 @@ class DashboardSalesController extends Controller
         $red_line = [];
         foreach ($cartuser as $userval) {
             $user_value[]= $userval->users->name;
+            
+            //total order qty
+            $targ_ach = \App\Order::with('products')
+                    ->where('user_id',$userval->user_id)
+                    ->whereNotNull('customer_id')
+                    ->where('status','!=','CANCEL')
+                    ->where('status','!=','NO-ORDER')
+                    ->whereMonth('created_at', $month)
+                    ->whereYear('created_at', $year)->get();
+            $qty = $targ_ach->sum('TotalQuantity');
+            
+                       
+            //total order nominal
             $targ_ach = \App\Order::where('user_id',$userval->user_id)
                         ->whereNotNull('customer_id')
                         ->where('status','!=','CANCEL')
@@ -161,6 +174,7 @@ class DashboardSalesController extends Controller
                         ->pluck('sum');
             $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
             $ach_value_ppn = $ach[0];
+
             if($userval->ppn == 1){
                 $ach_value = $ach_value_ppn/1.1;
             }else{
