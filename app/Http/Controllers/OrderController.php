@@ -195,24 +195,12 @@ class OrderController extends Controller
         return Excel::download( new OrdersExportMapping(), 'Orders.xlsx') ;
     }
 
-    public function new_customer($vendor, $id, $payment){
+    public function new_customer($vendor, $id, $payment = null){
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
             $id = \Crypt::decrypt($id);
             $cust = \App\Customer::findOrFail($id);
             $sls = \App\User::findOrFail($cust->user_id);
             return view('orders.edit_cust',['cust' => $cust,'vendor'=>$vendor, 'sls'=>$sls, 'payment'=>$payment]);
-        }
-        else{
-            abort(403, 'Anda tidak memiliki cukup hak akses');
-        } 
-    }
-
-    public function new_no_order($vendor, $id){
-        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
-            $id = \Crypt::decrypt($id);
-            $cust = \App\Customer::findOrFail($id);
-            $sls = \App\User::findOrFail($cust->user_id);
-            return view('orders.edit_cust',['cust' => $cust,'vendor'=>$vendor, 'sls'=>$sls]);
         }
         else{
             abort(403, 'Anda tidak memiliki cukup hak akses');

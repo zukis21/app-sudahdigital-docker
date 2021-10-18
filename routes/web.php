@@ -285,8 +285,8 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/{id}/edit', 'OrderController@edit')->name('orders.edit');
     Route::get('/orders/{id}/detail', 'OrderController@detail')->name('orders.detail');
     Route::get('/orders/export_mapping', 'OrderController@export_mapping')->name('orders.export_mapping') ;
-    Route::get('/orders/add-new-customer/{id}/{payment}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
-    Route::get('/orders/add-new-no-order/{id}', 'OrderController@new_no_order')->name('orders.addnew_no_order') ;
+    Route::get('/orders/add-new-customer/{id}/{payment?}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
+    //Route::get('/orders/add-new-no-order/{id}', 'OrderController@new_no_order')->name('orders.addnew_no_order') ;
     Route::put('/orders/new-customer/{id}/update', 'OrderController@save_new_customer')->name('orders.newcustomer.update');
     //Order point
     Route::get('/orders/customer-point', 'CustomerPointOrderController@index')->name('customers_points.index');

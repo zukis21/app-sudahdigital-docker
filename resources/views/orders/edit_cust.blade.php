@@ -79,37 +79,40 @@
             </div>
 
             <h2 class="card-inside-title">Term Of Payment</h2>
-            <div class="col-sm-2" style="padding-left:0;padding-right:0;">
-                <div class="form-group">
-                    <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
-                        type="radio" name="payment_term" id="cash" value="Cash" required onclick="checkstate()"
-                        {{old('payment_term',$payment)== 'Cash' ? 'checked' : ''}} > 
-                    <label for="cash">Cash</label>
-                    &nbsp;&nbsp;
-                    <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
-                        type="radio" name="payment_term" id="top" value="TOP" onclick="checkstate()"
-                        {{{old('payment_term',$payment)== 'TOP' ? 'checked' : ''}}}> 
-                    <label for="top">TOP</label>
+            <div class="col-sm-12 p-l-0 p-r-0">
+                <div class="col-sm-2" style="padding-left:0;padding-right:0;">
+                    <div class="form-group">
+                        <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                            type="radio" name="payment_term" id="cash" value="Cash" required onclick="checkstate()"
+                            {{old('payment_term',$payment)== 'Cash' ? 'checked' : ''}} > 
+                        <label for="cash">Cash</label>
+                        &nbsp;&nbsp;
+                        <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                            type="radio" name="payment_term" id="top" value="TOP" onclick="checkstate()"
+                            {{{old('payment_term',$payment)== 'TOP' ? 'checked' : ''}}}> 
+                        <label for="top">TOP</label>
+                    </div>
+                </div>
+                
+                <div class="col-sm-10" style="padding-left:0;">
+                    <div class="input-group">
+                        <div class="form-line">
+                            <input type="number" min="0" class="form-control" 
+                            id="pay_cust" name="pay_cust" value="{{old('pay_cust',preg_replace("/[^0-9]/","",$cust->payment_term))}}" 
+                            autocomplete="off" required placeholder="Net d Days"
+                            {{$payment == "Cash" ? 'disabled' : ''}}>
+                        </div>
+                        <span class="input-group-addon">Days</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="col-sm-10" style="padding-left:0;">
-                <div class="input-group">
-                    <div class="form-line">
-                        <input type="number" min="0" class="form-control" 
-                        id="pay_cust" name="pay_cust" value="{{old('pay_cust',preg_replace("/[^0-9]/","",$cust->payment_term))}}" 
-                        autocomplete="off" required placeholder="Net d Days"
-                        {{$payment == "Cash" ? 'disabled' : ''}}>
-                    </div>
-                    <span class="input-group-addon">Days</span>
-                </div>
-            </div>
             
             
             <!--
             <div class="form-group form-float">
                 <div class="form-line">
-                    <input type="text" class="form-control" name="payment_term" value="{{$cust->payment_term}}" autocomplete="off" required>
+                    <input type="text" class="form-control" name="payment_term" value="" autocomplete="off" required>
                     <label class="form-label">Payment Term</label>
                 </div>
             </div>
