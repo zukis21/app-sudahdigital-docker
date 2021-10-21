@@ -304,7 +304,7 @@
         input[0].setSelectionRange(caret_pos, caret_pos);
         }
 
-        
+        /*
         var dp=$("#datepicker").datepicker( {
             format: "yyyy-mm",
             startView: "months", 
@@ -365,7 +365,7 @@
                         else if(response == 'not_taken' && email==""){
                             //$('#email_').siblings("label").text('');
                             $('.err_exist').text('');
-                        }*/
+                        }(*)/
                     }
                 });
 
@@ -391,8 +391,8 @@
                             $('.err_exist').text('');
                         }
                     }
-                });*/
+                }); (*)///
             }
-        }).change();
+        }).change();*/
     </script> 
     @endsection
