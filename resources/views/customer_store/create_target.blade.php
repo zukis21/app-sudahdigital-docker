@@ -36,15 +36,31 @@
             <input type="hidden" id="param_customer" name="param_customer" value="">
             <input type="hidden" id="customer_id_select" value="">
 
+
+            <div class="form-group form-radio selection-type">
+                <input type="radio" class="form-check-inline showQty" value="1" 
+                    name="target_type" id="quantity_target" required>
+                <label for="quantity_target">Quantity Target</label>
+                &nbsp;
+                <input type="radio" class="form-check-inline showNml" value="2" 
+                    name="target_type" id="nominal_target" >
+                <label for="nominal_target">Nominal Target</label>
+                &nbsp;
+                <input type="radio" class="form-check-inline showQtyNml" value="3" 
+                    name="target_type" id="qty_nml_target" >
+                <label for="qty_nml_target">Quantity & Nominal Target</label>
+            </div>
+
+            
             <div class="">
-                <table class="table table-striped table-hover dataTable js-basic-example">
+                <table class="table table-striped table-hover table-list-customer">
                     <thead>
                         <tr>
                             <!--<th>No</th>-->
                             <th>Customers</th>
                             <th>Cat</th>
                             <th>Target Values (IDR)</th>
-                           
+                            <th>Target Qty (BOX)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,16 +75,26 @@
                             </td>
                             <td>
                                 {{$u->pareto->pareto_code}}
-                            </td>
-                            <td>
                                 <input type="hidden" name="customer_id[]" value="{{$u->id}}">
                                 <input type="hidden" name="version_pareto[]" value="{{$u->pareto->id}}">
+                            </td>
+                            <td >
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         
-                                        <input type="text" class="form-control" name="target_value[]" id="currency-field" 
+                                        <input type="text" class="form-control target_nominal" name="target_value[{{$u->id}}]" 
                                         pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{old('target_value')}}" 
                                         data-type="currency" placeholder="" autocomplete="off">
+                                    </div>
+                                </div>
+                            </td>
+                            <td >
+                                <div class="form-group form-float" >
+                                    <div class="form-line">
+                                        <input type="number" class="form-control target_quantity" min='1' name="target_quantity[{{$u->id}}]" 
+                                        value="{{old('target_quantity')}}" autocomplete="off">
+                                        
+                                       
                                     </div>
                                 </div>
                             </td>
@@ -115,6 +141,33 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('.table-list-customer').DataTable( {
+                "scrollY":'50vh',
+                "paging":   false,
+                "ordering": false,
+                "info":     false
+            } );
+        } );
+
+        $(document).ready(function() {
+            $(".selection-type")
+            .on("click", ".showQty", function(){
+                $('.target_quantity').prop('disabled',false);
+                $('.target_quantity').prop('required',true);
+                $('.target_nominal').prop('disabled',true);
+            })
+            .on("click", ".showNml", function(){
+                $('.target_quantity').prop('disabled',true);
+                $('.target_nominal').prop('disabled',false);
+                $('.target_nominal').prop('required',true);
+            })
+            .on("click", ".showQtyNml", function(){
+                $('.target_nominal,.target_quantity').prop('disabled',false);
+                $('.target_quantity,.target_nominal').prop('required',true);
+            });
+        });
+                
         $("input[data-type='currency']").on({
             keyup: function() {
             formatCurrency($(this));

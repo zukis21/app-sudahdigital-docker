@@ -23,8 +23,9 @@
 				<tr>
 					<!--<th>No</th>-->
 					<th>Total Customers</th>
-					<!--<th>Cat</th>-->
-					<th>Total Target Values (IDR)</th>
+					<th>Target Type</th>
+					<th>Target Qty(BOX)</th>
+					<th>Target Val.(IDR)</th>
 					<th>Period</th>
 					<th>#</th>
 				</tr>
@@ -39,7 +40,29 @@
 						{{$u->total}}
 					</td>
 					<td>
-						{{number_format($u->total_target)}}
+						@if($u->target_type == 1)
+							Qty
+						@elseif($u->target_type == 2)
+							Nominal
+						@elseif($u->target_type == 3)
+							Qty & Nominal
+						@else
+						-
+						@endif
+					</td>
+					<td>
+						@if($u->target_type == 1 || $u->target_type == 3)
+							{{$u->total_qty}}
+						@else
+						-
+						@endif
+					</td>
+					<td>
+						@if($u->target_type == 2 || $u->target_type == 3)
+							{{number_format($u->total_value)}}
+						@else
+						-
+						@endif
 					</td>
 					<td>
 						{{date('M-Y', strtotime($u->period))}}

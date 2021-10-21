@@ -256,6 +256,7 @@
           }else{
             $total_ach = $total_ach_ppn;
           }
+          
           //return $total_ach;
           //echo number_format($total_ach);
         @endphp
@@ -333,70 +334,33 @@
 
                   <!--total toko order-->
                   <div class="col-md-4 mb-4" data-aos="zoom-in">
-                    <div class="flip-container"><!--onclick="flip()">-->
-                      <div class="flipper">
-                        <div class="front">
-                          <div class="box-blue">
-                            <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
-                            <div class="info">
-                              <div class="media-body align-self-center">
-                                <div class="text-right mt-1">
-                                  <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                    {{$order}} / {{$cust_total}}
-                                  </span>
-                                  <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="mt-4" >
-                              <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
-                              
-                              <div class="progress progress-sm m-0 " style="height: 10px;">
-                                <div class="progress-bar" role="progressbar" 
-                                  aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
-                                  style="width: {{($order/$cust_total) * 100}}%;
-                                  background-color: #95E0F9 !important;">
-                                    <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
-                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
-                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
-                                </div>
-                              </div>
-                            </div>
+                    <div class="box-blue">
+                      <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
+                      <div class="info">
+                        <div class="media-body align-self-center">
+                          <div class="text-right mt-1">
+                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                              {{$order}} / {{$cust_total}}
+                            </span>
+                            <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                          </div>
+                      </div>
+                      </div>
+                      <div class="mt-4" >
+                        <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
+                        
+                        <div class="progress progress-sm m-0 " style="height: 10px;">
+                          <div class="progress-bar" role="progressbar" 
+                            aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
+                            style="width: {{($order/$cust_total) * 100}}%;
+                            background-color: #95E0F9 !important;">
+                              <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
+                              <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                              <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
                           </div>
                         </div>
-                        <!--
-                        <div class="back">
-                          <div class="box-red">
-                            <i class="fal fa-shopping-cart fa-fw bg-white" aria-hidden="true"></i>
-                            <div class="info">
-                              <div class="media-body align-self-center">
-                                <div class="text-right mt-1">
-                                  <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                    {{$order}} / {{$cust_total}}
-                                  </span>
-                                  <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="mt-4" >
-                              <h6 class="">Total Toko Order <span class="float-right">{{round((($order/$cust_total) * 100),2)}}%</span></h6>
-                              
-                              <div class="progress progress-sm m-0 " style="height: 10px;">
-                                <div class="progress-bar" role="progressbar" 
-                                  aria-valuenow="{{($order/$cust_total) * 100}}" aria-valuemin="0" aria-valuemax="100" 
-                                  style="width: {{($order/$cust_total) * 100}}%;
-                                  background-color: #95E0F9 !important;">
-                                    <span class="sr-only">{{($order/$cust_total) * 100}}% Complete</span>
-                                    <//!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>--//>
-                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        -->
-                      </div> 
-                    </div> 
+                      </div>
+                    </div>
                   </div>
 
                   
@@ -413,19 +377,6 @@
                         $cust_total_p = App\Http\Controllers\DashboardSalesController::total_pareto($user_id,$prt->id);
 
                         $cust_exists_p = App\Http\Controllers\DashboardSalesController::amountParetoOrder($user_id,$month,$year,$prt->id);
-                        
-							          //target/pencapaian pareto
-                        if($period_par != null){
-                            $pr = $prt->id;
-                            $target_str = \App\Store_Targets::where('period',$period_par)
-                                        ->where('version_pareto',$prt->id)
-                                        ->selectRaw('sum(target_values) as sum')
-                                        ->pluck('sum');
-
-                            $total_tp = json_decode($target_str,JSON_NUMERIC_CHECK);
-                            $total_target = $total_tp[0];
-                          //dd($total_target);
-                        }
                       @endphp
 
                       <!--Total toko pareto-->
@@ -462,30 +413,120 @@
 
                   <!--Target Sales Total-->
                   <div class="col-md-4 mb-4" data-aos="zoom-in">
-                    <div class="box-green">
-                      <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
-                      <div class="info">
-                        <div class="media-body align-self-center">
-                          <div class="text-right mt-1">
-                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                              {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
-                            </span>
-                            <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
-                          </div>
-                      </div>
-                      </div>
-                      <div class="mt-4" >
-                        <h6 class="">Target Sales Total <span class="float-right">{{($target->values > 0 ) ? round((($total_ach/$target->target_values) * 100) ,2) : '0'}}%</span></h6>
-                        <div class="progress progress-sm m-0" style="height: 10px;">
-                          
-                            <div class="progress-bar " role="progressbar" aria-valuenow="{{($target->values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($target->values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}%;background-color: #95E0F9 !important;">
-                                <span class="sr-only">{{($target->values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}% Complete</span>
-                                <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
-                                <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                    @if(($target->target_type == 1) || ($target->target_type == 3))
+                      @php
+                        $ach_quantity = App\Http\Controllers\DashboardSalesController::achQuantity();
+                      @endphp
+                    @endif
+                    @if($target->target_type == 1)
+                      <div class="box-green">
+                        <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                        <div class="info">
+                          <div class="media-body align-self-center">
+                            <div class="text-right mt-1">
+                              <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                {{$target ? $ach_quantity : '0'}} / {{$target ? $target->target_quantity : '0'}}
+                              </span>
+                              <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                             </div>
                         </div>
+                        </div>
+                        <div class="mt-4" >
+                          <h6 class="">Target Sales Total <span class="float-right">{{ $target ? round((($ach_quantity/$target->target_quantity) * 100) ,2) : '0'}}%</span></h6>
+                          <div class="progress progress-sm m-0" style="height: 10px;">
+                            
+                              <div class="progress-bar " role="progressbar" aria-valuenow="{{$target ? ($ach_quantity/$target->target_quantity) * 100 : '0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$target ? ($ach_quantity/$target->target_quantity) * 100 : '0'}}%;background-color: #95E0F9 !important;">
+                                  <span class="sr-only">{{$target ? ($ach_quantity/$target->target_quantity) * 100 : '0'}}% Complete</span>
+                                  <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                  <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                              </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    @elseif($target->target_type == 2)
+                      <div class="box-green">
+                        <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                        <div class="info">
+                          <div class="media-body align-self-center">
+                            <div class="text-right mt-1">
+                              <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                              </span>
+                              <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="mt-4" >
+                          <h6 class="">Target Sales Total <span class="float-right">{{($target->target_values > 0 ) ? round((($total_ach/$target->target_values) * 100) ,2) : '0'}}%</span></h6>
+                          <div class="progress progress-sm m-0" style="height: 10px;">
+                            
+                              <div class="progress-bar " role="progressbar" aria-valuenow="{{($target->target_values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($target->target_values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}%;background-color: #95E0F9 !important;">
+                                  <span class="sr-only">{{($target->target_values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}% Complete</span>
+                                  <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                  <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    @elseif($target->target_type == 3)
+                      <div class="flip-container target-sales-total" onclick="flipSalesTotal()">
+                        <div class="flipper">
+                          <div class="back">
+                            <div class="box-green">
+                              <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                              <div class="info">
+                                <div class="media-body align-self-center">
+                                  <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                                    </span>
+                                    <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                  </div>
+                              </div>
+                              </div>
+                              <div class="mt-4" >
+                                <h6 class="">Target Sales Total <span class="float-right">{{($target->target_values > 0 ) ? round((($total_ach/$target->target_values) * 100) ,2) : '0'}}%</span></h6>
+                                <div class="progress progress-sm m-0" style="height: 10px;">
+                                  
+                                    <div class="progress-bar " role="progressbar" aria-valuenow="{{($target->target_values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{($target->target_values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}%;background-color: #95E0F9 !important;">
+                                        <span class="sr-only">{{($target->target_values > 0 ) ? ($total_ach/$target->target_values) * 100 : '0'}}% Complete</span>
+                                        <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                        <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="front">
+                            <div class="box-green">
+                              <i class="fal fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                              <div class="info">
+                                <div class="media-body align-self-center">
+                                  <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{$target ? $ach_quantity : '0'}} / {{$target ? $target->target_quantity : '0'}}
+                                    </span>
+                                    <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                  </div>
+                              </div>
+                              </div>
+                              <div class="mt-4" >
+                                <h6 class="">Target Sales Total <span class="float-right">{{ $target ? round((($ach_quantity/$target->target_quantity) * 100) ,2) : '0'}}%</span></h6>
+                                <div class="progress progress-sm m-0" style="height: 10px;">
+                                  
+                                    <div class="progress-bar " role="progressbar" aria-valuenow="{{$target ? ($ach_quantity/$target->target_quantity) * 100 : '0'}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$target ? ($ach_quantity/$target->target_quantity) * 100 : '0'}}%;background-color: #95E0F9 !important;">
+                                        <span class="sr-only">{{$target ? ($ach_quantity/$target->target_quantity) * 100 : '0'}}% Complete</span>
+                                        <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                        <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    @endif
                   </div>
 
                   <!--target Sales pareto-->
@@ -497,8 +538,23 @@
                     if($period_par != null){
                         $pr = $prt->id;
                       
-                      //ach pareto
-                      $ach_p = App\Http\Controllers\DashboardSalesController::achUserPareto($user_id,$month,$year,$pr);
+                      //target val pareto
+                      $target_str = App\Http\Controllers\DashboardSalesController::TrgValPareto($user_id,$period_par,$pr);
+                      $total_tp = json_decode($target_str,JSON_NUMERIC_CHECK);
+                      $total_target = $total_tp[0];
+                      
+                      //target qty pareto
+                      $target_tqp = App\Http\Controllers\DashboardSalesController::TrgQtyPareto($user_id,$period_par,$pr);
+                      $total_tqp = json_decode($target_tqp,JSON_NUMERIC_CHECK);
+                      $total_trgqp = $total_tqp[0];
+                        
+                      //ach pareto nominal values
+                      $ach_p = App\Http\Controllers\DashboardSalesController::achUserPareto($user_id,$month,$year,$pr,$period_par);
+
+                      //ach pareto qty values
+                      $ach_qty_p = App\Http\Controllers\DashboardSalesController::achUsrTgQtyPareto($user_id,$month,$year,$pr,$period_par);
+                      
+                      $per_par_type = App\Http\Controllers\DashboardSalesController::PeriodType($period_par);
                       
                       $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
                       $total_ach_pareto_ppn = $total_ap[0];
@@ -510,104 +566,389 @@
                     }
                     @endphp
                       <!--target/pencapaian pareto-->
-                      <div class="col-md-4 mb-4" data-aos="zoom-in">
-                        <div class="box-green">
-                          <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
-                          <div class="info">
-                            <div class="media-body align-self-center">
-                              <div class="text-right mt-1">
-                                <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                  {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
-                                </span>
-                                <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                        <div class="col-md-4 mb-4" data-aos="zoom-in">
+                          @if($target->target_type == 1)
+                            <div class="box-green">
+                              <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                              <div class="info">
+                                <div class="media-body align-self-center">
+                                  <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{$period_par ? $ach_qty_p : '0'}} / {{$period_par ? $total_trgqp : '0'}}
+                                    </span>
+                                    <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class=" mt-4">
+                                <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_trgqp) ? round((($ach_qty_p/$total_trgqp)  * 100) ,2) : '0'}}%</span></h6>
+                                <div class="progress progress-sm m-0" style="height: 10px;">
+                                  
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                        aria-valuenow="{{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}" 
+                                        aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                        <span class="sr-only">{{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}% Complete</span>
+                                        <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                        <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                    </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div class=" mt-4">
-                            <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_target) ? round((($total_ach_pareto/$total_target)  * 100) ,2) : '0'}}%</span></h6>
-                            <div class="progress progress-sm m-0" style="height: 10px;">
-                              
-                                <div class="progress-bar bg-info" role="progressbar" 
-                                    aria-valuenow="{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}" 
-                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
-                                    <span class="sr-only">{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}% Complete</span>
-                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
-                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                          @elseif($target->target_type == 2)
+                            <div class="box-green">
+                              <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                              <div class="info">
+                                <div class="media-body align-self-center">
+                                  <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
+                                    </span>
+                                    <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                  </div>
                                 </div>
+                              </div>
+                              <div class=" mt-4">
+                                <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_target) ? round((($total_ach_pareto/$total_target)  * 100) ,2) : '0'}}%</span></h6>
+                                <div class="progress progress-sm m-0" style="height: 10px;">
+                                  
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                        aria-valuenow="{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}" 
+                                        aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                        <span class="sr-only">{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}% Complete</span>
+                                        <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                        <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                    </div>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
+                          @elseif($target->target_type == 3)
+                            <div class="flip-container target-pareto-total" onclick="flipAchPareto()">
+                              <div class="flipper">
+                                <div class="front">
+                                  <div class="box-green">
+                                    <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                                    <div class="info">
+                                      <div class="media-body align-self-center">
+                                        <div class="text-right mt-1">
+                                          <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                            {{$period_par ? $ach_qty_p : '0'}} / {{$period_par ? $total_trgqp : '0'}}
+                                          </span>
+                                          <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class=" mt-4">
+                                      <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_trgqp) ? round((($ach_qty_p/$total_trgqp)  * 100) ,2) : '0'}}%</span></h6>
+                                      <div class="progress progress-sm m-0" style="height: 10px;">
+                                        
+                                          <div class="progress-bar bg-info" role="progressbar" 
+                                              aria-valuenow="{{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}" 
+                                              aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                              <span class="sr-only">{{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}% Complete</span>
+                                              <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                              <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
 
+                                <div class="back">
+                                  <div class="box-green">
+                                    <i class="fas fa-bullseye-arrow fa-fw bg-white" aria-hidden="true"></i>
+                                    <div class="info">
+                                      <div class="media-body align-self-center">
+                                        <div class="text-right mt-1">
+                                          <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                            {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
+                                          </span>
+                                          <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class=" mt-4">
+                                      <h6 class="">Target Sales Pareto ({{$prt->pareto_code}})<span class="float-right">{{($period_par && $total_target) ? round((($total_ach_pareto/$total_target)  * 100) ,2) : '0'}}%</span></h6>
+                                      <div class="progress progress-sm m-0" style="height: 10px;">
+                                        
+                                          <div class="progress-bar bg-info" role="progressbar" 
+                                              aria-valuenow="{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}" 
+                                              aria-valuemin="0" aria-valuemax="100" style="width: {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                              <span class="sr-only">{{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}% Complete</span>
+                                              <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                              <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          @endif
+                        </div>
                     @endforeach
                   @endif
 
                   <!--prediksi pencapaian-->
                   <div class="col-md-4 mb-4" style="display:flex;" data-aos="zoom-in">
-                    <div class="box-red w-100">
-                      <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
-                      <div class="info">
-                        <div class="media-body align-self-center">
-                          <div class="text-right mt-1">
-                            <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                    @if($target->target_type == 1)
+                      <div class="box-red w-100">
+                        <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                        <div class="info">
+                          <div class="media-body align-self-center">
+                            <div class="text-right mt-1">
+                              <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                
+                                @if($target && $work_plan)
+                                  @php
+                                    $current_day = date('d');
+                                    $hari_berjalan = ((int)$current_day) - $day_off;
+                                    $hari_kerja = $work_plan->working_days;
+                                    $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
+                                  @endphp
+                                @endif
+                                {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? singkat_angka($target->target_quantity) : '0'}}
+                              </span>
+                                
+                                <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="ml-1" style="margin-top:34px;">
+                          <div class="page-header">
+                            <div class="float-left">
+                              <h6 class="">Prediksi Pencapaian</h6>
+                            </div>
+                            <div class="float-right">
                               
-                              @if($target && $work_plan)
-                                @php
-                                  $current_day = date('d');
-                                  $hari_berjalan = ((int)$current_day) - $day_off;
-                                  $hari_kerja = $work_plan->working_days;
-                                  $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
-                                @endphp
-                              @endif
-                              {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
-                            </span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    @elseif($target->target_type == 2)
+                      <div class="box-red w-100">
+                        <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                        <div class="info">
+                          <div class="media-body align-self-center">
+                            <div class="text-right mt-1">
+                              <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                
+                                @if($target && $work_plan)
+                                  @php
+                                    $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
+                                  @endphp
+                                @endif
+                                {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                              </span>
+                                
+                                <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="ml-1" style="margin-top:34px;">
+                          <div class="page-header">
+                            <div class="float-left">
+                              <h6 class="">Prediksi Pencapaian</h6>
+                            </div>
+                            <div class="float-right">
                               
-                              <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    @elseif($target->target_type == 3)
+                      <div class="flip-container prediksi-pencapaian" onclick="flipPredCapai()">
+                        <div class="flipper">
+                          <div class="front">
+                            <div class="box-red w-100">
+                              <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                              <div class="info">
+                                <div class="media-body align-self-center">
+                                  <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? singkat_angka($target->target_quantity) : '0'}}
+                                    </span>
+                                      
+                                      <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="ml-1" style="margin-top:34px;">
+                                <div class="page-header">
+                                  <div class="float-left">
+                                    <h6 class="">Prediksi Pencapaian</h6>
+                                  </div>
+                                  <div class="float-right">
+                                    
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+
+                          <div class="back">
+                            <div class="box-red w-100">
+                              <i class="fal fa-analytics fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                              <div class="info">
+                                <div class="media-body align-self-center">
+                                  <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      
+                                      @if($target && $work_plan)
+                                        @php
+                                          $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
+                                        @endphp
+                                      @endif
+                                      {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($target->target_values) : '0'}}
+                                    </span>
+                                      
+                                      <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="ml-1" style="margin-top:34px;">
+                                <div class="page-header">
+                                  <div class="float-left">
+                                    <h6 class="">Prediksi Pencapaian</h6>
+                                  </div>
+                                  <div class="float-right">
+                                    
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
                           </div>
                         </div>
                       </div>
-
-                      <div class="ml-1 mt-4">
-                        <div class="page-header">
-                          <div class="float-left">
-                            <h6 class="">Prediksi Pencapaian</h6>
-                          </div>
-                          <div class="float-right">
-                            
-                          </div>
-                        </div>
-                       </div>
-
-                    </div>
+                    @endif
                   </div>
                   
                   <!--Average Daily-->
+                  @if($target->target_type == 3 || $target->target_type == 1)
+                    @php
+                      $max_av_qty = App\Http\Controllers\DashboardSalesController::MaxYearQuantity();
+                    @endphp
+                  @endif
                   <div class="col-md-4 mb-4" data-aos="zoom-in" style="display:flex;">
-                    <div class="box-red w-100">
-                      <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
-                      <div class="info">
-                        <div class="media-body align-self-center">
-                          <div class="text-right mt-1">
-                              <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_av)}}
-                              </span>
-                              <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                    @if($target->target_type == 1)
+                      <div class="box-red w-100">
+                        <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                        <div class="info">
+                          <div class="media-body align-self-center">
+                            <div class="text-right mt-1">
+                                <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                  {{($target && $work_plan) ? $ach_quantity/$hari_berjalan : '0'}} / {{$max_av_qty}}
+                                </span>
+                                <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="ml-1" style="margin-top:34px;">
+                          <div class="page-header">
+                            <div class="float-left">
+                              <h6 class="">Average Daily / Average Max Daily </h6>
+                            </div>
+                            <div class="float-right">
+                              
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    @elseif($target->target_type == 2)
+                      <div class="box-red w-100">
+                        <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                        <div class="info">
+                          <div class="media-body align-self-center">
+                            <div class="text-right mt-1">
+                                <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                  {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_av)}}
+                                </span>
+                                <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="ml-1" style="margin-top:34px;">
+                          <div class="page-header">
+                            <div class="float-left">
+                              <h6 class="">Average Daily / Average Max Daily </h6>
+                            </div>
+                            <div class="float-right">
+                              
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    @elseif($target->target_type == 3)
+                    <div class="flip-container average-daily" onclick="flipAverDaily()">
+                      <div class="flipper">
+                        <div class="front">
+                          <div class="box-red w-100">
+                            <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                            <div class="info">
+                              <div class="media-body align-self-center">
+                                <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{($target && $work_plan) ? $ach_quantity/$hari_berjalan : '0'}} / {{$max_av_qty}}
+                                    </span>
+                                    <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="ml-1" style="margin-top:34px;">
+                              <div class="page-header">
+                                <div class="float-left">
+                                  <h6 class="">Average Daily / Average Max Daily </h6>
+                                </div>
+                                <div class="float-right">
+                                  
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="back">
+                          <div class="box-red w-100">
+                            <i class="fas fa-tachometer-average fa-fw bg-white" aria-hidden="true" style="align-items: center"></i>
+                            <div class="info">
+                              <div class="media-body align-self-center">
+                                <div class="text-right mt-1">
+                                    <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
+                                      {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_av)}}
+                                    </span>
+                                    <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="ml-1 " style="margin-top:34px;">
+                              <div class="page-header">
+                                <div class="float-left">
+                                  <h6 class="">Average Daily / Average Max Daily </h6>
+                                </div>
+                                <div class="float-right">
+                                  
+                                </div>
+                              </div>
+                            </div>
+
                           </div>
                         </div>
                       </div>
-
-                      <div class="ml-1 mt-4">
-                        <div class="page-header">
-                          <div class="float-left">
-                            <h6 class="">Average Daily / Average Max Daily </h6>
-                          </div>
-                          <div class="float-right">
-                            
-                          </div>
-                        </div>
-                       </div>
-
                     </div>
+                    @endif
                   </div>
 
                 </div>
@@ -877,33 +1218,101 @@
                       </div>
                       -->
 
-                      <!--chart all sales--->
-                      <div class="col-md-12" data-aos="fade-up">
-                        <div class="box w-100">
-                          <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
-                            border-top-left-radius:20px;">
-                            <li class="list-group-item active" 
-                                  style="background-color:#1A4066;
-                                        border-top-right-radius:20px;
-                                        border-top-left-radius:20px;
-                                        border-color:#1A4066;
-                                        color:#fff;">
-                              <i class="fal fa-chart-bar py-1 mr-2"
-                              style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
-                              <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Sales <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
-                            </li>
-                            <li class="list-group-item" style="color: #1A4066;">
-                              <div id="container" class="height-chart"></div>
-                            </li>
-                          </ul>
+                      @if($target->target_type == 1)
+                        <!--chart all sales quantity--->
+                        <div class="col-md-12 mb-4" data-aos="fade-up">
+                          <div class="box w-100">
+                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                              border-top-left-radius:20px;">
+                              <li class="list-group-item active" 
+                                    style="background-color:#1A4066;
+                                          border-top-right-radius:20px;
+                                          border-top-left-radius:20px;
+                                          border-color:#1A4066;
+                                          color:#fff;">
+                                <i class="fal fa-chart-bar py-1 mr-2"
+                                style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                                <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Kuantitas <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
+                              </li>
+                              <li class="list-group-item" style="color: #1A4066;">
+                                <div id="container_qty" class="height-chart"></div>
+                              </li>
+                            </ul>
+                          </div>
                         </div>
-                      </div>
+                      @elseif($target->target_type == 2)
+                        <!--chart all sales nominal--->
+                        <div class="col-md-12 mb-4" data-aos="fade-up">
+                          <div class="box w-100">
+                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                              border-top-left-radius:20px;">
+                              <li class="list-group-item active" 
+                                    style="background-color:#1A4066;
+                                          border-top-right-radius:20px;
+                                          border-top-left-radius:20px;
+                                          border-color:#1A4066;
+                                          color:#fff;">
+                                <i class="fal fa-chart-bar py-1 mr-2"
+                                style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                                <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Nominal <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
+                              </li>
+                              <li class="list-group-item" style="color: #1A4066;">
+                                <div id="container" class="height-chart"></div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      @elseif($target->target_type == 3)
+                        <!--chart all sales quantity--->
+                        <div class="col-md-12 mb-4" data-aos="fade-up">
+                          <div class="box w-100">
+                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                              border-top-left-radius:20px;">
+                              <li class="list-group-item active" 
+                                    style="background-color:#1A4066;
+                                          border-top-right-radius:20px;
+                                          border-top-left-radius:20px;
+                                          border-color:#1A4066;
+                                          color:#fff;">
+                                <i class="fal fa-chart-bar py-1 mr-2"
+                                style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                                <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Kuantitas <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
+                              </li>
+                              <li class="list-group-item" style="color: #1A4066;">
+                                <div id="container_qty" class="height-chart"></div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        
+                        <!--chart all sales nominal--->
+                        <div class="col-md-12 mb-4" data-aos="fade-up">
+                          <div class="box w-100">
+                            <ul class="list-group w-100" style="box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);border-top-right-radius:20px;
+                              border-top-left-radius:20px;">
+                              <li class="list-group-item active" 
+                                    style="background-color:#1A4066;
+                                          border-top-right-radius:20px;
+                                          border-top-left-radius:20px;
+                                          border-color:#1A4066;
+                                          color:#fff;">
+                                <i class="fal fa-chart-bar py-1 mr-2"
+                                style="border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                                <span class="font-weight-bold dashboard-tittle" style="display: block; padding-left: 40px;">Grafik Pencapaian Nominal <!--{{date('F Y', strtotime(\Carbon\Carbon::now()))}}--></span>
+                              </li>
+                              <li class="list-group-item" style="color: #1A4066;">
+                                <div id="container" class="height-chart"></div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      @endif
                     </div>
                   </div>
                 <!--</section>-->
            </div>
         </div>
-        @endif
+      @endif
     </div>
 
     @include('sweetalert::alert')
@@ -952,10 +1361,23 @@
       function flip() {
           $('.flip-container').toggleClass('hover');
       }
+      function flipSalesTotal() {
+          $('.target-sales-total').toggleClass('hover');
+      }
+      function flipAchPareto() {
+          $('.target-pareto-total').toggleClass('hover');
+      }
+      function flipPredCapai() {
+          $('.prediksi-pencapaian').toggleClass('hover');
+      }
+      function flipAverDaily() {
+          $('.average-daily').toggleClass('hover');
+      }
               
       //all sales chart
       $(function () {
         var achievement = <?php echo $percent ?>;
+        var achievement_qty = <?php echo $percent_qty ?>;
         var sales = <?php echo $users_display ?>;
         var red_line = <?php echo $red_line ?>;
         var param_line = <?php echo $param_line ?>;
@@ -972,7 +1394,7 @@
           var type = 'column';
         }
         
-        //all sales chart
+        //all sales chart nominal
         $('#container').highcharts({
           chart: {
             type: type,
@@ -1022,6 +1444,60 @@
           },*/{
             name: 'Pencapaian (%)',
             data: achievement,
+          }
+          ]
+        });
+
+        //all sales chart quantity
+        $('#container_qty').highcharts({
+          chart: {
+            type: type,
+            /*type: 'bar'*/
+          },
+          title: {
+            text: 'Pencapaian '+longMonth+'  '+longYear
+          },
+          xAxis: {
+            categories: sales
+          },
+          yAxis: {
+            max: 150,
+              title: {
+                text: 'Persentase'
+            },
+            labels: {
+              formatter: function() {
+                var pcnt = Highcharts.numberFormat((this.value / 100 * 100), 0, '.');
+                return pcnt + '%';
+              }
+            },
+            plotLines: [{
+              value: param_line,
+              color: 'red',
+              dashStyle: 'shortdash',
+              width: 2,
+              label: {
+                text: ''
+              }
+            }]
+          },
+          //colors:colors,
+          plotOptions: {
+        	column: {
+            	zones: [{
+                	value: param_line, // Values up to 10 (not including) ...
+                    color:  '#08b1ff'// ... have the color blue.
+                },{
+                	color: '#1A4066' // Values from 10 (including) and up have the color red
+                }]
+            }
+          },
+          series: [/*{
+            name: 'Target',
+            data: target
+          },*/{
+            name: 'Pencapaian (%)',
+            data: achievement_qty,
           }
           ]
         });

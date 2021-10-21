@@ -16,7 +16,7 @@
         </div>
     @endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST"  action="{{route('points_periods.step_one',[$vendor])}}">
+    <form id="form_validation" method="POST"  action="{{route('points_periods.store',[$vendor])}}">
     	@csrf
         
         <div class="form-group form-float">
@@ -42,7 +42,7 @@
             </div>
         </div>
         
-        <button id="save" class="btn btn-success waves-effect" name="save_action" value="SAVE" type="submit">NEXT</button>
+        <button id="save" class="btn btn-success waves-effect" name="save_action" value="SAVE" type="submit">SAVE</button>
     </form>
     <!-- #END#  -->		
 

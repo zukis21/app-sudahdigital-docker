@@ -42,7 +42,8 @@ class DashboardSalesController extends Controller
         $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
                 ->where('period','<=',$date_now)
                 ->max('period');
-
+        
+        
         $order_ach = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
                 ->whereMonth('created_at', '=', $month)
@@ -148,19 +149,20 @@ class DashboardSalesController extends Controller
         
         $user_value=[];
         $percentage=[];
+        $percentage_qty=[];
         $red_line = [];
         foreach ($cartuser as $userval) {
             $user_value[]= $userval->users->name;
             
             //total order qty
-            $targ_ach = \App\Order::with('products')
+            $targ_ach_qty = \App\Order::with('products')
                     ->where('user_id',$userval->user_id)
                     ->whereNotNull('customer_id')
                     ->where('status','!=','CANCEL')
                     ->where('status','!=','NO-ORDER')
                     ->whereMonth('created_at', $month)
                     ->whereYear('created_at', $year)->get();
-            $qty = $targ_ach->sum('TotalQuantity');
+            $qty = $targ_ach_qty->sum('TotalQuantity');
             
                        
             //total order nominal
@@ -181,15 +183,23 @@ class DashboardSalesController extends Controller
                 $ach_value = $ach_value_ppn;
             }
 
+            
             if($userval->target_values > 0){
                 $percentage[]= round(($ach_value / $userval->target_values) * 100 ,2);
-            }            
-            
+            }else{
+                $percentage[]= 0;
+            }
+            if($userval->target_quantity > 0){
+                $percentage_qty[]= round(($qty / $userval->target_quantity) * 100 ,2);
+            }else{
+                $percentage_qty[]=0;
+            }
+
             $red_line[]= $param_line;
         }
         $users_display = array_unique($user_value);
-
-        //==========max average yearly=============/
+        //dd($percentage);
+        //==========max average yearly nominal=============/
         if($year < 2022){
             $mxx = [];
             for($i=6;$i<13;$i++){
@@ -211,17 +221,17 @@ class DashboardSalesController extends Controller
             $mxx = [];
             for($i=1;$i<13;$i++){
                 $mxx[] = \DB::select("SELECT AVG(total) as total_average
-                            FROM
-                            (
-                                SELECT created_at , user_id, SUM(total_price) AS total
-                                FROM orders WHERE user_id = '$user_id' 
-                                AND month(created_at)= '$i'
-                                AND Year(created_at)='$year'
-                                AND status != 'CANCEL'
-                                AND customer_id IS NOT NULL
-                                GROUP BY DATE(created_at) 
-                                ORDER BY total 
-                            ) as inner_query;");
+                    FROM
+                    (
+                        SELECT created_at , user_id, SUM(total_price) AS total
+                        FROM orders WHERE user_id = '$user_id' 
+                        AND month(created_at)= '$i'
+                        AND Year(created_at)='$year'
+                        AND status != 'CANCEL'
+                        AND customer_id IS NOT NULL
+                        GROUP BY DATE(created_at) 
+                        ORDER BY total 
+                    ) as inner_query;");
                 
             }
         }
@@ -359,6 +369,7 @@ class DashboardSalesController extends Controller
             ];
         
         return view('customer.dashboard',$data) ->with('percent',json_encode($percentage,JSON_NUMERIC_CHECK))
+                                                ->with('percent_qty',json_encode($percentage_qty,JSON_NUMERIC_CHECK))
                                                 ->with('users_display',json_encode($users_display))
                                                 ->with('red_line',json_encode($red_line));
                                                 //->with('get_per_day',json_encode($get_per_day))
@@ -427,12 +438,8 @@ class DashboardSalesController extends Controller
         return $cust_exists_p;
     }
 
-    public static function achUserPareto($user_id,$month,$year,$pr)
+    public static function achUserPareto($user_id,$month,$year,$pr,$period_par)
     {
-        $date_now = date('Y-m-d');
-        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
-                     ->where('period','<=',$date_now)
-                     ->max('period');
         $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
                 {
                     return $q->where('version_pareto',$pr)
@@ -448,4 +455,125 @@ class DashboardSalesController extends Controller
                 ->pluck('sum');
         return $ach_p;             
     }
-}
+
+    public static function achQuantity(){
+        $user_id = \Auth::user()->id;
+        $month = date('m');
+        $year = date('Y');
+        $targ_ach_qty = \App\Order::with('products')
+                    ->where('user_id',$user_id)
+                    ->whereNotNull('customer_id')
+                    ->where('status','!=','CANCEL')
+                    ->where('status','!=','NO-ORDER')
+                    ->whereMonth('created_at', $month)
+                    ->whereYear('created_at', $year)->get();
+            $qty = $targ_ach_qty->sum('TotalQuantity');
+        
+        return $qty;
+    }
+
+    public static function PeriodType($pr){
+        
+        $pr_type = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                ->where('period',$pr)
+                ->first();
+
+        return $pr_type;
+    }
+
+    public static function achUsrTgQtyPareto($user_id,$month,$year,$pr,$period_par)
+    {
+        $ach_qtypareto = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+                {
+                    return $q->where('version_pareto',$pr)
+                    ->where('period',$period_par);
+                })
+                ->with('products')
+                ->where('user_id',$user_id)
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->get();
+        $qty_ach = $ach_qtypareto->sum('TotalQuantity');
+        return $qty_ach;           
+    }
+
+    public static function TrgValPareto($user_id,$period_par,$pr)
+    {
+        $target_str = \App\Store_Targets::whereHas('customers', function($q) use($user_id){
+                        $q->where('user_id',$user_id);
+                    })
+                    ->where('period',$period_par)
+                    ->where('version_pareto',$pr)
+                    ->selectRaw('sum(target_values) as sum')
+                    ->pluck('sum');
+        return $target_str;           
+    }
+
+    public static function TrgQtyPareto($user_id,$period_par,$pr)
+    {
+        $targ_qty_par = \App\Store_Targets::whereHas('customers', function($q) use($user_id){
+                        $q->where('user_id',$user_id);
+                    })
+                    ->where('period',$period_par)
+                    ->where('version_pareto',$pr)
+                    ->selectRaw('sum(target_quantity) as sum')
+                    ->pluck('sum');
+        return $targ_qty_par;           
+    }
+
+    public static function MaxYearQuantity(){
+        $user_id = \Auth::user()->id;
+        $year = date('Y');
+        if($year < 2022){
+            $mxx = [];
+            for($i=6;$i<13;$i++){
+                $mxx[] = \DB::select("SELECT AVG(total) as total_average
+                            FROM
+                            (
+                                SELECT o.created_at , o.user_id, op.quantity,  
+                                SUM(op.quantity) AS total
+                                FROM orders AS o
+                                JOIN order_product as op ON o.id = op.order_id 
+                                WHERE o.user_id = '$user_id' 
+                                AND month(o.created_at)= '$i'
+                                AND Year(o.created_at)='$year'
+                                AND status != 'CANCEL'
+                                AND customer_id IS NOT NULL
+                                GROUP BY DATE(o.created_at) 
+                                ORDER BY total
+                            ) as inner_query;");
+                
+            }
+        }else{
+            $mxx = [];
+            for($i=1;$i<13;$i++){
+                $mxx[] = \DB::select("SELECT AVG(total) as total_average
+                    FROM
+                    (
+                        SELECT o.created_at , o.user_id, op.quantity,  
+                        SUM(op.quantity) AS total
+                        FROM orders AS o
+                        JOIN order_product as op ON o.id = op.order_id 
+                        WHERE o.user_id = '$user_id' 
+                        AND month(o.created_at)= '$i'
+                        AND Year(o.created_at)='$year'
+                        AND status != 'CANCEL'
+                        AND customer_id IS NOT NULL
+                        GROUP BY DATE(o.created_at) 
+                        ORDER BY total 
+                    ) as inner_query;");
+                
+            }
+        }
+        $collect_average =  max($mxx);
+        $max_q=0;
+        foreach($collect_average as $mx){
+            $max_q = $mx->total_average;
+        }
+        
+        return number_format($max_q,0);
+    }
+}  

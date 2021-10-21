@@ -33,7 +33,7 @@
                         <form id="form_validation" class="form_spv" method="POST" enctype="multipart/form-data" action="{{route('customers.store_target_add',[$vendor,$period])}}">
                             @csrf
                             <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
-                            
+                            <input type ="hidden" value="{{$type->target_type}}" name="target_type">
                             <div class="">
                                 <table class="table table-striped table-hover dataTable js-basic-example">
                                     <thead>
@@ -41,7 +41,8 @@
                                             <!--<th>No</th>-->
                                             <th>Customers</th>
                                             <th>Cat</th>
-                                            <th>Target Values (IDR)</th>
+                                            <th>Target Values (IDR)</th>                                              
+                                            <th>Target Qty (BOX)</th>                                              
                                            
                                         </tr>
                                     </thead>
@@ -56,19 +57,32 @@
                                             </td>
                                             <td>
                                                 {{$u->pareto->pareto_code}}
-                                            </td>
-                                            <td>
                                                 <input type="hidden" name="customer_id[]" value="{{$u->id}}">
                                                 <input type="hidden" name="version_pareto[]" value="{{$u->pareto->id}}">
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        
-                                                        <input type="text" class="form-control" name="target_value[]" id="currency-field" 
-                                                        pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{old('target_value')}}" 
-                                                        data-type="currency" placeholder="" autocomplete="off">
-                                                    </div>
-                                                </div>
                                             </td>
+                                            
+                                                <td>
+                                                    <div class="form-group form-float">
+                                                        <div class="form-line">
+                                                            
+                                                            <input type="text" class="form-control target_nominal" name="target_value[{{$u->id}}]"  
+                                                            pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{old('target_value')}}" 
+                                                            data-type="currency" placeholder="" autocomplete="off" 
+                                                            {{$type->target_type == 2 || $type->target_type == 3 ? 'required' : 'disabled'}}>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td >
+                                                    <div class="form-group form-float" >
+                                                        <div class="form-line">
+                                                            <input type="number" class="form-control target_quantity" min='1' name="target_quantity[{{$u->id}}]" 
+                                                            value="" autocomplete="off" 
+                                                            {{$type->target_type == 1 || $type->target_type == 3 ? 'required' : 'disabled'}}>
+                                                            
+                                                        
+                                                        </div>
+                                                    </div>
+                                                </td>
                                             
                                         </tr>
                                         @endforeach
@@ -91,15 +105,31 @@
             @csrf
             <input type="hidden" name="_method" value="PUT">
             
+            <div class="form-group form-radio">
+                <input type="radio" class="form-check-inline" value="1" 
+                    {{$type->target_type == '1' ? 'checked' : ''}}
+                    name="target_type" id="quantity_target" onclick='showQty();' required>
+                <label for="quantity_target">Quantity Target</label>
+                &nbsp;
+                <input type="radio" class="form-check-inline" value="2"
+                    {{$type->target_type == '2' ? 'checked' : ''}} 
+                    name="target_type" id="nominal_target" onclick='showNml();'>
+                <label for="nominal_target">Nominal Target</label>
+                &nbsp;
+                <input type="radio" class="form-check-inline" value="3"
+                    {{$type->target_type == '3' ? 'checked' : ''}} 
+                    name="target_type" id="qty_nml_target" onclick='showQtyNml();'>
+                <label for="qty_nml_target">Quantity & Nominal Target</label>
+            </div>
             <div class="">
-                <table class="table table-striped table-hover dataTable js-basic-example">
+                <table class="table table-striped table-hover table-list-customer">
                     <thead>
                         <tr>
                             <!--<th>No</th>-->
                             <th>Customers</th>
                             <th>Cat</th>
                             <th>Target Values (IDR)</th>
-                           
+                            <th>Target Qty (BOX)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,15 +151,28 @@
                                 @else
                                     Not Pareto
                                 @endif
+                                <input type="hidden" name="id[]" value="{{$u->id}}">
                             </td>
                             <td>
-                                <input type="hidden" name="id[]" value="{{$u->id}}">
+                                
                                 
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input type="text" class="form-control" name="target_value[]" id="currency-field" 
-                                        value="{{old('target_value',number_format($u->target_values))}}" 
-                                        data-type="currency" placeholder="" autocomplete="off">
+                                        <input type="text" class="form-control target_nominal" name="target_value[{{$u->id}}]" 
+                                        value="{{$type->target_type == 2 || $type->target_type == 3 ? number_format($u->target_values) : ''}}" 
+                                        data-type="currency" placeholder="" autocomplete="off" 
+                                        {{$type->target_type == 2 || $type->target_type == 3 ? '' : 'disabled'}}>
+                                    </div>
+                                </div>
+                            </td>
+                            <td >
+                                <div class="form-group form-float" >
+                                    <div class="form-line">
+                                        <input type="number" class="form-control target_quantity" min='1' name="target_quantity[{{$u->id}}]" 
+                                        value="{{$type->target_type == 1 || $type->target_type == 3 ? $u->target_quantity : ''}}" autocomplete="off"
+                                        {{$type->target_type == 1 || $type->target_type == 3 ? '' : 'disabled'}}>
+                                        
+                                       
                                     </div>
                                 </div>
                             </td>
@@ -153,6 +196,31 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('.table-list-customer').DataTable( {
+                "scrollY":'50vh',
+                "paging":   false,
+                "ordering": false,
+                "info":     false
+            } );
+        } );
+        function showQty()
+        {
+            $('.target_quantity').prop('disabled',false);
+            $('.target_quantity').prop('required',true);
+            $('.target_nominal').prop('disabled',true);
+        }
+        function showNml()
+        {
+            $('.target_quantity').prop('disabled',true);
+            $('.target_nominal').prop('disabled',false);
+            $('.target_nominal').prop('required',true);
+        }
+        function showQtyNml()
+        {
+            $('.target_nominal,.target_quantity').prop('disabled',false);
+            $('.target_quantity,.target_nominal').prop('required',true);
+         }
         $('#popoverData').popover();
         
         $("input[data-type='currency']").on({
@@ -236,44 +304,7 @@
         input[0].setSelectionRange(caret_pos, caret_pos);
         }
 
-        $('#customer_id').select2({
-            placeholder: 'Select a Customer',
-        });
-
-        function getval(sel)
-        {
-            $( '#customer_id_select' ).val(sel.value);
-            var date =  $('#param_customer' ).val();
-            //var data = $("#user_id option:selected").text();
-            //var user_id = sel.value;
-            //console.log(date+user_id);
-            $.ajax({
-                url: '{{URL::to('/ajax/exist_customer/search')}}',
-                type: 'get',
-                data: {
-                    'customer_id' : sel.value,
-                    'date' : date
-                },
-                success: function(response){
-                    if (response == 'taken') {
-                    //$('.email_').addClass("focused error");
-                    $('.err_exist').addClass("small").addClass('merah').text('Customer already exists in this month...');
-                    $('#btnSubmit').prop('disabled', true);
-                    }else if (response == 'not_taken') {
-                    $('.err_exist').addClass("text-primary").removeClass('merah').text('');
-                    $('#btnSubmit').prop('disabled', false);
-                    }
-                    /*
-                    else if(response == 'not_taken' && email==""){
-                        //$('#email_').siblings("label").text('');
-                        $('.err_exist').text('');
-                    }*/
-                }
-            });
-        }
-
         
-
         var dp=$("#datepicker").datepicker( {
             format: "yyyy-mm",
             startView: "months", 

@@ -61,7 +61,8 @@ class TargetController extends Controller
                         ->get();*/
             $targets = \DB::table('store_target')
                         ->where('client_id',auth()->user()->client_id)
-                        ->select('period',DB::raw('count(*) as total, SUM(target_values) as total_target'))
+                        ->select('period', 'target_type',DB::raw('count(*) as total, SUM(target_values) as total_value,
+                            SUM(target_quantity) as total_qty '))
                         //->select(DB::raw("SUM(target_values) as total_target"))
                         ->groupBy('period')
                         ->get();
@@ -189,7 +190,47 @@ class TargetController extends Controller
         if(count($request->customer_id) > 0) {
             $sum = 0;
             
-            foreach ($request->customer_id as $i => $v){
+            
+                foreach ($request->customer_id as $i => $v){
+                    //dd($i);
+                    if($request->target_type == 1){
+                        $data_target=array(
+                            'client_id'=>$request->client_id,
+                            'customer_id'=>$request->customer_id[$i],
+                            'target_quantity'=>$request->target_quantity[$v],
+                            'period'=>$request->period.'-01',
+                            'created_by'=>\Auth::user()->id,
+                            'version_pareto'=>$request->version_pareto[$i],
+                            'target_type'=>$request->target_type
+                        );
+                    }elseif($request->target_type == 2){
+                        $data_target=array(
+                            'client_id'=>$request->client_id,
+                            'customer_id'=>$request->customer_id[$i],
+                            'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
+                            'period'=>$request->period.'-01',
+                            'created_by'=>\Auth::user()->id,
+                            'version_pareto'=>$request->version_pareto[$i],
+                            'target_type'=>$request->target_type
+                        );
+                    }else{
+                        $data_target=array(
+                            'client_id'=>$request->client_id,
+                            'customer_id'=>$request->customer_id[$i],
+                            'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
+                            'target_quantity'=>$request->target_value[$v],
+                            'period'=>$request->period.'-01',
+                            'created_by'=>\Auth::user()->id,
+                            'version_pareto'=>$request->version_pareto[$i],
+                            'target_type'=>$request->target_type
+                        );
+                    }
+                    $new_t = new \App\Store_Targets;
+                    $new_t->create($data_target);
+                }
+        
+            
+            /*foreach ($request->customer_id as $i => $v){
                 $data_target=array(
                     'client_id'=>$request->client_id,
                     'customer_id'=>$request->customer_id[$i],
@@ -200,7 +241,7 @@ class TargetController extends Controller
                 );
                 $new_t = new \App\Store_Targets;
                 $new_t->create($data_target);
-            }
+            }*/
         }
 
         return redirect()->route('customers.index_target',[$vendor])->with('status','Target Succsessfully Created');
@@ -286,14 +327,39 @@ class TargetController extends Controller
             //dd(str_replace(',', '', $request->target_value));
             
             foreach ($request->customer_id as $i => $v){
-                $data_target=array(
-                    'client_id'=>$request->client_id,
-                    'customer_id'=>$request->customer_id[$i],
-                    'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
-                    'period'=>$period,
-                    'created_by'=>\Auth::user()->id,
-                    'version_pareto'=>$request->version_pareto[$i],
-                );
+                
+                if($request->target_type == 1){
+                    $data_target=array(
+                        'client_id'=>$request->client_id,
+                        'customer_id'=>$request->customer_id[$i],
+                        'target_quantity'=>$request->target_quantity[$v],
+                        'period'=>$request->period.'-01',
+                        'created_by'=>\Auth::user()->id,
+                        'version_pareto'=>$request->version_pareto[$i],
+                        'target_type'=>$request->target_type
+                    );
+                }elseif($request->target_type == 2){
+                    $data_target=array(
+                        'client_id'=>$request->client_id,
+                        'customer_id'=>$request->customer_id[$i],
+                        'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
+                        'period'=>$request->period.'-01',
+                        'created_by'=>\Auth::user()->id,
+                        'version_pareto'=>$request->version_pareto[$i],
+                        'target_type'=>$request->target_type
+                    );
+                }else{
+                    $data_target=array(
+                        'client_id'=>$request->client_id,
+                        'customer_id'=>$request->customer_id[$i],
+                        'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
+                        'target_quantity'=>$request->target_value[$v],
+                        'period'=>$request->period.'-01',
+                        'created_by'=>\Auth::user()->id,
+                        'version_pareto'=>$request->version_pareto[$i],
+                        'target_type'=>$request->target_type
+                    );
+                }
                 $new_t = new \App\Store_Targets;
                 $new_t->create($data_target);
             }
@@ -317,7 +383,10 @@ class TargetController extends Controller
             //dd($id);
             $target = \App\Store_Targets::where('client_id',auth()->user()->client_id)
                     ->where('period',$id)->get();
-                   
+            
+            $type = $target->first();
+            //dd($target->first());
+                  
             $exist_store = \App\Customer::with('store_targets')
                          ->whereNotNull('pareto_id')
                          ->whereDoesnthave('store_targets',function($q) use ($id)
@@ -329,7 +398,7 @@ class TargetController extends Controller
                       ->get();
             //dd(count($exist_store));
             
-            return view('customer_store.edit_target',['vendor'=>$vendor, 'target'=>$target, 'period'=>$id, 'exist_store'=>$exist_store]);
+            return view('customer_store.edit_target',['vendor'=>$vendor, 'type'=>$type, 'target'=>$target, 'period'=>$id, 'exist_store'=>$exist_store,]);
     }
     
     public function update_target(Request $request, $vendor)
@@ -415,10 +484,27 @@ class TargetController extends Controller
         if(count($request->id) > 0) {
             $sum = 0;
             foreach ($request->id as $i => $v){
-                $data_target=array(
-                    'target_values'=>str_replace(',', '', $request->target_value)[$i] ?? '0',
-                    'updated_by'=>\Auth::user()->id,
-                );
+                if($request->target_type == 1){
+                    $data_target=array(
+                        'target_quantity'=>$request->target_quantity[$v],
+                        'target_type'=>$request->target_type,
+                        'updated_by'=>\Auth::user()->id,
+                    ); 
+                }elseif($request->target_type == 2){
+                    $data_target=array(
+                        'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
+                        'target_type'=>$request->target_type,
+                        'updated_by'=>\Auth::user()->id,
+                    );
+                }else{
+                    $data_target=array(
+                        'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
+                        'target_quantity'=>$request->target_quantity[$v],
+                        'target_type'=>$request->target_type,
+                        'updated_by'=>\Auth::user()->id,
+                    );
+                }
+                
                 $new_t = \App\Store_Targets::where('id',$request->id[$i])->first();
                 $new_t->update($data_target);
             }

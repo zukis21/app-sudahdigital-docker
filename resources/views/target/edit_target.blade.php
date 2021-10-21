@@ -61,7 +61,7 @@
             
             <div class="form-group form-float" id="inputQtyTarget" style="display: none">
                 <div class="form-line">
-                    <input type="number" class="form-control" min='0' name="target_quantity" 
+                    <input type="number" class="form-control" min='1' name="target_quantity" 
                     value="{{old('target_quantity',$target->target_quantity)}}" autocomplete="off">
                     
                     <label class="form-label">Monthly Target Quantity (BOX))</label>

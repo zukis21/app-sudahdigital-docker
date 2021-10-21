@@ -16,7 +16,9 @@ class Store_Targets extends Model
         'period',
         'created_by',
         'updated_by',
-        'version_pareto'
+        'version_pareto',
+        'target_type',
+        'target_quantity'
     ];
 
     public function customers(){

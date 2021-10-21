@@ -308,7 +308,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     //point periods
     Route::get('/point-periods', 'PointPeriodController@index')->name('points_periods.index');
     Route::get('/point-periods/create', 'PointPeriodController@create')->name('points_periods.create');
-    Route::post('/point-periods/post-period', 'PointPeriodController@postCreatePeriod')->name('points_periods.step_one');
+    //Route::post('/point-periods/post-period', 'PointPeriodController@postCreatePeriod')->name('points_periods.step_one');
     Route::post('/point-periods/store', 'PointPeriodController@store')->name('points_periods.store');
     Route::put('/point-periods/{id}/update', 'PointPeriodController@update')->name('points_periods.update');
     Route::get('/point-periods/{id}/edit', 'PointPeriodController@edit')->name('points_periods.edit');
