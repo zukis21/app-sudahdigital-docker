@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_0.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_1.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
@@ -548,6 +548,91 @@
             font: 14px arial;
         }
 
+        .carousel-inner{
+            max-height: 800px;
+        }
+
+        .bell-icon-right{
+            position: absolute;
+            right: 7%;
+        }
+        .dropdown-menu-nav {display: block;
+            visibility: hidden;
+            opacity:0;transform: 
+            translateY(50px);
+            transition:.5s ease all;
+            width: 300px;
+        }
+        .dropdown-menu-nav.show {
+            display: block;
+            visibility: visible;
+            opacity:1;transform: 
+            translateY(0px);
+            transition:.5s ease all;
+        }
+        .dropdown-toggle:after { content: none }
+
+        .radio-claim {
+            display: none;
+            &:not(:disabled) ~ label {
+                cursor: pointer;
+            }
+            &:disabled ~ label {
+                color: hsla(150, 5%, 75%, 1);
+                border-color: hsla(150, 5%, 75%, 1);
+                box-shadow: none;
+                cursor: not-allowed;
+            }
+        }
+
+        .label-radio-claim {
+            height: 100%;
+            display: block;
+            background: white;
+            border: 1px solid hsla(150, 75%, 50%, 1);
+            border-radius: 20px;
+            
+            margin-bottom: 1rem;
+            /*margin: 1rem;*/
+            text-align: center;
+            box-shadow: 0px 3px 10px -2px hsla(150, 5%, 65%, 0.5);
+            position: relative;
+        }
+        
+        .radio-claim:checked + label {
+        background: hsla(150, 75%, 50%, 1);
+        color: hsla(215, 0%, 100%, 1);
+        box-shadow: 0px 0px 20px hsla(150, 100%, 50%, 0.75);
+        &::after {
+            color: hsla(215, 5%, 25%, 1);
+            font-family: FontAwesome;
+            border: 2px solid hsla(150, 75%, 45%, 1);
+            content: "\f00c";
+            font-size: 24px;
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 50px;
+            width: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0px 2px 5px -2px hsla(0, 0%, 0%, 0.25);
+            }
+        }
+
+        .modal-fixed-footer .modal-body {
+            max-height: 70vh; /* max 80% of the viewport height */
+            overflow-y: auto;
+        }
+
+        .notification-box{
+            padding: 10px 0px;
+        }
+        
+        
         @media (max-width: 2560px){
             .button_welcome {
                 font-size: 34px;
@@ -556,6 +641,14 @@
                 right: 12%;
                 font-weight: 600;
                 border-radius: 20px;
+            }
+
+            .searchbar-open {
+                width: 90.5%
+            }
+
+            .bell-icon-right{
+                right: 30%;
             }
 
         }
@@ -570,6 +663,14 @@
                 border-radius: 17px;
             }
 
+            .searchbar-open {
+                width: 90.5%
+            }
+
+            .bell-icon-right{
+                right: 23%;
+            }
+
         }
 
         @media (max-width: 1440px){
@@ -580,6 +681,14 @@
                 right: 10%;
                 font-weight: 600;
                 border-radius: 15px;
+            }
+
+            .searchbar-open {
+                width: 90.5%
+            }
+
+            .bell-icon-right{
+                right: 15%;
             }
 
         }
@@ -600,7 +709,15 @@
             .preloader .loading {
             left: 50%;
             top: 50%;
-            }  
+            } 
+            
+            .searchbar-open {
+                width: 90%
+            }
+
+            .bell-icon-right{
+                right: 10%;
+            }
         }
 
         @media (max-width: 1024px){
@@ -610,6 +727,14 @@
                 top: 17rem;
                 right: 9%;
                 font-weight: 600;
+            }
+
+            .searchbar-open {
+                width: 88%
+            }
+
+            .bell-icon-right{
+                right: 5%;
             }
 
         }
@@ -625,7 +750,7 @@
             }
 
             .searchbar-open {
-                width: 92%
+                width: 85%
             }
 
             #product_list .ribbon {
@@ -701,6 +826,13 @@
                 font-weight: bold;
                 
             }
+        }
+
+        @media (max-width: 759px){
+            .bell-icon{
+                font-size: 22px;
+            }
+
         }
 
         @media (max-width: 600px){
@@ -789,12 +921,14 @@
                 width:400px !important;
                 max-width: 100% !important;
             }
+
+            .searchbar-open {
+                width: 77%
+            }
         }
 
         @media (max-width: 425px){
-            .searchbar-open {
-                width: 90%
-            }
+            
 
             .button_welcome {
                 font-size: 11px;
@@ -824,6 +958,10 @@
                 font-size: 14px !important;
                 width:360px !important;
                 max-width: 100% !important;
+            }
+
+            .searchbar-open {
+                width: 75%
             }
         }
 
@@ -875,7 +1013,7 @@
             }
 
             .searchbar-open {
-                width: 89%
+                width: 73%
             }
         }
 
@@ -904,11 +1042,9 @@
                 font-weight: 600;
             }
         }
-    
-        .carousel-inner{
-            max-height: 800px;
-        }
-
+        
+       
+        
     </style>
     
     <script>
@@ -1049,6 +1185,102 @@
             </div>
         </div>
     </div>
+    @endif
+
+    @if(session()->has('ses_order'))
+        <?php $store_name = session()->get('ses_order');
+            if($store_name->store_name != null){
+                $point = 0;
+                $amount_claim = 0; 
+            }else{
+                $point = App\Http\Controllers\PointInfoController::PointInfo($store_name->customer_id);
+                [$paramPeriod,$amount_claim] = App\Http\Controllers\PointInfoController::amountClaim($store_name->customer_id);
+            }
+        ?>
+    @endif
+    
+    <!--poin-->
+    @if(session()->has('ses_order'))
+        <!-- Modal detail point-->
+        <div style="position: fixed;" class="modal fade modal-fixed-footer"  id="DetailPoinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header">
+                <h6 class="modal-title font-weight-bold">
+                    <i class="fas fa-info-circle mr-1" style="color: turquoise"></i>Informasi Poin</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group" style="border-radius: 18px;">
+                        <li class="list-group-item d-flex list-group-item-primary justify-content-between align-items-center">
+                            Total Poin 
+                            <span class="badge badge-primary badge-pill">{{$point}}</span>
+                        </li>
+                        <li class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                            Poin yang dapat diklaim 
+                            <span class="badge badge-success badge-pill">{{$amount_claim}}</span>
+                        </li>
+                        </ul>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal notif no period claim-->
+        @if($store_name->customer_id != null)
+            <div class="modal fade modal-fixed-footer"  id="TukarPoinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="border-radius: 20px;">
+                    <div class="modal-header">
+                    <h6 class="modal-title font-weight-bold">Tukar Poin</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <section>
+                            <?php
+                            if($paramPeriod != null){
+                                $list_rewards = App\PointReward::where('client_id',\Auth::user()->client_id)
+                                                ->where('period_id', $paramPeriod)
+                                                ->orderBy('bonus_amount','DESC')
+                                                ->get();
+                            
+                            ?>
+                            @if($list_rewards)
+                                @foreach ($list_rewards as $item)
+                                    <div>
+                                        <input class="radio-claim" type="radio" id="radioPoin{{$item->id}}" 
+                                        name="selectClaim" value="{{$item->id}}" required 
+                                        {{$amount_claim  < $item->point_rule ? 'disabled' : ''}}>
+                                        <label class="label-radio-claim py-2" for="radioPoin{{$item->id}}">
+                                            <h4><img class="mt-n1" src="{{asset('assets/image/medal-64.png')}}" alt="" width="20">
+                                                <b class="mt-3">{{$item->point_rule}}</b></h4>
+                                            <h6>Rp. {{number_format($item->bonus_amount,2)}}</h6>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            @endif
+                            <?php
+                               } 
+                            ?>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                    <button id="submitClaim" type="button" disabled
+                        class="btn btn-primary btn-sm btn-block py-2 font-weight-bold"
+                        style=" border-radius:0;
+                                border-top-left-radius: 20px;
+                                border-top-right-radius : 20px;
+                                background-color:  #FF0000  !important;
+                                border:none;">Klaim</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        @endif
     @endif
 
     <!-- Modal new store form-->
@@ -1219,7 +1451,7 @@
             </div>
         </div>
     </div>
-
+    
     <!--preloader-->
     <div class="preloader" id="preloader">
         <div class="loading">
@@ -1322,9 +1554,59 @@
                     </form>
                 @endif
                 
+                <div class="pb-n5 bell-icon">
+                    <div class="nav-item dropdown mb-n5 mt-n4 mr-n2 {{\Route::currentRouteName() == 'home_customer' ? '' : 'bell-icon-right'}}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bell text-white fa-2x bell-icon" aria-hidden="true" ></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-nav dropdown-menu-right" 
+                            aria-labelledby="navbarDropdown" style="border-radius: 10px;">
+                            <li class="notification-box">
+                                <div class="row">
+                                    <div class="col-lg-2 col-sm-3 col-3 text-center">
+                                        <img class="ml-2" src="{{asset('assets/image/store-80.png')}}" alt="" width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-8 col-8 ml-0">
+                                        @if(session()->has('ses_order'))
+                                            <strong class="text-info">
+                                                {{
+                                                    $store_name->store_name != null ? 
+                                                    $store_name->store_name : 
+                                                    App\Http\Controllers\PointInfoController::StoreInfo($store_name->customer_id)
+                                                }}
+                                            </strong>
+                                        @endif
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-lg-2 col-sm-3 col-3 text-center">
+                                        <img class="ml-2" src="{{asset('assets/image/medal-64.png')}}" alt="" width="27">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-8 col-8 ml-0">
+                                        @if(session()->has('ses_order'))
+                                            <strong class="text-info">{{$amount_claim}} / {{$point}}</strong>
+                                            <a href="#" data-toggle="modal" data-target="#DetailPoinModal">
+                                                <i class="fas fa-info-circle" style="color: turquoise"></i>
+                                            </a>
+                                            @if($store_name->customer_id != null && $amount_claim > 0)
+                                                
+                                                <div class="float-right btn-claim mr-2">
+                                                    <input type="hidden" value="{{$store_name->customer_id}}" id="CsIdClaim">
+                                                    <button class="btn btn-success btn-sm py-0" data-toggle="modal" data-target="#TukarPoinModal">Klaim</button>
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                      </div> 
+                </div>
+                
             </div>
         </nav>
-
+        
         <!--hero-->
         <div id="hero_cools">
             <!-- BANNER -->
@@ -1397,6 +1679,8 @@
                 <p>&copy;Copyright 2021</p>
             </div>
         </div>
+        
+    
     </div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
@@ -1427,17 +1711,85 @@
             $('.col-new-toko').removeClass('col-md-5').addClass('col-md-10');
             $('.col-select').removeClass('pl-0');
             $('.p-label').removeClass('text-left').addClass('text-center');
+            $('.btn-claim').removeClass('mr-2').addClass('mr-n2');
+        }
+        if($(window).width()< 759 ){
+            $('.bell-icon').removeClass('fa-2x');
+        }
+
+        if($(window).width() < 601 ){
+            $('.grip-on').removeClass('mt-n2').addClass('mt-n1');
         }
         if($(window).width() < 426 ){
             $('.btn-new-toko').addClass('btn-block').addClass('mb-2');
             $('.content-new-toko').addClass('mt-n3');
             $('.img-logo-loc').removeClass('pt-4').addClass('pt-3');
         }
-        if($(window).width() < 601 ){
-            $('.grip-on').removeClass('mt-n2').addClass('mt-n1');
+        
+        //disable button submit point claim
+        var inputElems = document.getElementsByClassName("radio-claim");
+        for (var i = inputElems.length - 1; i >= 0; --i) {
+            var elem = inputElems[i];
+            elem.onchange = function () {
+                document.getElementById("submitClaim").removeAttribute("disabled");
+            };
         }
 
+        //add claim point
+        $("#submitClaim").click(function() {
+        if ($('input[name="selectClaim"]:checked').length == 0) {
+            const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+            })
 
+            Toast.fire({
+            icon: 'error',
+            title: 'Jenis poin belum dipilih'
+            });
+            return false; 
+        }else {
+            var reward_id = $(".radio-claim:checked").val();
+            var customer_id = $("#CsIdClaim").val();
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+            });
+            $.ajax({
+                url : '{{URL::to('/claim/post')}}',
+                type:'POST',
+                data:{
+                    reward_id : reward_id,
+                    customer_id : customer_id,
+                },
+                                
+                success: function (){
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: "Permintaan klaim terkirim",
+                        icon: 'success',
+                        showCancelButton: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: '#4db849'
+                        }).then(function(){ 
+                            location.reload();
+                        });
+                },
+                
+                
+            })
+        }
+        return false;
+        });
+        
         //nav bar behavior
         $(document).ready(function(){
             $(window).scroll(function(){
@@ -4883,6 +5235,7 @@
                 url : '{{URL::to('/sales/logout-record')}}',
             });
         }
+
         /*
         window.setTimeout(function() {
         $(".alert").fadeTo(500, 0).slideUp(500, function(){

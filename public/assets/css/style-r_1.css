@@ -2623,57 +2623,78 @@ footer.footer .cart .count-cart-three {
 
   /* flip box */
   /* entire container, keeps perspective */
-.flip-container {
-	perspective: 1000px;
-  -moz-transform: perspective(1000px);
-    -moz-transform-style: preserve-3d;
-	-webkit-perspective: 1000;
-    -moz-perspective: 1000;
-    -o-perspective: 1000;
-}
-/* flip the pane when hovered */
-.flip-container.hover .flipper {
-	transform: rotateY(180deg);
-}
+  .flip-container {
+    perspective: 1000px;
+    -moz-transform: perspective(1000px);
+      -moz-transform-style: preserve-3d;
+    -webkit-perspective: 1000;
+      -moz-perspective: 1000;
+      -o-perspective: 1000;
+    
+  }
+  /* flip the pane when hovered */
+  .flip-container.hover .flipper {
+    transform: rotateY(180deg);
+    
+  }
 
-.flip-container, .front, .back {
-	width: 100%;
-	min-height: 150px;
-}
+  .flip-container, .front, .back {
+    width: 100%;
+    min-height: 150px;
+    
+  }
 
-/* flip speed goes here */
-.flipper {
-	transition: 0.6s;
-	transform-style: preserve-3d;
-	position: relative;
-}
+  /* flip speed goes here */
+  .flipper {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+    position: relative;
+    
+  }
 
-/* hide back of pane during swap */
-.front, .back {
-	backface-visibility: hidden;
-	position: absolute;
-	top: 0;
-	left: 0;
-  padding: 0;
-  cursor: pointer;
-}
+  /* hide back of pane during swap */
+  .front, .back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    cursor: pointer;
+  }
 
-/* front pane, placed above back */
-.front {
-	z-index: 2;
-	/* for firefox 31 */
-	transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
-  	background: none;
-}
+  /* front pane, placed above back */
+  .front {
+    z-index: 2;
+    /* for firefox 31 */
+    transform: rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
+      background: none;
+  }
 
-/* back, initially hidden pane */
-.back {
-	transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-}
-.thumbnail{
-background: none;
-  border: none;
-}
-.mb{margin-bottom: 20px;}
+  /* back, initially hidden pane */
+  .back {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+  }
+  .thumbnail{
+  background: none;
+    border: none;
+  }
+  .mb{margin-bottom: 20px;}
+
+  /*modal-effect-pulse*/
+  #myModal--effect-pulse.modal.fade .modal-dialog {
+    transform: perspective(400px) rotate3d(0, 1, 0, -360deg);
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+
+  #myModal--effect-pulse.modal.fade.in .modal-dialog {
+    transform: perspective(400px) scale3d(.95, .95, .95);
+    animation-timing-function: ease-in;
+    opacity: 1;
+  }
+
+  

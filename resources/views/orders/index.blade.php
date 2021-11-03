@@ -7,38 +7,38 @@
 	</div>
 @endif
 
-<form action="{{route('products.index',[$vendor])}}">
-	<div class="row">
-		<div class="col-md-8">
-			<ul class="nav nav-tabs tab-col-pink pull-left" >
-				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/orders' ? 'active' : ''}}">
-					<a href="{{route('orders.index',[$vendor])}}" aria-expanded="true" >All</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'submit' ?'active' : '' }}">
-					<a href="{{route('orders.index', [$vendor,'status' =>'submit'])}}" >SUBMIT</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'process' ?'active' : '' }}">
-					<a href="{{route('orders.index', [$vendor,'status' =>'process'])}}">PROCESS</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'finish' ?'active' : '' }}">
-					<a href="{{route('orders.index', [$vendor,'status' =>'finish'])}}">FINISH</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'cancel' ?'active' : '' }}">
-					<a href="{{route('orders.index', [$vendor,'status' =>'cancel'])}}">CANCEL</a>
-				</li>
-				<li role="presentation" class="{{Request::get('status') == 'no-order' ?'active' : '' }}">
-					<a href="{{route('orders.index', [$vendor,'status' =>'no-order'])}}">NO-ORDER</a>
-				</li>
-			</ul>
-		</div>
-		<div class="col-md-4">
-			<a href="{{route('orders.export_mapping',[$vendor]) }}" 
-				class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
-				<i class="fas fa-file-excel fa-0x "></i> Export
-			</a>
-		</div>
+
+<div class="row">
+	<div class="col-md-8">
+		<ul class="nav nav-tabs tab-col-pink pull-left" >
+			<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/orders' ? 'active' : ''}}">
+				<a href="{{route('orders.index',[$vendor])}}" aria-expanded="true" >All</a>
+			</li>
+			<li role="presentation" class="{{Request::get('status') == 'submit' ?'active' : '' }}">
+				<a href="{{route('orders.index', [$vendor,'status' =>'submit'])}}" >SUBMIT</a>
+			</li>
+			<li role="presentation" class="{{Request::get('status') == 'process' ?'active' : '' }}">
+				<a href="{{route('orders.index', [$vendor,'status' =>'process'])}}">PROCESS</a>
+			</li>
+			<li role="presentation" class="{{Request::get('status') == 'finish' ?'active' : '' }}">
+				<a href="{{route('orders.index', [$vendor,'status' =>'finish'])}}">FINISH</a>
+			</li>
+			<li role="presentation" class="{{Request::get('status') == 'cancel' ?'active' : '' }}">
+				<a href="{{route('orders.index', [$vendor,'status' =>'cancel'])}}">CANCEL</a>
+			</li>
+			<li role="presentation" class="{{Request::get('status') == 'no-order' ?'active' : '' }}">
+				<a href="{{route('orders.index', [$vendor,'status' =>'no-order'])}}">NO-ORDER</a>
+			</li>
+		</ul>
 	</div>
-</form>	
+	<div class="col-md-4">
+		<a href="{{route('orders.export_mapping',[$vendor]) }}" 
+			class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
+			<i class="fas fa-file-excel fa-0x "></i> Export
+		</a>
+	</div>
+</div>
+	
 <hr>
 <div class="table-responsive">
 	<table class="table table-bordered table-striped table-hover order-table">

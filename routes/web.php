@@ -59,8 +59,12 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::get('/pesanan/cancel/success','AjaxDetailPesananSales@cancel_success');
     Route::get('/ajax/reasons', 'AjaxCitySearch@ajax_reasons');
     Route::get('/ajax/latlon/search', 'AjaxCitySearch@get_latlon');
-
-
+    Route::get('/claim/checkperiod','ClaimPointsController@checkperiod');
+    Route::post('/claim/post', 'ClaimPointsController@ClaimRequest');
+    //Route::post('/claim/checkpoints','ClaimPointsController@checkpoints');
+    //Route::post('/claim/points_lists','ClaimPointsController@points_lists');
+    
+    
     Route::group(['prefix' => '/keranjang'], function()
     {
         //Route::post('/apply_code', 'CustomerKeranjangController@apply_code');
@@ -341,6 +345,15 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers-point/{id}/details', 'CustomerPointController@edit')->name('CustomerPoints.details');
     Route::get('/customers-point/{id}/delete-permanent','CustomerPointController@deletePermanent')->name('Customer_Points.delete-permanent');
     
+    //claim points order
+    Route::get('/points-claim', 'ClaimPointsOrderController@index')->name('ClaimPoints.index');
+    Route::get('/points-finish/{id}/{status?}', 'ClaimPointsOrderController@finishClaim')->name('claim.finish');
+    Route::get('/customers-point/create/{id}', 'CustomerPointController@create')->name('CustomerPoints.create');
+    Route::post('/customers-point/store', 'CustomerPointController@store')->name('CustomerPoints.store');
+    Route::put('/customers-point/{id}/update', 'CustomerPointController@update')->name('CustomerPoints.update');
+    Route::get('/customers-point/{id}/details', 'CustomerPointController@edit')->name('CustomerPoints.details');
+    Route::get('/customers-point/{id}/delete-permanent','CustomerPointController@deletePermanent')->name('Customer_Points.delete-permanent');
+
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
     Route::post('/users/post/change_password', 'changePasswordController@changepassword')->name('post.changepass');

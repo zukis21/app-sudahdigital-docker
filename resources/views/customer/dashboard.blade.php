@@ -706,7 +706,7 @@
                                     $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
                                   @endphp
                                 @endif
-                                {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? singkat_angka($target->target_quantity) : '0'}}
+                                {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? $target->target_quantity : '0'}}
                               </span>
                                 
                                 <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -771,7 +771,7 @@
                                     $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
                                   @endphp
                                 @endif
-                      <div class="flip-container prediksi-pencapaian" onclick="flipPredCapai()">
+                      <div class="flip-container prediksi-pencapaian" onclick="flipPredCapai();">
                         <div class="flipper">
                           <div class="front">
                             <div class="box-red w-100">
@@ -780,7 +780,7 @@
                                 <div class="media-body align-self-center">
                                   <div class="text-right mt-1">
                                     <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                      {{($target && $work_plan) ? number_format($prediksi_qty,1) : '0'}} / {{$target ? singkat_angka($target->target_quantity) : '0'}}
+                                      {{($target && $work_plan) ? number_format($prediksi_qty,1) : '0'}} / {{$target ? $target->target_quantity : '0'}}
                                     </span>
                                       
                                       <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -1371,19 +1371,39 @@
       
       function flip() {
           $('.flip-container').toggleClass('hover');
+          setTimeout(function(){
+            // toggle back after 1 second
+            $('.flip-container').toggleClass('hover');  
+          },3000)
       }
       function flipSalesTotal() {
           $('.target-sales-total').toggleClass('hover');
+          setTimeout(function(){
+            // toggle back after 1 second
+            $('.target-sales-total').toggleClass('hover');  
+          },3000)
       }
       function flipAchPareto() {
           $('.target-pareto-total').toggleClass('hover');
+          setTimeout(function(){
+            $('.target-pareto-total').toggleClass('hover');  
+          },3000)
       }
       function flipPredCapai() {
           $('.prediksi-pencapaian').toggleClass('hover');
+          
+          setTimeout(function(){
+            $('.prediksi-pencapaian').toggleClass('hover');  
+          },3000)
       }
       function flipAverDaily() {
-          $('.average-daily').toggleClass('hover');
+         $('.average-daily').toggleClass('hover');
+         setTimeout(function(){
+            $('.average-daily').toggleClass('hover');  
+          },3000)
       }
+
+      
               
       //all sales chart
       $(function () {

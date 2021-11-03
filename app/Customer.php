@@ -34,4 +34,8 @@ class Customer extends Model
         return $this->hasMany('App\Store_Targets','customer_id');
     }
 
+    public function PointClaim(){
+        return $this->hasMany('App\PointClaim','custpoint_id');
+    }
+
 }

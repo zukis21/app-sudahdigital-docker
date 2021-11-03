@@ -348,6 +348,7 @@
                         <!--manage order-->
                         <li class="{{(request()->routeIs('orders.index')) || 
                                     (request()->routeIs('reasons.index')) ||
+                                    (request()->routeIs('ClaimPoints.index')) ||
                                     (request()->routeIs('customers_points.index')) ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">shopping_cart</i>
@@ -359,7 +360,10 @@
                                 </li>
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                     <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
-                                        <a href="{{route('customers_points.index',[$vendor])}}">Order Points</a>
+                                        <a href="{{route('customers_points.index',[$vendor])}}">Orders Points</a>
+                                    </li>
+                                    <li class="{{request()->routeIs('ClaimPoints.index') ? 'active' : '' }}">
+                                        <a href="{{route('ClaimPoints.index',[$vendor])}}">Points Claim</a>
                                     </li>
                                     <li class="{{request()->routeIs('reasons.index') ? 'active' : '' }}">
                                         <a href="{{route('reasons.index',[$vendor])}}">Checkout Reasons List</a>

@@ -145,5 +145,10 @@ class AuthServiceProvider extends ServiceProvider
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
             return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
         });
+
+        Gate::define('claim-point-order', function($user){
+            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+        });
     }
 }

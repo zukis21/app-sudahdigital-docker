@@ -213,12 +213,12 @@ class TargetController extends Controller
                             'version_pareto'=>$request->version_pareto[$i],
                             'target_type'=>$request->target_type
                         );
-                    }else{
+                    }elseif($request->target_type == 3){
                         $data_target=array(
                             'client_id'=>$request->client_id,
                             'customer_id'=>$request->customer_id[$i],
                             'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
-                            'target_quantity'=>$request->target_value[$v],
+                            'target_quantity'=>$request->target_quantity[$v],
                             'period'=>$request->period.'-01',
                             'created_by'=>\Auth::user()->id,
                             'version_pareto'=>$request->version_pareto[$i],
@@ -353,7 +353,7 @@ class TargetController extends Controller
                         'client_id'=>$request->client_id,
                         'customer_id'=>$request->customer_id[$i],
                         'target_values'=>str_replace(',', '', $request->target_value[$v]) ?? '0',
-                        'target_quantity'=>$request->target_value[$v],
+                        'target_quantity'=>$request->target_quantity[$v],
                         'period'=>$request->period.'-01',
                         'created_by'=>\Auth::user()->id,
                         'version_pareto'=>$request->version_pareto[$i],
