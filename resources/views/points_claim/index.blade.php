@@ -53,7 +53,7 @@
 						{{$c->point_rule}}
 					</td>
 					<td>
-						{{$c->bonus_amount}}
+						{{number_format($c->bonus_amount,2)}}
 					</td>
 					<td>
 						{{$c->created_at}}	

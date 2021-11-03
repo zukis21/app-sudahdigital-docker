@@ -348,12 +348,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     //claim points order
     Route::get('/points-claim', 'ClaimPointsOrderController@index')->name('ClaimPoints.index');
     Route::get('/points-finish/{id}/{status?}', 'ClaimPointsOrderController@finishClaim')->name('claim.finish');
-    Route::get('/customers-point/create/{id}', 'CustomerPointController@create')->name('CustomerPoints.create');
-    Route::post('/customers-point/store', 'CustomerPointController@store')->name('CustomerPoints.store');
-    Route::put('/customers-point/{id}/update', 'CustomerPointController@update')->name('CustomerPoints.update');
-    Route::get('/customers-point/{id}/details', 'CustomerPointController@edit')->name('CustomerPoints.details');
-    Route::get('/customers-point/{id}/delete-permanent','CustomerPointController@deletePermanent')->name('Customer_Points.delete-permanent');
-
+    
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
     Route::post('/users/post/change_password', 'changePasswordController@changepassword')->name('post.changepass');
