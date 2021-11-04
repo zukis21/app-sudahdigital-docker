@@ -576,4 +576,72 @@ class DashboardSalesController extends Controller
         
         return number_format($max_q,0);
     }
+
+    public static function lastOrder($customer){
+        $lastOrder = \App\Order::where('customer_id',$customer)
+                    ->orderBy('created_at','DESC')
+                    ->first();
+        if($lastOrder){
+            $date = date('d-M-Y', strtotime($lastOrder->created_at));
+        }else{
+            $date = '';
+        }
+        return $date;
+    }
+
+    public static function visitNoOrder($customer){
+        $month = date('m');
+        $year = date('Y');
+        $visit_off = \App\Order::where('customer_id',$customer)
+                ->where('status','NO-ORDER')
+                ->where('user_loc','Off Location')
+                ->whereMonth('created_at',$month)
+                ->whereYear('created_at',$year)
+                ->count();
+
+        $_this = new self;
+        $visit_on = $_this->visitOnNoOrder($customer);
+    return [$visit_off,$visit_on];
+        
+    }
+
+    public static function visitOnNoOrder($customer){
+        $month = date('m');
+        $year = date('Y');
+        $visit_on = \App\Order::where('customer_id',$customer)
+                ->where('status','NO-ORDER')
+                ->where('user_loc','On Location')
+                ->whereMonth('created_at',$month)
+                ->whereYear('created_at',$year)
+                ->count();
+        return $visit_on;
+    }
+
+    public static function visitOrder($customer){
+        $month = date('m');
+        $year = date('Y');
+        $visit_off = \App\Order::where('customer_id',$customer)
+                ->where('status','!=','NO-ORDER')
+                ->where('user_loc','Off Location')
+                ->whereMonth('created_at',$month)
+                ->whereYear('created_at',$year)
+                ->count();
+
+        $_this = new self;
+        $visit_on = $_this->visitOnOrder($customer);
+    return [$visit_off,$visit_on];
+        
+    }
+
+    public static function visitOnOrder($customer){
+        $month = date('m');
+        $year = date('Y');
+        $visit_on = \App\Order::where('customer_id',$customer)
+                ->where('status','!=','NO-ORDER')
+                ->where('user_loc','On Location')
+                ->whereMonth('created_at',$month)
+                ->whereYear('created_at',$year)
+                ->count();
+        return $visit_on;
+    }
 }  

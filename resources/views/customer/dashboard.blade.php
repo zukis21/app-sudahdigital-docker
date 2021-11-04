@@ -63,6 +63,11 @@
     overflow-y:auto;
   }
 
+  .last-order-info{
+    position:absolute;
+    top:1; 
+    right:5px;
+  }
   /*.style-7::-webkit-scrollbar
   {
     width: 5px;
@@ -141,6 +146,12 @@
   #tabs .img-icon{
     width:20px;
     height:20px;
+  }
+
+  @media (max-width : 425px){
+    .last-order-info{
+      right:2px;
+    }
   }
 
   @media (max-width : 425px){
@@ -1013,24 +1024,48 @@
                               @if(count($cust_not_exists) > 0 )
                                 @foreach ($cust_not_exists as $item)
                                   <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                    border-bottom-left-radius:0;"><b>{{$item->store_code}} - {{$item->store_name}}</b>,<br>{{$item->address}}<br>
+                                    border-bottom-left-radius:0;">
+                                      <div class="float-left ml-n3" style="margin-right:40px;">
+                                        <b>{{$item->store_code}} - {{$item->store_name}}</b>,
+                                      </div>
+                                       <div class="last-order-info">
+                                        @php
+                                            $last_order = App\Http\Controllers\DashboardSalesController::lastOrder($item->id);
+                                        @endphp
+                                        <a class="pe-auto popoverData" data-container="body" 
+                                          data-toggle="popover" data-placement="top" 
+                                          data-content="{{$last_order == '' ? '': 'Tanggal terahir order'}}" 
+                                          data-trigger="hover">
+                                          <span class="badge badge-info" style="cursor: pointer">{{$last_order}}</span>
+                                        </a>
+                                       
+                                       </div>
+                                      <br><p class="mb-n3 ml-n3">{{$item->address}}</p><br>
                                     @php
-                                        $month = date('m');
-                                        $year = date('Y');
-                                        $visit = \App\Order::where('customer_id',$item->id)
-                                                ->where('status','NO-ORDER')
-                                                ->whereMonth('created_at',$month)
-                                                ->whereYear('created_at',$year)
-                                                ->count();
-                                        //echo $visit;
+                                        [$visit_off,$visit_on] = App\Http\Controllers\DashboardSalesController::visitNoOrder($item->id);
+                                        $visit = $visit_off + $visit_on;
                                     @endphp
                                     @if($visit > 0 )
-                                    <a class="pe-auto popoverData" data-container="body" 
-                                      data-toggle="popover" data-placement="top" 
-                                      data-content="Visit tanpa order." 
-                                      data-trigger="hover">
-                                      <i class="fas fa-times-circle text-danger mr-1"></i><b class="text-secondary">{{$visit}}</b>
-                                    </a>
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order." 
+                                        data-trigger="hover">
+                                        <i class="fas fa-times-circle text-danger mr-1 ml-n3"></i><b class="text-secondary">{{$visit}}</b>
+                                      </a>
+
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order & Off Location." 
+                                        data-trigger="hover">
+                                        <i class="fal fa-location-slash text-danger mr-1 ml-3"></i><b class="text-secondary">{{$visit_off}}</b>
+                                      </a>
+
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order & On Location." 
+                                        data-trigger="hover">
+                                        <i class="fal fa-location text-success mr-1 ml-3"></i><b class="text-secondary">{{$visit_on}}</b>
+                                      </a>
                                     @endif 
                                   </li>
                                 @endforeach
@@ -1051,39 +1086,77 @@
                                   style="color: #1A4066;
                                         border-bottom-right-radius:0;
                                         border-bottom-left-radius:0;">
-                                        <b>{{$it->store_code}} - {{$it->store_name}}</b>,<br>{{$it->address}}<br> 
+                                    <div class="float-left ml-n3" style="margin-right:40px;">
+                                        <b>{{$it->store_code}} - {{$it->store_name}}</b>,
+                                    </div>
+                                    <div class="last-order-info">
+                                      @php
+                                          $last_order = App\Http\Controllers\DashboardSalesController::lastOrder($it->id);
+                                      @endphp
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="{{$last_order == '' ? '': 'Tanggal terahir order'}}" 
+                                        data-trigger="hover">
+                                        <span class="badge badge-info" style="cursor: pointer">{{$last_order}}</span>
+                                      </a>
+                                     
+                                    </div>
+                                    <br><p class="mb-n3 ml-n3">{{$it->address}}</p><br> 
                                     <!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>-->
                                     @php
-                                        $month = date('m');
-                                        $year = date('Y');
-                                        $visit_noorder = \App\Order::where('customer_id',$it->id)
-                                                ->where('status','NO-ORDER')
-                                                ->whereMonth('created_at',$month)
-                                                ->whereYear('created_at',$year)
-                                                ->count();
-                                        $order_visit = \App\Order::where('customer_id',$it->id)
-                                                ->where('status','!=','NO-ORDER')
-                                                ->whereMonth('created_at',$month)
-                                                ->whereYear('created_at',$year)
-                                                ->count();
+                                       [$NoOdrVisit_off,$NoOdrVisit_on] = App\Http\Controllers\DashboardSalesController::visitNoOrder($it->id);
+                                       [$OdrVisit_off,$OdrVisit_on] = App\Http\Controllers\DashboardSalesController::visitOrder($it->id);
+                                       $visit_noorder = $NoOdrVisit_off + $NoOdrVisit_on;
+                                       $order_visit = $OdrVisit_off + $OdrVisit_on;
                                     @endphp
                                     @if($visit_noorder > 0 )
                                       <a class="pe-auto popoverData" data-container="body" 
                                         data-toggle="popover" data-placement="top" 
                                         data-content="Visit tanpa order." 
                                         data-trigger="hover">
-                                        <i class="fas fa-times-circle text-danger"></i>
-                                        <b class="text-secondary  mr-3">{{$visit_noorder}}</b>
+                                        <i class="fas fa-times-circle text-danger ml-n3"></i>
+                                        <b class="text-secondary">{{$visit_noorder}}</b>
+                                      </a>
+
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order & Off Location." 
+                                        data-trigger="hover">
+                                        <i class="fal fa-location-slash text-danger mr-1 ml-3"></i><b class="text-secondary">{{$NoOdrVisit_off}}</b>
+                                      </a>
+
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order & On Location." 
+                                        data-trigger="hover">
+                                        <i class="fal fa-location text-success mr-1 ml-3"></i><b class="text-secondary">{{$NoOdrVisit_on}}</b>
                                       </a>
                                     @endif
                                     @if($order_visit > 0 )
-                                    <a class="pe-auto popoverData"  data-container="body" 
-                                      data-toggle="popover" data-placement="top" 
-                                      data-content="Visit & order." 
-                                      data-trigger="hover">
-                                      <i class="fas fa-check-circle mr-1" style="color:#1A4066"></i><b class="text-secondary">{{$order_visit}}</b>
-                                    </a>
-                                      @endif
+                                      <br>
+                                      <a class="pe-auto popoverData"  data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit & order." 
+                                        data-trigger="hover">
+                                        <i class="fas fa-check-circle   ml-n3" 
+                                        style="color:#1A4066"></i>
+                                        <b class="text-secondary">{{$order_visit}}</b>
+                                      </a>
+
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order & Off Location." 
+                                        data-trigger="hover">
+                                        <i class="fal fa-location-slash text-danger mr-1 ml-3"></i><b class="text-secondary">{{$OdrVisit_off}}</b>
+                                      </a>
+
+                                      <a class="pe-auto popoverData" data-container="body" 
+                                        data-toggle="popover" data-placement="top" 
+                                        data-content="Visit tanpa order & On Location." 
+                                        data-trigger="hover">
+                                        <i class="fal fa-location text-success mr-1 ml-3"></i><b class="text-secondary">{{$OdrVisit_on}}</b>
+                                      </a>
+                                    @endif
                                   </li>
                                 @endforeach
                               @else
