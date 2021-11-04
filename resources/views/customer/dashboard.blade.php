@@ -1025,7 +1025,7 @@
                                 @foreach ($cust_not_exists as $item)
                                   <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
                                     border-bottom-left-radius:0;">
-                                      <div class="float-left ml-n3" style="margin-right:40px;">
+                                      <div class="float-left ml-n3" style="margin-right:35%;">
                                         <b>{{$item->store_code}} - {{$item->store_name}}</b>,
                                       </div>
                                        <div class="last-order-info">
@@ -1086,7 +1086,7 @@
                                   style="color: #1A4066;
                                         border-bottom-right-radius:0;
                                         border-bottom-left-radius:0;">
-                                    <div class="float-left ml-n3" style="margin-right:40px;">
+                                    <div class="float-left ml-n3" style="margin-right:35%;">
                                         <b>{{$it->store_code}} - {{$it->store_name}}</b>,
                                     </div>
                                     <div class="last-order-info">
