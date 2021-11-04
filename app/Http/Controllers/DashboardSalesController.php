@@ -579,6 +579,8 @@ class DashboardSalesController extends Controller
 
     public static function lastOrder($customer){
         $lastOrder = \App\Order::where('customer_id',$customer)
+                    ->where('status','!=','CANCEL')
+                    ->where('status','!=','NO-ORDER')
                     ->orderBy('created_at','DESC')
                     ->first();
         if($lastOrder){
