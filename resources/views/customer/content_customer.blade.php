@@ -53,6 +53,12 @@ Home
         border-bottom-left-radius:10px;border-bottom-right-radius:10px;
     }
 
+    .badge-stok{
+        background-color: #FF0000;
+        color: #fff;
+        font-size: 14px;
+    }
+
     @media only screen and (max-width:1920px){
         .image-logo-confirm img{
             width:90px;
@@ -108,6 +114,11 @@ Home
 
         .dropdown-submenu a::after {
             transform: rotate(360deg);
+        }
+
+        .badge-stok{
+            font-size: 12px;
+            margin-top : 5px;
         }
 
     }
@@ -234,9 +245,13 @@ Home
                                 </a>
                                 <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                     @if($stock_status->stock_status == 'ON')
+                                        <!--
                                         @if($value_top->stock == 0)
                                             <span class="badge badge-warning ml-1">Sisa stok 0</span>
                                         @endif
+                                        -->
+                                        <span class="badge badge-stok ml-1">Stok {{$value_top->stock}}</span>
+                                        
                                     @endif
                                     <div class="float-left px-1 py-2" style="width: 100%;">
                                         <p class="product-price-header mb-0" style="">
@@ -394,8 +409,6 @@ Home
         </div>
         @endif
 
-        
-
         <div class="container list-product" style="">
             <div class="row mt-0">
                 <div class="col-md-12 mt-4">
@@ -412,9 +425,12 @@ Home
                             </a>
                             <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                 @if($stock_status->stock_status == 'ON')
+                                    <!--
                                     @if($value->stock == 0)
                                         <span class="badge badge-warning ml-1">Sisa stok 0</span>
                                     @endif
+                                    -->
+                                    <span class="badge badge-stok py-1">Stok {{$value->stock}}</span>
                                 @endif
                                 <div class="float-left px-1 py-2" style="width: 100%;">
                                     <p class="product-price-header mb-0" style="">

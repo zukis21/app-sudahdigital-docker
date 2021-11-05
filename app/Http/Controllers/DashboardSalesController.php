@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 
 
@@ -578,17 +579,21 @@ class DashboardSalesController extends Controller
     }
 
     public static function lastOrder($customer){
+        $curDate = date('Y-m-d');
+        $newDate = new DateTime($curDate);
         $lastOrder = \App\Order::where('customer_id',$customer)
                     ->where('status','!=','CANCEL')
                     ->where('status','!=','NO-ORDER')
                     ->orderBy('created_at','DESC')
                     ->first();
         if($lastOrder){
-            $date = date('d-M-Y', strtotime($lastOrder->created_at));
+            $date = date('Y-m-d', strtotime($lastOrder->created_at));
+            $newDate2 = new DateTime($date);
+            $jarak = $newDate->diff($newDate2)->days;
         }else{
-            $date = '';
+            $jarak = '';
         }
-        return $date;
+        return $jarak;
     }
 
     public static function visitNoOrder($customer){
