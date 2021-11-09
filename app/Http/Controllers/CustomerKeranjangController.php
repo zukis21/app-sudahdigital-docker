@@ -331,13 +331,13 @@ No. Hp         : '.$user->phone.',
 Sales Area    : '.$user->sales_area.',
 
 *'.$message->c_tittle.'*
+Nama Toko  : '.$customer->store_name.',
+Alamat         : '.$customer->address.',
 Nama           : '.$customer->name.',
-Email            : '.$customer->email.',
 No. WA        : '.$customer->phone.',
 No. Owner   : '.$customer->phone_owner.',
 No. Toko      : '.$customer->phone_store.',
-Nama Toko  : '.$customer->store_name.',
-Alamat         : '.$customer->address.',
+Email            : '.$customer->email.',
 ';
 
                 //$href=urlencode($txt_wa);

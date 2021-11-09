@@ -101,13 +101,13 @@ No. Hp         : '.$user->phone.',
 Sales Area    : '.$user->sales_area.',
 
 *'.$message->c_tittle.'*
+Nama Toko  : '.$customer->store_name.',
+Alamat         : '.$customer->address.',
 Nama           : '.$customer->name.',
-Email            : '.$customer->email.',
 No. WA        : '.$customer->phone.',
 No. Owner   : '.$customer->phone_owner.',
 No. Toko      : '.$customer->phone_store.',
-Nama Toko  : '.$customer->store_name.',
-Alamat         : '.$customer->address.',
+Email            : '.$customer->email.',
 ';
 
                 //$href=urlencode($txt_wa);
@@ -265,14 +265,19 @@ $no=$count_nt_paket;
                             <td width="680">&nbsp;</td>
                         </tr>
                         <tr>
+                            <td height="22">Nama Toko</td>
+                            <td width="4">:</td>
+                            <td width="680">'.$customer->store_name.'</td>
+                        </tr>
+                        <tr>
+                            <td height="22">Alamat</td>
+                            <td width="4">:</td>
+                            <td width="680">'.$customer->address.'</td>
+                        </tr>
+                        <tr>
                             <td height="22">Nama</td>
                             <td width="4">:</td>
                             <td width="680">'.$customer->name.'</td>
-                        </tr>
-                        <tr>
-                            <td height="22">Email</td>
-                            <td width="4">:</td>
-                            <td width="680">'.$customer->email.'</td>
                         </tr>
                         <tr>
                             <td height="22">No. Wa</td>
@@ -290,14 +295,9 @@ $no=$count_nt_paket;
                             <td width="680">'.$customer->phone_store.'</td>
                         </tr>
                         <tr>
-                            <td height="22">Nama Toko</td>
+                            <td height="22">Email</td>
                             <td width="4">:</td>
-                            <td width="680">'.$customer->store_name.'</td>
-                        </tr>
-                        <tr>
-                            <td height="22">Alamat</td>
-                            <td width="4">:</td>
-                            <td width="680">'.$customer->address.'</td>
+                            <td width="680">'.$customer->email.'</td>
                         </tr>
                         <tr>
                             <td height="10">&nbsp;</td>
