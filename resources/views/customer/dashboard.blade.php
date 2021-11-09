@@ -1069,7 +1069,7 @@
                                         data-toggle="popover" data-placement="top" 
                                         data-content="Check out tanpa order & Off Location." 
                                         data-trigger="hover">
-                                        <i class="fal fa-location-slash text-danger mr-1 ml-n3"></i><b class="text-secondary">{{$visit_off}}</b>
+                                        <i class="fal fa-location-slash text-danger mr-1 ml-n3"></i><b class="text-danger">{{$visit_off}}</b>
                                       </a>
                                     @endif
                                     @if($visit_on > 0)
@@ -1077,7 +1077,7 @@
                                         data-toggle="popover" data-placement="top" 
                                         data-content="Checkout tanpa order & On Location." 
                                         data-trigger="hover">
-                                        <i class="fal fa-location text-danger mr-1 {{$visit_off > 0 ? 'ml-3' : 'ml-n3'}}"></i><b class="text-secondary">{{$visit_on}}</b>
+                                        <i class="fal fa-location text-danger mr-1 {{$visit_off > 0 ? 'ml-3' : 'ml-n3'}}"></i><b class="text-danger">{{$visit_on}}</b>
                                       </a>
                                     @endif 
                                   </li>
@@ -1102,7 +1102,7 @@
                                   @endphp
                                 @endforeach
                                 @php 
-                                  arsort($last_odrs);
+                                  asort($last_odrs);
                                   $keys_exists = array_keys($last_odrs);
                                 @endphp
                                 @foreach($keys_exists as $k)
@@ -1147,7 +1147,7 @@
                                         data-content="Check out tanpa order & Off Location." 
                                         data-trigger="hover">
                                         <i class="fal fa-location-slash text-danger mr-1 ml-n3"></i>
-                                        <b class="text-secondary">{{$NoOdrVisit_off}}</b>
+                                        <b class="text-danger">{{$NoOdrVisit_off}}</b>
                                       </a>
                                     @endif
                                     @if($NoOdrVisit_on > 0)
@@ -1156,7 +1156,7 @@
                                         data-content="Check out tanpa order & On Location." 
                                         data-trigger="hover">
                                         <i class="fal fa-location text-danger mr-1 {{$NoOdrVisit_off > 0 ? 'ml-3' : 'ml-n3'}} "></i>
-                                        <b class="text-secondary">{{$NoOdrVisit_on}}</b>
+                                        <b class="text-danger">{{$NoOdrVisit_on}}</b>
                                       </a>
                                     @endif
                                     @if($OdrVisit_off > 0 )
@@ -1176,7 +1176,7 @@
                                         data-content="Order Off Location." 
                                         data-trigger="hover">
                                         <i class="fal fa-location-slash mr-1 ml-n3" style="color: #1A4066"></i>
-                                        <b class="text-secondary">{{$OdrVisit_off}}</b>
+                                        <b style="color: #1A4066">{{$OdrVisit_off}}</b>
                                       </a>
                                     @endif
                                     @if($OdrVisit_on > 0)
@@ -1185,7 +1185,7 @@
                                         data-content="Order On Location." 
                                         data-trigger="hover">
                                         <i class="fal fa-location mr-1 {{$OdrVisit_off > 0 ? 'ml-3' : 'ml-n3'}}" style="color: #1A4066"></i>
-                                        <b class="text-secondary">{{$OdrVisit_on}}</b>
+                                        <b style="color: #1A4066">{{$OdrVisit_on}}</b>
                                       </a>
                                     @endif
                                   </li>
@@ -1478,33 +1478,33 @@
           setTimeout(function(){
             // toggle back after 1 second
             $('.flip-container').toggleClass('hover');  
-          },3000)
+          },5000)
       }
       function flipSalesTotal() {
           $('.target-sales-total').toggleClass('hover');
           setTimeout(function(){
             // toggle back after 1 second
             $('.target-sales-total').toggleClass('hover');  
-          },3000)
+          },5000)
       }
       function flipAchPareto() {
           $('.target-pareto-total').toggleClass('hover');
           setTimeout(function(){
             $('.target-pareto-total').toggleClass('hover');  
-          },3000)
+          },5000)
       }
       function flipPredCapai() {
           $('.prediksi-pencapaian').toggleClass('hover');
           
           setTimeout(function(){
             $('.prediksi-pencapaian').toggleClass('hover');  
-          },3000)
+          },5000)
       }
       function flipAverDaily() {
          $('.average-daily').toggleClass('hover');
          setTimeout(function(){
             $('.average-daily').toggleClass('hover');  
-          },3000)
+          },5000)
       }
 
       

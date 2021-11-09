@@ -59,7 +59,7 @@
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="text" id="latlng" class="form-control" value="{{old('latlng')}}"
-                name="latlng" required>
+                name="latlng">
                 <label class="form-label">Coordinate</label>
             </div>
         </div>

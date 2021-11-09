@@ -130,7 +130,7 @@ class productController extends Controller
       
           $new_product->image = $image_path;
         }
-      
+        
         $new_product->save();
 
         $new_product->categories()->attach($request->get('categories'));

@@ -125,6 +125,7 @@
         <input type="hidden" class="form-control" name="stock"  value="{{$product->stock}}" required/>
         <input type="hidden" class="form-control" name="low_stock_treshold"  value="{{$product->low_stock_treshold}}" required/>
         @endif
+
         
         <h2 class="card-inside-title">Make Top Product</h2>
         <div class="form-group">

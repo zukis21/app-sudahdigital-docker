@@ -26,6 +26,7 @@ class AllProductExport implements FromCollection, WithMapping, WithHeadings
         ->where('client_id','=',auth()->user()->client_id)
         ->first();
         if($stock_status->stock_status == 'ON'){
+            
             foreach ($product->categories as $p) {
                 array_push($rows,[
                     $product->product_code,

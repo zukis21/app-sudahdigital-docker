@@ -161,7 +161,7 @@ Home
                     <nav aria-label="breadcrumb" class="" >
                         <ol class="breadcrumb pt-4 mt-3" style="background-color:#DADADA !important;">
                             <h2 class="breadcrumb-item">Our</h2>
-                            <h2 class="breadcrumb-item active" aria-current="page">Product</h2>
+                            <h2 class="breadcrumb-item active" aria-current="page">Top Product</h2>
                         </ol>
                     </nav>
                 </div>

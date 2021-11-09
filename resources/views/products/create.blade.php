@@ -115,24 +115,33 @@
         <input type="hidden" class="form-control" name="discount" autocomplete="off" min="0" value="0.00" required/>
         
         @if($stock_status->stock_status == 'ON')
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="number" onKeyUp="test_fn(this.value)" class="form-control" id="stock" name="stock" min="0" value="0" autocomplete="off" maxlength="9" required>
-                <label class="form-label">Product Stock (Box)</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="number" onKeyUp="test_fn(this.value)" class="form-control" id="stock" name="stock" min="0" value="0" autocomplete="off" maxlength="9" required>
+                    <label class="form-label">Product Stock (Box)</label>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group form-float">
-            <div class="form-line">
-                <input type="number" id="low_stock" onKeyUp="test_fn_1(this.value)" class="form-control" name="low_stock_treshold" min="0" value="0" autocomplete="off" required maxlength="9">
-                <label class="form-label">Low Stock Treshold</label>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="number" id="low_stock" onKeyUp="test_fn_1(this.value)" class="form-control" name="low_stock_treshold" min="0" value="0" autocomplete="off" required maxlength="9">
+                    <label class="form-label">Low Stock Treshold</label>
+                </div>
             </div>
-        </div>
         @else
         <input type="hidden" class="form-control" name="stock"  value="0" required/>
         <input type="hidden" class="form-control" name="low_stock_treshold"  value="0" required/>
         @endif
         
+        <!--
+        <div class="form-group form-float">
+            <div class="form-line">
+                <input type="number"  class="form-control" id="sellTarget" name="selling_target" min="1"  autocomplete="off" maxlength="9" >
+                <label class="form-label">Selling Target (Box)</label>
+            </div>
+        </div>
+        -->
+
         <h2 class="card-inside-title">Make Top Product</h2>
         <div class="form-group">
             <input type="checkbox" name="top_product" id="top_product" value="1">
