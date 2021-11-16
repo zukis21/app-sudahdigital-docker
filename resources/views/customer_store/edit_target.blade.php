@@ -1,6 +1,32 @@
 @extends('layouts.master')
 
     @section('title') Edit Customer Target {{date('F Y', strtotime($period))}} @endsection
+    @section('menuHeader')
+        <ul class="header-dropdown m-r--5">
+            <li class="dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                    <i class="material-icons">more_vert</i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="{{route('customerPareto.export',[$vendor])}}" class=" waves-effect waves-block">
+                            <i class="fas fa-file-excel fa-0x" style="color: #4CAF50"></i> Customer Pareto
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('productsInfo.export',[$vendor])}}" class=" waves-effect waves-block">
+                            <i class="fas fa-file-excel fa-0x" style="color: #4CAF50"></i> Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{asset('assets/template/TargetImport.xlsx')}}" class=" waves-effect waves-block" download>
+                            <i class="fas fa-file-excel fa-0x" style="color: #4CAF50"></i> Import Template
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    @endsection
     @section('content')
     
         @if(session('status'))
@@ -14,6 +40,7 @@
             </div>
         @endif
         <!-- Form Create -->
+        <!--
         @if(count($exist_store) > 0)
         <a class="btn bg-green waves-effect m-b-20" data-toggle="modal" data-target="#detailModal"
             id="popoverData" data-trigger="hover" data-container="body" data-placement="right" 
@@ -22,7 +49,7 @@
         </a>
 
           
-        <!-- Modal Detail -->
+        <//!-- Modal Detail --//>
         <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -38,7 +65,7 @@
                                 <table class="table table-striped table-hover dataTable js-basic-example">
                                     <thead>
                                         <tr>
-                                            <!--<th>No</th>-->
+                                            <//!--<th>No</th>--//>
                                             <th>Customers</th>
                                             <th>Cat</th>
                                             <th>Target Values (IDR)</th>                                              
@@ -51,7 +78,7 @@
                                         @foreach($exist_store as $u)
                                         <?php $no++;?>
                                         <tr>
-                                            <!--<td>{{$no}}</td>-->
+                                            <//!--<td>{{$no}}</td>--//>
                                             <td>
                                                 {{$u->store_code}} | {{$u->store_name}}
                                             </td>
@@ -100,27 +127,91 @@
             </div>
         </div>
         @endif
+        -->
+        <button type="button" class="btn bg-green waves-effect m-b-20" data-toggle="modal" 
+            data-target="#importModal" id="popoverData" data-trigger="hover" data-container="body" data-placement="right" 
+            data-content="Import for add new customer or item & change target type  in this period ">
+            <i class="fas fa-file-excel"></i> Import
+        </button>
 
-        <form id="form_validation" class="form_spv" method="POST" enctype="multipart/form-data" action="{{route('customers.update_target',[$vendor,$period])}}">
+        <!-- Modal import -->
+        <div class="modal fade" id="importModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailModalLabel"></h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_validation" class="form_spv" method="POST" 
+                            enctype="multipart/form-data" action="{{route('customers.updateImportTarget',[$vendor])}}">
+                            @csrf
+                            <input type="hidden" name="param_period" value="{{date('Y-m', strtotime($period))}}">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input type="text" value="{{old('period_show',date('F Y', strtotime($period)))}}" class="form-control"  name="period_show"  
+                                    autocomplete="off" readonly>
+                                    <label class="form-label">Period</label>
+                                </div>
+                            </div>
+                            <!--
+                            <div class="form-group form-radio">
+                                <input type="radio" class="form-check-inline" value="1" 
+                                    {{$type->target_type == '1' ? 'checked' : ''}}
+                                    name="target_type" id="quantity_target" required>
+                                <label for="quantity_target">Quantity Target</label>
+                                &nbsp;
+                                <input type="radio" class="form-check-inline" value="2"
+                                    {{$type->target_type == '2' ? 'checked' : ''}} 
+                                    name="target_type" id="nominal_target" >
+                                <label for="nominal_target">Nominal Target</label>
+                                &nbsp;
+                                <input type="radio" class="form-check-inline" value="3"
+                                    {{$type->target_type == '3' ? 'checked' : ''}} 
+                                    name="target_type" id="qty_nml_target" >
+                                <label for="qty_nml_target">Quantity & Nominal Target</label>
+                            </div>
+                            -->
+                            <h2 class="card-inside-title">File(.xls, .xlsx)</h2>
+                            <div class="form-group">
+                                <div class="form-line">
+                                <input type="file" name="file" accept=".xls, .xlsx" 
+                                class="form-control" id="file" autocomplete="off" required>
+                                </div>
+                                <label id="name-error" class="error" for="file">{{ $errors->first('file') }}</label>
+                            </div>
+                
+                            <button  class="btn btn-primary waves-effect" value="ADD" type="submit">UPLOAD</button>
+                            <button type="button" class="btn waves-effect bg-red m-l-5" data-dismiss="modal">Close</button>
+                        </form>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <form id="form_validation" class="form_spv" method="POST" 
+            enctype="multipart/form-data" action="{{route('customers.update_target',[$vendor,$period])}}">
             @csrf
             <input type="hidden" name="_method" value="PUT">
-            
+            <!--
             <div class="form-group form-radio">
                 <input type="radio" class="form-check-inline" value="1" 
-                    {{$type->target_type == '1' ? 'checked' : ''}}
+                    {{$type->target_type == '1' ? 'checked' : 'disabled'}}
                     name="target_type" id="quantity_target" onclick='showQty();' required>
                 <label for="quantity_target">Quantity Target</label>
                 &nbsp;
                 <input type="radio" class="form-check-inline" value="2"
-                    {{$type->target_type == '2' ? 'checked' : ''}} 
+                    {{$type->target_type == '2' ? 'checked' : 'disabled'}} 
                     name="target_type" id="nominal_target" onclick='showNml();'>
                 <label for="nominal_target">Nominal Target</label>
                 &nbsp;
                 <input type="radio" class="form-check-inline" value="3"
-                    {{$type->target_type == '3' ? 'checked' : ''}} 
+                    {{$type->target_type == '3' ? 'checked' : 'disabled'}} 
                     name="target_type" id="qty_nml_target" onclick='showQtyNml();'>
                 <label for="qty_nml_target">Quantity & Nominal Target</label>
             </div>
+            -->
             <div class="">
                 <table class="table table-striped table-hover table-list-customer">
                     <thead>
@@ -128,7 +219,7 @@
                             <!--<th>No</th>-->
                             <th>Customers</th>
                             <th>Cat</th>
-                            <th>Target Values (IDR)</th>
+                            <th>Max Nominal Target (IDR)</th>
                             <th>Target Qty (BOX)</th>
                         </tr>
                     </thead>
@@ -139,8 +230,9 @@
                         <tr>
                             <!--<td>{{$no}}</td>-->
                             <td>
-                                {{$u->customers->store_code}} | {{$u->customers->store_name}}
-                                
+                                <a href="{{route('targetItem.detail',[$vendor,Crypt::encrypt($u->id)])}}">
+                                    {{$u->customers->store_code}} | {{$u->customers->store_name}}
+                                </a>
                             </td>
                             <td>
                                 @if($u->version_pareto)
@@ -154,8 +246,12 @@
                                 <input type="hidden" name="id[]" value="{{$u->id}}">
                             </td>
                             <td>
-                                
-                                
+                                @if($u->target_type == 2 || $u->target_type == 3)
+                                    
+                                        {{number_format($u->TotalNominal)}}
+                                    
+                                @endif 
+                                <!--
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <input type="text" class="form-control target_nominal" name="target_value[{{$u->id}}]" 
@@ -164,8 +260,13 @@
                                         {{$type->target_type == 2 || $type->target_type == 3 ? '' : 'disabled'}}>
                                     </div>
                                 </div>
+                                -->
                             </td>
                             <td >
+                                @if($u->target_type == 1 || $u->target_type == 3)
+                                    {{$u->TotalQty}}
+                                @endif
+                                <!--
                                 <div class="form-group form-float" >
                                     <div class="form-line">
                                         <input type="number" class="form-control target_quantity" min='1' name="target_quantity[{{$u->id}}]" 
@@ -175,6 +276,7 @@
                                        
                                     </div>
                                 </div>
+                                -->
                             </td>
                             
                         </tr>
@@ -183,8 +285,9 @@
                 </table>
             </div>
 
-            
+            <!--
             <button id="btnSubmit" class="btn btn-primary waves-effect" type="submit">UPDATE</button>
+            -->
         </form>
         <!-- #END#  -->		
 

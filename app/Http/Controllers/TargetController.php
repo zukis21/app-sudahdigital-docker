@@ -58,15 +58,20 @@ class TargetController extends Controller
             /*$targets = \App\Store_Targets::where('client_id',auth()->user()->client_id)
                         ->orderBy('period','ASC')
                         ->groupBy('period')
-                        ->get();*/
+                        ->get();
             $targets = \DB::table('store_target')
                         ->where('client_id',auth()->user()->client_id)
                         ->select('period', 'target_type',DB::raw('count(*) as total, SUM(target_values) as total_value,
                             SUM(target_quantity) as total_qty '))
                         //->select(DB::raw("SUM(target_values) as total_target"))
                         ->groupBy('period')
+                        ->get();*/
+            $targets = \DB::table('store_target')
+                        ->where('client_id',auth()->user()->client_id)
+                        ->select('period', 'created_at', 'updated_at', 'target_type',DB::raw('count(*) as total'))
+                        ->groupBy('period')
+                        ->orderBy('period','DESC')
                         ->get();
-            //dd($targets);
 
             return view ('customer_store.index_target',['targets'=>$targets,'vendor'=>$vendor]);
         }else{
@@ -100,14 +105,21 @@ class TargetController extends Controller
             return view('target.create_target',['vendor'=>$vendor,'users'=>$users]);
     }
 
-    public function cust_create_target($vendor)
+    public function cust_create_target($vendor, $period = null)
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
-            $customers = \App\Customer::where('client_id',auth()->user()->client_id)
+            /*$customers = \App\Customer::where('client_id',auth()->user()->client_id)
                     ->whereNotNull('pareto_id')
                     ->where('status','=','ACTIVE')
-                    ->get();
-            return view('customer_store.create_target',['vendor'=>$vendor,'customers'=>$customers]);
+                    ->get();*/
+            if($period != null){
+                $target = \App\Store_Targets::where('client_id',auth()->user()->client_id)
+                        ->where('period',$period.'-01')->get();
+                
+            }else{
+                $target = null;
+            }
+            return view('customer_store.create_target',['vendor'=>$vendor,'period'=>$period,'target'=>$target]);
         }else{
             abort(404, 'Tidak ditemukan');
         }
@@ -526,5 +538,30 @@ class TargetController extends Controller
         }else{
             return redirect()->route('customers.edit_target',[$vendor])->with('error','Target Not Succsessfully Update');
         }*/
+    }
+
+    public function itemTargetDetail($vendor,$id)
+    {
+            $stId = \Crypt::decrypt($id);
+            
+            $store_target = \App\Store_Targets::findOrFail($stId);
+            $detailItem = \App\ProductTarget::where('storeTargetId',$stId)
+                        ->get();
+            return view('customer_store.detail_itemTarget',
+                        [
+                            'vendor'=>$vendor, 'store_target'=>$store_target, 
+                            'detailItem'=>$detailItem,
+                        ]);
+    }
+
+    public function deleteItemTarget($vendor,$itemId,$id){
+
+        $itemTarget = \App\ProductTarget::findOrFail($itemId);
+        
+        $itemTarget->forceDelete();
+        return redirect()->route('targetItem.detail',[$vendor,$id])
+                        ->with('status', 'Item successfully deleted!');
+        
+
     }
 }

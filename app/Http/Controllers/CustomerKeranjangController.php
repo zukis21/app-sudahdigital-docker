@@ -1437,4 +1437,33 @@ $no=$count_nt_paket;
         return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     }
 
+    public static function targetItemInfo($item,$customer_id){
+        $month = date('m');
+        $year = date('Y');
+        $targetItem = \App\Store_Targets::with('product_target')
+                    ->whereHas('product_target', function($q) use($item){
+                            $q->where('productId',$item);
+                     })
+                     ->where('customer_id',$customer_id)
+                     ->whereMonth('period', $month)
+                     ->whereYear('created_at', $year)
+                     ->first();
+        return $targetItem;
+    }
+
+    public static function achTargetItem($item,$customer_id){
+        $month = date('m');
+        $year = date('Y');
+        $achtargetItem = \App\Order::with('products')
+                    ->whereHas('products', function($q) use($item){
+                            $q->where('product_id',$item);
+                     })
+                     ->where('customer_id',$customer_id)
+                     ->whereMonth('finish_time', $month)
+                     ->whereYear('finish_time', $year)
+                     ->get();
+        $totalQty = $achtargetItem->sum('TotalQuantity');
+        $totalNml = $achtargetItem->sum('TotalNominal');
+        return [$totalQty,$totalNml];
+    }
 }

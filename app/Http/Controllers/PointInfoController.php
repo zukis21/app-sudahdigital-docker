@@ -249,14 +249,16 @@ class PointInfoController extends Controller
             if($prd_cek){
                 $total_start_point = 0;
                 foreach($prd_cek as $period_cek){
-                    /*
+                    
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
                                     customer_points.customer_id = '$customer'");
-                    if(!$cust_exists){
+                   /* if(!$cust_exists){
                         break;
                     }*/
-                    $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
+                    if($cust_exists){
+
+                        $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
@@ -289,14 +291,19 @@ class PointInfoController extends Controller
                                         WHERE prpc.period_id = '$period_cek->id'
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
-                    $restpoints = $customers_cek[0]->grand_total;
-                    if($restpoints == null){
-                        $pointstart = 0;
+                        //$restpoints = $customers_cek[0]->grand_total;
+                        $pointstart = $customers_cek[0]->grand_total;
                     }else{
-                        $pointstart = $restpoints;
+                        $pointstart = 0;
                     }
-                
-                    $total_start_point += $pointstart; 
+                        /*if($restpoints == null){
+                            
+                        }else{
+                            $pointstart = $restpoints;
+                        }*/
+                    
+                        $total_start_point += $pointstart;
+                     
                 }
             }else{
                 $total_start_point = 0;

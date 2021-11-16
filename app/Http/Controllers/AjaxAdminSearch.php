@@ -62,7 +62,8 @@ class AjaxAdminSearch extends Controller
 
     public function CodeProductSearch(Request $request){
       $keyword = $request->get('code');
-      $vouchers = \App\product::where('product_code','=',"$keyword")->count();
+      $vouchers = \App\product::where('client_id',\Auth::user()->client_id)
+                ->where('product_code','=',"$keyword")->count();
       if ($vouchers > 0) {
           echo "taken";	
         }else{

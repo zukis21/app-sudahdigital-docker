@@ -508,9 +508,14 @@ class DashboardSalesController extends Controller
                     })
                     ->where('period',$period_par)
                     ->where('version_pareto',$pr)
-                    ->selectRaw('sum(target_values) as sum')
-                    ->pluck('sum');
-        return $target_str;           
+                    ->get();
+                    //->selectRaw('sum(target_values) as sum')
+                    //->pluck('sum');
+        $totalNml = 0;
+        foreach ($target_str as $value) {
+            $totalNml += $value->TotalNominal;
+        }
+        return $totalNml;           
     }
 
     public static function TrgQtyPareto($user_id,$period_par,$pr)
@@ -520,9 +525,14 @@ class DashboardSalesController extends Controller
                     })
                     ->where('period',$period_par)
                     ->where('version_pareto',$pr)
-                    ->selectRaw('sum(target_quantity) as sum')
-                    ->pluck('sum');
-        return $targ_qty_par;           
+                    ->get();
+                    //->selectRaw('sum(target_quantity) as sum')
+                    //->pluck('sum');
+        $totalQty = 0;
+        foreach ($targ_qty_par as $value) {
+            $totalQty += $value->TotalQty;
+        }
+        return $totalQty;           
     }
 
     public static function MaxYearQuantity(){

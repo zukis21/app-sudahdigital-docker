@@ -11,6 +11,7 @@ use App\Exports\ProductsLowStock;
 use App\Exports\AllProductExport;
 use App\Imports\ProductsImport;
 use Illuminate\Support\Arr;
+use App\Exports\ProductListInfo;
 
 class productController extends Controller
 {
@@ -237,6 +238,27 @@ class productController extends Controller
         $product->status = $request->get('status');
         $product->save();
         $product->categories()->sync($request->get('categories'));
+
+        if($product->save()){
+            $period = date('Y-m-01');
+            //$year = date('Y');
+            $store_target = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                            ->where('period','>=',$period)
+                            ->get();
+            //dd($store_target);
+            if($store_target){
+               foreach($store_target as $st){
+                    $productsTarget = \App\ProductTarget::where('storeTargetId',$st->id)
+                                    ->where('productId',$id)->first();
+                    if($productsTarget){
+                        $nml_values = $request->get('price');
+                        $productsTarget->nominalValues = $nml_values * $productsTarget->quantityValues;
+                        $productsTarget->save();
+                    }
+                } 
+            }
+            
+        }
         return redirect()->route('products.edit', [$vendor, \Crypt::encrypt($product->id)])->with('status',
         'Product successfully updated');
     }
@@ -373,5 +395,9 @@ class productController extends Controller
             return redirect()->route('products.import_products')->with('status', 'File successfully upload'); 
         }
         */
+    }
+
+    public function exportProductInfo($vendor) {
+        return Excel::download( new ProductListInfo(), 'ProductLists.xlsx') ;
     }
 }

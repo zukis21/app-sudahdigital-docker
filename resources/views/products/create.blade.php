@@ -151,7 +151,7 @@
         <!--
         <input type="hidden" name="top_product" id="top_product" value="0">
         -->
-        <button class="btn btn-primary waves-effect" name="save_action" value="PUBLISH" type="submit">PUBLISH</button>
+        <button class="btn btn-primary waves-effect" id="save" name="save_action" value="PUBLISH" type="submit">PUBLISH</button>
         <button class="btn btn-secondary waves-effect" name="save_action" value="DRAFT" type="submit">SAVE AS DRAfT</button>
     </form>
     <!-- #END#  -->		
@@ -178,7 +178,7 @@
     });
 
     $('document').ready(function(){
-        $('#code, .btn').on('keyup', function(){
+        $('#code, .btn').on('keyup blur', function(){
         var code = $('#code').val();
             $.ajax({
                 url: '{{URL::to('/ajax/products/code/search')}}',

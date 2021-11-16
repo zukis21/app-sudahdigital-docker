@@ -8,6 +8,8 @@ use App\Exports\CitiesExport;
 use App\Exports\CustomerExport;
 use App\Exports\CustomerExportType;
 use Illuminate\Http\Request;
+use App\Imports\TargetCustomerImport;
+use App\Exports\CustomerParetoInfo;
 
 class CustomerController extends Controller
 {
@@ -221,12 +223,15 @@ class CustomerController extends Controller
         $new_cust->user_id = $request->get('user');
         $new_cust->client_id = $request->get('client_id');
 
-        $latln_explode = explode(',',$request->get('latlng'));
-        $lat = $latln_explode[0];
-        $lng = $latln_explode[1];
+        if($request->get('latlng') != ''){
+            $latln_explode = explode(',',$request->get('latlng'));
+            $lat = $latln_explode[0];
+            $lng = $latln_explode[1];
 
-        $new_cust->lat = $lat;
-        $new_cust->lng = $lng;
+            $new_cust->lat = $lat;
+            $new_cust->lng = $lng;
+        }
+        
         
         $new_cust->cust_type = $request->get('cust_type');
         //$new_cust->reg_point = $request->get('reg_point');
@@ -376,12 +381,15 @@ class CustomerController extends Controller
             }
             $cust->user_id = $request->get('user');
 
-            $latln_explode = explode(',',$request->get('latlng'));
-            $lat = $latln_explode[0];
-            $lng = $latln_explode[1];
+            if($request->get('latlng') != ''){
+                $latln_explode = explode(',',$request->get('latlng'));
+                $lat = $latln_explode[0];
+                $lng = $latln_explode[1];
 
-            $cust->lat = $lat;
-            $cust->lng = $lng;
+                $cust->lat = $lat;
+                $cust->lng = $lng;
+            }
+            
             $cust->cust_type = $request->get('cust_type');
         }
         else{
@@ -501,5 +509,46 @@ class CustomerController extends Controller
             return redirect()->route('customers.import',[$vendor])->with('status', 'File successfully upload');
         }
         
+    }
+
+    public function import_target(Request $request, $vendor){
+        \Validator::make($request->all(), [
+            "file" => "required|mimes:xls,xlsx"
+        ])->validate();
+
+        $period = $request->get('param_period');
+        $date_explode = explode('-',$period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+        //$type = $request->get('target_type');
+        
+        $data = Excel::import(new TargetCustomerImport($year,$month), request()->file('file'));
+        if($data){
+
+            return redirect()->route('customers.create_target',[$vendor,'period'=>$period])->with('status', 'File successfully upload');
+        }
+        
+    }
+
+    public function updateImport_target(Request $request, $vendor){
+        \Validator::make($request->all(), [
+            "file" => "required|mimes:xls,xlsx"
+        ])->validate();
+
+        $period = $request->get('param_period');
+        $date_explode = explode('-',$period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+        //$type = $request->get('target_type');
+        $targetPeriod =  \Crypt::encrypt($period.'-01');
+        $data = Excel::import(new TargetCustomerImport($year,$month), request()->file('file'));
+        if($data){
+            return redirect()->route('customers.edit_target',[$vendor,$targetPeriod])->with('status', 'File successfully upload');
+        }
+        
+    }
+
+    public function exportCustomerPareto($vendor) {
+        return Excel::download( new CustomerParetoInfo(), 'CustomerPareto.xlsx') ;
     }
 }

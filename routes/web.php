@@ -207,6 +207,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/products/{id}/restore', 'productController@restore')->name('products.restore');
     Route::delete('/products/{products}/delete-permanent','productController@deletePermanent')->name('products.delete-permanent');
     Route::put('/products/{id}/activate_or_deactivate', 'productController@actorderact')->name('products.actorderact');
+    Route::get('/products_info/export', 'productController@exportProductInfo')->name('productsInfo.export');
 
     //Group-paket
     Route::get('/groups', 'GroupController@index')->name('groups.index');
@@ -239,6 +240,9 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers/import', 'CustomerController@import')->name('customers.import');
     Route::post('/customers/import_data', 'CustomerController@import_data')->name('customers.import_data');
     Route::delete('/customers/{customers}/delete-permanent','CustomerController@deletePermanent')->name('customers.delete-permanent');
+    Route::post('/customers/import-target', 'CustomerController@import_target')->name('customers.importTarget');
+    Route::get('/customers_info/export', 'CustomerController@exportCustomerPareto')->name('customerPareto.export');
+    Route::post('/customers/update-import-target', 'CustomerController@updateImport_target')->name('customers.updateImportTarget');
     
     //customer type
     Route::get('/customers/customers-type', 'CustomerController@index_type')->name('type_customers.index_type');
@@ -257,11 +261,13 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::delete('/customers/{id}/pareto-delete-permanent','CustomerController@deletePermanent_pareto')->name('pareto_customers.delete-permanent');
     //customer target
     Route::get('/customers/target', 'TargetController@cust_index')->name('customers.index_target');
-    Route::get('/customers/create-target', 'TargetController@cust_create_target')->name('customers.create_target');
+    Route::get('/customers/create-target/{period?}', 'TargetController@cust_create_target')->name('customers.create_target');
     Route::post('/customers/store-target', 'TargetController@cust_store_target')->name('customers.store_target');
     Route::get('/customers/edit-target/{id}', 'TargetController@cust_edit_target')->name('customers.edit_target');
     Route::put('/customers/update-target/{period}', 'TargetController@cust_update_target')->name('customers.update_target');
     Route::post('/customers/store-target-new/{period}', 'TargetController@addnew_target')->name('customers.store_target_add');
+    Route::get('/customers/detail-target-item/{id}', 'TargetController@itemTargetDetail')->name('targetItem.detail');
+    Route::delete('/customers/delete-target-item/{itemId}/{id}','TargetController@deleteItemTarget')->name('targetItem.delete-permanent');
 
     //work plan
     Route::get('/work-plan', 'WorkPlanController@index')->name('workplan.index');

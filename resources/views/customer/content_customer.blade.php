@@ -57,6 +57,7 @@ Home
         background-color: #FF0000;
         color: #fff;
         font-size: 14px;
+        font-weight: 500;
     }
 
     @media only screen and (max-width:1920px){
@@ -117,7 +118,7 @@ Home
         }
 
         .badge-stok{
-            font-size: 12px;
+            font-size: 10px;
             margin-top : 5px;
         }
 
@@ -245,14 +246,55 @@ Home
                                 </a>
                                 <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                     @if($stock_status->stock_status == 'ON')
-                                        <!--
-                                        @if($value_top->stock == 0)
-                                            <span class="badge badge-warning ml-1">Sisa stok 0</span>
+                                        <span class="badge badge-stok py-1" >
+                                            @if(session()->has('ses_order'))
+                                                <?php $store_name = session()->get('ses_order');?>
+                                                @if($store_name->customer_id != null)
+                                                    <?php
+                                                        $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
+                                                        [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id)
+                                                    ?>
+                                                    @if($target != null)
+                                                        @if($target->target_type == 1 || $target->target_type == 3)
+                                                            @foreach ($target->product_target as $pt)
+                                                                <span class="float-left">
+                                                                    {{$value_top->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                </span>
+                                                            @endforeach
+                                                            <span class="float-right">STOK&nbsp; : {{$value_top->stock}}</span>
+                                                        @else
+                                                            <span class="float-left">STOK&nbsp; : {{$value_top->stock}}</span>
+                                                        @endif
+                                                    @else
+                                                        <span class="float-left">STOK&nbsp; : {{$value_top->stock}}</span>
+                                                    @endif
+                                                @endif
+                                            @endif
+                                        </span>
+                                    @else
+                                        @if(session()->has('ses_order'))
+                                            <?php $store_name = session()->get('ses_order');?>
+                                            @if($store_name->customer_id != null)
+                                                <?php
+                                                    $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
+                                                    [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id)
+                                                ?>
+                                                @if($target != null)
+                                                    @if($target->target_type == 1 || $target->target_type == 3)
+                                                        <span class="badge badge-stok py-1" >
+                                                            @foreach ($target->product_target as $pt)
+                                                                
+                                                                <span class="float-left">
+                                                                    {{$value_top->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                </span>
+                                                            @endforeach
+                                                        </span>
+                                                    @endif
+                                                @endif
+                                            @endif
                                         @endif
-                                        -->
-                                        <span class="badge badge-stok ml-1">Stok {{$value_top->stock}}</span>
-                                        
                                     @endif
+                                    
                                     <div class="float-left px-1 py-2" style="width: 100%;">
                                         <p class="product-price-header mb-0" style="">
                                             {{$value_top->Product_name}}
@@ -425,12 +467,53 @@ Home
                             </a>
                             <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                 @if($stock_status->stock_status == 'ON')
-                                    <!--
-                                    @if($value->stock == 0)
-                                        <span class="badge badge-warning ml-1">Sisa stok 0</span>
+                                    <span class="badge badge-stok py-1" >
+                                        @if(session()->has('ses_order'))
+                                            <?php $store_name = session()->get('ses_order');?>
+                                            @if($store_name->customer_id != null)
+                                                <?php
+                                                    $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value->id,$store_name->customer_id);
+                                                    [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value->id,$store_name->customer_id)
+                                                ?>
+                                                @if($target != null)
+                                                    @if($target->target_type == 1 || $target->target_type == 3)
+                                                        @foreach ($target->product_target as $pt)
+                                                            <span class="float-left">
+                                                                {{$value->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                            </span>
+                                                        @endforeach
+                                                        <span class="float-right">STOK&nbsp; : {{$value->stock}}</span>
+                                                    @else
+                                                        <span class="float-left">STOK&nbsp; : {{$value->stock}}</span>
+                                                    @endif
+                                                @else
+                                                    <span class="float-left">STOK&nbsp; : {{$value->stock}}</span>
+                                                @endif
+                                            @endif
+                                        @endif
+                                    </span>
+                                @else
+                                    @if(session()->has('ses_order'))
+                                        <?php $store_name = session()->get('ses_order');?>
+                                        @if($store_name->customer_id != null)
+                                            <?php
+                                                $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value->id,$store_name->customer_id);
+                                                [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value->id,$store_name->customer_id)
+                                            ?>
+                                            @if($target != null)
+                                                @if($target->target_type == 1 || $target->target_type == 3)
+                                                    <span class="badge badge-stok py-1" >
+                                                        @foreach ($target->product_target as $pt)
+                                                            
+                                                            <span class="float-left">
+                                                                {{$value->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                            </span>
+                                                        @endforeach
+                                                    </span>
+                                                @endif
+                                            @endif
+                                        @endif
                                     @endif
-                                    -->
-                                    <span class="badge badge-stok py-1">Stok {{$value->stock}}</span>
                                 @endif
                                 <div class="float-left px-1 py-2" style="width: 100%;">
                                     <p class="product-price-header mb-0" style="">

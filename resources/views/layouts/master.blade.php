@@ -553,6 +553,7 @@
                     <div class="card">
                         <div class="header">
                             <h2><b>@yield('title')</b></h2>
+                            @yield('menuHeader')
                         </div>
                         <div class="body">   
                             @yield('content')

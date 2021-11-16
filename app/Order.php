@@ -80,4 +80,12 @@ class Order extends Model
         }
         return $total_quantity;
     }
+
+    public function getTotalNominalAttribute(){
+        $total_nominal = 0;
+        foreach($this->products as $p){
+        $total_nominal += $p->pivot->price_item_promo;
+        }
+        return $total_nominal;
+    }
 }

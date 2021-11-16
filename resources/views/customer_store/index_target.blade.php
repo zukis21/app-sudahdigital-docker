@@ -18,15 +18,19 @@
 		
 	
 	<div class="table-responsive">
-		<table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+		<table class="table table-bordered table-striped table-hover list-target">
 			<thead>
 				<tr>
 					<!--<th>No</th>-->
 					<th>Total Customers</th>
+					<!--
 					<th>Target Type</th>
+					-->
 					<th>Target Qty(BOX)</th>
-					<th>Target Val.(IDR)</th>
+					<th>Max Nominal Target(IDR)</th>
 					<th>Period</th>
+					<th>Created At</th>
+					<th>Updated At</th>
 					<th>#</th>
 				</tr>
 			</thead>
@@ -39,6 +43,7 @@
 					<td>
 						{{$u->total}}
 					</td>
+					<!--
 					<td>
 						@if($u->target_type == 1)
 							Qty
@@ -50,22 +55,36 @@
 						-
 						@endif
 					</td>
+					-->
 					<td>
+						<?php
+						$sumvalue = \App\Store_Targets::where('client_id',Auth::user()->client_id)
+								  ->where('period',$u->period)
+								  ->get();
+							$totalQtyShow = 0;
+							$totalNmlShow = 0;
+							foreach ($sumvalue as $value) {
+								$totalQtyShow += $value->TotalQty;
+								$totalNmlShow += $value->TotalNominal;
+							}
+						?>
 						@if($u->target_type == 1 || $u->target_type == 3)
-							{{$u->total_qty}}
-						@else
-						-
+							{{$totalQtyShow}}
 						@endif
 					</td>
 					<td>
 						@if($u->target_type == 2 || $u->target_type == 3)
-							{{number_format($u->total_value)}}
-						@else
-						-
+							{{number_format($totalNmlShow)}}
 						@endif
 					</td>
 					<td>
 						{{date('M-Y', strtotime($u->period))}}
+					</td>
+					<td>
+						{{$u->created_at}}
+					</td>
+					<td>
+						{{$u->updated_at}}
 					</td>
 					<td>
 						<a class="btn btn-info btn-xs" href="{{route('customers.edit_target',[$vendor,Crypt::encrypt($u->period)])}}"><i class="material-icons">list</i></a>&nbsp;
@@ -84,7 +103,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript">
-        
+        $(document).ready(function() {
+			$('.list-target').DataTable( {
+				"order": [[ 4, "desc" ]]
+			});
+		});
+
         var dp=$("#datepicker").datepicker( {
             format: "yyyy-mm",
             startView: "months", 

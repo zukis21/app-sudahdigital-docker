@@ -36,4 +36,25 @@ class Store_Targets extends Model
     public function pareto(){
         return $this->belongsTo('App\CatPareto','version_pareto');
     }
+
+    public function product_target()
+    {
+    	return $this->hasMany('App\ProductTarget','storeTargetId');
+    }
+
+    public function getTotalNominalAttribute(){
+        $total_nominal = 0;
+        foreach($this->product_target as $n){
+            $total_nominal += $n->nominalValues;
+        }
+        return $total_nominal;
+    }
+
+    public function getTotalQtyAttribute(){
+        $totalQty = 0;
+        foreach($this->product_target as $q){
+            $totalQty += $q->quantityValues;
+        }
+        return $totalQty;
+    }
 }
