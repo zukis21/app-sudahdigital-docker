@@ -103,6 +103,27 @@ class ProductsImport implements ToModel, WithHeadingRow, WithValidation
                 $product->status = $rows['status'];
                 $product->save();
                 $product->categories()->sync($rows['category_id']);
+                
+                if($product->save()){
+                    $period = date('Y-m-01');
+                    //$year = date('Y');
+                    $store_target = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                                    ->where('period','>=',$period)
+                                    ->get();
+                    //dd($store_target);
+                    if($store_target){
+                        foreach($store_target as $st){
+                            $productsTarget = \App\ProductTarget::where('storeTargetId',$st->id)
+                                            ->where('productId',$product->id)->first();
+                            if($productsTarget){
+                                $nml_values = $rows['price'];
+                                $productsTarget->nominalValues = $nml_values * $productsTarget->quantityValues;
+                                $productsTarget->save();
+                            }
+                        } 
+                    }
+                    
+                }
             }else{
                 $product = new product;
                 $product->client_id = $stock_status->client_id;
