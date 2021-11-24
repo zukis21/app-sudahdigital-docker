@@ -145,7 +145,7 @@
                                 <!--<th>No</th>-->
                                 <th>Customers</th>
                                 <th>Cat</th>
-                                <th>Target Values (IDR)</th>
+                                <th>Max Nominal Target(IDR)</th>
                                 <th>Target Qty (BOX)</th>
                             </tr>
                         </thead>

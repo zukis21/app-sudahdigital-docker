@@ -285,9 +285,16 @@ class AjaxDetailPesananSales extends Controller
                                 echo'<tr>
                                     <td width="50%" style="padding-bottom:0;">
                                         <small>
-                                            <p style="line-height:1.2;">'.$p->Product_name.'</p>
-                                        </small>
-                                    </td>
+                                            <p style="line-height:1.2;">'.$p->Product_name.'</p>';
+                                         echo'</small>';
+                                        if($p->pivot->preorder > 0){
+                                            echo'
+                                            <small>
+                                                <span class="badge badge-info">Tersedia : '.$p->pivot->available.'</span>
+                                                <span class="badge badge-warning">Pre-Order : '.$p->pivot->preorder.'</span>
+                                            </small>';
+                                        }
+                                    echo'</td>
                                     <td style="padding-bottom:0;">
                                         <small>
                                             <p style="line-height:1.2;">'.$p->pivot->quantity.'</p>
@@ -363,9 +370,17 @@ class AjaxDetailPesananSales extends Controller
                                     if($p->bonus_cat == NULL){
                                         echo '<small><p style="line-height:1.2;">'.$p->Product_name.'</p></small>';
                                     }else{
-                                        echo '<small><p style="line-height:1.2;">'.$p->Product_name.'&nbsp;(<small><b>BONUS</b></small>)</p></samall>';
+                                        echo '<small><p style="line-height:1.2;">'.$p->Product_name.'&nbsp;(<small><b>BONUS</b></small>)</p></small>';
                                     }
-                                echo '</td>
+                                    if($p->preorder > 0){
+                                        
+                                        echo'<small>
+                                            <span class="badge badge-info">Tersedia : '.$p->available.'</span>
+                                            <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
+                                        </small>';
+                                    }
+                                echo 
+                                '</td>
                                 <td style="padding-bottom:0;">
                                     <small><p style="line-height:1.2;">'.$p->quantity.'</p></small>
                                 </td>

@@ -25,6 +25,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            \App\Order::where('status', 'SUBMIT')
+                ->whereNull('customer_id')
+                ->where('created_at', '<=', now()->subMinutes(1)->toDateTimeString())
+                ->delete();
+        })->everyMinute();
     }
 
     /**

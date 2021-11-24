@@ -77,12 +77,14 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::post('/kurang','CustomerKeranjangController@kurang')->name('customer.keranjang.kurang');
         Route::post('/tambah','CustomerKeranjangController@tambah')->name('customer.keranjang.tambah');
         Route::post('/delete','CustomerKeranjangController@delete')->name('customer.keranjang.delete');
+        Route::post('/checkForCart','CustomerKeranjangController@checkForCart');
         //paket
         Route::post('/paket/cek_max_qty','CustomerPaketController@cek_max_qty');
         Route::post('/paket/simpan','CustomerPaketController@simpan')->name('customer.paket.simpan');
         Route::post('/paket/totalquantity','CustomerPaketController@get_total_qty');
         Route::post('/paket_all/simpan_cart','CustomerPaketController@simpan_all_tocart');
         Route::post('/paket_all/delete_tmp','CustomerPaketController@delete_tmp');
+        Route::post('/paket_all/cekBeforeSave','CustomerPaketController@cekBeforeSave_tmp');
         Route::post('/paket/delete_pkt','CustomerPaketController@delete_paket');
         Route::post('/cek_detail/paket','CustomerPaketController@cek_detail_pkt');
         Route::post('/delete_kr/paket','CustomerPaketController@delete_kr_pkt');

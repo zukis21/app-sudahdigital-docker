@@ -14,14 +14,16 @@ class Order extends Model
 
     public function products_nonpaket(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo','discount_item','group_id','paket_id','bonus_cat')
+        ->withPivot('id','quantity','price_item','price_item_promo',
+                    'discount_item','group_id','paket_id','bonus_cat','available','preorder')
         ->wherePivot('paket_id',null)
         ->wherePivot('group_id',null);
     }
 
     public function products_pkt(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo','discount_item','group_id','paket_id','bonus_cat')
+        ->withPivot('id','quantity','price_item','price_item_promo',
+        'discount_item','group_id','paket_id','bonus_cat','available','preorder')
         ->wherePivot('paket_id','!=',null)
         ->wherePivot('group_id','!=',null)
         ->wherePivot('bonus_cat','=',null);
@@ -29,14 +31,16 @@ class Order extends Model
 
     public function products_bns(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo','discount_item','group_id','paket_id','bonus_cat')
+        ->withPivot('id','quantity','price_item','price_item_promo',
+        'discount_item','group_id','paket_id','bonus_cat','available','preorder')
         ->wherePivot('group_id','!=',null)
         ->wherePivot('bonus_cat','!=',null);
     }
 
     public function products_pktbns(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo','discount_item','group_id','paket_id','bonus_cat')
+        ->withPivot('id','quantity','price_item','price_item_promo',
+        'discount_item','group_id','paket_id','bonus_cat','available','preorder')
         ->wherePivot('paket_id','!=',null)
         ->wherePivot('group_id','!=',null);
     }

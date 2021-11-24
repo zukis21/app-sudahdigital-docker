@@ -246,6 +246,9 @@ Home
                                 </a>
                                 <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                     @if($stock_status->stock_status == 'ON')
+                                        @php
+                                            $stockValueTop = App\Http\Controllers\CustomerKeranjangController::stockInfo($value_top->id);
+                                        @endphp
                                         <span class="badge badge-stok py-1" >
                                             @if(session()->has('ses_order'))
                                                 <?php $store_name = session()->get('ses_order');?>
@@ -258,15 +261,30 @@ Home
                                                         @if($target->target_type == 1 || $target->target_type == 3)
                                                             @foreach ($target->product_target as $pt)
                                                                 <span class="float-left">
-                                                                    {{$value_top->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                    <?php
+                                                                        $leftT = $pt->quantityValues - $totalQty;
+                                                                        $unsignedT = abs($leftT);
+                                                                        if($leftT < 0){
+                                                                            $leftTr = '+'.$unsignedT;
+                                                                        }else{
+                                                                            $leftTr = $leftT;
+                                                                        }
+                                                                    ?>
+                                                                    {{$value_top->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                 </span>
                                                             @endforeach
-                                                            <span class="float-right">STOK&nbsp; : {{$value_top->stock}}</span>
+                                                            <span class="float-right">
+                                                                STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
+                                                            </span>
                                                         @else
-                                                            <span class="float-left">STOK&nbsp; : {{$value_top->stock}}</span>
+                                                            <span class="float-left">
+                                                                STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
+                                                            </span>
                                                         @endif
                                                     @else
-                                                        <span class="float-left">STOK&nbsp; : {{$value_top->stock}}</span>
+                                                        <span class="float-left">
+                                                            STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
+                                                        </span>
                                                     @endif
                                                 @endif
                                             @endif
@@ -285,7 +303,16 @@ Home
                                                             @foreach ($target->product_target as $pt)
                                                                 
                                                                 <span class="float-left">
-                                                                    {{$value_top->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                    <?php
+                                                                        $leftT = $pt->quantityValues - $totalQty;
+                                                                        $unsignedT = abs($leftT);
+                                                                        if($leftT < 0){
+                                                                            $leftTr = '+'.$unsignedT;
+                                                                        }else{
+                                                                            $leftTr = $leftT;
+                                                                        }
+                                                                    ?>
+                                                                    {{$value_top->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                 </span>
                                                             @endforeach
                                                         </span>
@@ -467,6 +494,9 @@ Home
                             </a>
                             <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                 @if($stock_status->stock_status == 'ON')
+                                @php
+                                    $stockValue = App\Http\Controllers\CustomerKeranjangController::stockInfo($value->id);
+                                @endphp
                                     <span class="badge badge-stok py-1" >
                                         @if(session()->has('ses_order'))
                                             <?php $store_name = session()->get('ses_order');?>
@@ -479,15 +509,30 @@ Home
                                                     @if($target->target_type == 1 || $target->target_type == 3)
                                                         @foreach ($target->product_target as $pt)
                                                             <span class="float-left">
-                                                                {{$value->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                <?php
+                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                    $unsignedT = abs($leftT);
+                                                                    if($leftT < 0){
+                                                                        $leftTr = '+'.$unsignedT;
+                                                                    }else{
+                                                                        $leftTr = $leftT;
+                                                                    }
+                                                                ?>
+                                                                {{$value->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                             </span>
                                                         @endforeach
-                                                        <span class="float-right">STOK&nbsp; : {{$value->stock}}</span>
+                                                        <span class="float-right">
+                                                            STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
+                                                        </span>
                                                     @else
-                                                        <span class="float-left">STOK&nbsp; : {{$value->stock}}</span>
+                                                        <span class="float-left">
+                                                            STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
+                                                        </span>
                                                     @endif
                                                 @else
-                                                    <span class="float-left">STOK&nbsp; : {{$value->stock}}</span>
+                                                    <span class="float-left">
+                                                        STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
+                                                    </span>
                                                 @endif
                                             @endif
                                         @endif
@@ -506,7 +551,16 @@ Home
                                                         @foreach ($target->product_target as $pt)
                                                             
                                                             <span class="float-left">
-                                                                {{$value->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                <?php
+                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                    $unsignedT = abs($leftT);
+                                                                    if($leftT < 0){
+                                                                        $leftTr = '+'.$unsignedT;
+                                                                    }else{
+                                                                        $leftTr = $leftT;
+                                                                    }
+                                                                ?>
+                                                                {{$value->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                             </span>
                                                         @endforeach
                                                     </span>
@@ -542,7 +596,7 @@ Home
                                                 <input type="hidden" id="jumlah{{$value->id}}" name="quantity" value="1">
                                                 <input type="hidden" id="harga{{$value->id}}" name="price" value="{{ $value->price }}">
                                                 <input type="hidden" id="{{$value->id}}" name="Product_id" value="{{$value->id}}">
-                                                <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart('{{$value->id}}')" {{($stock_status->stock_status == 'ON')&&($value->stock == 0) ? 'disabled' : ''}}>Tambah</button>
+                                                <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart('{{$value->id}}')" >Tambah</button>
                                                 
                                             </td>
                                             <td width="30%" align="left" id="td-text-quantity" class="td-text-quantity" valign="middle" rowspan="2" >

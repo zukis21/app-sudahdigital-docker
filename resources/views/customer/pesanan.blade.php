@@ -232,7 +232,18 @@
                                         <td width="50%">-->
                                             <span class="data-list-order"><p class="mb-n1">Tanggal Order</p></span>
                                             <b class="data-list-order mb-4"> {{$order->created_at}}</b><br>
-
+                                            @if($order->status == "FINISH")
+                                                @if($order->process_time)
+                                                    <span class="data-list-order"><p class="mb-n1">Tanggal Proses</p></span>
+                                                    <b class="data-list-order mb-4"> {{$order->process_time}}</b><br>
+                                                @endif
+                                                <span class="data-list-order"><p class="mb-n1">Tanggal Finish</p></span>
+                                                <b class="data-list-order mb-4"> {{$order->finish_time}}</b><br>
+                                            @endif
+                                            @if($order->status == "PROCESS" && $order->process_time != null)
+                                                <span class="data-list-order"><p class="mb-n1">Tanggal Proses</p></span>
+                                                <b class="data-list-order mb-4"> {{$order->process_time}}</b><br>
+                                            @endif
                                             <!--<span class="data-list-order"><p class="mb-n1 mt-2">Total Quantity</p></span>
                                             <b class="data-list-order"> {{$order->totalQuantity}}</b><br>-->
 

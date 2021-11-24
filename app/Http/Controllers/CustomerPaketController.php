@@ -92,6 +92,24 @@ class CustomerPaketController extends Controller
         $group_id=$request->get('group_id');
         //$paket_id=$request->get('paket_id');
         $cek_promo = \App\product::findOrFail($id_product);
+        
+        $stockValue = \App\Http\Controllers\CustomerKeranjangController::stockInfo($id_product);
+        $qtyOrder = $quantity;
+        $readyStock = $cek_promo->stock - $stockValue;
+        if($readyStock < 0){
+            $readyStock = 0 ;
+        }else{
+            $readyStock = $readyStock;
+        }
+        $left = $readyStock - $qtyOrder;
+        if($left < 0){
+            $preOrder = abs($left);
+            $avail = $qtyOrder + $left;
+        }else{
+            $preOrder = 0;
+            $avail = $qtyOrder;
+        }
+
         $cek_order = \App\Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
         if($cek_order !== null){
@@ -99,10 +117,13 @@ class CustomerPaketController extends Controller
             ->where('product_id','=',$id_product)
             ->whereNull('bonus_cat')->first();
             if($order_product!== null){
+                
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity = $quantity;
+                $order_product->available = $avail;
+                $order_product->preorder = $preOrder;
                 $order_product->group_id = $group_id;
                 //$order_product->paket_id = $paket_id;
                 $order_product->save();
@@ -110,12 +131,15 @@ class CustomerPaketController extends Controller
                 //$cek_order->save();
                 return response()->json($cek_order->id);
                 }else{
+                        
                         $new_order_product = new \App\Order_paket_temp;
                         $new_order_product->order_id =  $cek_order->id;
                         $new_order_product->product_id = $id_product;
                         $new_order_product->price_item = $cek_promo->price;
                         $new_order_product->price_item_promo = $cek_promo->price_promo;
                         $new_order_product->discount_item = $cek_promo->discount;
+                        $new_order_product->available = $avail;
+                        $new_order_product->preorder = $preOrder;
                         $new_order_product->quantity = $quantity;
                         $new_order_product->group_id = $group_id;
                         //$new_order_product->paket_id = $paket_id;
@@ -142,6 +166,8 @@ class CustomerPaketController extends Controller
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
+                $order_product->available = $avail;
+                $order_product->preorder = $preOrder;
                 $order_product->quantity = $request->get('quantity');
                 $order_product->group_id = $group_id;
                 //$order_product->paket_id = $paket_id;
@@ -169,6 +195,24 @@ class CustomerPaketController extends Controller
         $group_id=$request->get('group_id');
         $paket_id=$request->get('paket_id');
         $cek_promo = \App\product::findOrFail($id_product);
+
+        $stockValue = \App\Http\Controllers\CustomerKeranjangController::stockInfo($id_product);
+        $qtyOrder = $quantity;
+        $readyStock = $cek_promo->stock - $stockValue;
+        if($readyStock < 0){
+            $readyStock = 0 ;
+        }else{
+            $readyStock = $readyStock;
+        }
+        $left = $readyStock - $qtyOrder;
+        if($left < 0){
+            $preOrder = abs($left);
+            $avail = $qtyOrder + $left;
+        }else{
+            $preOrder = 0;
+            $avail = $qtyOrder;
+        }
+
         $cek_order = \App\Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
         if($cek_order !== null){
@@ -179,6 +223,8 @@ class CustomerPaketController extends Controller
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
+                $order_product->available = $avail;
+                $order_product->preorder = $preOrder;
                 $order_product->quantity = $quantity;
                 $order_product->group_id = $group_id;
                 $order_product->paket_id = $paket_id;
@@ -194,6 +240,8 @@ class CustomerPaketController extends Controller
                         $new_order_product->price_item = $cek_promo->price;
                         $new_order_product->price_item_promo = $cek_promo->price_promo;
                         $new_order_product->discount_item = $cek_promo->discount;
+                        $new_order_product->available = $avail;
+                        $new_order_product->preorder = $preOrder;
                         $new_order_product->quantity = $quantity;
                         $new_order_product->group_id = $group_id;
                         $new_order_product->paket_id = $paket_id;
@@ -305,7 +353,9 @@ class CustomerPaketController extends Controller
                         'updated_at'=>$dateNow,
                         'group_id'=>$tmp->group_id,
                         'paket_id'=>$paket_id,
-                        'bonus_cat'=>$tmp->bonus_cat
+                        'bonus_cat'=>$tmp->bonus_cat,
+                        'available'=>$tmp->available,
+                        'preorder'=>$tmp->preorder,
                     ]);
                 }else{
                     DB::table('order_product')->insert([
@@ -319,7 +369,9 @@ class CustomerPaketController extends Controller
                         'updated_at'=>$dateNow,
                         'group_id'=>$tmp->group_id,
                         'paket_id'=>$paket_id,
-                        'bonus_cat'=>$tmp->bonus_cat
+                        'bonus_cat'=>$tmp->bonus_cat,
+                        'available'=>$tmp->available,
+                        'preorder'=>$tmp->preorder,
                     ]);
                 }
         }
@@ -716,5 +768,19 @@ class CustomerPaketController extends Controller
      
         echo json_encode($product);
     
+    }
+
+    public function cekBeforeSave_tmp(Request $request){
+        $order_id = $request->get('order_id');
+        
+        $cek_paket = \App\Order::where('id',$order_id)->first();
+        if($cek_paket){
+            $cekData = 1;
+        }
+        else{
+            $cekData = 0;
+        }
+        echo json_encode($cekData);
+        exit;
     }
 }

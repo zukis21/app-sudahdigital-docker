@@ -152,8 +152,10 @@ Paket
                                 </div>
                             </div>
                         </div>
+                        
                         <!-- Modal -->
-                        <div class="modal fade modal-paket" id="modalGroup{{$value->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade modal-paket" id="modalGroup{{$value->id}}" 
+                            tabindex="-1" role="dialog" aria-hidden="true"  style="overflow-y: auto !important;">
                             <div class="modal-dialog modal-dialog-paket modal-lg" role="document">
                                 <div class="modal-content modal-content-paket">
                                     <div class="modal-body pb-0">
@@ -216,6 +218,9 @@ Paket
                                                                         
                                                                         <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">
                                                                             @if($stock_status->stock_status == 'ON')
+                                                                                @php
+                                                                                    $stockValuePaket = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                @endphp
                                                                                 <span class="badge badge-stok py-1" >
                                                                                     @if(session()->has('ses_order'))
                                                                                         <?php $store_name = session()->get('ses_order');?>
@@ -228,15 +233,30 @@ Paket
                                                                                                 @if($target->target_type == 1 || $target->target_type == 3)
                                                                                                     @foreach ($target->product_target as $pt)
                                                                                                         <span class="float-left">
-                                                                                                            {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                            <?php
+                                                                                                                $leftT = $pt->quantityValues - $totalQty;
+                                                                                                                $unsignedT = abs($leftT);
+                                                                                                                if($leftT < 0){
+                                                                                                                    $leftTr = '+'.$unsignedT;
+                                                                                                                }else{
+                                                                                                                    $leftTr = $leftT;
+                                                                                                                }
+                                                                                                            ?>
+                                                                                                            {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                         </span>
                                                                                                     @endforeach
-                                                                                                    <span class="float-right">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                    <span class="float-right">
+                                                                                                        STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    </span>
                                                                                                 @else
-                                                                                                    <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                    <span class="float-left">
+                                                                                                        STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    </span>
                                                                                                 @endif
                                                                                             @else
-                                                                                                <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                <span class="float-left">
+                                                                                                    STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                </span>
                                                                                             @endif
                                                                                         @endif
                                                                                     @endif
@@ -255,7 +275,16 @@ Paket
                                                                                                     @foreach ($target->product_target as $pt)
                                                                                                         
                                                                                                         <span class="float-left">
-                                                                                                            {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                            <?php
+                                                                                                                $leftT = $pt->quantityValues - $totalQty;
+                                                                                                                $unsignedT = abs($leftT);
+                                                                                                                if($leftT < 0){
+                                                                                                                    $leftTr = '+'.$unsignedT;
+                                                                                                                }else{
+                                                                                                                    $leftTr = $leftT;
+                                                                                                                }
+                                                                                                            ?>
+                                                                                                            {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                         </span>
                                                                                                     @endforeach
                                                                                                 </span>
@@ -312,7 +341,7 @@ Paket
                                                                                             padding-left:0;
                                                                                             height:25px" onclick="button_plus_pkt('{{$p_group->id}}','{{$value->id}}')">+</button> 
                                                                                 </div>
-                                                                                <button class="btn bt-add-paket btn-block button_add_to_cart respon mt-1" onclick="add_tocart_pkt('{{$p_group->id}}','{{$value->id}}')" {{($stock_status->stock_status == 'ON')&&($p_group->stock == 0) ? 'disabled' : ''}}>Simpan</button> 
+                                                                                <button class="btn bt-add-paket btn-block button_add_to_cart respon mt-1" onclick="add_tocart_pkt('{{$p_group->id}}','{{$value->id}}')" >Simpan</button> 
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -351,6 +380,9 @@ Paket
                                                                     
                                                                     <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">
                                                                         @if($stock_status->stock_status == 'ON')
+                                                                            @php
+                                                                                $stockValuePaket = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                            @endphp
                                                                             <span class="badge badge-stok py-1" >
                                                                                 @if(session()->has('ses_order'))
                                                                                     <?php $store_name = session()->get('ses_order');?>
@@ -363,15 +395,30 @@ Paket
                                                                                             @if($target->target_type == 1 || $target->target_type == 3)
                                                                                                 @foreach ($target->product_target as $pt)
                                                                                                     <span class="float-left">
-                                                                                                        {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                        <?php
+                                                                                                            $leftT = $pt->quantityValues - $totalQty;
+                                                                                                            $unsignedT = abs($leftT);
+                                                                                                            if($leftT < 0){
+                                                                                                                $leftTr = '+'.$unsignedT;
+                                                                                                            }else{
+                                                                                                                $leftTr = $leftT;
+                                                                                                            }
+                                                                                                        ?>
+                                                                                                        {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                     </span>
                                                                                                 @endforeach
-                                                                                                <span class="float-right">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                <span class="float-right">
+                                                                                                    STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                </span>
                                                                                             @else
-                                                                                                <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                <span class="float-left">
+                                                                                                    STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                </span>
                                                                                             @endif
                                                                                         @else
-                                                                                            <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                            <span class="float-left">
+                                                                                                STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                            </span>
                                                                                         @endif
                                                                                     @endif
                                                                                 @endif
@@ -390,7 +437,16 @@ Paket
                                                                                                 @foreach ($target->product_target as $pt)
                                                                                                     
                                                                                                     <span class="float-left">
-                                                                                                        {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                        <?php
+                                                                                                            $leftT = $pt->quantityValues - $totalQty;
+                                                                                                            $unsignedT = abs($leftT);
+                                                                                                            if($leftT < 0){
+                                                                                                                $leftTr = '+'.$unsignedT;
+                                                                                                            }else{
+                                                                                                                $leftTr = $leftT;
+                                                                                                            }
+                                                                                                        ?>
+                                                                                                        {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                     </span>
                                                                                                 @endforeach
                                                                                             </span>
@@ -447,7 +503,7 @@ Paket
                                                                                         padding-left:0;
                                                                                         height:25px" onclick="button_plus_pkt('{{$p_group->id}}','{{$value->id}}')">+</button> 
                                                                             </div>
-                                                                            <button class="btn bt-add-paket btn-block button_add_to_cart respon mt-1" onclick="add_tocart_pkt('{{$p_group->id}}','{{$value->id}}')" {{($stock_status->stock_status == 'ON')&&($p_group->stock == 0) ? 'disabled' : ''}}>Simpan</button> 
+                                                                            <button class="btn bt-add-paket btn-block button_add_to_cart respon mt-1" onclick="add_tocart_pkt('{{$p_group->id}}','{{$value->id}}')" >Simpan</button> 
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -567,7 +623,10 @@ Paket
                                                                                     <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns{{$p_group->id}}_{{$value->id}}" style="">Rp. {{ $item && $qty_on_bonus != NULL ?  number_format($harga_on_bonus, 0, ',', '.') : number_format($p_group->price, 0, ',', '.') }},-</p>
                                                                                 </div>
                                                                                 @if($stock_status->stock_status == 'ON')
-                                                                                    <span class="badge badge-stok py-1 mb-1 badge-bonus" >
+                                                                                    @php
+                                                                                        $stockValueBonus = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                    @endphp
+                                                                                    <span class="badge badge-stok py-1 badge-bonus mb-1" >
                                                                                         @if(session()->has('ses_order'))
                                                                                             <?php $store_name = session()->get('ses_order');?>
                                                                                             @if($store_name->customer_id != null)
@@ -579,15 +638,30 @@ Paket
                                                                                                     @if($target->target_type == 1 || $target->target_type == 3)
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             <span class="float-left">
-                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                                <?php
+                                                                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                                                                    $unsignedT = abs($leftT);
+                                                                                                                    if($leftT < 0){
+                                                                                                                        $leftTr = '+'.$unsignedT;
+                                                                                                                    }else{
+                                                                                                                        $leftTr = $leftT;
+                                                                                                                    }
+                                                                                                                ?>
+                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                             </span>
                                                                                                         @endforeach
-                                                                                                        <span class="float-right">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                        <span class="float-right">
+                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        </span>
                                                                                                     @else
-                                                                                                        <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                        <span class="float-left">
+                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        </span>
                                                                                                     @endif
                                                                                                 @else
-                                                                                                    <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                    <span class="float-left">
+                                                                                                        STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                    </span>
                                                                                                 @endif
                                                                                             @endif
                                                                                         @endif
@@ -602,11 +676,20 @@ Paket
                                                                                             ?>
                                                                                             @if($target != null)
                                                                                                 @if($target->target_type == 1 || $target->target_type == 3)
-                                                                                                    <span class="badge badge-stok py-1 mb-1 badge-bonus" >
+                                                                                                    <span class="badge badge-stok py-1 badge-bonus mb-1" >
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             
                                                                                                             <span class="float-left">
-                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                                    <?php
+                                                                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                                                                    $unsignedT = abs($leftT);
+                                                                                                                    if($leftT < 0){
+                                                                                                                        $leftTr = '+'.$unsignedT;
+                                                                                                                    }else{
+                                                                                                                        $leftTr = $leftT;
+                                                                                                                    }
+                                                                                                                ?>
+                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                     </span>
@@ -656,7 +739,7 @@ Paket
                                                                                 </div>
                                                                                 <div class="float-right mt-2">
                                                                                     <div id="product_list_bns">
-                                                                                        <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" {{($stock_status->stock_status == 'ON')&&($p_group->stock == 0) ? 'disabled' : ''}}>Simpan</button>
+                                                                                        <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" >Simpan</button>
                                                                                     </div>
                                                                                     
                                                                                 </div>
@@ -707,6 +790,9 @@ Paket
                                                                                     <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns{{$p_group->id}}_{{$value->id}}" style="">Rp. {{ $item && $qty_on_bonus != NULL ?  number_format($harga_on_bonus, 0, ',', '.') : number_format($p_group->price, 0, ',', '.') }},-</p>
                                                                                 </div>
                                                                                 @if($stock_status->stock_status == 'ON')
+                                                                                    @php
+                                                                                        $stockValueBonus = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                    @endphp
                                                                                     <span class="badge badge-stok py-1 mb-1 badge-bonus" >
                                                                                         @if(session()->has('ses_order'))
                                                                                             <?php $store_name = session()->get('ses_order');?>
@@ -719,15 +805,30 @@ Paket
                                                                                                     @if($target->target_type == 1 || $target->target_type == 3)
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             <span class="float-left">
-                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                                <?php
+                                                                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                                                                    $unsignedT = abs($leftT);
+                                                                                                                    if($leftT < 0){
+                                                                                                                        $leftTr = '+'.$unsignedT;
+                                                                                                                    }else{
+                                                                                                                        $leftTr = $leftT;
+                                                                                                                    }
+                                                                                                                ?>
+                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                             </span>
                                                                                                         @endforeach
-                                                                                                        <span class="float-right">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                        <span class="float-right">
+                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        </span>
                                                                                                     @else
-                                                                                                        <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                        <span class="float-left">
+                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        </span>
                                                                                                     @endif
                                                                                                 @else
-                                                                                                    <span class="float-left">STOK&nbsp; : {{$p_group->stock}}</span>
+                                                                                                    <span class="float-left">
+                                                                                                        STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                    </span>
                                                                                                 @endif
                                                                                             @endif
                                                                                         @endif
@@ -742,11 +843,20 @@ Paket
                                                                                             ?>
                                                                                             @if($target != null)
                                                                                                 @if($target->target_type == 1 || $target->target_type == 3)
-                                                                                                    <span class="badge badge-stok py-1 mb-1 badge-bonus" >
+                                                                                                    <span class="badge badge-stok py-1 badge-bonus mb-1" >
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             
                                                                                                             <span class="float-left">
-                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.($pt->quantityValues - $totalQty) : ''}}
+                                                                                                                <?php
+                                                                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                                                                    $unsignedT = abs($leftT);
+                                                                                                                    if($leftT < 0){
+                                                                                                                        $leftTr = '+'.$unsignedT;
+                                                                                                                    }else{
+                                                                                                                        $leftTr = $leftT;
+                                                                                                                    }
+                                                                                                                ?>
+                                                                                                                {{$p_group->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                     </span>
@@ -796,7 +906,7 @@ Paket
                                                                                 </div>
                                                                                 <div class="float-right mt-2">
                                                                                     <div id="product_list_bns">
-                                                                                        <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" {{($stock_status->stock_status == 'ON')&&($p_group->stock == 0) ? 'disabled' : ''}}>Simpan</button>
+                                                                                        <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" >Simpan</button>
                                                                                     </div>
                                                                                     
                                                                                 </div>
@@ -918,7 +1028,7 @@ Paket
             </div>
         </div>
     </div>
-    
+
     <!--cart--->
     <div id="accordion" class="fixed-bottom" style="border-radius:0;z-index: 1;">
         <div class="card" style="border-radius:0;">
