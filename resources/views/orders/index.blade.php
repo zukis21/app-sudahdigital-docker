@@ -9,7 +9,7 @@
 
 
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-10">
 		<ul class="nav nav-tabs tab-col-pink pull-left" >
 			<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == $vendor.'/orders' ? 'active' : ''}}">
 				<a href="{{route('orders.index',[$vendor])}}" aria-expanded="true" >All</a>
@@ -19,6 +19,9 @@
 			</li>
 			<li role="presentation" class="{{Request::get('status') == 'process' ?'active' : '' }}">
 				<a href="{{route('orders.index', [$vendor,'status' =>'process'])}}">PROCESS</a>
+			</li>
+			<li role="presentation" class="{{Request::get('status') == 'partial-shipment' ?'active' : '' }}">
+				<a href="{{route('orders.index', [$vendor,'status' =>'partial-shipment'])}}">PARTIAL-SHIPMENT</a>
 			</li>
 			<li role="presentation" class="{{Request::get('status') == 'finish' ?'active' : '' }}">
 				<a href="{{route('orders.index', [$vendor,'status' =>'finish'])}}">FINISH</a>
@@ -31,7 +34,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
+	<div class="col-md-2">
 		<a href="{{route('orders.export_mapping',[$vendor]) }}" 
 			class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
 			<i class="fas fa-file-excel fa-0x "></i> Export
@@ -72,6 +75,8 @@
 					<span class="badge bg-black text-light">{{$order->status}}</span>
 					@elseif($order->status == "NO-ORDER")
 					<span class="badge bg-red text-light">{{$order->status}}</span>
+					@elseif($order->status == "PARTIAL-SHIPMENT")
+					<span class="badge bg-blue-grey">{{$order->status}}</span>
 					@endif
 				</td>
 				<td>

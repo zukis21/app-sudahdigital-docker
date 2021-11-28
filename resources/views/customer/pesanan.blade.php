@@ -2,6 +2,10 @@
 @section('title') Orders @endsection
 @section('content')
 <style>
+    .bg-blue-grey{
+        background-color: #607D8B;
+    }
+
     #modalNotesCancel .modal-dialog {
         -webkit-transform: translate(0,-50%);
         -o-transform: translate(0,-50%);
@@ -160,6 +164,9 @@
                     <a href="{{route('pesanan', [$vendor,'status' =>'process'])}}">
                         <span class="style-badge badge {{Request::is($vendor.'/pesanan/process')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge" >PROCESS</span>
                     </a>
+                    <a href="{{route('pesanan', [$vendor,'status' =>'partial-shipment'])}}">
+                        <span class="style-badge badge {{Request::is($vendor.'/pesanan/partial-shipment')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge" >PARTIAL-SHIPMENT</span>
+                    </a>
                     <a href="{{route('pesanan', [$vendor,'status' =>'finish'])}}">
                         <span class="style-badge badge {{Request::is($vendor.'/pesanan/finish')  ?'bg-link text-light' : 'badge-light' }} status-order filter-badge">FINISH</span>
                     </a>
@@ -220,6 +227,8 @@
                                             @if($order->status == "SUBMIT")
                                             <span class="status-style badge bg-warning text-white status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "PROCESS")
+                                            <span class="status-style badge bg-blue-grey text-white status-order mb-2">{{$order->status}}</span>
+                                            @elseif($order->status == "PARTIAL-SHIPMENT")
                                             <span class="status-style badge bg-info text-light status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "FINISH")
                                             <span class="status-style badge bg-success text-light status-order mb-2">{{$order->status}}</span>

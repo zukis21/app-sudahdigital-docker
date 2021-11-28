@@ -16,6 +16,10 @@ class order_product extends Model
                             'discount_item',
                             'group_id',
                             'paket_id',
-                            'bonus_cat'];
+                            'bonus_cat',
+                            'available',
+                            'preoder',
+                            'deliveryQty',
+                        ];
     
 }

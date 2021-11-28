@@ -260,4 +260,28 @@ class AjaxAdminSearch extends Controller
     }
   }
 
+  public function CekQtyOrder(Request $request){
+    $jumlah = $request->get('jumlah');
+    $keyword = $request->get('product_id');
+    $pr = \App\product::where('id',$keyword)->first();
+    $stock = $pr->stock;
+    if ($jumlah > $stock) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
+  public function cekForFinishOrder(Request $request){
+      $orderId = $request->get('order_id');
+      $order = \App\order_product::where('order_id','=',$orderId)
+              ->whereRaw('deliveryQty < quantity')
+              ->count();
+      if ($order > 0) {
+        echo "taken";	
+      }else{
+        echo "not_taken";
+      }        
+  }
+
 }

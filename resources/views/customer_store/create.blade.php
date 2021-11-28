@@ -16,7 +16,7 @@
                 <input type="text" value="{{old('store_code')}}" class="form-control" id="code"  name="store_code" autocomplete="off" required>
                 <label class="form-label">Customer Code / Search Key</label>
             </div>
-            <label id="name-error" class=""></label>
+            <label id="name-error" class=""></label> 
             <small class=""></small>
         </div>
 

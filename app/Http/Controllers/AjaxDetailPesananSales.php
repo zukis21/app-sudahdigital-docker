@@ -161,6 +161,10 @@ class AjaxDetailPesananSales extends Controller
             $bg_badge = 'bg-info';
             $txt= 'ORDER PROCESSED';
         }
+        else if($order->status == 'PARTIAL-SHIPMENT'){
+            $bg_badge = 'bg-blue-grey';
+            $txt= 'PARTIAL-SHIPMENT';
+        }
         else if($order->status == 'FINISH'){
             $bg_badge = 'bg-success';
             $txt= 'ORDER FINISHED';
@@ -179,90 +183,104 @@ class AjaxDetailPesananSales extends Controller
         <div id="DataListOrder">
             <small style="color:#1A4066;"><b>Detail Order  &nbsp;#'.$order->invoice_number.'</b></small>
             <hr>
-            <div style="color:#000;">
-                <small><b>Tanggal Order</b> <br>
-                <p class="mt-n1">'.$order->created_at.'</p></small>
-
-                <small class="mb-n2"><b >Status Order</b><br></small>
-                <span class="badge '.$bg_badge.'" 
-                    style="color:#ffffff;
-                        margin-top:-20px;
-                        border-top-right-radius:0;
-                        border-top-left-radius:0;
-                        border-bottom-right-radius:0;
-                        border-bottom-left-radius:0;">
-                    '.$order->status.'
-                </span>
-                
-                <br>
-                <!--
-                <p class="mt-n1">'.$order->status.'</p></small>
-                -->
-                <small class="mt-n1"><b>Nama Toko</b><br>
-                <p class="mt-n1">'.$order->customers->store_name.'</p></small>';
-                /*if($order->customers->status == 'NEW'){
-                    echo '<span class="badge bg-pink">New</span>';
-                }*/
-                echo'
-                <small><b>Contact Person</b><br> 
-                <p class="mt-n1">'.$order->customers->name.'</p></small>
-
-                <small><b>Email</b><br>';
-                if($order->customers->email){
-                    echo'<p class="mt-n1">'.$order->customers->email.'</p></small>';
-                }else{
-                    echo'<p class="mt-n1">-</p></small>';
-                }
-
-                echo'
-                <small><b>Alamat Toko</b><br>
-                <p class="mt-n1">'.$order->customers->address.'</p></small>
-                
-                <small><b>No. Hp</b><br>
-                <p class="mt-n1">'.$order->customers->phone.'</p></small>
-
-                <small><b>No. Telp. Toko :</b><br>';
-                if($order->customers->phone_store){
-                    echo'<p class="mt-n1">'.$order->customers->phone_store.'</p></small>';
-                }else{
-                    echo'<p class="mt-n1">-</p></small>';
-                }
-                
-                echo'<small><b>No. Telp. Pemilik Toko</b><br>';
-                if($order->customers->phone_owner){
-                    echo'<p class="mt-n1">'.$order->customers->phone_owner.'</p></small>';
-                }else{
-                    echo'<p class="mt-n1">-</p></small>';
-                } 
-
-                echo'
-                <small><b>Nama Sales</b><br>
-                <p class="mt-n1">'.$order->users->name.'</p></small>
-                
-                <small><b>ON/Off Lokasi Sales</b><br>
-                <p class="mt-n1">'.$order->user_loc.'</p></small>
-
-                
-                <small><b>Jenis Pembayaran</b><br> 
-                <p class="mt-n1">'.$order->payment_method.'</p></small>
-                
-                <small><b>Keterangan Order</b> <br>';
-                if($order->notes){
-                    echo'<p class="mt-n1">'.$order->notes.'</p></small>';
-                }else{
-                    echo'<p class="mt-n1">-</p></small>';
-                }
+            <ul class="list-group">
+                <li class="list-group-item disabled py-0">
+                    <small><b>Tanggal Order</b> <br>
+                    <p class="mt-n1">'.$order->created_at.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small class="mb-n3"><b >Status Order</b><br></small>
+                    <span class="mt-n2 badge '.$bg_badge.'" 
+                        style="color:#ffffff;
+                            margin-top:-20px;
+                            border-top-right-radius:0;
+                            border-top-left-radius:0;
+                            border-bottom-right-radius:0;
+                            border-bottom-left-radius:0;">
+                        '.$order->status.'
+                    </span>';
+                    if($order->status == 'PARTIAL-SHIPMENT'){
+                        echo '<br><small class="mb-n3">'
+                            .$order->NotesPartialShip.'
+                        </small>';
+                    }
+                echo '</li>
+                <li class="list-group-item disabled py-0">
+                    <small class="mt-n1"><b>Nama Toko</b><br>
+                    <p class="mt-n1">'.$order->customers->store_name.'</p></small>';
+                    /*if($order->customers->status == 'NEW'){
+                        echo '<span class="badge bg-pink">New</span>';
+                    }*/
+                echo '</li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>Contact Person</b><br> 
+                    <p class="mt-n1">'.$order->customers->name.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>Email</b><br>';
+                    if($order->customers->email){
+                        echo'<p class="mt-n1">'.$order->customers->email.'</p></small>';
+                    }else{
+                        echo'<p class="mt-n1">-</p></small>';
+                    }
+                echo'</li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>Alamat Toko</b><br>
+                    <p class="mt-n1">'.$order->customers->address.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>No. Hp</b><br>
+                    <p class="mt-n1">'.$order->customers->phone.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>No. Telp. Toko :</b><br>';
+                    if($order->customers->phone_store){
+                        echo'<p class="mt-n1">'.$order->customers->phone_store.'</p></small>';
+                    }else{
+                        echo'<p class="mt-n1">-</p></small>';
+                    }
+                echo'</li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>No. Telp. Pemilik Toko</b><br>';
+                    if($order->customers->phone_owner){
+                        echo'<p class="mt-n1">'.$order->customers->phone_owner.'</p></small>';
+                    }else{
+                        echo'<p class="mt-n1">-</p></small>';
+                    } 
+                echo'</li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>Nama Sales</b><br>
+                    <p class="mt-n1">'.$order->users->name.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>ON/Off Lokasi Sales</b><br>
+                    <p class="mt-n1">'.$order->user_loc.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>Jenis Pembayaran</b><br> 
+                    <p class="mt-n1">'.$order->payment_method.'</p></small>
+                </li>
+                <li class="list-group-item disabled py-0">
+                    <small><b>Keterangan Order</b> <br>';
+                    if($order->notes){
+                        echo'<p class="mt-n1">'.$order->notes.'</p></small>';
+                    }else{
+                        echo'<p class="mt-n1">-</p></small>';
+                    }
+                echo '</li>';
                 if($order->status == 'CANCEL'){
                     echo'
-                    <small><b>Keterangan Pembatalan</b><br>
-                    <p class="mt-n1">'.$order->notes_cancel.'</p></small>
+                    <li class="list-group-item disabled py-0">
+                        <small><b>Keterangan Pembatalan</b><br>
+                        <p class="mt-n1">'.$order->notes_cancel.'</p></small>
                     
                     <small><b>Dibatalkan Oleh</b><br>
-                    <p class="mt-n1">'.$order_cancel->name.'</p></small>';
+                    <p class="mt-n1">'.$order_cancel->name.'</p></small>
+                    </li>';
                 }
-            echo'
-           </div>
-            <div class="mb-2">
+            echo'</ul>
+           
+            <div class="mb-2 mt-2">
                 <small style="color:#1A4066;"><b>Detail Produk</b></small>
             </div>';
             

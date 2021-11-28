@@ -385,6 +385,8 @@ Route::get('/ajax/exist_user/search', 'AjaxAdminSearch@UserExistSearch');
 Route::get('/ajax/exist_date/search', 'AjaxAdminSearch@DateExistSearch');
 Route::get('/ajax/workplan/search', 'AjaxAdminSearch@WorkPlanExistSearch');
 Route::get('/ajax/exist_user_edit/search', 'AjaxAdminSearch@UserExistEditSearch');
+Route::get('/ajax/cekQty/order', 'AjaxAdminSearch@CekQtyOrder');
+Route::get('/ajax/cekForFinish/order', 'AjaxAdminSearch@cekForFinishOrder');
 
 
 /*===route group unique product===*/

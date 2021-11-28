@@ -136,6 +136,7 @@ class OrderController extends Controller
         $order = \App\Order::findOrFail($id);
         $dateNow = date('Y-m-d H:i:s');
         $status = $request->get('status');
+        $prevStatus = $request->get('prevStatus');
         if($status == 'PROCESS'){
             $order->status = $status;
             $order->process_time = $dateNow;
@@ -143,13 +144,44 @@ class OrderController extends Controller
         }else if($status == 'FINISH'){
             $order->status = $status;
             $order->finish_time = $dateNow;
+            if($prevStatus !== 'PARTIAL-SHIPMENT'){
+                $stock_status= \DB::table('product_stock_status')
+                        ->where('client_id',\Auth::user()->client_id)->first();
+                if($stock_status->stock_status == 'ON'){
+                        $cek_quantity = \App\Order::with('products')->where('id',$id)->get();
+                        foreach($cek_quantity as $q){
+                            foreach($q->products as $p){
+                                $up_product = \App\product::findOrfail($p->pivot->product_id);
+                                $up_product->stock -= $p->pivot->quantity;
+                                $up_product->save();
+                            }
+                        }
+                }
+            }
             //$order->save();
         }else if($status == 'CANCEL'){
             $order->status = $status;
             $order->cancel_time = $dateNow;
             $order->notes_cancel = $request->get('notes_cancel');
             $order->canceled_by = \Auth::user()->id;
-        }else{
+        }else if($status == 'PARTIAL-SHIPMENT'){
+            $order->status = $status;
+            $order->NotesPartialShip = $request->get('partialDeliveryNotes');
+            foreach ($request->order_productId as $i => $v){
+                /*$detail_order=array(
+                    'deliveryQty'=>$request->deliveryQty[$v],
+                );*/
+                $new_dtl = \App\order_product::where('id',$request->order_productId[$i])->first();
+                $new_dtl->deliveryQty += $request->deliveryQty[$v];
+                $new_dtl->save();
+                if($new_dtl->save()){
+                    $prd = \App\product::findOrfail($request->productId[$i]);
+                    $prd->stock -= $request->deliveryQty[$v];
+                    $prd->save();
+                }
+            }
+        }
+        else{
             $order->status = $status;
         }
         $order->save();
