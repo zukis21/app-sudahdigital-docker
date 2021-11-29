@@ -61,13 +61,17 @@
                             <tr>
                                 <td style="padding-top:10px;">
                                     {{$p->Product_name}}
-                                    @if($p->pivot->preorder > 0)
-                                    <br>
-                                        <!--<span class="badge bg-cyan">Available : {{$p->pivot->available}}</span>-->
-                                        <span class="badge bg-orange">Pre Order : {{$p->pivot->preorder}}</span>
-                                    @endif
+                                    
                                     @if( $p->pivot->deliveryQty !== null)
-                                        <span class="badge bg-green">Delivered : {{$p->pivot->deliveryQty}}</span> 
+                                        <br>
+                                        <span class="badge bg-orange">Outstanding : {{$p->pivot->quantity - $p->pivot->deliveryQty}}</span>
+                                        <span class="badge bg-green">Delivered : {{$p->pivot->deliveryQty}}</span>
+                                    @else
+                                        @if($p->pivot->preorder > 0)
+                                        <br>
+                                            <!--<span class="badge bg-cyan">Available : {{$p->pivot->available}}</span>-->
+                                            <span class="badge bg-orange">Pre Order : {{$p->pivot->preorder}}</span>
+                                        @endif
                                     @endif
                                 </td>
                                 <td style="padding-top:5px;">{{$p->pivot->quantity}}</td>
@@ -178,14 +182,18 @@
                                     @else
                                         {{$p->Product_name}} (<small><b>PRODUCT BONUS</b></small>)
                                     @endif
-                                    @if($p->preorder > 0)
-                                    <br>
-                                        <!--<span class="badge bg-cyan">Available : {{$p->available}}</span>-->
-                                        <span class="badge bg-orange">Pre Order : {{$p->preorder}}</span>
+                                    @if( $p->deliveryQty !== null)
+                                        <br>
+                                        <span class="badge bg-orange">Outstanding : {{$p->quantity - $p->deliveryQty}}</span>
+                                        <span class="badge bg-green">Delivered : {{$p->deliveryQty}}</span>
+                                    @else
+                                        @if($p->preorder > 0)
+                                        <br>
+                                            <!--<span class="badge bg-cyan">Available : {{$p->available}}</span>-->
+                                            <span class="badge bg-orange">Pre Order : {{$p->preorder}}</span>
+                                        @endif
                                     @endif
-                                    @if($p->deliveryQty !== null)
-                                        <span class="badge bg-green">Delivered : {{$p->deliveryQty}}</span> 
-                                    @endif
+                                    
                                 </td>
                                 <td style="padding-top:5px;">{{$p->quantity}}</td>
                                 <td style="padding-top:5px;">
@@ -348,6 +356,7 @@
 
 @endsection
 @section('footer-scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $('input[type=number]').on('mousewheel', function(e) {
             $(e.target).blur();

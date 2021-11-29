@@ -39,6 +39,95 @@
                 {{session('error')}}
             </div>
         @endif
+        <!-- Form Create -->
+        <!--
+        @if(count($exist_store) > 0)
+        <a class="btn bg-green waves-effect m-b-20" data-toggle="modal" data-target="#detailModal"
+            id="popoverData" data-trigger="hover" data-container="body" data-placement="right" 
+            data-content="Add new customer in this period.">
+            + Add
+        </a>
+
+          
+        <//!-- Modal Detail --//>
+        <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailModalLabel"></h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_validation" class="form_spv" method="POST" enctype="multipart/form-data" action="{{route('customers.store_target_add',[$vendor,$period])}}">
+                            @csrf
+                            <input type="hidden" value="{{Auth::user()->client_id}}" name="client_id">
+                            <input type ="hidden" value="{{$type->target_type}}" name="target_type">
+                            <div class="">
+                                <table class="table table-striped table-hover dataTable js-basic-example">
+                                    <thead>
+                                        <tr>
+                                            <//!--<th>No</th>--//>
+                                            <th>Customers</th>
+                                            <th>Cat</th>
+                                            <th>Target Values (IDR)</th>                                              
+                                            <th>Target Qty (BOX)</th>                                              
+                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $no=0;?>
+                                        @foreach($exist_store as $u)
+                                        <?php $no++;?>
+                                        <tr>
+                                            <//!--<td>{{$no}}</td>--//>
+                                            <td>
+                                                {{$u->store_code}} | {{$u->store_name}}
+                                            </td>
+                                            <td>
+                                                {{$u->pareto->pareto_code}}
+                                                <input type="hidden" name="customer_id[]" value="{{$u->id}}">
+                                                <input type="hidden" name="version_pareto[]" value="{{$u->pareto->id}}">
+                                            </td>
+                                            
+                                                <td>
+                                                    <div class="form-group form-float">
+                                                        <div class="form-line">
+                                                            
+                                                            <input type="text" class="form-control target_nominal" name="target_value[{{$u->id}}]"  
+                                                            pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{old('target_value')}}" 
+                                                            data-type="currency" placeholder="" autocomplete="off" 
+                                                            {{$type->target_type == 2 || $type->target_type == 3 ? 'required' : 'disabled'}}>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td >
+                                                    <div class="form-group form-float" >
+                                                        <div class="form-line">
+                                                            <input type="number" class="form-control target_quantity" min='1' name="target_quantity[{{$u->id}}]" 
+                                                            value="" autocomplete="off" 
+                                                            {{$type->target_type == 1 || $type->target_type == 3 ? 'required' : 'disabled'}}>
+                                                            
+                                                        
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                
+                            <button id="btnSubmit" class="btn btn-primary waves-effect" value="ADD" type="submit">SAVE</button>
+                            <button type="button" class="btn waves-effect bg-red m-l-5" data-dismiss="modal">Close</button>
+                        </form>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        @endif
+        -->
         <button type="button" class="btn bg-green waves-effect m-b-20" data-toggle="modal" 
             data-target="#importModal" id="popoverData" data-trigger="hover" data-container="body" data-placement="right" 
             data-content="Import for add new customer or item & change target type  in this period ">

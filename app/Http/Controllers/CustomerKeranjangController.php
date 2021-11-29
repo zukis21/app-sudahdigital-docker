@@ -1623,7 +1623,7 @@ $no=$count_nt_paket;
                     FROM orders o
                     INNER JOIN order_product op ON op.order_id = o.id
                     WHERE op.product_id = '$item' AND o.status = 'SUBMIT'
-                    AND o.status = 'PROCESS'
+                    OR o.status = 'PROCESS'
                     AND o.client_id = '$client_id' ");
         $totalQtyOrders = 0;
         foreach($orders as $odr){
@@ -1648,6 +1648,7 @@ $no=$count_nt_paket;
                     FROM orders o
                     INNER JOIN order_paket_tmp op ON op.order_id = o.id
                     WHERE op.product_id = '$item' AND o.status = 'SUBMIT'
+                    OR o.status = 'PROCESS'
                     AND o.client_id = '$client_id' ");
         $totalQtyOrders = 0;
         foreach($orders as $odr){

@@ -200,7 +200,7 @@ class AjaxDetailPesananSales extends Controller
                         '.$order->status.'
                     </span>';
                     if($order->status == 'PARTIAL-SHIPMENT'){
-                        echo '<br><small class="mb-n3">'
+                        echo '<br><small class="mb-n3 text-danger">'
                             .$order->NotesPartialShip.'
                         </small>';
                     }
@@ -306,11 +306,21 @@ class AjaxDetailPesananSales extends Controller
                                             <p style="line-height:1.2;">'.$p->Product_name.'</p>';
                                          echo'</small>';
                                         if($p->pivot->preorder > 0){
-                                            echo'
-                                            <small>
-                                                <span class="badge badge-info">Tersedia : '.$p->pivot->available.'</span>
-                                                <span class="badge badge-warning">Pre-Order : '.$p->pivot->preorder.'</span>
-                                            </small>';
+                                            if(($order->status == 'SUBMIT') || ($order->status == 'PROCESS') || ($order->status == 'CANCEL'))
+                                            {
+                                                echo'
+                                                <small>
+                                                    <span class="badge badge-info">Tersedia : '.$p->pivot->available.'</span>
+                                                    <span class="badge badge-warning">Pre-Order : '.$p->pivot->preorder.'</span>
+                                                </small>';
+                                            }else if(($order->status == 'PARTIAL-SHIPMENT') || ($order->status == 'FINISH')){
+                                                if($p->pivot->deliveryQty !== null){
+                                                    echo'<small>
+                                                        <span class="badge badge-info">Outstanding : '.$p->pivot->quantity - $p->pivot->deliveryQty.'</span>
+                                                        <span class="badge badge-warning">Delivered : '.$p->pivot->deliveryQty.'</span>
+                                                    </small>';
+                                                }
+                                            }
                                         }
                                     echo'</td>
                                     <td style="padding-bottom:0;">
@@ -390,12 +400,25 @@ class AjaxDetailPesananSales extends Controller
                                     }else{
                                         echo '<small><p style="line-height:1.2;">'.$p->Product_name.'&nbsp;(<small><b>BONUS</b></small>)</p></small>';
                                     }
+
                                     if($p->preorder > 0){
-                                        
-                                        echo'<small>
-                                            <span class="badge badge-info">Tersedia : '.$p->available.'</span>
-                                            <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
-                                        </small>';
+                                        if(($order->status == 'SUBMIT') || ($order->status == 'PROCESS') || ($order->status == 'CANCEL'))
+                                        {
+                                            echo'
+                                            <br>
+                                            <small>
+                                                <span class="badge badge-info">Tersedia : '.$p->available.'</span>
+                                                <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
+                                            </small>';
+                                        }else if(($order->status == 'PARTIAL-SHIPMENT') || ($order->status == 'FINISH')){
+                                            if($p->pivot->deliveryQty !== null){
+                                                echo'<br>
+                                                <small>
+                                                    <span class="badge badge-info">Outstanding : '.$p->quantity - $p->deliveryQty.'</span>
+                                                    <span class="badge badge-warning">Delivered : '.$p->deliveryQty.'</span>
+                                                </small>';
+                                            }
+                                        }
                                     }
                                 echo 
                                 '</td>
