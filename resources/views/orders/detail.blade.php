@@ -212,7 +212,6 @@
                                 </td>
                             </tr>
                             <tr class="dlv_qty"  style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: table-row' : 'display:none'}}">
-                                
                                 <td colspan="4">
                                     <input type="hidden" name="order_productId[]" value="{{$p->id}}">
                                     <input type="hidden" name="productId[]" value="{{$p->product_id}}">
@@ -220,11 +219,12 @@
                                     <div class="form-group form-float">
                                         <div class="form-line">
                                             <input type="number" min="0" name="deliveryQty[{{$p->id}}]" 
-                                            class="form-control deliveryQty" 
+                                            value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')"
                                             autocomplete="off" id="dlv{{$p->id}}" required/>
                                             <label for="dlv{{$p->id}}" class="form-label">Delivery Quantity</label>
                                         </div>
                                         <label id="dlv{{$p->id}}-error" class="error" for="dlv{{$p->id}}"></label>
+                                        <small class="err_exist{{$p->id}}"></small>
                                     </div>
                                 </td>
                             </tr>
@@ -356,7 +356,7 @@
 
 @endsection
 @section('footer-scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $('input[type=number]').on('mousewheel', function(e) {
             $(e.target).blur();
