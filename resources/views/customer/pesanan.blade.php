@@ -273,8 +273,8 @@
                                             @if($order->TotalPreorder > 0)
                                                 @if (($order->status == "PARTIAL-SHIPMENT") || ($order->status == "FINISH"))
                                                     <br>
-                                                    <span class="badge badge-info">Outstanding : {{$order->TotalQuantity - $order->TotalDelivery}}</span><br>
-                                                    <span class="badge badge-warning">Delivered : {{$order->TotalDelivery}}</span>
+                                                    <span class="badge badge-warning">Outstanding : {{$order->TotalQuantity - $order->TotalDelivery}}</span><br>
+                                                    <span class="badge badge-info">Delivered : {{$order->TotalDelivery}}</span>
                                                 @endif
                                             @endif
                                         </td>
