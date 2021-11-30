@@ -316,7 +316,7 @@ class AjaxDetailPesananSales extends Controller
                                             }else if(($order->status == 'PARTIAL-SHIPMENT') || ($order->status == 'FINISH')){
                                                 if($p->pivot->deliveryQty !== null){
                                                     echo'<small>
-                                                        <span class="badge badge-info">Outstanding : '.$p->pivot->quantity - $p->pivot->deliveryQty.'</span>
+                                                        
                                                         <span class="badge badge-warning">Delivered : '.$p->pivot->deliveryQty.'</span>
                                                     </small>';
                                                 }
@@ -411,10 +411,10 @@ class AjaxDetailPesananSales extends Controller
                                                 <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
                                             </small>';
                                         }else if(($order->status == 'PARTIAL-SHIPMENT') || ($order->status == 'FINISH')){
-                                            if($p->deliveryQty != null){
+                                            if($p->deliveryQty !== null){
                                                 echo'<br>
                                                 <small>
-                                                    <span class="badge badge-info">Outstanding : '.$p->quantity - $p->deliveryQty.'</span>
+                                                    
                                                     <span class="badge badge-warning">Delivered : '.$p->deliveryQty.'</span>
                                                 </small>';
                                             }
