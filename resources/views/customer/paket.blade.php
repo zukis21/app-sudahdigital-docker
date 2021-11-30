@@ -246,16 +246,16 @@ Paket
                                                                                                         </span>
                                                                                                     @endforeach
                                                                                                     <span class="float-right">
-                                                                                                        STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                     </span>
                                                                                                 @else
                                                                                                     <span class="float-left">
-                                                                                                        STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
                                                                                             @else
                                                                                                 <span class="float-left">
-                                                                                                    STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                 </span>
                                                                                             @endif
                                                                                         @endif
@@ -408,16 +408,16 @@ Paket
                                                                                                     </span>
                                                                                                 @endforeach
                                                                                                 <span class="float-right">
-                                                                                                    STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                 </span>
                                                                                             @else
                                                                                                 <span class="float-left">
-                                                                                                    STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                 </span>
                                                                                             @endif
                                                                                         @else
                                                                                             <span class="float-left">
-                                                                                                STOK&nbsp; : <span id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                             </span>
                                                                                         @endif
                                                                                     @endif
@@ -651,16 +651,16 @@ Paket
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                         <span class="float-right">
-                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                         </span>
                                                                                                     @else
                                                                                                         <span class="float-left">
-                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                         </span>
                                                                                                     @endif
                                                                                                 @else
                                                                                                     <span class="float-left">
-                                                                                                        STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
                                                                                             @endif
@@ -823,16 +823,17 @@ Paket
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                         <span class="float-right">
-                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                            
+                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                         </span>
                                                                                                     @else
                                                                                                         <span class="float-left">
-                                                                                                            STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                         </span>
                                                                                                     @endif
                                                                                                 @else
                                                                                                     <span class="float-left">
-                                                                                                        STOK&nbsp; : <span id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
                                                                                             @endif

@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::post('/paket/delete_pkt','CustomerPaketController@delete_paket');
         Route::post('/cek_detail/paket','CustomerPaketController@cek_detail_pkt');
         Route::post('/delete_kr/paket','CustomerPaketController@delete_kr_pkt');
+        Route::post('/deleteCartPkt','CustomerPaketController@deleteCartPkt');
         Route::post('/paket/product_search','CustomerPaketController@search_paket')->name('live.search.paket');
         //bonus
         Route::post('/bonus/simpan','CustomerPaketController@simpan_bonus');

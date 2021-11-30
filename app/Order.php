@@ -9,7 +9,9 @@ class Order extends Model
 {
     
     public function products(){
-        return $this->belongsToMany('App\product')->withPivot('id','quantity','price_item','price_item_promo','discount_item','group_id','paket_id','bonus_cat');
+        return $this->belongsToMany('App\product')->withPivot('id','quantity','price_item',
+                'price_item_promo','discount_item','group_id','paket_id','bonus_cat',
+                'available','preorder','deliveryQty');
     }
 
     public function products_nonpaket(){
@@ -83,6 +85,22 @@ class Order extends Model
         $total_quantity += $p->pivot->quantity;
         }
         return $total_quantity;
+    }
+
+    public function getTotalDeliveryAttribute(){
+        $total_delivery = 0;
+        foreach($this->products as $p){
+            $total_delivery += $p->pivot->deliveryQty;
+        }
+        return $total_delivery;
+    }
+
+    public function getTotalPreorderAttribute(){
+        $total_preorder = 0;
+        foreach($this->products as $p){
+            $total_preorder += $p->pivot->preorder;
+        }
+        return $total_preorder;
     }
 
     public function getTotalNominalAttribute(){

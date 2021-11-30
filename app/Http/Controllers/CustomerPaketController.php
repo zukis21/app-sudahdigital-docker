@@ -109,6 +109,7 @@ class CustomerPaketController extends Controller
             $preOrder = 0;
             $avail = $qtyOrder;
         }
+        
 
         $cek_order = \App\Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
@@ -118,6 +119,17 @@ class CustomerPaketController extends Controller
             ->whereNull('bonus_cat')->first();
             if($order_product!== null){
                 
+                $qtyOrder = $quantity;
+                $readyStock = $cek_promo->stock - $stockValue;
+                $prevstock = $readyStock + $order_product->quantity;
+                if($prevstock <= 0){
+                    $preOrder = $qtyOrder;
+                    $avail = 0;
+                }else{
+                    $avail = $prevstock;
+                    $preOrder = $qtyOrder - $prevstock;
+                }
+
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
@@ -212,6 +224,7 @@ class CustomerPaketController extends Controller
             $preOrder = 0;
             $avail = $qtyOrder;
         }
+        
 
         $cek_order = \App\Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
@@ -220,6 +233,18 @@ class CustomerPaketController extends Controller
             ->where('product_id','=',$id_product)
             ->whereNotNull('bonus_cat')->first();
             if($order_product!== null){
+
+                $qtyOrder = $quantity;
+                $readyStock = $cek_promo->stock - $stockValue;
+                $prevstock = $readyStock + $order_product->quantity;
+                if($prevstock <= 0){
+                    $preOrder = $qtyOrder;
+                    $avail = 0;
+                }else{
+                    $avail = $prevstock;
+                    $preOrder = $qtyOrder - $prevstock;
+                }
+                
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
@@ -433,13 +458,27 @@ class CustomerPaketController extends Controller
             $total_price += $price * $or->quantity;
         }
         $orders->total_price -= $total_price;
-        $orders->save();
-        if($orders->save()){
-            $order_product = \App\order_product::where('order_id',$order_id)
+
+        $data_orderpkt = \App\order_product::where('order_id',$order_id)
+                        ->where('paket_id',$paket_id)
+                        ->where('group_id',$group_id)
+                        ->get();
+        
+        $cekData['data'] = $data_orderpkt;
+        echo json_encode($cekData);
+        exit;
+    }
+
+    public function deleteCartPkt(Request $request){
+        
+        $order_id = $request->get('order_id');
+        $paket_id = $request->get('paket_id');
+        $group_id = $request->get('group_id');
+        $order_product = \App\order_product::where('order_id',$order_id)
                         ->where('paket_id',$paket_id)
                         ->where('group_id',$group_id)
                         ->delete();
-        }
+        
     }
 
     public function search_paket(Request $request){
@@ -520,6 +559,8 @@ class CustomerPaketController extends Controller
                         $dsbld_btn .= 'disabled';
                         $info_stock.= '<span class="badge badge-warning ">Sisa stok 0</span>';
                     }
+
+                    
                     $output.= '<div id="product_list"  class="col-6 col-md-4 mx-0 d-flex item_pop" style="">
                         <div class="card mx-auto  item_product_pop ">                        
                             <input type="hidden" id="orderid_delete_pkt'.$p_group->id.'_'.$group_id.'" value="'.$c_orderid_delete.'">

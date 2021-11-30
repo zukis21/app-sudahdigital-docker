@@ -3978,8 +3978,8 @@
                                                 if(viewStockItem <= 0){
                                                     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
                                                 }
-                                                $('#stok_pkt'+id).text(viewStockItem);
-                                                $('#stok_bns'+id).text(viewStockItem);
+                                                $('.stok_pkt'+id).text(viewStockItem);
+                                                $('.stok_bns'+id).text(viewStockItem);
                                             }
                                         },
                                     }),
@@ -4110,8 +4110,8 @@
                                     if(viewStockItem <= 0){
                                         $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
                                     }
-                                    $('#stok_pkt'+id).text(viewStockItem);
-                                    $('#stok_bns'+id).text(viewStockItem);
+                                    $('.stok_pkt'+id).text(viewStockItem);
+                                    $('.stok_bns'+id).text(viewStockItem);
 
                                     //console.log(viewStockItem);
                                 }
@@ -4317,8 +4317,8 @@
                                     if(viewStockItem <= 0){
                                         $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
                                     }
-                                    $('#stok_pkt'+id).text(viewStockItem);
-                                    $('#stok_bns'+id).text(viewStockItem);
+                                    $('.stok_pkt'+id).text(viewStockItem);
+                                    $('.stok_bns'+id).text(viewStockItem);
                                 }
                             },
                         }),
@@ -4818,8 +4818,8 @@
                                                                         if(viewStockItem <= 0){
                                                                             $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
                                                                         }
-                                                                        $('#stok_pkt'+id).text(viewStockItem);
-                                                                        $('#stok_bns'+id).text(viewStockItem);
+                                                                        $('.stok_pkt'+id).text(viewStockItem);
+                                                                        $('.stok_bns'+id).text(viewStockItem);
                                                                     }
                                                                 },
                                                             }),
@@ -4986,8 +4986,8 @@
                                                             if(viewStockItem <= 0){
                                                                 $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
                                                             }
-                                                            $('#stok_pkt'+id).text(viewStockItem);
-                                                            $('#stok_bns'+id).text(viewStockItem);
+                                                            $('.stok_pkt'+id).text(viewStockItem);
+                                                            $('.stok_bns'+id).text(viewStockItem);
 
                                                             //console.log(viewStockItem);
                                                         }
@@ -5304,8 +5304,8 @@
                                                             if(viewStockItem <= 0){
                                                                 $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
                                                             }
-                                                            $('#stok_pkt'+id).text(viewStockItem);
-                                                            $('#stok_bns'+id).text(viewStockItem);
+                                                            $('.stok_pkt'+id).text(viewStockItem);
+                                                            $('.stok_bns'+id).text(viewStockItem);
                                                         }
                                                     },
                                                 }),
@@ -5969,6 +5969,7 @@
                 var id_delete = $('#id_delete'+id).val();
                 var price = $('#harga'+id).val();
                 var voucher_code_hide = document.getElementById("voucher_code_hide").value;
+                
                 $.ajax({
                     url : '{{URL::to('/keranjang/delete')}}',
                     type:'POST',
@@ -6187,8 +6188,8 @@
                                                     }else{
                                                         $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                                     }
-                                                    $('#stok_pkt'+id).text(viewStockItem);
-                                                    $('#stok_bns'+id).text(viewStockItem);
+                                                    $('.stok_pkt'+id).text(viewStockItem);
+                                                    $('.stok_bns'+id).text(viewStockItem);
                                                 }
                                             },
                                         }),
@@ -6306,8 +6307,8 @@
                                     }else{
                                         $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                     }
-                                    $('#stok_pkt'+id).text(viewStockItem);
-                                    $('#stok_bns'+id).text(viewStockItem);
+                                    $('.stok_pkt'+id).text(viewStockItem);
+                                    $('.stok_bns'+id).text(viewStockItem);
                                 }
                             },
                         }),
@@ -6452,8 +6453,8 @@
                                     }else{
                                         $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                     }
-                                    $('#stok_pkt'+id).text(viewStockItem);
-                                    $('#stok_bns'+id).text(viewStockItem);
+                                    $('.stok_pkt'+id).text(viewStockItem);
+                                    $('.stok_bns'+id).text(viewStockItem);
                                 }
                             },
                         }),
@@ -6719,6 +6720,7 @@
             $.ajax({
                 url : '{{URL::to('/keranjang/delete_kr/paket')}}',
                 type:'POST',
+                dataType: 'json',
                 data:{
                     order_id : order_id,
                     paket_id : paket_id,
@@ -6727,42 +6729,87 @@
                 beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
                     $('#loader').removeClass('hidden')
                 },              
-                success: function (data) {
+                success: function (response) {
+                    //console.log(response);
+                    var len = 0;
+                    if(response['data'] != null){
+                        len = response['data'].length;
+                    }
+                    //console.log(len);
+                    if(len > 0){
+                        
+                        for(var i=0; i<len; i++){
+                            
+                            var idPr = response['data'][i].product_id;
+                            var quantity = response['data'][i].quantity;
+                            var viewStockItem = parseInt(quantity);
+                            var st = $('#stok'+idPr).text();
+                            var st_top = $('#stok_top'+idPr).text();
+                            var st_pkt = $('.stok_pkt'+idPr).text();
+                            var st_bns = $('.stok_bns'+idPr).text();
+
+                            $('#stok'+idPr).text(parseInt(st) + viewStockItem);
+                            $('#stok_top'+idPr).text(parseInt(st_top) + viewStockItem);
+                            $('.stok_pkt'+idPr).text(parseInt(st_pkt) + viewStockItem);
+                            $('.stok_bns'+idPr).text(parseInt(st_bns) + viewStockItem);
+                        }
+                    }
+                    
                     $.ajax({
-                        url : '{{URL::to('/home_cart')}}',
-                        type : 'GET',
-                        success: function (response) {
-                            // We get the element having id of display_info and put the response inside it
-                            $( '#accordion' ).html(response);
-                            $('#collapse-4').addClass('show');
-                            if ($(window).width() < 601) {
-                                $('#div_total').removeClass('float-left');
-                                //$('#div_total').addClass('justify-content-center');
-                                $('#div_total').removeClass('mt-2');
-                                $('#div_total').addClass('mb-2');
-                                $('#beli_sekarang').removeClass('float-right');
-                                $('#beli_sekarang').addClass('btn-block');
-                                $('#beli_sekarang').addClass('mb-0');
-                                $('#chk-bl-btn').removeClass('justify-content-end');
-                                $('#chk-bl-btn').addClass('justify-content-center');
-                                $('#divchecktunai').addClass('mb-2');
-                                $('.dropfilter').removeClass('mt-3');
-                                $('#p-title1').addClass('ml-n3');
-                                $('#p-title2').addClass('ml-n3');
-                            }
-                            if ($(window).width() <= 480) {
-                                $('#cont-collapse').removeClass('container');
-                                
-                            }
+                        url : '{{URL::to('/keranjang/deleteCartPkt')}}',
+                        type:'POST',
+                        data:{
+                            order_id : order_id,
+                            paket_id : paket_id,
+                            group_id : group_id
                         },
-                        complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
-                            $('#loader').addClass('hidden')
+                        beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                            $('#loader').removeClass('hidden')
+                        },              
+                        success: function (data) {
+                            
+                            $.ajax({
+                                url : '{{URL::to('/home_cart')}}',
+                                type : 'GET',
+                                success: function (response) {
+                                    // We get the element having id of display_info and put the response inside it
+                                    $( '#accordion' ).html(response);
+                                    $('#collapse-4').addClass('show');
+                                    if ($(window).width() < 601) {
+                                        $('#div_total').removeClass('float-left');
+                                        //$('#div_total').addClass('justify-content-center');
+                                        $('#div_total').removeClass('mt-2');
+                                        $('#div_total').addClass('mb-2');
+                                        $('#beli_sekarang').removeClass('float-right');
+                                        $('#beli_sekarang').addClass('btn-block');
+                                        $('#beli_sekarang').addClass('mb-0');
+                                        $('#chk-bl-btn').removeClass('justify-content-end');
+                                        $('#chk-bl-btn').addClass('justify-content-center');
+                                        $('#divchecktunai').addClass('mb-2');
+                                        $('.dropfilter').removeClass('mt-3');
+                                        $('#p-title1').addClass('ml-n3');
+                                        $('#p-title2').addClass('ml-n3');
+                                    }
+                                    if ($(window).width() <= 480) {
+                                        $('#cont-collapse').removeClass('container');
+                                        
+                                    }
+                                },
+                                complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                                    $('#loader').addClass('hidden')
+                                }
+                            });
+                        },
+                        
+                        error: function (data) {
+                            console.log('Error:', data);
                         }
                     });
+
                 },
                 
-                error: function (data) {
-                    console.log('Error:', data);
+                error: function (response) {
+                    console.log('Error:', response);
                 }
             });
         }

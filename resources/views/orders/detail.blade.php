@@ -214,7 +214,7 @@
                             <tr class="dlv_qty"  style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: table-row' : 'display:none'}}">
                                 <td colspan="4">
                                     <input type="hidden" name="order_productId[]" value="{{$p->id}}">
-                                    <input type="hidden" name="productId[]" value="{{$p->product_id}}">
+                                    <input type="hidden" name="productId[]" value="{{$p->product_id}}" id="PrId{{$p->id}}">
                                     <input type="hidden" class="valEmpty" id="valEmpty{{$p->id}}">
                                     <div class="form-group form-float">
                                         <div class="form-line">
@@ -447,6 +447,8 @@
                         }
                         
                     });
+                }else if((this.value == 'PARTIAL-SHIPMENT') || (this.value == 'CANCEL')){
+                    $('#update_status').prop('disabled', false);
                 }
             });
 

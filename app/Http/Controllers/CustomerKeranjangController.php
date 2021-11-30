@@ -40,26 +40,35 @@ class CustomerKeranjangController extends Controller
                 
                 $qtyOrder = $order_product->quantity + $quantity;
                 $readyStock = $cek_promo->stock - $_this->stockInfo( $id_product);
-                if($readyStock < 0){
-                    $readyStock = 0 ;
+                $prevstock = $readyStock + $order_product->quantity;
+                if($prevstock <= 0){
+                    $preOrder = $qtyOrder;
+                    $avail = 0;
                 }else{
-                    $readyStock = $readyStock;
+                    $avail = $prevstock;
+                    $preOrder = $qtyOrder - $prevstock;
                 }
-                $left = $readyStock - $qtyOrder;
+                
+                
+                /*$left = $readyStock - $qtyOrder;
                 if($left < 0){
                     $preOrder = abs($left);
                     $avail = $qtyOrder + $left;
                 }else{
                     $preOrder = 0;
                     $avail = $qtyOrder;
-                }
+                }*/
+                
 
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity += $quantity;
+                
                 $order_product->available = $avail;
                 $order_product->preorder = $preOrder;
+                
+                    
                 $order_product->save();
                 $cek_order->total_price += $price * $quantity;
                 $cek_order->save();
@@ -195,20 +204,16 @@ class CustomerKeranjangController extends Controller
         $cek_promo = product::findOrFail($order_product->product_id);
         
         $_this = new self;
+        
         $qtyOrder = $order_product->quantity + 1;
-        $readyStock = $cek_promo->stock - $_this->stockInfo($order_product->product_id);
-        if($readyStock < 0){
-            $readyStock = 0 ;
+        $readyStock = $cek_promo->stock - $_this->stockInfo( $order_product->product_id);
+        $prevstock = $readyStock + $order_product->quantity;
+        if($prevstock <= 0){
+            $preOrder = $qtyOrder;
+            $avail = 0;
         }else{
-            $readyStock = $readyStock;
-        }
-        $left = $readyStock - $qtyOrder;
-        if($left < 0){
-            $preOrder = abs($left);
-            $avail = $qtyOrder + $left;
-        }else{
-            $preOrder = 0;
-            $avail = $qtyOrder;
+            $avail = $prevstock;
+            $preOrder = $qtyOrder - $prevstock;
         }
 
         $order_product->quantity += 1;
@@ -257,20 +262,15 @@ class CustomerKeranjangController extends Controller
             $cek_promo = product::findOrFail($order_product->product_id);
 
             $_this = new self;
-            $qtyOrder = $order_product->quantity -1;
-            $readyStock = $cek_promo->stock - $_this->stockInfo($order_product->product_id);
-            if($readyStock < 0){
-                $readyStock = 0 ;
+            $qtyOrder = $order_product->quantity - 1;
+            $readyStock = $cek_promo->stock - $_this->stockInfo( $order_product->product_id);
+            $prevstock = $readyStock + $order_product->quantity;
+            if($prevstock <= 0){
+                $preOrder = $qtyOrder;
+                $avail = 0;
             }else{
-                $readyStock = $readyStock;
-            }
-            $left = $readyStock - $qtyOrder;
-            if($left < 0){
-                $preOrder = abs($left);
-                $avail = $qtyOrder + $left;
-            }else{
-                $preOrder = 0;
-                $avail = $qtyOrder;
+                $avail = $prevstock;
+                $preOrder = $qtyOrder - $prevstock;
             }
 
             $order_product->price_item = $cek_promo->price;
@@ -1388,8 +1388,10 @@ $no=$count_nt_paket;
                                     }
                                     if($p->preorder > 0){
                                         echo'
-                                        <span class="badge badge-info">Tersedia : '.$p->available.'</span>
-                                        <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>';
+                                        <small>
+                                            <span class="badge badge-info">Tersedia : '.$p->available.'</span>
+                                            <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
+                                        </small>';
                                     }
                                 echo '</td>
                                 <td style="padding-bottom:0;">
