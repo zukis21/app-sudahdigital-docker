@@ -229,7 +229,9 @@
                                             @elseif($order->status == "PROCESS")
                                             <span class="status-style badge bg-blue-grey text-white status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "PARTIAL-SHIPMENT")
-                                            <span class="status-style badge bg-info text-light status-order mb-2">{{$order->status}}</span>
+                                                <span class="status-style badge bg-info text-light status-order mb-2">
+                                                    {{$order->TotalDelivery <= 0 ? 'PENDING-SHIPMENT' : $order->status}}
+                                                </span>
                                             @elseif($order->status == "FINISH")
                                             <span class="status-style badge bg-success text-light status-order mb-2">{{$order->status}}</span>
                                             @elseif($order->status == "CANCEL")

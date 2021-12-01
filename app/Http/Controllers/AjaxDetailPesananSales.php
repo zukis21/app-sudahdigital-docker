@@ -156,26 +156,30 @@ class AjaxDetailPesananSales extends Controller
                 ->get(['paket_id','group_id']);
         if($order->status == 'SUBMIT'){
             $bg_badge = 'bg-warning';
-            $txt = 'ORDER SUBMITED';
+            $txt = 'SUBMIT';
         }else if($order->status == 'PROCESS'){
             $bg_badge = 'bg-info';
-            $txt= 'ORDER PROCESSED';
+            $txt= 'PROCESS';
         }
         else if($order->status == 'PARTIAL-SHIPMENT'){
             $bg_badge = 'bg-blue-grey';
-            $txt= 'PARTIAL-SHIPMENT';
+            if($order->TotalDelivery <= 0){
+                $txt= 'PENDING-SHIPMENT';
+            }else{
+                $txt= 'PARTIAL-SHIPMENT';
+            }
         }
         else if($order->status == 'FINISH'){
             $bg_badge = 'bg-success';
-            $txt= 'ORDER FINISHED';
+            $txt= 'FINISH';
         }
         else if($order->status == 'CANCEL'){
             $bg_badge = 'bg-danger';
-            $txt= 'ORDER CANCELED';
+            $txt= 'CANCEL';
         }
         else if($order->status == 'NO-ORDER'){
             $bg_badge = 'bg-dark';
-            $txt= 'ORDER CANCELED';
+            $txt= 'NO-ORDER';
         }
                 //dd($paket_list);
         //return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
@@ -197,7 +201,7 @@ class AjaxDetailPesananSales extends Controller
                             border-top-left-radius:0;
                             border-bottom-right-radius:0;
                             border-bottom-left-radius:0;">
-                        '.$order->status.'
+                        '.$txt.'
                     </span>';
                     if($order->status == 'PARTIAL-SHIPMENT'){
                         echo '<br><small class="mb-n3 text-danger">'
