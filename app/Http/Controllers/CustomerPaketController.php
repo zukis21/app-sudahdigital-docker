@@ -491,7 +491,7 @@ class CustomerPaketController extends Controller
             $info_stock='';
             $dsbld_btn ='';
             $group_id = $request->get('group_id');
-            if($request->get('gr_cat') != NULL){
+            if($request->get('gr_cat') != ''){
                 $gr_cat = $request->get('gr_cat');
             }else{
                 $gr_cat = '';
@@ -499,8 +499,8 @@ class CustomerPaketController extends Controller
             
             $order_id = $request->get('order_id');
             $query = $request->get('query');
-            if($query != NULL ){
-                if($gr_cat != NULL){
+            if($query != '' ){
+                if($gr_cat != ''){
                     $product = \App\product::where('status','=','PUBLISH')
                     ->where('client_id','=',$client_id)
                     ->where('Product_name','LIKE',"%$query%")
@@ -515,7 +515,7 @@ class CustomerPaketController extends Controller
                 }
             }
             else{
-                if($gr_cat != NULL){
+                if($gr_cat != ''){
                     $product = \App\product::where('status','=','PUBLISH')
                     ->where('client_id','=',$client_id)
                     ->get();
@@ -557,9 +557,12 @@ class CustomerPaketController extends Controller
                     
                     if(($stock_status->stock_status == 'ON')&&($p_group->stock == 0)){
                         $dsbld_btn .= 'disabled';
-                        $info_stock.= '<span class="badge badge-warning ">Sisa stok 0</span>';
+                        $info_stock = '<span class="badge badge-warning ">Sisa stok 0</span>';
+                    }else{
+                        $info_stock ='';
                     }
 
+                    
                     
                     $output.= '<div id="product_list"  class="col-6 col-md-4 mx-0 d-flex item_pop" style="">
                         <div class="card mx-auto  item_product_pop ">                        
@@ -573,7 +576,7 @@ class CustomerPaketController extends Controller
                             </a>
                             
                             <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">
-                            '.$info_stock.'
+                            
                                 <div class="float-left px-1 py-2" style="width: 100%;">
                                     <p class="product-price-header_pop mb-0" style="">
                                         '.$p_group->Product_name.'

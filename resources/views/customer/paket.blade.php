@@ -225,12 +225,13 @@ Paket
                                                                                     @if(session()->has('ses_order'))
                                                                                         <?php $store_name = session()->get('ses_order');?>
                                                                                         @if($store_name->customer_id != null)
+                                                                                        <input type="hidden" id="ses_order" value="{{$store_name->customer_id}}">
                                                                                             <?php
                                                                                                 $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($p_group->id,$store_name->customer_id);
                                                                                                 [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                             ?>
                                                                                             @if($target != null)
-                                                                                                
+                                                                                                @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                     @foreach ($target->product_target as $pt)
                                                                                                         <span class="float-left">
                                                                                                             <?php
@@ -248,12 +249,14 @@ Paket
                                                                                                     <span class="float-right">
                                                                                                         STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                     </span>
-                                                                                                
+                                                                                                @endif
                                                                                             @else
                                                                                                 <span class="float-left">
                                                                                                     STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                 </span>
                                                                                             @endif
+                                                                                        @else
+                                                                                            <input type="hidden" id="ses_order" value="">
                                                                                         @endif
                                                                                     @endif
                                                                                 </span>
@@ -266,7 +269,7 @@ Paket
                                                                                             [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                         ?>
                                                                                         @if($target != null)
-                                                                                           
+                                                                                            @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                 <span class="badge badge-stok py-1" >
                                                                                                     @foreach ($target->product_target as $pt)
                                                                                                         
@@ -284,7 +287,7 @@ Paket
                                                                                                         </span>
                                                                                                     @endforeach
                                                                                                 </span>
-                                                                                            
+                                                                                            @endif
                                                                                         @endif
                                                                                     @endif
                                                                                 @endif
@@ -388,7 +391,7 @@ Paket
                                                                                             [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                         ?>
                                                                                         @if($target != null)
-                                                                                            
+                                                                                            @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                 @foreach ($target->product_target as $pt)
                                                                                                     <span class="float-left">
                                                                                                         <?php
@@ -406,6 +409,7 @@ Paket
                                                                                                 <span class="float-right">
                                                                                                     STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
                                                                                                 </span>
+                                                                                            @endif
                                                                                         @else
                                                                                             <span class="float-left">
                                                                                                 STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
@@ -423,7 +427,7 @@ Paket
                                                                                         [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                     ?>
                                                                                     @if($target != null)
-                                                                                        
+                                                                                        @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                             <span class="badge badge-stok py-1" >
                                                                                                 @foreach ($target->product_target as $pt)
                                                                                                     
@@ -441,7 +445,7 @@ Paket
                                                                                                     </span>
                                                                                                 @endforeach
                                                                                             </span>
-                                                                                        
+                                                                                        @endif
                                                                                     @endif
                                                                                 @endif
                                                                             @endif
@@ -626,7 +630,7 @@ Paket
                                                                                                     [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                                 ?>
                                                                                                 @if($target != null)
-                                                                                                    
+                                                                                                    @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             <span class="float-left">
                                                                                                                 <?php
@@ -644,6 +648,7 @@ Paket
                                                                                                         <span class="float-right">
                                                                                                             STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                         </span>
+                                                                                                    @endif
                                                                                                 @else
                                                                                                     <span class="float-left">
                                                                                                         STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
@@ -661,7 +666,7 @@ Paket
                                                                                                 [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                             ?>
                                                                                             @if($target != null)
-                                                                                                
+                                                                                                @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                     <span class="badge badge-stok py-1 badge-bonus mb-1" >
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             
@@ -679,7 +684,7 @@ Paket
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                     </span>
-                                                                                                
+                                                                                                @endif
                                                                                             @endif
                                                                                         @endif
                                                                                     @endif
@@ -793,7 +798,7 @@ Paket
                                                                                                     [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                                 ?>
                                                                                                 @if($target != null)
-                                                                                                    
+                                                                                                    @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             <span class="float-left">
                                                                                                                 <?php
@@ -812,6 +817,7 @@ Paket
                                                                                                             
                                                                                                             STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
                                                                                                         </span>
+                                                                                                    @endif
                                                                                                 @else
                                                                                                     <span class="float-left">
                                                                                                         STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
@@ -829,7 +835,7 @@ Paket
                                                                                                 [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)
                                                                                             ?>
                                                                                             @if($target != null)
-                                                                                                
+                                                                                                @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                                                     <span class="badge badge-stok py-1 badge-bonus mb-1" >
                                                                                                         @foreach ($target->product_target as $pt)
                                                                                                             
@@ -847,7 +853,7 @@ Paket
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                     </span>
-                                                                                                
+                                                                                                @endif
                                                                                             @endif
                                                                                         @endif
                                                                                     @endif

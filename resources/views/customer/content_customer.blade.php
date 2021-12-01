@@ -258,7 +258,7 @@ Home
                                                         [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id)
                                                     ?>
                                                     @if($target != null)
-                                                       
+                                                        @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                             @foreach ($target->product_target as $pt)
                                                                 <span class="float-left">
                                                                     <?php
@@ -276,7 +276,7 @@ Home
                                                             <span class="float-right">
                                                                 STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
                                                             </span>
-                                                        
+                                                        @endif
                                                     @else
                                                         <span class="float-left">
                                                             STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
@@ -294,7 +294,7 @@ Home
                                                     [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id)
                                                 ?>
                                                 @if($target != null)
-                                                    
+                                                    @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                         <span class="badge badge-stok py-1" >
                                                             @foreach ($target->product_target as $pt)
                                                                 
@@ -312,7 +312,7 @@ Home
                                                                 </span>
                                                             @endforeach
                                                         </span>
-                                                    
+                                                    @endif
                                                 @endif
                                             @endif
                                         @endif
@@ -502,7 +502,7 @@ Home
                                                     [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value->id,$store_name->customer_id)
                                                 ?>
                                                 @if($target != null)
-                                                    
+                                                    @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                         @foreach ($target->product_target as $pt)
                                                             <span class="float-left">
                                                                 <?php
@@ -520,6 +520,7 @@ Home
                                                         <span class="float-right">
                                                             STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
                                                         </span>
+                                                    @endif
                                                 @else
                                                     <span class="float-left">
                                                         STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
@@ -537,7 +538,7 @@ Home
                                                 [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value->id,$store_name->customer_id)
                                             ?>
                                             @if($target != null)
-                                                
+                                                @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                     <span class="badge badge-stok py-1" >
                                                         @foreach ($target->product_target as $pt)
                                                             
@@ -555,7 +556,7 @@ Home
                                                             </span>
                                                         @endforeach
                                                     </span>
-                                                
+                                                @endif
                                             @endif
                                         @endif
                                     @endif

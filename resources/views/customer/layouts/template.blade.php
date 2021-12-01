@@ -6837,7 +6837,8 @@
                         query:query,
                         group_id:group_id,
                         gr_cat:gr_cat,
-                        order_id:order_id
+                        order_id:order_id,
+                        customer_id:$('#ses_order').val(),
                      },
                 dataType:'json',
                 success:function(data)
