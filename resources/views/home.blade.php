@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Home @endsection
+@section('title') {{Gate::check('isSpv') ? 'Dashboard' : 'Home'}} @endsection
 @section('content')
     @if (session('status'))
         <div class="alert alert-success" role="alert">
@@ -42,6 +42,14 @@
         Hi <strong>{{ auth()->user()->name }}</strong>,
         {{ __('You are logged in as') }}
         <span class="badge bg-green">Supervisor</span>
+        
+        <div class="container-fluid" style="margin-top:20px;">
+            <div class="block-header">
+                <h2>DASHBOARD COMING SOON</h2>
+            </div>
+        </div>
+        
+        
     @endcan
     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
         <div class="container-fluid">

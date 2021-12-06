@@ -14,8 +14,16 @@ class Spv_sales extends Model
                             'updated_at'
                           ];
 
-      public function targets_spv_sls(){
+    public function targets_spv_sls(){
         return $this->belongsTo('App\Sales_Targets','sls_id');
+    }
+
+    public function customer(){
+      return $this->belongsTo('App\Customer','sls_id');
+    }
+
+    public function orders(){
+      return $this->belongsTo('App\Order','sls_id');
     }
 }
 

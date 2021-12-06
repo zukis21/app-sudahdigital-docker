@@ -161,8 +161,8 @@
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="{{ request()->routeIs('home_admin') ? 'active' : '' }}">
                         <a href="{{route('home')}}">
-                            <i class="material-icons">home</i>
-                            <span>Home</span>
+                            <i class="material-icons">{{Gate::check('isSpv') ? 'dashboard' : 'home'}}</i>
+                            <span>{{Gate::check('isSpv') ? 'Dashboard' : 'Home'}}</span>
                         </a>
                     </li>
                     
@@ -352,11 +352,11 @@
                                     (request()->routeIs('customers_points.index')) ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">shopping_cart</i>
-                                <span>Manage Orders</span>
+                                <span>{{Gate::check('isSpv') ? 'Orders' : 'Manage Orders'}}</span>
                             </a>
                             <ul class="ml-menu">
                                 <li class="{{request()->routeIs('orders.index') ? 'active' : '' }}">
-                                    <a href="{{route('orders.index',[$vendor])}}">Orders</a>
+                                    <a href="{{route('orders.index',[$vendor])}}">{{Gate::check('isSpv') ? 'Orders Lists' : 'Orders'}}</a>
                                 </li>
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                     <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
@@ -547,7 +547,10 @@
     </section>
 
     <section class="content">
-        <div class="container-fluid">
+        @if((Request::path() == $vendor.'/home_admin') && (Gate::check('isSpv')))
+            @yield('content')
+        @else
+        
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
@@ -561,7 +564,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+       
+        @endif
     </section>
 
     <!-- Jquery Core Js -->

@@ -29,15 +29,35 @@ class DashboardController extends Controller
     }
 
     public function home_admin($vendor, $msgs = null){
+        $date_now = date('Y-m-d');
+        $month = date('m');
+        $year = date('Y');
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
 
         $message = \App\Message::where('client_id',$client->id)->first();
-
+        $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
+                    ->whereMonth('work_period', '=', $month)
+                    ->whereYear('work_period', '=', $year)->first();
+        if($work_plan){
+            $day_off = \App\Holiday::where('wp_id',$work_plan->id)
+                    ->where('date_holiday','<=',$date_now)->count();
+            
+        }else{
+            $day_off = null;
+        }
         if($msgs){
-            return view('home',['vendor'=>$vendor,'client'=>$client,'message'=>$message,'msgs'=>$msgs]);
+            return view('home',['vendor'=>$vendor,
+            'client'=>$client,'message'=>$message,
+            'msgs'=>$msgs,'work_plan'=>$work_plan,
+            'day_off'=>$day_off
+        ]);
         }else{
             $msgs = null;
-            return view('home',['vendor'=>$vendor,'client'=>$client,'message'=>$message,'msgs'=>$msgs]);
+            return view('home',['vendor'=>$vendor,
+            'client'=>$client,'message'=>$message,
+            'msgs'=>$msgs,'work_plan'=>$work_plan,
+            'day_off'=>$day_off
+        ]);
         }
         
     }
@@ -103,5 +123,267 @@ class DashboardController extends Controller
             $msgs = 'update-messagesetting-success';
         }
         return redirect()->route('home_admin',[$vendor,$msgs])->with('status','Message Tiitle Succsessfully Update');
+    }
+
+    public static function totalStoreOrder($clientId){
+        $date_now = date('Y-m-d');
+        $month = date('m');
+        $year = date('Y');
+        $idSpv = \Auth::user()->id;
+        $cust_total = \App\Customer::whereHas('spv_sales',function($q)use($idSpv){
+                        $q->where('spv_id',$idSpv);
+                    })
+                    ->where('client_id',$clientId)
+                    ->where('status','!=','NONACTIVE')->count();
+        $order = \App\Order::whereHas('spv_sales',function($q)use($idSpv){
+                    $q->where('spv_id',$idSpv);
+                })
+                ->where('client_id',$clientId)
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->distinct()->get(['customer_id'])->count();
+        return [$cust_total,$order]; 
+    }
+
+    public static function paretoStore($clientId){
+        $pareto = \App\CatPareto::where('client_id',$clientId)
+                 ->orderBy('position','ASC')
+                 ->get();
+
+        return $pareto;
+    }
+
+    public static function total_pareto($clientId,$pareto_id){
+        $idSpv = \Auth::user()->id;
+        $date_now = date('Y-m-d');
+
+        $period_par = \App\Store_Targets::where('client_id',$clientId)
+                     ->where('period','<=',$date_now)
+                     ->max('period');
+        
+        $count_pareto = \App\Customer::whereHas('store_targets', function($q) use ($clientId,$pareto_id,$period_par){
+                            $q->where('version_pareto',$pareto_id)
+                                ->where('client_id',$clientId)
+                                ->where('period',$period_par);
+                        })
+                        ->where(function($subQuery)use($idSpv){
+                            $subQuery->whereHas('spv_sales',function($q)use($idSpv){
+                                $q->where('spv_id',$idSpv);
+                            });
+                        })
+                        ->count();
+
+        return $count_pareto;
+    }
+
+    public static function amountParetoOrder($clientId,$month,$year,$pareto_id){
+        $idSpv = \Auth::user()->id;
+        $_this = new self;
+        $period_par = $_this->paramPeriod();
+        $cust_exists_p = \DB::select("SELECT ts.client_id, ts.customer_id, ts.period, ts.version_pareto FROM store_target as ts
+                        WHERE 
+                        ts.period ='$period_par'AND
+                        ts.client_id = '$clientId' AND
+                        ts.version_pareto = '$pareto_id' AND
+                        EXISTS (SELECT o.customer_id as ocs, o.client_id as oc, o.user_id, o.created_at, o.status FROM 
+                        orders as o 
+                        INNER JOIN spv_sales as spvs ON o.user_id = spvs.sls_id 
+                        WHERE
+                        spvs.spv_id = '$idSpv' AND
+                        o.client_id = '$clientId' AND
+                        o.customer_id = ts.customer_id AND
+                        MONTH (o.created_at) = '$month' AND
+                        YEAR (o.created_at) = '$year' AND
+                        o.status != 'CANCEL' AND o.status != 'NO-ORDER' AND
+                        o.customer_id IS NOT NULL 
+                        GROUP BY o.customer_id);");
+        
+        return $cust_exists_p;
+    }
+
+    public static function salesTarget($clientId){
+        $month = date('m');
+        $year = date('Y');
+        $idSpv = \Auth::user()->id;
+        $target = \App\Sales_Targets::whereHas('sls_exists_spv', function($q) use ($idSpv){
+                        $q->where('spv_id',$idSpv);
+                })
+                ->where('client_id',$clientId)
+                ->whereMonth('period', '=', $month)
+                ->whereYear('period', '=', $year)
+                ->get();
+        return $target;
+    }
+
+    public static function achQuantity($clientId){
+        $month = date('m');
+        $year = date('Y');
+        $idSpv = \Auth::user()->id;
+        $targ_ach_qty = \App\Order::with('products')
+                    ->whereHas('spv_sales',function($q)use($idSpv){
+                        $q->where('spv_id',$idSpv);
+                    })
+                    ->where('client_id',$clientId)
+                    ->whereNotNull('customer_id')
+                    ->where('status','!=','CANCEL')
+                    ->where('status','!=','NO-ORDER')
+                    ->whereMonth('created_at', $month)
+                    ->whereYear('created_at', $year)->get();
+            $qty = $targ_ach_qty->sum('TotalQuantity');
+        
+        return $qty;
+    }
+
+    public static function paramPeriod(){
+        $date_now  = date('Y-m-d');
+        $period_par = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                ->where('period','<=',$date_now)
+                ->max('period');
+        
+        return $period_par;
+    }
+
+    public static function TrgValPareto($idSpv,$period_par,$pr)
+    {
+        $target_str =  \App\Customer::whereHas('store_targets',function($q)use($period_par,$pr){
+                        $q->where('period',$period_par)
+                        ->where('version_pareto',$pr);
+                    })
+                    ->whereHas('spv_sales',function($q)use($idSpv){
+                            $q->where('spv_id',$idSpv);
+                    })
+                    ->get();
+                    
+        $totalNml = 0;
+        foreach ($target_str as $value) {
+            $totalNml += $value->TotalNominal;
+        }
+        return $totalNml;           
+    }
+
+    public static function TrgQtyPareto($idSpv,$period_par,$pr)
+    {
+        $targ_qty_par = \App\Customer::whereHas('store_targets',function($q)use($period_par,$pr){
+                        $q->where('period',$period_par)
+                        ->where('version_pareto',$pr);
+                    })
+                    ->whereHas('spv_sales',function($q)use($idSpv){
+                            $q->where('spv_id',$idSpv);
+                        })
+                    ->get();
+        $totalQty = 0;
+        foreach ($targ_qty_par as $value) {
+            $totalQty += $value->TotalQty;
+        }
+        return $totalQty;           
+    }
+
+    public static function achUserPareto($idSpv,$month,$year,$pr,$period_par)
+    {
+        $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+                {
+                    return $q->where('version_pareto',$pr)
+                    ->where('period',$period_par);
+                })
+                ->whereHas('spv_sales',function($q)use($idSpv){
+                    $q->where('spv_id',$idSpv);
+                })
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->selectRaw('sum(total_price) as sum')
+                ->pluck('sum');
+        return $ach_p;             
+    }
+
+    public static function achUsrTgQtyPareto($idSpv,$month,$year,$pr,$period_par)
+    {
+        $ach_qtypareto = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+                {
+                    return $q->where('version_pareto',$pr)
+                    ->where('period',$period_par);
+                })
+                ->whereHas('spv_sales',function($q)use($idSpv){
+                    $q->where('spv_id',$idSpv);
+                })
+                ->with('products')
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->get();
+        $qty_ach = $ach_qtypareto->sum('TotalQuantity');
+        return $qty_ach;           
+    }
+
+    public static function PeriodType($pr){
+        
+        $pr_type = \App\Store_Targets::where('client_id',\Auth::user()->client_id)
+                ->where('period',$pr)
+                ->first();
+
+        return $pr_type;
+    }
+
+    public static function MaxYearQuantity(){
+        $idSpv = \Auth::user()->id;
+        $year = date('Y');
+        if($year < 2022){
+            $mxx = [];
+            for($i=6;$i<13;$i++){
+                $mxx[] = \DB::select("SELECT AVG(total) as total_average
+                            FROM
+                            (
+                                SELECT o.created_at , o.user_id, op.quantity,  
+                                SUM(op.quantity) AS total
+                                FROM orders AS o
+                                INNER JOIN spv_sales as spvs ON o.user_id = spvs.sls_id
+                                JOIN order_product as op ON o.id = op.order_id 
+                                WHERE 
+                                spvs.spv_id = '$idSpv'  
+                                AND month(o.created_at)= '$i'
+                                AND Year(o.created_at)='$year'
+                                AND status != 'CANCEL'
+                                AND customer_id IS NOT NULL
+                                GROUP BY DATE(o.created_at) 
+                                ORDER BY total
+                            ) as inner_query;");
+                
+            }
+        }else{
+            $mxx = [];
+            for($i=1;$i<13;$i++){
+                $mxx[] = \DB::select("SELECT AVG(total) as total_average
+                    FROM
+                    (
+                        SELECT o.created_at , o.user_id, op.quantity,  
+                        SUM(op.quantity) AS total
+                        FROM orders AS o
+                        INNER JOIN spv_sales as spvs ON o.user_id = spvs.sls_id
+                        JOIN order_product as op ON o.id = op.order_id 
+                        WHERE spvs.spv_id = '$idSpv'
+                        AND month(o.created_at)= '$i'
+                        AND Year(o.created_at)='$year'
+                        AND status != 'CANCEL'
+                        AND customer_id IS NOT NULL
+                        GROUP BY DATE(o.created_at) 
+                        ORDER BY total 
+                    ) as inner_query;");
+                
+            }
+        }
+        $collect_average =  max($mxx);
+        $max_q=0;
+        foreach($collect_average as $mx){
+            $max_q = $mx->total_average;
+        }
+        
+        return number_format($max_q,0);
     }
 }

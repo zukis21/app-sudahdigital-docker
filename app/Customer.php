@@ -38,4 +38,8 @@ class Customer extends Model
         return $this->hasMany('App\PointClaim','custpoint_id');
     }
 
+    public function spv_sales(){
+        return $this->belongsTo('App\Spv_sales','user_id','sls_id');
+    }
+
 }

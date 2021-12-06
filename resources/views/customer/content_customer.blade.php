@@ -262,15 +262,15 @@ Home
                                                             @foreach ($target->product_target as $pt)
                                                                 <span class="float-left">
                                                                     <?php
-                                                                        $leftT = $pt->quantityValues - $totalQty;
+                                                                        /*$leftT = $pt->quantityValues - $totalQty;
                                                                         $unsignedT = abs($leftT);
                                                                         if($leftT < 0){
                                                                             $leftTr = '+'.$unsignedT;
                                                                         }else{
                                                                             $leftTr = $leftT;
-                                                                        }
+                                                                        }*/
                                                                     ?>
-                                                                    {{$value_top->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
+                                                                    {{$value_top->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
                                                                 </span>
                                                             @endforeach
                                                             <span class="float-right">
@@ -300,15 +300,15 @@ Home
                                                                 
                                                                 <span class="float-left">
                                                                     <?php
-                                                                        $leftT = $pt->quantityValues - $totalQty;
+                                                                        /*$leftT = $pt->quantityValues - $totalQty;
                                                                         $unsignedT = abs($leftT);
                                                                         if($leftT < 0){
                                                                             $leftTr = '+'.$unsignedT;
                                                                         }else{
                                                                             $leftTr = $leftT;
-                                                                        }
+                                                                        }*/
                                                                     ?>
-                                                                    {{$value_top->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
+                                                                    {{$value_top->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
                                                                 </span>
                                                             @endforeach
                                                         </span>
@@ -506,15 +506,15 @@ Home
                                                         @foreach ($target->product_target as $pt)
                                                             <span class="float-left">
                                                                 <?php
-                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                    /*$leftT = $pt->quantityValues - $totalQty;
                                                                     $unsignedT = abs($leftT);
                                                                     if($leftT < 0){
                                                                         $leftTr = '+'.$unsignedT;
                                                                     }else{
                                                                         $leftTr = $leftT;
-                                                                    }
+                                                                    }*/
                                                                 ?>
-                                                                {{$value->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
+                                                                {{$value->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
                                                             </span>
                                                         @endforeach
                                                         <span class="float-right">
@@ -544,15 +544,15 @@ Home
                                                             
                                                             <span class="float-left">
                                                                 <?php
-                                                                    $leftT = $pt->quantityValues - $totalQty;
+                                                                    /*$leftT = $pt->quantityValues - $totalQty;
                                                                     $unsignedT = abs($leftT);
                                                                     if($leftT < 0){
                                                                         $leftTr = '+'.$unsignedT;
                                                                     }else{
                                                                         $leftTr = $leftT;
-                                                                    }
+                                                                    }*/
                                                                 ?>
-                                                                {{$value->id == $pt->productId ? 'T : '.$leftTr .' / '. $pt->quantityValues : ''}}
+                                                                {{$value->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
                                                             </span>
                                                         @endforeach
                                                     </span>
