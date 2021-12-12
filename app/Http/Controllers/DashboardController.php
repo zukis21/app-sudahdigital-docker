@@ -982,7 +982,7 @@ class DashboardController extends Controller
         //===========order > 5 days============/
         $from = date('2021-06-01');
         $order_minday = date('Y-m-d', strtotime("-5 day", strtotime($date_now)));
-        $order_overday = \App\Order::where('user_id',\Auth::user()->id)
+        $order_overday = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])
                         ->where('status','=','SUBMIT')
