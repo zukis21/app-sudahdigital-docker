@@ -182,6 +182,7 @@
                 <ul class="nav nav-tabs tab-nav-right nav-justified" role="tablist" style="border-bottom: none;margin-left:2px;">
                     <li role="presentation " class="active"><a href="#home" data-toggle="tab">PERFORMANCE</a></li>
                     <li role="presentation"><a href="#storeInfoOrder" data-toggle="tab">STORE ORDERING STATS</a></li>
+                    <li role="presentation"><a href="#comingSoon" data-toggle="tab">CHART</a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane animated fadeInRight active" id="home">
@@ -488,9 +489,13 @@
                             </div>
                         </div>
                     </div>
+                    <div role="tabpanel" class="tab-pane animated flash" id="comingSoon">
+                        <h4 class="text-center">Coming Soon...</h4>
+                    </div>
                 </div>
             </div>
         </div>
+        
     @endcan
     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
         <div class="container-fluid">
