@@ -257,7 +257,7 @@
                     $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
                     @endphp
                 @endif
-                {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? $trQtyTotal : '0'}}
+                {{($target && $work_plan) ? round($prediksi_qty) : '0'}} / {{$target ? $trQtyTotal : '0'}}
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>
