@@ -1,14 +1,15 @@
 @php
-    
     $spv_id = Auth::user()->id;
     [$cust_total,$order]= App\Http\Controllers\DashboardController::totalStoreOrder($client->id,$month,$year);
     $pareto = App\Http\Controllers\DashboardController::paretoStore($client->id);
     $target = App\Http\Controllers\DashboardController::salesTarget($client->id,$month,$year);
     $period_par = App\Http\Controllers\DashboardController::paramPeriod($date_now);
-    //dd($target);
-    /*$total_ach_ppn = 0;
+    $total_ach = App\Http\Controllers\DashboardController::orderAch($spv_id,$month,$year);
+    
+    /*
+    $total_ach = 0; 
     foreach($order_ach as $p){
-        $total_ach_ppn += $p->total_price;
+        $total_ach += $p->total_price;
     }*/
 
     if($target){
@@ -19,15 +20,9 @@
             $trQtyTotal += $trSls->target_quantity;
         }
     }
-    /*
-    if($target->ppn == 1){
-        $total_ach = $total_ach_ppn/1.1;
-    }else{
-        $total_ach = $total_ach_ppn;
-    }*/
 @endphp
 
-<button class="btn bg-blue-grey waves-effect btn-block m-b-10">ALL (QTY)</button>
+<button class="btn bg-blue-grey waves-effect btn-block m-b-10">ALL (NOMINAL)</button>
 <!--total toko order--->
 <div class="" style="padding-left:0;padding-right:0;">
     <div class="info-box bg-indigo hover-zoom-effect">
@@ -61,7 +56,6 @@
 
 <!--total toko pareto--->
 @if($pareto)
-    
     @foreach($pareto as $prt)
     @php
         //jumlah toko pareto
@@ -108,11 +102,7 @@
 
 <!--Target Sales Total-->
 <div class="" style="padding-left:0;padding-right:0;margin-top:-20px">
-    @if($target)
-    @php
-        $ach_quantity = App\Http\Controllers\DashboardController::achQuantity($client->id,$month,$year);
-    @endphp
-    @endif
+    
     @if($target)
         <div class="info-box bg-light-green hover-zoom-effect">
             <div class="icon">
@@ -124,13 +114,13 @@
                         style="border:1px solid #fff; 
                             border-radius: 5px;
                             padding:2px;">
-                    {{$target ? $ach_quantity : '0'}} / {{$target ? $trQtyTotal : '0'}}
+                    {{$target ? singkat_angka($total_ach) : '0'}} / {{$target ? singkat_angka($trNmnlTotal) : '0'}}
                     </span>
                 </div>
                 <div class="text" style="font-size: 10px; margin-top:13px;">Target Sales Total 
                     <span class="pull-right">
                         @if($target)
-                            {{ $trQtyTotal == 0 ?  '0' : round((($ach_quantity/$trQtyTotal) * 100) ,2)}}%
+                            {{ $trNmnlTotal == 0 ?  '0' : round((($total_ach/$trNmnlTotal) * 100) ,2)}}%
                         @else
                         {{0}}%
                         @endif
@@ -139,11 +129,11 @@
                 <div class="progress" style="height: 7px;">
                     <div class="progress-bar progress-bar-info progress-bar-striped active" 
                         role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" 
-                        @if($target) style="width: {{ $trQtyTotal == 0 ?  '0' : round((($ach_quantity/$trQtyTotal) * 100) ,2)}}%;"
+                        @if($target) style="width: {{ $trNmnlTotal == 0 ?  '0' : round((($total_ach/$trNmnlTotal) * 100) ,2)}}%;"
                         @else style="width: {{0}}%;"
                         @endif>
                         <span class="sr-only">
-                            @if($target) {{ $trQtyTotal == 0 ?  '0' : round((($ach_quantity/$trQtyTotal) * 100) ,2)}}% Complete
+                            @if($target) {{ $trNmnlTotal == 0 ?  '0' : round((($total_ach/$trNmnlTotal) * 100) ,2)}}% Complete
                             @else 
                             {{0}}% Complete
                             @endif
@@ -167,15 +157,15 @@
                 $pr = $prt->id;
             
                 //target val pareto
-                //$target_str = App\Http\Controllers\DashboardController::TrgValPareto($spv_id,$period_par,$pr);
+                $target_str = App\Http\Controllers\DashboardController::TrgValPareto($spv_id,$period_par,$pr,$month,$year);
                 //$total_tp = json_decode($target_str,JSON_NUMERIC_CHECK);
                 //$total_target = $total_tp[0];
-                //$total_target = $target_str;
+                $total_target = $target_str;
                 
                 //target qty pareto
-                $target_tqp = App\Http\Controllers\DashboardController::TrgQtyPareto($spv_id,$period_par,$pr,$month,$year);
+                //$target_tqp = App\Http\Controllers\DashboardController::TrgQtyPareto($spv_id,$period_par,$pr);
                 //$total_tqp = json_decode($target_tqp,JSON_NUMERIC_CHECK);
-                $total_trgqp = $target_tqp;
+                //$total_trgqp = $target_tqp;
                     
                 //ach pareto nominal values
                 $ach_p = App\Http\Controllers\DashboardController::achUserPareto($spv_id,$month,$year,$pr,$period_par);
@@ -210,21 +200,21 @@
                                 right:10px;
                                 top:0;
                                 padding:2px;">
-                        {{$period_par ? $ach_qty_p : '0'}} / {{$period_par ? $total_trgqp : '0'}}
+                        {{$period_par ? singkat_angka($total_ach_pareto) : '0'}} / {{$period_par ? singkat_angka($total_target) : '0'}}
                         </span>
                         <p class="m-t-10 text-truncate">&nbsp;</p>
                     </div>
                     <div class="text" style="font-size: 10px;">Target Sales Pareto ({{$prt->pareto_code}})
                         <span class="pull-right">
-                            {{($period_par && $total_trgqp) ? round((($ach_qty_p/$total_trgqp)  * 100) ,2) : '0'}}%
+                            {{($period_par && $total_target) ? round((($total_ach_pareto/$total_target)  * 100) ,2) : '0'}}%
                         </span>
                     </div>
                     <div class="progress" style="height: 7px;">
                         <div class="progress-bar progress-bar-info progress-bar-striped active" 
                             role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" 
-                            style="width: {{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}%">
+                            style="width: {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}%">
                             <span class="sr-only">
-                                {{$period_par && $total_trgqp ? round((($ach_qty_p/$total_trgqp)  * 100),2): '0'}}% Complete
+                                {{$period_par && $total_target ? round((($total_ach_pareto/$total_target)  * 100),2): '0'}}% Complete
                             </span>
                         </div>
                     </div>
@@ -254,10 +244,10 @@
                     //$current_day = date('d');
                     $hari_berjalan = ((int)$current_day) - $day_off;
                     $hari_kerja = $work_plan->working_days;
-                    $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
+                    $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
                     @endphp
                 @endif
-                {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? $trQtyTotal : '0'}}
+                {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($trNmnlTotal) : '0'}}
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>
@@ -269,7 +259,7 @@
 
 <!--Average Daily-->
 @php
-  $max_av_qty = App\Http\Controllers\DashboardController::MaxYearQuantity($year);
+  $max_av = App\Http\Controllers\DashboardController::MaxYearNominal($spv_id,$year);
 @endphp
 <div class="" style="padding-left:0;padding-right:0;margin-top:-20px; margin-bottom:-30px">
     <div class="info-box bg-red hover-zoom-effect">
@@ -285,7 +275,7 @@
                            right:10px;
                            top:0;
                            padding:2px;">
-                {{($target && $work_plan) ? number_format($ach_quantity/$hari_berjalan, 2) : '0'}} / {{number_format($max_av_qty,2)}}
+                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_av)}}
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>

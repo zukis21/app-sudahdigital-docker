@@ -25,5 +25,9 @@ class Spv_sales extends Model
     public function orders(){
       return $this->belongsTo('App\Order','sls_id');
     }
+
+    public function sales(){
+      return $this->belongsTo('App\User','sls_id');
+    }
 }
 

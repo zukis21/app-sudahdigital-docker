@@ -83,6 +83,10 @@ class Order extends Model
         return $this->belongsTo('App\Spv_sales','user_id','sls_id');
     }
 
+    public function sales_targets(){
+        return $this->belongsTo('App\Sales_Targets','user_id','user_id');
+    }
+
     public function getTotalQuantityAttribute(){
         $total_quantity = 0;
         foreach($this->products as $p){

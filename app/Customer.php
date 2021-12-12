@@ -42,4 +42,8 @@ class Customer extends Model
         return $this->belongsTo('App\Spv_sales','user_id','sls_id');
     }
 
+    public function sales_targets(){
+        return $this->belongsTo('App\Sales_Targets','user_id','user_id');
+    }
+
 }

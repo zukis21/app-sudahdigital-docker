@@ -39,17 +39,458 @@
     @endcan
     -->
     @can('isSpv')
-        Hi <strong>{{ auth()->user()->name }}</strong>,
-        {{ __('You are logged in as') }}
-        <span class="badge bg-green">Supervisor</span>
+    <style>
         
-        <div class="container-fluid" style="margin-top:20px;">
+        .flex-nowrap {
+            -webkit-flex-wrap: nowrap!important;
+            -ms-flex-wrap: nowrap!important;
+            flex-wrap: nowrap!important;
+        }
+        .flex-row {
+            display:flex;
+            -webkit-box-orient: horizontal!important;
+            -webkit-box-direction: normal!important;
+            -webkit-flex-direction: row!important;
+            -ms-flex-direction: row!important;
+            flex-direction: row!important;
+        }
+
+        .flex-row > .col-xs-3 {
+            display:flex;
+            flex: 0 0 25%;
+            max-width: 25%
+        }
+
+        .well {
+            padding:5px;
+        }
+
+        .flip-box {
+            position: relative;
+            background-color: transparent;
+            width: 100%;
+        }
+
+        .flip-box-inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-box.hover .flip-box-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-box-front, .flip-box-back {
+            position:absolute;
+            width: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .flip-box-back {
+            transform: rotateY(180deg);
+        }
+
+        .nav-tabs li a:hover {
+            background-color: #F8F8F8 !important; 
+        }
+
+        .nav-tabs li a {
+            background-color: transparent !important; 
+        }
+
+    </style>
+        <!--Hi <strong>{{ auth()->user()->name }}</strong>,
+        {{ __('You are logged in as') }}
+        <span class="badge bg-green">Supervisor</span>-->
+        <?php
+            $date_now = $date_now;
+            $month = $month;
+            $year = $year;
+            $period_sales = App\Http\Controllers\DashboardController::periodSalesTarget($client->id);
+            $param_typeAll = App\Http\Controllers\DashboardController::paramTypeAll($client->id,date('Y-m-01',strtotime($date_now)));
+            $sales= App\Http\Controllers\DashboardController::salesList(Auth::user()->id);
+            function singkat_angka($n, $presisi=1) {
+            if ($n < 900) {
+                $format_angka = number_format($n, $presisi);
+                $simbol = '';
+                } else if ($n < 900000) {
+                $format_angka = number_format($n / 1000, $presisi);
+                $simbol = ' k';
+                } else if ($n < 900000000) {
+                $format_angka = number_format($n / 1000000, $presisi);
+                $simbol = ' M';
+                } else if ($n < 900000000000) {
+                $format_angka = number_format($n / 1000000000, $presisi);
+                $simbol = ' B';
+                } else {
+                $format_angka = number_format($n / 1000000000000, $presisi);
+                $simbol = ' Tr';
+                }
+            
+                if ( $presisi > 0 ) {
+                $pisah = '.' . str_repeat( '0', $presisi );
+                $format_angka = str_replace( $pisah, '', $format_angka );
+                }
+                
+                return $format_angka . $simbol;
+            }
+        ?>
+        <div class="container-fluid">
             <div class="block-header">
-                <h2>DASHBOARD COMING SOON</h2>
+                <div class="row">
+                    <h2>Dashboard {{$period_info}}</h2>
+                </div>
+            </div>
+            <div class="row">
+                <form id="form_validation" action="{{route('home_admin',[$vendor])}}" method="POST">
+                    @csrf 
+                    <input type="hidden" name="_method" value="GET">
+                    <div class="col-sm-6 m-t-10 p-l-0">
+                        <div class="form-group">
+                            <select name="period"  id="period_list" 
+                                class="form-control" style="width:100%;" required>
+                                <option></option>
+                                @foreach($period_sales as $key => $psl)
+                                    <option value="{{$psl->period}}" {{(\Route::currentRouteName() == 'home_admin') && ($period_info == date('F, Y', strtotime($psl->period))) ? 'selected' : ''}}>
+                                        {{date('F Y', strtotime($psl->period))}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn btn-primary waves-effect m-t-10" type="submit">Filter</button>
+                        @if (\Route::currentRouteName() == 'home_admin' && $param_reset == 1)
+                            <a href="{{route('home_admin',[$vendor])}}" class="btn btn-danger waves-effect m-t-10">Reset</a>
+                        @endif
+                        <!--
+                        <a class="btn waves-effect btn-success pull-right m-t-10"
+                            data-toggle="modal" data-target="#ExportModal">
+                            <i class="fas fa-file-excel fa-1x"></i> 
+                        </a>
+                        -->
+                    </div>
+                </form>
             </div>
         </div>
         
-        
+        <div class="container-fluid">
+            <div class="row">
+                <ul class="nav nav-tabs tab-nav-right nav-justified" role="tablist" style="border-bottom: none;margin-left:2px;">
+                    <li role="presentation " class="active"><a href="#home" data-toggle="tab">PERFORMANCE</a></li>
+                    <li role="presentation"><a href="#storeInfoOrder" data-toggle="tab">STORE ORDERING STATS</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane animated fadeInRight active" id="home">
+                        
+                        <div class="flex-row flex-nowrap">
+                            <div class="col-xs-3" style="padding-left:0;padding-right:5px;">
+                                <div class="flip-box all-dash" @if($param_typeAll == 3) onclick="flipAll()" @endif>
+                                    <div class="flip-box-inner">
+                                        @if($param_typeAll == 1)
+                                            <div class="flip-box-front">
+                                                <div class="well">
+                                                    @include('dashboardSpv')
+                                                </div>
+                                            </div>
+                                        @elseif($param_typeAll == 2)
+                                            <div class="flip-box-front">
+                                                <div class="well">
+                                                    @include('dashboardSpv-nml')
+                                                </div>
+                                            </div>
+                                        @elseif($param_typeAll == 3)
+                                            <div class="flip-box-front">
+                                                <div class="well">
+                                                    @include('dashboardSpv')
+                                                </div>
+                                            </div>
+                                            <div class="flip-box-back">
+                                                <div class="well">
+                                                    @include('dashboardSpv-nml')
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="well">
+                                                <button class="btn bg-blue-grey waves-effect btn-block m-b-10">ALL</button>
+                                                <div class="demo-color-box bg-red">
+                                                    <div class="color-name">NO DATA</div>
+                                                    <div class="color-class-name">&nbsp;</div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            @foreach($sales as $sls)
+                                @php
+                                    $type_targetSls = App\Http\Controllers\DashboardController::salesType($sls->sls_id,date('Y-m-01',strtotime($date_now)));
+                                @endphp
+                                
+                                <div class="col-xs-3" style="padding-left:5px;padding-right:5px;">
+                                    <div class="flip-box" id="dash{{$sls->sls_id}}"
+                                        @if($type_targetSls && $type_targetSls->target_type == 3) 
+                                            onclick="flipsls({{$sls->sls_id}})"
+                                        @endif>
+                                        <div class="flip-box-inner">
+                                            @if($type_targetSls && $type_targetSls->target_type == 1)
+                                                <div class="flip-box-front">
+                                                    <div class="well">
+                                                        @include('dashboardSpv-sales')
+                                                    </div>
+                                                </div>
+                                        @elseif($type_targetSls && $type_targetSls->target_type == 2)
+                                                <div class="flip-box-front">
+                                                    <div class="well">
+                                                        @include('dashboardSpv-sales-nml')
+                                                    </div>
+                                                </div>
+                                            @elseif($type_targetSls && $type_targetSls->target_type == 3)
+                                                <div class="flip-box-front">
+                                                    <div class="well">
+                                                        @include('dashboardSpv-sales')
+                                                    </div>
+                                                </div>
+                                                <div class="flip-box-back">
+                                                    <div class="well">
+                                                        @include('dashboardSpv-sales-nml')
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="well">
+                                                    <button class="btn bg-blue-grey waves-effect btn-block m-b-10">{{$sls->sales->name}}</button>
+                                                    <div class="demo-color-box bg-red">
+                                                        <div class="color-class-name">Target has not been created</div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>    
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="storeInfoOrder">
+                        <div class="card">
+                            
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover dashboard-task-infos">
+                                        <thead>
+                                            <tr>
+                                                <th>Sales</th>
+                                                <th>Store Hasn't Ordered (P)</th>
+                                                <th>Store Has Ordered (P)</th>
+                                                <th>Orders Not Delivered > 5 Days</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($sales as $sls)
+                                            <?php
+                                                [$cust_not_exists,$cust_exists,$order_overday] = App\Http\Controllers\DashboardController::storeNotOrder($sls->sls_id,$month,$year,$date_now);
+                                            ?>
+                                                <tr>
+                                                    <td>
+                                                        {{$sls->sales->name}}
+                                                    </td> 
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#notOrderModal{{$sls->sls_id}}">
+                                                            <span class="badge bg-red">{{count($cust_not_exists)}}</span>
+                                                        </a>
+                                                        <div class="modal fade" id="notOrderModal{{$sls->sls_id}}" tabindex="-1" role="dialog" style="display: none;">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="defaultModalLabel">Store Hasn't Ordered Lists</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <ul class="list-group">
+                                                                            @if(count($cust_not_exists) > 0 )
+                                                                                <?php $last_orders = Array(); ?>
+                                                                                @foreach ($cust_not_exists as $item)
+                                                                                    @php
+                                                                                    $last_order = App\Http\Controllers\DashboardController::lastOrder($item->id,$date_now);
+                                                                                    array_push($last_orders, $last_order);
+                                                                                    @endphp
+                                                                                @endforeach
+                                                                                @php 
+                                                                                    arsort($last_orders);
+                                                                                    $keys = array_keys($last_orders);
+                                                                                @endphp
+                                                                                @foreach($keys as $key)
+                                                                                    <?php $cust_id = $cust_not_exists[$key]->id;?>
+                                                                                    <li class="list-group-item">
+                                                                                        <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                                                                        @if($last_orders[$key] != '')
+                                                                                            <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="{{$last_orders[$key] == '' ? '': 'Number of days hasn\'t ordered'}}">{{$last_orders[$key]}} Days</span> 
+                                                                                        @endif   
+                                                                                        <br><span>{{$cust_not_exists[$key]->address}}</span><br>
+                                                                                        @php
+                                                                                            [$visit_off,$visit_on] = App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
+                                                                                            $visit = $visit_off + $visit_on;
+                                                                                        @endphp
+                                                                                        @if($visit_off > 0 )
+                                                                                            
+                                                                                            <i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="Checkout Without order & On Location."></i><b class="text-danger m-r-10">{{$visit_off}}</b>
+                                                                                           
+                                                                                        @endif
+                                                                                        @if($visit_on > 0)
+                                                                                            
+                                                                                            <i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="Checkout Without order & On Location."></i><b class="text-danger">{{$visit_on}}</b>
+                                                                                            
+                                                                                        @endif
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            @else
+                                                                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                                                                border-bottom-left-radius:0;"><b>Nothing store lists</b></li>
+                                                                            @endif  
+                                                                        </ul>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#orderModal{{$sls->sls_id}}">
+                                                            <span class="badge bg-green">{{count($cust_exists)}}</span>
+                                                        </a>
+                                                        <div class="modal fade" id="orderModal{{$sls->sls_id}}" tabindex="-1" role="dialog" style="display: none;">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="defaultModalLabel">Store Hasn't Ordered Lists</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <ul class="list-group">
+                                                                            @if(count($cust_exists) > 0 )
+                                                                                <?php $last_odrs = Array(); ?>
+                                                                                @foreach ($cust_exists as $it)
+                                                                                @php
+                                                                                    $last_odr = App\Http\Controllers\DashboardController::lastOrder($it->id,$date_now);
+                                                                                    array_push($last_odrs, $last_odr);
+                                                                                @endphp
+                                                                                @endforeach
+                                                                                @php 
+                                                                                asort($last_odrs);
+                                                                                $keys_exists = array_keys($last_odrs);
+                                                                                @endphp
+                                                                                @foreach($keys_exists as $k)
+                                                                                    <?php $cust_id_ex = $cust_exists[$k]->id;?>
+                                                                                    <li class="list-group-item">
+                                                                                        <b>{{$cust_exists[$k]->store_code}} - {{$cust_exists[$k]->store_name}}</b>,
+                                                                                        @if($last_orders[$key] != '')
+                                                                                            <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="{{$last_orders[$key] == '' ? '': 'Number of days hasn\'t ordered'}}">{{$last_odrs[$k]}} Days</span> 
+                                                                                        @endif   
+                                                                                        <br><span>{{$cust_exists[$k]->address}}</span><br>
+                                                                                        @php
+                                                                                            [$NoOdrVisit_off,$NoOdrVisit_on] = App\Http\Controllers\DashboardController::visitNoOrder($cust_id_ex,$month,$year);
+                                                                                            [$OdrVisit_off,$OdrVisit_on] = App\Http\Controllers\DashboardController::visitOrder($cust_id_ex,$month,$year);
+                                                                                            $visit_noorder = $NoOdrVisit_off + $NoOdrVisit_on;
+                                                                                            $order_visit = $OdrVisit_off + $OdrVisit_on;
+                                                                                        @endphp
+                                                                                        @if($NoOdrVisit_off > 0 )
+                                                                                            
+                                                                                            <i class="fal fa-location-slash text-danger popoverData"  
+                                                                                            data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="Checkout Without order & On Location."></i>
+                                                                                            <b class="text-danger m-r-10">{{$NoOdrVisit_off}}</b>
+                                                                                           
+                                                                                        @endif
+                                                                                        @if($NoOdrVisit_on > 0)
+                                                                                            
+                                                                                            <i class="fal fa-location text-danger popoverData" 
+                                                                                            data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="Checkout Without order & On Location."></i>
+                                                                                            <b class="text-danger">{{$NoOdrVisit_on}}</b>
+                                                                                            
+                                                                                        @endif
+                                                                                        @if($OdrVisit_off > 0 )
+                                                                                            <br>
+                                                                                            <i class="fal fa-location-slash popoverData" style="color:#3F51B5" 
+                                                                                            data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="Order Off Location."></i>
+                                                                                            <b class="text-primary m-r-10" style="color:#3F51B5">{{$OdrVisit_off}}</b>
+                                                                                        
+                                                                                        @endif
+
+                                                                                        @if($OdrVisit_on > 0)
+                                                                                            <br>
+                                                                                            <i class="fal fa-location popoverData"  style="color:#3F51B5"
+                                                                                            data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                            data-content="Order On Location."></i>
+                                                                                            <b class="text-primary" style="color:#3F51B5">{{$OdrVisit_on}}</b>
+                                                                                        
+                                                                                        @endif
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            @else
+                                                                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                                                                border-bottom-left-radius:0;"><b>Nothing store lists</b></li>
+                                                                            @endif  
+                                                                        </ul>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#overdayModal{{$sls->sls_id}}">
+                                                            <span class="badge bg-orange">{{count($order_overday)}}</span>
+                                                        </a>
+                                                        <div class="modal fade" id="overdayModal{{$sls->sls_id}}" tabindex="-1" role="dialog" style="display: none;">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="defaultModalLabel">Store Hasn't Ordered Lists</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <ul class="list-group">
+                                                                            @if(count($order_overday) > 0 )
+                                                                                @foreach ($order_overday as $over)
+                                                                                    <li class="list-group-item">
+                                                                                        <b class="text-success">#{{$over->invoice_number}}</b><br>
+                                                                                        <b>{{$over->customer_id ? $over->customers->store_name : ''}}</b>,
+                                                                                        <br><span>{{$over->customer_id ? $over->customers->address :''}}</span><br>
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            @else
+                                                                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                                                                border-bottom-left-radius:0;"><b>Nothing store lists</b></li>
+                                                                            @endif  
+                                                                        </ul>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endcan
     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
         <div class="container-fluid">
@@ -381,7 +822,10 @@
     @endif
 @endsection
 @section('footer-scripts')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script>
+        $('.popoverData').popover();
         function isNumberKey(evt)
         {
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -390,5 +834,17 @@
             return false;
             return true;
         }
+
+        function flipAll() {
+          $('.all-dash').toggleClass('hover');
+        }
+
+        function flipsls(id) {
+          $('#dash'+id).toggleClass('hover');
+        }
+
+        $('#period_list').select2({
+            placeholder: 'Select Period',
+        }); 
     </script>
 @endsection
