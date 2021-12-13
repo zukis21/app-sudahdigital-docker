@@ -350,7 +350,7 @@
                                                                                 @endforeach
                                                                             @else
                                                                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                border-bottom-left-radius:0;"><b>Nothing store lists</b></li>
+                                                                                border-bottom-left-radius:0;"><b>No store lists</b></li>
                                                                             @endif  
                                                                         </ul>
                                                                     </div>
@@ -437,7 +437,7 @@
                                                                                 @endforeach
                                                                             @else
                                                                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                border-bottom-left-radius:0;"><b>Nothing store lists</b></li>
+                                                                                border-bottom-left-radius:0;"><b>No store lists</b></li>
                                                                             @endif  
                                                                         </ul>
                                                                     </div>
@@ -456,7 +456,7 @@
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h4 class="modal-title" id="defaultModalLabel">Store Hasn't Ordered Lists</h4>
+                                                                        <h4 class="modal-title" id="defaultModalLabel">Orders Not Delivered > 5 Days</h4>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <ul class="list-group">
@@ -470,7 +470,7 @@
                                                                                 @endforeach
                                                                             @else
                                                                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                border-bottom-left-radius:0;"><b>Nothing store lists</b></li>
+                                                                                border-bottom-left-radius:0;"><b>No store lists</b></li>
                                                                             @endif  
                                                                         </ul>
                                                                     </div>
@@ -829,6 +829,10 @@
 @section('footer-scripts')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
     <script>
         $('.popoverData').popover();
         function isNumberKey(evt)
