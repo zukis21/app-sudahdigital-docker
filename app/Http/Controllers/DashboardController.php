@@ -954,7 +954,8 @@ class DashboardController extends Controller
                 })
                 ->whereHas('store_targets', function ($query) use($period_par) {
                     return $query->where('period', $period_par)
-                    ->where('client_id',\Auth::user()->client_id);
+                    ->where('client_id',\Auth::user()->client_id)
+                    ->whereNotNull('version_pareto');
                 })
                 ->where('client_id',\Auth::user()->client_id)
                 ->where('user_id',$user_id)->get();
@@ -972,11 +973,11 @@ class DashboardController extends Controller
                 })
                 ->whereHas('store_targets', function ($query) use($period_par) {
                     return $query->where('period', $period_par)
-                    ->where('client_id',\Auth::user()->client_id);
-                    //->whereNotNull('version_pareto');
+                    ->where('client_id',\Auth::user()->client_id)
+                    ->whereNotNull('version_pareto');
                 })
                 ->where('client_id',\Auth::user()->client_id)
-                ->whereNotNull('pareto_id')
+                //->whereNotNull('pareto_id')
                 ->get();
 
         //===========order > 5 days============/
