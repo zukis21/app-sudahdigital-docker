@@ -389,9 +389,9 @@
                                                                                     <?php $cust_id_ex = $cust_exists[$k]->id;?>
                                                                                     <li class="list-group-item">
                                                                                         <b>{{$cust_exists[$k]->store_code}} - {{$cust_exists[$k]->store_name}}</b>,
-                                                                                        @if($last_orders[$key] != '')
+                                                                                        @if($last_odrs[$k] != '')
                                                                                             <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="{{$last_orders[$key] == '' ? '': 'Number of days hasn\'t ordered'}}">{{$last_odrs[$k]}} Days</span> 
+                                                                                            data-content="{{$last_odrs[$k] == '' ? '': 'Number of days hasn\'t ordered'}}">{{$last_odrs[$k]}} Days</span> 
                                                                                         @endif   
                                                                                         <br><span>{{$cust_exists[$k]->address}}</span><br>
                                                                                         @php
