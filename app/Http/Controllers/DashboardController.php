@@ -558,6 +558,8 @@ class DashboardController extends Controller
 
     public static function salesList($idSpv){
         $sales = \App\Spv_sales::with('sales')
+                ->join('users', 'spv_sales.sls_id', '=', 'users.id')
+                ->orderBy('users.name', 'ASC')
                 ->where('spv_id',$idSpv)
                 ->get();
         return $sales;
@@ -981,7 +983,8 @@ class DashboardController extends Controller
                 ->get();
 
         //===========order > 5 days============/
-        $from = date('2021-06-01');
+        //$from = date('2021-06-01');
+        $from = date('Y-m-01',strtotime($date_now));
         $order_minday = date('Y-m-d', strtotime("-5 day", strtotime($date_now)));
         $order_overday = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')

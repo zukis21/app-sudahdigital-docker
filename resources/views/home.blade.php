@@ -101,6 +101,22 @@
             background-color: transparent !important; 
         }
 
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+
+        input:invalid {
+            border: solid red 3px;
+        }
+
     </style>
         <!--Hi <strong>{{ auth()->user()->name }}</strong>,
         {{ __('You are logged in as') }}
@@ -218,8 +234,7 @@
                                             <div class="well">
                                                 <button class="btn bg-blue-grey waves-effect btn-block m-b-10">ALL</button>
                                                 <div class="demo-color-box bg-red">
-                                                    <div class="color-name">NO DATA</div>
-                                                    <div class="color-class-name">&nbsp;</div>
+                                                    <div class="color-class-name">NO DATA</div>
                                                 </div>
                                             </div>
                                         @endif
@@ -279,20 +294,32 @@
                             
                             <div class="body">
                                 <div class="table-responsive">
-                                    <table class="table table-hover dashboard-task-infos">
+                                    <table class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Sales</th>
                                                 <th>Store Hasn't Ordered (P)</th>
                                                 <th>Store Has Ordered (P)</th>
-                                                <th>Orders Not Delivered > 5 Days</th>
+                                                <th>
+                                                    Orders Not Delivered > 
+                                                        <input type="number" value="5" min="1"
+                                                        class="input-sm" id="numberDay" 
+                                                        style="text-align:center;
+                                                               border:1px solid #ccc;
+                                                               width:50px;
+                                                               margin-bottom:-10px;">
+                                                    Days
+                                                </th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        
+                                        <tbody id="body_table">
+                                            
                                             @foreach($sales as $sls)
-                                            <?php
-                                                [$cust_not_exists,$cust_exists,$order_overday] = App\Http\Controllers\DashboardController::storeNotOrder($sls->sls_id,$month,$year,$date_now);
-                                            ?>
+                                                <?php
+                                                    [$cust_not_exists,$cust_exists,$order_overday] = App\Http\Controllers\DashboardController::storeNotOrder($sls->sls_id,$month,$year,$date_now);
+                                                ?>
+                                                
                                                 <tr>
                                                     <td>
                                                         {{$sls->sales->name}}
@@ -448,42 +475,48 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td>
-                                                        <a href="" data-toggle="modal" data-target="#overdayModal{{$sls->sls_id}}">
-                                                            <span class="badge bg-orange">{{count($order_overday)}}</span>
-                                                        </a>
-                                                        <div class="modal fade" id="overdayModal{{$sls->sls_id}}" tabindex="-1" role="dialog" style="display: none;">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title" id="defaultModalLabel">Orders Not Delivered > 5 Days</h4>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <ul class="list-group">
-                                                                            @if(count($order_overday) > 0 )
-                                                                                @foreach ($order_overday as $over)
-                                                                                    <li class="list-group-item">
-                                                                                        <b class="text-success">#{{$over->invoice_number}}</b><br>
-                                                                                        <b>{{$over->customer_id ? $over->customers->store_name : ''}}</b>,
-                                                                                        <br><span>{{$over->customer_id ? $over->customers->address :''}}</span><br>
-                                                                                    </li>
-                                                                                @endforeach
-                                                                            @else
-                                                                                <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                border-bottom-left-radius:0;"><b>No store lists</b></li>
-                                                                            @endif  
-                                                                        </ul>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                                    <div id="body_overday">
+                                                        <td>
+                                                        
+                                                            <a href="" data-toggle="modal" data-target="#overdayModal{{$sls->sls_id}}">
+                                                                <span class="badge bg-orange" id="overD{{$sls->sls_id}}">{{count($order_overday)}}</span>
+                                                            </a>
+                                                            <div class="modal fade" id="overdayModal{{$sls->sls_id}}" tabindex="-1" role="dialog" style="display: none;">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title" id="defaultModalLabel">Orders Not Delivered > 5 Days</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <ul class="list-group">
+                                                                                @if(count($order_overday) > 0 )
+                                                                                    @foreach ($order_overday as $over)
+                                                                                        <li class="list-group-item">
+                                                                                            <b class="text-success">#{{$over->invoice_number}}</b><br>
+                                                                                            <b>{{$over->customer_id ? $over->customers->store_name : ''}}</b>,
+                                                                                            <br><span>{{$over->customer_id ? $over->customers->address :''}}</span><br>
+                                                                                        </li>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                                                                    border-bottom-left-radius:0;"><b>No store lists</b></li>
+                                                                                @endif  
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
+                                                        
+                                                        </td>
+                                                    </div>
                                                 </tr>
                                             @endforeach
+                                           
                                         </tbody>
+                                        
                                     </table>
                                 </div>
                             </div>
@@ -855,5 +888,59 @@
         $('#period_list').select2({
             placeholder: 'Select Period',
         }); 
+
+        $('document').ready(function(){
+            $('#numberDay').on('keyup', function(){
+            var token = $('meta[name="csrf-token"]').attr('content');
+            var num = $('#numberDay').val();
+            var date_now = <?php echo json_encode($date_now); ?>;
+            var month = <?php echo json_encode($month); ?>;
+            var year = <?php echo json_encode($year); ?>;
+                $.ajax({
+                    url: '{{URL::to('/ajax/deliveryDaySales')}}',
+                    type:'POST',
+                    data:{
+                        day : num,
+                        month : month,
+                        year : year,
+                        date_now : date_now,
+                        _token: token
+                    },
+                    success: function(data){
+                        $('#body_table').html(data);
+                        $('.popoverData').popover();
+                        //console.log(response);
+                        //console.log($('#table_body_list').html(response));
+                        /*var len = 0;
+                        if(response['data'] != null){
+                            len = response['data'].length;
+                        }
+
+                        if(len > 0){
+                            
+                            for(var i=0; i<len; i++){
+                                var sls_id = response['data'][i].sls_id;
+                                var token = $('meta[name="csrf-token"]').attr('content');
+                                $.ajax({
+                                    url: '{{URL::to('/ajax/deliveryDaySales')}}',
+                                    type:'POST',
+                                    data:{
+                                        day : num,
+                                        sls_id : sls_id,
+                                        date_now : date_now,
+                                        _token: token
+                                    },
+                                    success: function(data){
+                                      $('#overD'+sls_id).text(data); 
+                                      console.log(len); 
+                                    }
+                                });
+                            }
+                            //$("#modal_validasi").modal('show');
+                        }*/ 
+                    }
+                });
+            });
+        });
     </script>
 @endsection

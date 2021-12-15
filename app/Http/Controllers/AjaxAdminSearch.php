@@ -284,4 +284,235 @@ class AjaxAdminSearch extends Controller
       }        
   }
 
+  public function salesCheckDelivery(){
+    $idSpv = \Auth::user()->id;
+    $sales = \App\Spv_sales::with('sales')
+                ->join('users', 'spv_sales.sls_id', '=', 'users.id')
+                ->orderBy('users.name', 'ASC')
+                ->where('spv_id',$idSpv)
+                ->get();
+    return $sales;
+
+  }
+
+  public function salesDelivery(Request $request){
+    $_this = new self;
+    $sales = $_this->salesCheckDelivery();
+
+    $day = $request->get('day');
+    $minus = 0 - $day;
+    $month = $request->get('month');
+    $year = $request->get('year');
+    $date_now = $request->get('date_now');
+
+    
+      
+    
+      foreach($sales as $sls){
+        $user_id = $sls->id;
+        $from = date('Y-m-01',strtotime($date_now));
+        $order_minday = date('Y-m-d', strtotime("$minus day", strtotime($date_now)));
+        $order_overday = \App\Order::where('user_id',$user_id)
+                        ->whereNotNull('customer_id')
+                        ->whereBetween('created_at', [$from,$order_minday])
+                        ->where('status','=','SUBMIT')
+                        ->orderBy('created_at','DESC')
+                        ->get();
+        [$cust_not_exists,$cust_exists] = \App\Http\Controllers\DashboardController::storeNotOrder($sls->sls_id,$month,$year,$date_now);
+        
+        echo'<tr>
+            <td>'
+                .$sls->sales->name.
+            '</td> 
+            <td>
+                <a href="" data-toggle="modal" data-target="#notOrderModal'.$sls->sls_id.'">
+                    <span class="badge bg-red">'.count($cust_not_exists).'</span>
+                </a>
+                <div class="modal fade" id="notOrderModal'.$sls->sls_id.'" tabindex="-1" role="dialog" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="defaultModalLabel">Store Hasn\'t Ordered Lists</h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group">';
+                                    if(count($cust_not_exists) > 0 ){
+                                        $last_orders = Array(); 
+                                        foreach ($cust_not_exists as $item){
+                                            
+                                            $last_order = \App\Http\Controllers\DashboardController::lastOrder($item->id,$date_now);
+                                            array_push($last_orders, $last_order);
+                                            
+                                        }
+                                       
+                                            arsort($last_orders);
+                                            $keys = array_keys($last_orders);
+                                       
+                                          foreach($keys as $key){
+                                            $cust_id = $cust_not_exists[$key]->id;
+                                            echo'<li class="list-group-item">
+                                                <b>'.$cust_not_exists[$key]->store_code. '-' .$cust_not_exists[$key]->store_name.'</b>,';
+                                                if($last_orders[$key] != ''){
+                                                    echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="';if($last_orders[$key] == ''){ echo " ";}else{echo'Number of days hasn\'t ordered';} echo'">'.$last_orders[$key].' Days</span>'; 
+                                                }   
+                                                echo'<br><span>'.$cust_not_exists[$key]->address.'</span><br>';
+                                                
+                                                    [$visit_off,$visit_on] = \App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
+                                                    $visit = $visit_off + $visit_on;
+                                               
+                                                if($visit_off > 0 ){
+                                                    
+                                                    echo'<i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="Checkout Without order & On Location."></i><b class="text-danger m-r-10">'.$visit_off.'</b>';
+                                                    
+                                                }
+                                                if($visit_on > 0){
+                                                    
+                                                    echo'<i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="Checkout Without order & On Location."></i><b class="text-danger">'.$visit_on.'</b>';
+                                                    
+                                                }
+                                            echo'</li>';
+                                          }
+                                    }else{
+                                        echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                        border-bottom-left-radius:0;"><b>No store lists</b></li>';
+                                    }  
+                                echo'</ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a href="" data-toggle="modal" data-target="#orderModal'.$sls->sls_id.'">
+                    <span class="badge bg-green">'.count($cust_exists).'</span>
+                </a>
+                <div class="modal fade" id="orderModal'.$sls->sls_id.'" tabindex="-1" role="dialog" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="defaultModalLabel">Store Hasn\'t Ordered Lists</h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group">';
+                                    if(count($cust_exists) > 0 ){
+                                        $last_odrs = Array();
+                                        foreach ($cust_exists as $it){
+                                        
+                                            $last_odr = \App\Http\Controllers\DashboardController::lastOrder($it->id,$date_now);
+                                            array_push($last_odrs, $last_odr);
+                                        
+                                        }
+                                        asort($last_odrs);
+                                        $keys_exists = array_keys($last_odrs);
+                                        
+                                        foreach($keys_exists as $k){
+                                            $cust_id_ex = $cust_exists[$k]->id;
+                                            echo'<li class="list-group-item">
+                                                <b>'.$cust_exists[$k]->store_code. '-'. $cust_exists[$k]->store_name.'</b>,';
+                                                if($last_odrs[$k] != ''){
+                                                    echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="';if($last_odrs[$k] == ''){echo"";}else{echo'Number of days hasn\'t ordered';} echo'">'.$last_odrs[$k].' Days</span>';
+                                                }   
+                                                echo'<br><span>'.$cust_exists[$k]->address.'</span><br>';
+                                                
+                                                    [$NoOdrVisit_off,$NoOdrVisit_on] = \App\Http\Controllers\DashboardController::visitNoOrder($cust_id_ex,$month,$year);
+                                                    [$OdrVisit_off,$OdrVisit_on] = \App\Http\Controllers\DashboardController::visitOrder($cust_id_ex,$month,$year);
+                                                    $visit_noorder = $NoOdrVisit_off + $NoOdrVisit_on;
+                                                    $order_visit = $OdrVisit_off + $OdrVisit_on;
+                                                
+                                                if($NoOdrVisit_off > 0 ){
+                                                    
+                                                    echo'<i class="fal fa-location-slash text-danger popoverData"  
+                                                    data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="Checkout Without order & On Location."></i>
+                                                    <b class="text-danger m-r-10">'.$NoOdrVisit_off.'</b>';
+                                                    
+                                                }
+                                                if($NoOdrVisit_on > 0){
+                                                    
+                                                    echo'<i class="fal fa-location text-danger popoverData" 
+                                                    data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="Checkout Without order & On Location."></i>
+                                                    <b class="text-danger">'.$NoOdrVisit_on.'</b>';
+                                                    
+                                                }
+                                                if($OdrVisit_off > 0 ){
+                                                    echo'<br>
+                                                    <i class="fal fa-location-slash popoverData" style="color:#3F51B5" 
+                                                    data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="Order Off Location."></i>
+                                                    <b class="text-primary m-r-10" style="color:#3F51B5">'.$OdrVisit_off.'</b>';
+                                                
+                                                }
+
+                                                if($OdrVisit_on > 0){
+                                                    echo'<br>
+                                                    <i class="fal fa-location popoverData"  style="color:#3F51B5"
+                                                    data-trigger="hover" data-container="body" data-placement="top" 
+                                                    data-content="Order On Location."></i>
+                                                    <b class="text-primary" style="color:#3F51B5">'.$OdrVisit_on.'</b>';
+                                                
+                                                }
+                                            echo'</li>';
+                                         }
+                                    }else{
+                                        echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                        border-bottom-left-radius:0;"><b>No store lists</b></li>';
+                                    }  
+                                echo'</ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            
+                <td>
+                
+                    <a href="" data-toggle="modal" data-target="#overdayModal'.$sls->sls_id.'">
+                        <span class="badge bg-orange">'.count($order_overday).'</span>
+                    </a>
+                    <div class="modal fade" id="overdayModal'.$sls->sls_id.'" tabindex="-1" role="dialog" style="display: none;">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="defaultModalLabel">Orders Not Delivered > '.$day.' Days</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <ul class="list-group">';
+                                        if(count($order_overday) > 0 ){
+                                            foreach ($order_overday as $over){
+                                                echo'<li class="list-group-item">
+                                                    <b class="text-success">#'.$over->invoice_number.'</b><br>
+                                                    <b>';if($over->customer_id ){echo $over->customers->store_name;}else{echo"";}echo'</b>,
+                                                    <br><span>';if($over->customer_id){echo $over->customers->address;}else{echo'';}echo'</span><br>
+                                                </li>';
+                                            }
+                                          }else{
+                                            echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                            border-bottom-left-radius:0;"><b>No store lists</b></li>';
+                                        }  
+                                    echo'</ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </td>
+            
+        </tr>';
+      }
+  }
+
 }
