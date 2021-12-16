@@ -112,7 +112,11 @@ class DashboardSalesController extends Controller
         $order_overday = \App\Order::where('user_id',\Auth::user()->id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])
-                        ->where('status','=','SUBMIT')
+                        ->where(function($qr) {
+                            $qr->where('status','=','SUBMIT')
+                            ->orWhere('status','=','PROCESS')
+                            ->orWhere('status','=','PARTIAL-SHIPMENT');
+                        })
                         ->orderBy('created_at','DESC')
                         ->get();
         

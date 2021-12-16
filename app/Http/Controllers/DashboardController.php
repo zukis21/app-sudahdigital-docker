@@ -989,7 +989,11 @@ class DashboardController extends Controller
         $order_overday = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])
-                        ->where('status','=','SUBMIT')
+                        ->where(function($qr) {
+                            $qr->where('status','=','SUBMIT')
+                            ->orWhere('status','=','PROCESS')
+                            ->orWhere('status','=','PARTIAL-SHIPMENT');
+                        })
                         ->orderBy('created_at','DESC')
                         ->get();
         
@@ -1153,5 +1157,20 @@ class DashboardController extends Controller
         $red_line = json_encode($red_line);
 
         return[$percent,$percent_qty,$users_display,$red_line,$param_line];
+    }
+
+    public static function amountDayNotDelv($id,$date_now){
+        $curDate = $date_now;
+        $newDate = new DateTime($curDate);
+        $lastOrder = \App\Order::where('id',$id)
+                    ->first();
+        if($lastOrder){
+            $date = date('Y-m-d', strtotime($lastOrder->created_at));
+            $newDate2 = new DateTime($date);
+            $jarak = $newDate->diff($newDate2)->days;
+        }else{
+            $jarak = '';
+        }
+        return $jarak;
     }
 }

@@ -295,7 +295,6 @@
                     </div>
                     <div role="tabpanel" class="tab-pane fade" id="storeInfoOrder">
                         <div class="card">
-                            
                             <div class="body">
                                 <div class="table-responsive">
                                     <table class="table table-hover">
@@ -494,11 +493,29 @@
                                                                         <div class="modal-body">
                                                                             <ul class="list-group">
                                                                                 @if(count($order_overday) > 0 )
+                                                                                    <?php $distances = Array(); ?>
                                                                                     @foreach ($order_overday as $over)
+                                                                                        @php
+                                                                                        $distance = App\Http\Controllers\DashboardController::amountDayNotDelv($over->id,$date_now);
+                                                                                        array_push($distances, $distance);
+                                                                                        @endphp
+                                                                                    @endforeach
+                                                                                    @php 
+                                                                                        arsort($distances);
+                                                                                        $keyDis = array_keys($distances);
+                                                                                    @endphp
+                                                                                    @foreach ($keyDis as $ky)
                                                                                         <li class="list-group-item">
-                                                                                            <b class="text-success">#{{$over->invoice_number}}</b><br>
-                                                                                            <b>{{$over->customer_id ? $over->customers->store_name : ''}}</b>,
-                                                                                            <br><span>{{$over->customer_id ? $over->customers->address :''}}</span><br>
+                                                                                            <b class="text-success">#{{$order_overday[$ky]->invoice_number}} <br>
+                                                                                                <span class="badge bg-blue-grey" style="border-radius:10px;">{{$order_overday[$ky]->status}}</span>
+                                                                                            </b>
+                                                                                            @if($distances[$ky] != '')
+                                                                                                <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="{{$distances[$ky] == '' ? '': 'Number of days orders not delivered'}}">{{$distances[$ky]}} Days</span> 
+                                                                                            @endif
+                                                                                            <br>
+                                                                                            <b>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->store_name : ''}}</b>,
+                                                                                            <br><span>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->address :''}}</span><br>
                                                                                         </li>
                                                                                     @endforeach
                                                                                 @else
@@ -1033,7 +1050,7 @@
             placeholder: 'Select Period',
         }); 
 
-        $('document').ready(function(){
+        
             $('#numberDay').on('keyup', function(){
             var token = $('meta[name="csrf-token"]').attr('content');
             var num = $('#numberDay').val();
@@ -1053,7 +1070,7 @@
                     success: function(data){
                         $('#body_table').html(data);
                         $('.popoverData').popover();
-                        //console.log(response);
+                        console.log(num);
                         //console.log($('#table_body_list').html(response));
                         /*var len = 0;
                         if(response['data'] != null){
@@ -1085,7 +1102,7 @@
                     }
                 });
             });
-        });
+        
     </script>
     @can('isSpv')
         <script>

@@ -300,22 +300,23 @@ class AjaxAdminSearch extends Controller
     $sales = $_this->salesCheckDelivery();
 
     $day = $request->get('day');
-    $minus = 0 - $day;
+    $minus = 0 - (int)$day;
     $month = $request->get('month');
     $year = $request->get('year');
     $date_now = $request->get('date_now');
 
-    
-      
-    
       foreach($sales as $sls){
         $user_id = $sls->id;
         $from = date('Y-m-01',strtotime($date_now));
-        $order_minday = date('Y-m-d', strtotime("$minus day", strtotime($date_now)));
+        $order_minday = date('Y-m-d', strtotime("-$day day", strtotime($date_now)));
         $order_overday = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])
-                        ->where('status','=','SUBMIT')
+                        ->where(function($qr) {
+                            $qr->where('status','=','SUBMIT')
+                            ->orWhere('status','=','PROCESS')
+                            ->orWhere('status','=','PARTIAL-SHIPMENT');
+                        })
                         ->orderBy('created_at','DESC')
                         ->get();
         [$cust_not_exists,$cust_exists] = \App\Http\Controllers\DashboardController::storeNotOrder($sls->sls_id,$month,$year,$date_now);
@@ -489,11 +490,29 @@ class AjaxAdminSearch extends Controller
                                 <div class="modal-body">
                                     <ul class="list-group">';
                                         if(count($order_overday) > 0 ){
-                                            foreach ($order_overday as $over){
+                                          $distances = Array();
+                                          foreach ($order_overday as $over){
+                                              
+                                              $distance = \App\Http\Controllers\DashboardController::amountDayNotDelv($over->id,$date_now);
+                                              array_push($distances, $distance);
+                                             
+                                          }
+                                           
+                                            arsort($distances);
+                                            $keyDis = array_keys($distances);
+                                          
+                                            foreach ($keyDis as $ky){
                                                 echo'<li class="list-group-item">
-                                                    <b class="text-success">#'.$over->invoice_number.'</b><br>
-                                                    <b>';if($over->customer_id ){echo $over->customers->store_name;}else{echo"";}echo'</b>,
-                                                    <br><span>';if($over->customer_id){echo $over->customers->address;}else{echo'';}echo'</span><br>
+                                                    <b class="text-success">#'.$order_overday[$ky]->invoice_number.'<br>
+                                                        <span class="badge bg-blue-grey" style="border-radius:10px;">'.$order_overday[$ky]->status.'</span>
+                                                    </b>';
+                                                    if($distances[$ky] != ''){
+                                                        echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                        data-content="';if($distances[$ky] == ''){echo'';}else{echo 'Number of days orders not delivered';}echo'">'.$distances[$ky].' Days</span>'; 
+                                                    }
+                                                    echo'<br>
+                                                    <b>';if($order_overday[$ky]->customer_id ){echo $order_overday[$ky]->customers->store_name;}else{echo"";}echo'</b>,
+                                                    <br><span>';if($order_overday[$ky]->customer_id){echo $order_overday[$ky]->customers->address;}else{echo'';}echo'</span><br>
                                                 </li>';
                                             }
                                           }else{
