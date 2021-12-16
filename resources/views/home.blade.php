@@ -39,85 +39,89 @@
     @endcan
     -->
     @can('isSpv')
-    <style>
-        
-        .flex-nowrap {
-            -webkit-flex-wrap: nowrap!important;
-            -ms-flex-wrap: nowrap!important;
-            flex-wrap: nowrap!important;
-        }
-        .flex-row {
-            display:flex;
-            -webkit-box-orient: horizontal!important;
-            -webkit-box-direction: normal!important;
-            -webkit-flex-direction: row!important;
-            -ms-flex-direction: row!important;
-            flex-direction: row!important;
-        }
+        <style>
+            
+            .flex-nowrap {
+                -webkit-flex-wrap: nowrap!important;
+                -ms-flex-wrap: nowrap!important;
+                flex-wrap: nowrap!important;
+            }
+            .flex-row {
+                display:flex;
+                -webkit-box-orient: horizontal!important;
+                -webkit-box-direction: normal!important;
+                -webkit-flex-direction: row!important;
+                -ms-flex-direction: row!important;
+                flex-direction: row!important;
+            }
 
-        .flex-row > .col-xs-3 {
-            display:flex;
-            flex: 0 0 25%;
-            max-width: 25%
-        }
+            .flex-row > .col-xs-3 {
+                display:flex;
+                flex: 0 0 25%;
+                max-width: 25%
+            }
 
-        .well {
-            padding:5px;
-        }
+            .well {
+                padding:5px;
+            }
 
-        .flip-box {
-            position: relative;
-            background-color: transparent;
-            width: 100%;
-        }
+            .flip-box {
+                position: relative;
+                background-color: transparent;
+                width: 100%;
+            }
 
-        .flip-box-inner {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
+            .flip-box-inner {
+                width: 100%;
+                height: 100%;
+                transition: transform 0.8s;
+                transform-style: preserve-3d;
+            }
 
-        .flip-box.hover .flip-box-inner {
-            transform: rotateY(180deg);
-        }
+            .flip-box.hover .flip-box-inner {
+                transform: rotateY(180deg);
+            }
 
-        .flip-box-front, .flip-box-back {
-            position:absolute;
-            width: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
+            .flip-box-front, .flip-box-back {
+                position:absolute;
+                width: 100%;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
 
-        .flip-box-back {
-            transform: rotateY(180deg);
-        }
+            .flip-box-back {
+                transform: rotateY(180deg);
+            }
 
-        .nav-tabs li a:hover {
-            background-color: #F8F8F8 !important; 
-        }
+            .nav-tabs li a:hover {
+                background-color: #F8F8F8 !important; 
+            }
 
-        .nav-tabs li a {
-            background-color: transparent !important; 
-        }
+            .nav-tabs li a {
+                background-color: transparent !important; 
+            }
 
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-        }
+            /* Chrome, Safari, Edge, Opera */
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+            }
 
-        /* Firefox */
-        input[type=number] {
-        -moz-appearance: textfield;
-        }
+            /* Firefox */
+            input[type=number] {
+            -moz-appearance: textfield;
+            }
 
-        input:invalid {
-            border: solid red 3px;
-        }
+            input:invalid {
+                border: solid red 3px;
+            }
 
-    </style>
+            .highcharts-credits {
+                display: none !important;
+            }
+
+        </style>
         <!--Hi <strong>{{ auth()->user()->name }}</strong>,
         {{ __('You are logged in as') }}
         <span class="badge bg-green">Supervisor</span>-->
@@ -125,6 +129,7 @@
             $date_now = $date_now;
             $month = $month;
             $year = $year;
+            $dateJs = date('Y,m,d',strtotime($date_now));
             $period_sales = App\Http\Controllers\DashboardController::periodSalesTarget($client->id);
             $param_typeAll = App\Http\Controllers\DashboardController::paramTypeAll($client->id,date('Y-m-01',strtotime($date_now)));
             $sales= App\Http\Controllers\DashboardController::salesList(Auth::user()->id);
@@ -134,16 +139,16 @@
                 $simbol = '';
                 } else if ($n < 900000) {
                 $format_angka = number_format($n / 1000, $presisi);
-                $simbol = ' k';
+                $simbol = ' Rb';
                 } else if ($n < 900000000) {
                 $format_angka = number_format($n / 1000000, $presisi);
-                $simbol = ' M';
+                $simbol = ' Jt';
                 } else if ($n < 900000000000) {
                 $format_angka = number_format($n / 1000000000, $presisi);
-                $simbol = ' B';
+                $simbol = ' M';
                 } else {
                 $format_angka = number_format($n / 1000000000000, $presisi);
-                $simbol = ' Tr';
+                $simbol = ' T';
                 }
             
                 if ( $presisi > 0 ) {
@@ -198,11 +203,10 @@
                 <ul class="nav nav-tabs tab-nav-right nav-justified" role="tablist" style="border-bottom: none;margin-left:2px;">
                     <li role="presentation " class="active"><a href="#home" data-toggle="tab">PERFORMANCE</a></li>
                     <li role="presentation"><a href="#storeInfoOrder" data-toggle="tab">STORE ORDERING STATS</a></li>
-                    <li role="presentation"><a href="#comingSoon" data-toggle="tab">CHART</a></li>
+                    <li role="presentation"><a href="#chartTab" data-toggle="tab">CHART</a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane animated fadeInRight active" id="home">
-                        
                         <div class="flex-row flex-nowrap">
                             <div class="col-xs-3" style="padding-left:0;padding-right:5px;">
                                 <div class="flip-box all-dash" @if($param_typeAll == 3) onclick="flipAll()" @endif>
@@ -522,8 +526,148 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane animated flash" id="comingSoon">
-                        <h4 class="text-center">Coming Soon...</h4>
+                    <div role="tabpanel" class="tab-pane" id="chartTab">
+                        <?php
+                            [
+                                $percent,
+                                $percent_qty,
+                                $users_display,
+                                $red_line,
+                                $param_line
+                            ] = App\Http\Controllers\DashboardController::chartSpv($month,$year,$date_now);
+                            $target_chart = App\Http\Controllers\DashboardController::salesTarget($client->id,$month,$year);
+                            $total_ach_chart = App\Http\Controllers\DashboardController::orderAch(Auth::user()->id,$month,$year);
+                            $ach_quantity_chart = App\Http\Controllers\DashboardController::achQuantity($client->id,$month,$year);
+                            if($target_chart){
+                                $chartNmnlTotal = 0;
+                                $chartQtyTotal = 0;
+                                foreach($target_chart as $crt){
+                                    $chartNmnlTotal += $crt->target_values;
+                                    $chartQtyTotal += $crt->target_quantity;
+                                }
+                            }else{
+                                $chartNmnlTotal = 0;
+                                $chartQtyTotal = 0;
+                            }
+
+                            //nml
+                            if($chartNmnlTotal == 0){
+                                $percent_all_nml = 0;
+                            }else{
+                                $percent_all_nml = round((($total_ach_chart/$chartNmnlTotal) * 100) ,2);
+                            }
+
+                            //qty
+                            if($chartQtyTotal == 0){
+                                $percent_all_qty = 0;
+                            }else{
+                                $percent_all_qty = round((($ach_quantity_chart/$chartQtyTotal) * 100) ,2);
+                            }
+                            
+
+                        ?>
+                        
+                        <div class="col-md-4" style="padding-left:0;">
+                            <div class="flip-box chart-all" @if($param_typeAll == 3) onclick="flipChartAll()" @endif>
+                                <div class="flip-box-inner">
+                                    @if($param_typeAll == 1)
+                                        <div class="flip-box-front">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Overall Achievement (Qty)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container_qty_all" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($param_typeAll == 2)
+                                        <div class="flip-box-front">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Overall Achievement (Nml)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container_all" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($param_typeAll == 3)
+                                        <div class="flip-box-front">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Overall Achievement (Qty)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container_qty_all" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flip-box-back">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Overall Achievement (Nml)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container_all" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8" style="padding-right:0;padding-left:0;">
+                            <div class="flip-box chart-sales" @if($param_typeAll == 3) onclick="flipChartSales()" @endif>
+                                <div class="flip-box-inner">
+                                    @if($param_typeAll == 1)
+                                        <div class="flip-box-front">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Sales Achievement (Qty)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container_qty" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($param_typeAll == 2)
+                                        <div class="flip-box-front">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Sales Achievement (Nml)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($param_typeAll == 3)
+                                        <div class="flip-box-front">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Sales Achievement (Qty)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container_qty" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flip-box-back">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h5 class="m-t--5 m-b--10">Sales Achievement (Nml)</h5>
+                                                </div>
+                                                <div class="body">
+                                                    <div id="container" class="height-chart"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
             </div>
@@ -943,4 +1087,264 @@
             });
         });
     </script>
+    @can('isSpv')
+        <script>
+            function flipChartSales() {
+                $('.chart-sales').toggleClass('hover');
+            }
+
+            function flipChartAll() {
+                $('.chart-all').toggleClass('hover');
+            }
+            $(function () {
+                var achievement_all = <?php echo $percent_all_nml ?>;
+                var achievement_all_qty = <?php echo $percent_all_qty ?>;
+                var achievement = <?php echo $percent ?>;
+                var achievement_qty = <?php echo $percent_qty ?>;
+                var sales = <?php echo $users_display ?>;
+                var red_line = <?php echo $red_line ?>;
+                var param_line = <?php echo $param_line ?>;
+                var months = <?php echo json_encode($dateJs) ?>;
+                
+            
+                let d = new Date(months); // 2020-06-21
+                let longMonth = d.toLocaleString('en-us', { month: 'long' });
+                let longYear = d.getFullYear();
+                //var colors1 = ['#1A4066'];
+                //var colors2 = ['#08f3ff'];
+
+                if ($(window).width() <= 600) {
+                var type = 'bar';
+                }else if($(window).width() > 600){
+                var type = 'column';
+                }
+
+                //chart all nominal
+                $('#container_all').highcharts({
+                    chart: {
+                        type: type,
+                        /*type: 'bar'*/
+                    },
+                    title: {
+                        style: {
+                                fontSize: '14px' 
+                            },
+                        text: 'Achievement '+longMonth+'  '+longYear
+                    },
+                    xAxis: {
+                        categories: ['Overall Achevement']
+                    },
+                    yAxis: {
+                        //max: 150,
+                        title: {
+                            text: 'Percentage'
+                        },
+                        labels: {
+                        formatter: function() {
+                            var pcnt = Highcharts.numberFormat((this.value / 100 * 100), 0, '.');
+                            return pcnt + '%';
+                        }
+                        },
+                        plotLines: [{
+                        value: param_line,
+                        color: 'red',
+                        dashStyle: 'shortdash',
+                        width: 2,
+                        label: {
+                            text: ''
+                        }
+                        }]
+                    },
+                    //colors:colors,
+                    plotOptions: {
+                        column: {
+                            zones: [{
+                                value: param_line, // Values up to 10 (not including) ...
+                                color:  '#08b1ff'// ... have the color blue.
+                            },{
+                                color: '#1A4066' // Values from 10 (including) and up have the color red
+                            }]
+                        }
+                    },
+                    series: [/*{
+                        name: 'Target',
+                        data: target
+                    },*/{
+                        name: 'Percentage (%)',
+                        data: [achievement_all],
+                    }
+                    ]
+                });
+
+                //chart all qty
+                $('#container_qty_all').highcharts({
+                    chart: {
+                        type: type,
+                        /*type: 'bar'*/
+                    },
+                    title: {
+                        style: {
+                                fontSize: '14px' 
+                            },
+                        text: 'Achievement '+longMonth+'  '+longYear
+                    },
+                    xAxis: {
+                        categories: ['Overall Achevement']
+                    },
+                    yAxis: {
+                        //max: 150,
+                        title: {
+                            text: 'Percentage'
+                        },
+                        labels: {
+                        formatter: function() {
+                            var pcnt = Highcharts.numberFormat((this.value / 100 * 100), 0, '.');
+                            return pcnt + '%';
+                        }
+                        },
+                        plotLines: [{
+                        value: param_line,
+                        color: 'red',
+                        dashStyle: 'shortdash',
+                        width: 2,
+                        label: {
+                            text: ''
+                        }
+                        }]
+                    },
+                    //colors:colors,
+                    plotOptions: {
+                        column: {
+                            zones: [{
+                                value: param_line, // Values up to 10 (not including) ...
+                                color:  '#08b1ff'// ... have the color blue.
+                            },{
+                                color: '#1A4066' // Values from 10 (including) and up have the color red
+                            }]
+                        }
+                    },
+                    series: [{
+                        name: 'Percentage (%)',
+                        data: [achievement_all_qty]
+                    }]
+                });
+                
+                //sales chart nominal
+                $('#container').highcharts({
+                    chart: {
+                        type: type,
+                        /*type: 'bar'*/
+                    },
+                    title: {
+                        style: {
+                                fontSize: '14px' 
+                            },
+                        text: 'Achievement '+longMonth+'  '+longYear
+                    },
+                    xAxis: {
+                        categories: sales
+                    },
+                    yAxis: {
+                        //max: 150,
+                        title: {
+                            text: 'Percentage'
+                        },
+                        labels: {
+                        formatter: function() {
+                            var pcnt = Highcharts.numberFormat((this.value / 100 * 100), 0, '.');
+                            return pcnt + '%';
+                        }
+                        },
+                        plotLines: [{
+                        value: param_line,
+                        color: 'red',
+                        dashStyle: 'shortdash',
+                        width: 2,
+                        label: {
+                            text: ''
+                        }
+                        }]
+                    },
+                    //colors:colors,
+                    plotOptions: {
+                        column: {
+                            zones: [{
+                                value: param_line, // Values up to 10 (not including) ...
+                                color:  '#08b1ff'// ... have the color blue.
+                            },{
+                                color: '#1A4066' // Values from 10 (including) and up have the color red
+                            }]
+                        }
+                    },
+                    series: [/*{
+                        name: 'Target',
+                        data: target
+                    },*/{
+                        name: 'Percentage (%)',
+                        data: achievement,
+                    }
+                    ]
+                });
+
+                //sales chart quantity
+                $('#container_qty').highcharts({
+                    chart: {
+                        type: type,
+                        /*type: 'bar'*/
+                    },
+                    title: {
+                        style: {
+                                fontSize: '14px' 
+                            },
+                        text: 'Achievement '+longMonth+'  '+longYear,
+                        
+                    },
+                    xAxis: {
+                        categories: sales
+                    },
+                    yAxis: {
+                        //max: 150,
+                        title: {
+                            text: 'Percentage'
+                        },
+                        labels: {
+                        formatter: function() {
+                            var pcnt = Highcharts.numberFormat((this.value / 100 * 100), 0, '.');
+                            return pcnt + '%';
+                        }
+                        },
+                        plotLines: [{
+                        value: param_line,
+                        color: 'red',
+                        dashStyle: 'shortdash',
+                        width: 2,
+                        label: {
+                            text: ''
+                        }
+                        }]
+                    },
+                    //colors:colors,
+                    plotOptions: {
+                        column: {
+                            zones: [{
+                                value: param_line, // Values up to 10 (not including) ...
+                                color:  '#08b1ff'// ... have the color blue.
+                            },{
+                                color: '#1A4066' // Values from 10 (including) and up have the color red
+                            }]
+                        }
+                    },
+                    series: [/*{
+                        name: 'Target',
+                        data: target
+                    },*/{
+                        name: 'Percentage (%)',
+                        data: achievement_qty,
+                    }
+                    ]
+                });
+
+            });
+        </script>
+    @endcan
 @endsection

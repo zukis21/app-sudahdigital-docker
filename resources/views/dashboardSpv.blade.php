@@ -261,7 +261,16 @@
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>
-            <div class="text" style="font-size: 10px;">Prediksi Pencapaian </div>
+            <div class="text" style="font-size: 10px;">
+                Prediksi Pencapaian 
+                <span class="pull-right" style="font-size: 10px;">
+                    @if($target && $work_plan)
+                        {{ $trQtyTotal == 0 ?  '0' : round((($prediksi_qty/$trQtyTotal) * 100) ,2)}}%
+                    @else
+                    {{0}}%
+                    @endif
+                </span>
+            </div>
             
         </div>
     </div>

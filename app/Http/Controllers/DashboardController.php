@@ -1025,7 +1025,7 @@ class DashboardController extends Controller
 
         $_this = new self;
         $visit_on = $_this->visitOnNoOrder($customer,$month,$year);
-    return [$visit_off,$visit_on];
+        return [$visit_off,$visit_on];
         
     }
 
@@ -1049,7 +1049,7 @@ class DashboardController extends Controller
 
         $_this = new self;
         $visit_on = $_this->visitOnOrder($customer,$month,$year);
-    return [$visit_off,$visit_on];
+        return [$visit_off,$visit_on];
         
     }
 
@@ -1061,5 +1061,97 @@ class DashboardController extends Controller
                 ->whereYear('created_at',$year)
                 ->count();
         return $visit_on;
+    }
+
+    public static function chartSpv($month,$year,$date_now){
+        $spv_id = \Auth::user()->id;
+        $work_plan = \App\WorkPlan::where('client_id',\Auth::user()->client_id)
+                    ->whereMonth('work_period', '=', $month)
+                    ->whereYear('work_period', '=', $year)->first();
+
+        if($work_plan){
+            $day_off = \App\Holiday::where('wp_id',$work_plan->id)
+                  ->where('date_holiday','<=',$date_now)->count();
+            $tgl = date('d');
+            $day = (int)$tgl;
+            $hari_berjalan = $day-$day_off;
+            $param_line = round((($hari_berjalan/$work_plan->working_days) * 100) ,2);
+        }else{
+            $day_off = null;
+            $param_line = 0;
+        }
+
+        $cartuser = \App\Sales_Targets::whereHas('sls_exists_spv',function($q) use($spv_id){
+                                $q->where('spv_id',$spv_id);
+                        })
+                        ->where('client_id',\Auth::user()->client_id)
+                        ->whereMonth('period', '=', $month)
+                        ->whereYear('period', '=', $year)
+                        ->orderBy('user_id', 'ASC')->get();
+                        //->pluck('user_id');
+        
+        $user_value=[];
+        $percentage=[];
+        $percentage_qty=[];
+        $red_line = [];
+        
+        foreach ($cartuser as $userval) {
+            $user_value[]= $userval->users->name;
+            
+            //total order qty
+            $targ_ach_qty = \App\Order::with('products')
+                    ->where('user_id',$userval->user_id)
+                    ->whereNotNull('customer_id')
+                    ->where('status','!=','CANCEL')
+                    ->where('status','!=','NO-ORDER')
+                    ->whereMonth('created_at', $month)
+                    ->whereYear('created_at', $year)->get();
+            $qty = $targ_ach_qty->sum('TotalQuantity');
+            
+                       
+            //total order nominal
+            $targ_ach = \App\Order::where('user_id',$userval->user_id)
+                        ->whereNotNull('customer_id')
+                        ->where('status','!=','CANCEL')
+                        ->where('status','!=','NO-ORDER')
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');
+            $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+            $ach_value_ppn = $ach[0];
+
+            if($userval->ppn == 1){
+                $ach_value = $ach_value_ppn/1.1;
+            }else{
+                $ach_value = $ach_value_ppn;
+            }
+
+            //nominal
+            if($userval->target_values > 0){
+                $percentage[]= round(($ach_value / $userval->target_values) * 100 ,2);
+            }else{
+                $percentage[]= 0;
+            }
+
+            //qty
+            if($userval->target_quantity > 0){
+                $percentage_qty[]= round(($qty / $userval->target_quantity) * 100 ,2);
+            }else{
+                $percentage_qty[]=0;
+            }
+
+            $red_line[]= $param_line;
+
+            
+        }
+        $users_display = array_unique($user_value);
+
+        $percent = json_encode($percentage,JSON_NUMERIC_CHECK);
+        $percent_qty = json_encode($percentage_qty,JSON_NUMERIC_CHECK);
+        $users_display = json_encode($users_display);
+        $red_line = json_encode($red_line);
+
+        return[$percent,$percent_qty,$users_display,$red_line,$param_line];
     }
 }
