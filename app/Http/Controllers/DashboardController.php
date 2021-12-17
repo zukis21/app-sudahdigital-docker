@@ -1076,7 +1076,7 @@ class DashboardController extends Controller
         if($work_plan){
             $day_off = \App\Holiday::where('wp_id',$work_plan->id)
                   ->where('date_holiday','<=',$date_now)->count();
-            $tgl = date('d');
+            $tgl = date('d',strtotime($date_now));
             $day = (int)$tgl;
             $hari_berjalan = $day-$day_off;
             $param_line = round((($hari_berjalan/$work_plan->working_days) * 100) ,2);
