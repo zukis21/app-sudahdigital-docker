@@ -94,6 +94,7 @@ class DashboardController extends Controller
         $period = \App\Sales_Targets::where('client_id',$clientId)
                 ->where('period','<',$paramDate)
                 ->groupBy('period')
+                ->orderBy('period','DESC')
                 ->get();
         return $period;
     }

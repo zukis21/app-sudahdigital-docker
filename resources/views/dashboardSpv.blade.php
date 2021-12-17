@@ -27,7 +27,7 @@
     }*/
 @endphp
 
-<button class="btn bg-blue-grey waves-effect btn-block m-b-10">ALL (QTY)</button>
+<button class="btn bg-blue-grey waves-effect btn-block m-b-10">Semua Data (Qty)</button>
 <!--total toko order--->
 <div class="" style="padding-left:0;padding-right:0;">
     <div class="info-box bg-indigo hover-zoom-effect">

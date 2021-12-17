@@ -333,7 +333,7 @@ class AjaxAdminSearch extends Controller
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="defaultModalLabel">Store Hasn\'t Ordered Lists</h4>
+                                <h4 class="modal-title" id="defaultModalLabel">List Toko Pareto Belum Order</h4>
                             </div>
                             <div class="modal-body">
                                 <ul class="list-group">';
@@ -355,7 +355,7 @@ class AjaxAdminSearch extends Controller
                                                 <b>'.$cust_not_exists[$key]->store_code. '-' .$cust_not_exists[$key]->store_name.'</b>,';
                                                 if($last_orders[$key] != ''){
                                                     echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="';if($last_orders[$key] == ''){ echo " ";}else{echo'Number of days hasn\'t ordered';} echo'">'.$last_orders[$key].' Days</span>'; 
+                                                    data-content="';if($last_orders[$key] == ''){ echo " ";}else{echo'Jumlah hari belum order';} echo'">'.$last_orders[$key].' Hari</span>'; 
                                                 }   
                                                 echo'<br><span>'.$cust_not_exists[$key]->address.'</span><br>';
                                                 
@@ -365,20 +365,20 @@ class AjaxAdminSearch extends Controller
                                                 if($visit_off > 0 ){
                                                     
                                                     echo'<i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Checkout Without order & On Location."></i><b class="text-danger m-r-10">'.$visit_off.'</b>';
+                                                    data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">'.$visit_off.'</b>';
                                                     
                                                 }
                                                 if($visit_on > 0){
                                                     
                                                     echo'<i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Checkout Without order & On Location."></i><b class="text-danger">'.$visit_on.'</b>';
+                                                    data-content="Checkout tanpa order & On location."></i><b class="text-danger">'.$visit_on.'</b>';
                                                     
                                                 }
                                             echo'</li>';
                                           }
                                     }else{
                                         echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                        border-bottom-left-radius:0;"><b>No store lists</b></li>';
+                                        border-bottom-left-radius:0;"><b>Tidak ada data</b></li>';
                                     }  
                                 echo'</ul>
                             </div>
@@ -397,7 +397,7 @@ class AjaxAdminSearch extends Controller
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="defaultModalLabel">Store Hasn\'t Ordered Lists</h4>
+                                <h4 class="modal-title" id="defaultModalLabel">List Toko Pareto Sudah Order</h4>
                             </div>
                             <div class="modal-body">
                                 <ul class="list-group">';
@@ -418,7 +418,7 @@ class AjaxAdminSearch extends Controller
                                                 <b>'.$cust_exists[$k]->store_code. '-'. $cust_exists[$k]->store_name.'</b>,';
                                                 if($last_odrs[$k] != ''){
                                                     echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="';if($last_odrs[$k] == ''){echo"";}else{echo'Number of days hasn\'t ordered';} echo'">'.$last_odrs[$k].' Days</span>';
+                                                    data-content="';if($last_odrs[$k] == ''){echo"";}else{echo'Jumlah hari belum order';} echo'">'.$last_odrs[$k].' Hari</span>';
                                                 }   
                                                 echo'<br><span>'.$cust_exists[$k]->address.'</span><br>';
                                                 
@@ -431,7 +431,7 @@ class AjaxAdminSearch extends Controller
                                                     
                                                     echo'<i class="fal fa-location-slash text-danger popoverData"  
                                                     data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Checkout Without order & On Location."></i>
+                                                    data-content="Checkout tanpa order & Off location."></i>
                                                     <b class="text-danger m-r-10">'.$NoOdrVisit_off.'</b>';
                                                     
                                                 }
@@ -439,7 +439,7 @@ class AjaxAdminSearch extends Controller
                                                     
                                                     echo'<i class="fal fa-location text-danger popoverData" 
                                                     data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Checkout Without order & On Location."></i>
+                                                    data-content="Checkout tanpa order & On location."></i>
                                                     <b class="text-danger">'.$NoOdrVisit_on.'</b>';
                                                     
                                                 }
@@ -447,7 +447,7 @@ class AjaxAdminSearch extends Controller
                                                     echo'<br>
                                                     <i class="fal fa-location-slash popoverData" style="color:#3F51B5" 
                                                     data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Order Off Location."></i>
+                                                    data-content="Order off location."></i>
                                                     <b class="text-primary m-r-10" style="color:#3F51B5">'.$OdrVisit_off.'</b>';
                                                 
                                                 }
@@ -456,7 +456,7 @@ class AjaxAdminSearch extends Controller
                                                     echo'<br>
                                                     <i class="fal fa-location popoverData"  style="color:#3F51B5"
                                                     data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Order On Location."></i>
+                                                    data-content="Order on Location."></i>
                                                     <b class="text-primary" style="color:#3F51B5">'.$OdrVisit_on.'</b>';
                                                 
                                                 }
@@ -464,7 +464,7 @@ class AjaxAdminSearch extends Controller
                                          }
                                     }else{
                                         echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                        border-bottom-left-radius:0;"><b>No store lists</b></li>';
+                                        border-bottom-left-radius:0;"><b>Tidak ada data</b></li>';
                                     }  
                                 echo'</ul>
                             </div>
@@ -485,7 +485,7 @@ class AjaxAdminSearch extends Controller
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title" id="defaultModalLabel">Orders Not Delivered > '.$day.' Days</h4>
+                                    <h4 class="modal-title" id="defaultModalLabel">Pesanan Tidak Dikirim > '.$day.' Hari</h4>
                                 </div>
                                 <div class="modal-body">
                                     <ul class="list-group">';
@@ -508,7 +508,7 @@ class AjaxAdminSearch extends Controller
                                                     </b>';
                                                     if($distances[$ky] != ''){
                                                         echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                        data-content="';if($distances[$ky] == ''){echo'';}else{echo 'Number of days orders not delivered';}echo'">'.$distances[$ky].' Days</span>'; 
+                                                        data-content="';if($distances[$ky] == ''){echo'';}else{echo 'Jumlah hari belum kirim';}echo'">'.$distances[$ky].' Hari</span>'; 
                                                     }
                                                     echo'<br>
                                                     <b>';if($order_overday[$ky]->customer_id ){echo $order_overday[$ky]->customers->store_name;}else{echo"";}echo'</b>,
@@ -517,7 +517,7 @@ class AjaxAdminSearch extends Controller
                                             }
                                           }else{
                                             echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                            border-bottom-left-radius:0;"><b>No store lists</b></li>';
+                                            border-bottom-left-radius:0;"><b>Tidak ada data</b></li>';
                                         }  
                                     echo'</ul>
                                 </div>

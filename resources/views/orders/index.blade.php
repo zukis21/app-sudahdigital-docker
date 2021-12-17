@@ -35,6 +35,7 @@
 		</ul>
 	</div>
 	<div class="col-md-2">
+		
 		<a href="{{route('orders.export_mapping',[$vendor]) }}" 
 			class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
 			<i class="fas fa-file-excel fa-0x "></i> Export

@@ -23,7 +23,7 @@
     }
 @endphp
 
-<button class="btn bg-blue-grey waves-effect btn-block m-b-10">{{$sls->sales->name}} (NOMINAL)</button>
+<button class="btn bg-blue-grey waves-effect btn-block m-b-10">{{$sls->sales->name}} (Nml)</button>
 <!--total toko order--->
 <div class="" style="padding-left:0;padding-right:0;">
     <div class="info-box bg-indigo hover-zoom-effect">

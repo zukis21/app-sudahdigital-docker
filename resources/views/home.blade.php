@@ -210,9 +210,9 @@
         <div class="container-fluid">
             <div class="row">
                 <ul class="nav nav-tabs tab-nav-right nav-justified" role="tablist" style="border-bottom: none;margin-left:2px;">
-                    <li role="presentation " class="active"><a href="#home" data-toggle="tab">PERFORMANCE</a></li>
-                    <li role="presentation"><a href="#storeInfoOrder" data-toggle="tab">STORE ORDERING STATS</a></li>
-                    <li role="presentation"><a href="#chartTab" data-toggle="tab">CHART</a></li>
+                    <li role="presentation " class="active"><a href="#home" data-toggle="tab">PERFORMA SALES</a></li>
+                    <li role="presentation"><a href="#storeInfoOrder" data-toggle="tab">STATUS PESANAN TOKO</a></li>
+                    <li role="presentation"><a href="#chartTab" data-toggle="tab">GRAFIK</a></li>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane animated fadeInRight active" id="home">
@@ -245,9 +245,9 @@
                                             </div>
                                         @else
                                             <div class="well">
-                                                <button class="btn bg-blue-grey waves-effect btn-block m-b-10">ALL</button>
+                                                <button class="btn bg-blue-grey waves-effect btn-block m-b-10">Semua Data</button>
                                                 <div class="demo-color-box bg-red">
-                                                    <div class="color-class-name">NO DATA</div>
+                                                    <div class="color-class-name">Tidak ada data</div>
                                                 </div>
                                             </div>
                                         @endif
@@ -292,7 +292,7 @@
                                                 <div class="well">
                                                     <button class="btn bg-blue-grey waves-effect btn-block m-b-10">{{$sls->sales->name}}</button>
                                                     <div class="demo-color-box bg-red">
-                                                        <div class="color-class-name">Target has not been created</div>
+                                                        <div class="color-class-name">Target belum dibuat</div>
                                                     </div>
                                                 </div>
                                             @endif
@@ -310,17 +310,17 @@
                                         <thead>
                                             <tr>
                                                 <th>Sales</th>
-                                                <th>Store Hasn't Ordered (P)</th>
-                                                <th>Store Has Ordered (P)</th>
+                                                <th>Toko Pareto Belum Order</th>
+                                                <th>Toko Pareto Sudah Order</th>
                                                 <th>
-                                                    Orders Not Delivered > 
+                                                    Order Belum Kirim > 
                                                         <input type="number" value="5" min="1"
                                                         class="input-sm" id="numberDay" 
                                                         style="text-align:center;
                                                                border:1px solid #ccc;
                                                                width:50px;
                                                                margin-bottom:-10px;">
-                                                    Days
+                                                    Hari
                                                 </th>
                                             </tr>
                                         </thead>
@@ -344,7 +344,7 @@
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h4 class="modal-title" id="defaultModalLabel">Store Hasn't Ordered Lists</h4>
+                                                                        <h4 class="modal-title" id="defaultModalLabel">List Toko Pareto Belum Order</h4>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <ul class="list-group">
@@ -366,7 +366,7 @@
                                                                                         <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
                                                                                         @if($last_orders[$key] != '')
                                                                                             <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="{{$last_orders[$key] == '' ? '': 'Number of days hasn\'t ordered'}}">{{$last_orders[$key]}} Days</span> 
+                                                                                            data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}">{{$last_orders[$key]}} Hari</span> 
                                                                                         @endif   
                                                                                         <br><span>{{$cust_not_exists[$key]->address}}</span><br>
                                                                                         @php
@@ -376,20 +376,20 @@
                                                                                         @if($visit_off > 0 )
                                                                                             
                                                                                             <i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="Checkout Without order & On Location."></i><b class="text-danger m-r-10">{{$visit_off}}</b>
+                                                                                            data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">{{$visit_off}}</b>
                                                                                            
                                                                                         @endif
                                                                                         @if($visit_on > 0)
                                                                                             
                                                                                             <i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="Checkout Without order & On Location."></i><b class="text-danger">{{$visit_on}}</b>
+                                                                                            data-content="Checkout tanpa order & On location."></i><b class="text-danger">{{$visit_on}}</b>
                                                                                             
                                                                                         @endif
                                                                                     </li>
                                                                                 @endforeach
                                                                             @else
                                                                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                border-bottom-left-radius:0;"><b>No store lists</b></li>
+                                                                                border-bottom-left-radius:0;"><b>Tidak ada data</b></li>
                                                                             @endif  
                                                                         </ul>
                                                                     </div>
@@ -408,7 +408,7 @@
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h4 class="modal-title" id="defaultModalLabel">Store Hasn't Ordered Lists</h4>
+                                                                        <h4 class="modal-title" id="defaultModalLabel">List Toko Pareto Sudah Order</h4>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <ul class="list-group">
@@ -430,7 +430,7 @@
                                                                                         <b>{{$cust_exists[$k]->store_code}} - {{$cust_exists[$k]->store_name}}</b>,
                                                                                         @if($last_odrs[$k] != '')
                                                                                             <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="{{$last_odrs[$k] == '' ? '': 'Number of days hasn\'t ordered'}}">{{$last_odrs[$k]}} Days</span> 
+                                                                                            data-content="{{$last_odrs[$k] == '' ? '': 'Jumlah hari belum order'}}">{{$last_odrs[$k]}} Hari</span> 
                                                                                         @endif   
                                                                                         <br><span>{{$cust_exists[$k]->address}}</span><br>
                                                                                         @php
@@ -443,7 +443,7 @@
                                                                                             
                                                                                             <i class="fal fa-location-slash text-danger popoverData"  
                                                                                             data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="Checkout Without order & On Location."></i>
+                                                                                            data-content="Checkout tanpa order & Off location."></i>
                                                                                             <b class="text-danger m-r-10">{{$NoOdrVisit_off}}</b>
                                                                                            
                                                                                         @endif
@@ -451,7 +451,7 @@
                                                                                             
                                                                                             <i class="fal fa-location text-danger popoverData" 
                                                                                             data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="Checkout Without order & On Location."></i>
+                                                                                            data-content="Checkout tanpa order & On location."></i>
                                                                                             <b class="text-danger">{{$NoOdrVisit_on}}</b>
                                                                                             
                                                                                         @endif
@@ -476,7 +476,7 @@
                                                                                 @endforeach
                                                                             @else
                                                                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                border-bottom-left-radius:0;"><b>No store lists</b></li>
+                                                                                border-bottom-left-radius:0;"><b>Tidak ada data</b></li>
                                                                             @endif  
                                                                         </ul>
                                                                     </div>
@@ -497,7 +497,7 @@
                                                                 <div class="modal-dialog" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
-                                                                            <h4 class="modal-title" id="defaultModalLabel">Orders Not Delivered > 5 Days</h4>
+                                                                            <h4 class="modal-title" id="defaultModalLabel">Pesanan Tidak Dikirim > 5 Hari</h4>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <ul class="list-group">
@@ -520,7 +520,7 @@
                                                                                             </b>
                                                                                             @if($distances[$ky] != '')
                                                                                                 <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                                data-content="{{$distances[$ky] == '' ? '': 'Number of days orders not delivered'}}">{{$distances[$ky]}} Days</span> 
+                                                                                                data-content="{{$distances[$ky] == '' ? '': 'Jumlah hari order belum kirim'}}">{{$distances[$ky]}} Hari</span> 
                                                                                             @endif
                                                                                             <br>
                                                                                             <b>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->store_name : ''}}</b>,
@@ -529,7 +529,7 @@
                                                                                     @endforeach
                                                                                 @else
                                                                                     <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                                                                    border-bottom-left-radius:0;"><b>No store lists</b></li>
+                                                                                    border-bottom-left-radius:0;"><b>Tidak ada data</b></li>
                                                                                 @endif  
                                                                             </ul>
                                                                         </div>
@@ -1175,15 +1175,15 @@
                         style: {
                                 fontSize: '14px' 
                             },
-                        text: 'Achievement '+longMonth+'  '+longYear
+                        text: 'Pencapaian '+longMonth+'  '+longYear
                     },
                     xAxis: {
-                        categories: ['Overall Achevement']
+                        categories: ['Pencapaian Keseluruhan']
                     },
                     yAxis: {
                         //max: 150,
                         title: {
-                            text: 'Percentage'
+                            text: 'Persentase'
                         },
                         labels: {
                         formatter: function() {
@@ -1207,7 +1207,7 @@
                         name: 'Target',
                         data: target
                     },*/{
-                        name: 'Percentage (%)',
+                        name: 'Persentase (%)',
                         data: [achievement_all],
                     }
                     ]
@@ -1223,15 +1223,15 @@
                         style: {
                                 fontSize: '14px' 
                             },
-                        text: 'Achievement '+longMonth+'  '+longYear
+                        text: 'Pencapaian '+longMonth+'  '+longYear
                     },
                     xAxis: {
-                        categories: ['Overall Achevement']
+                        categories: ['Pencapaian Keseluruhan']
                     },
                     yAxis: {
                         //max: 150,
                         title: {
-                            text: 'Percentage'
+                            text: 'Persentase'
                         },
                         labels: {
                         formatter: function() {
@@ -1252,7 +1252,7 @@
                     //colors:colors,
                     plotOptions: plot,
                     series: [{
-                        name: 'Percentage (%)',
+                        name: 'Persentase (%)',
                         data: [achievement_all_qty]
                     }]
                 });
@@ -1267,7 +1267,7 @@
                         style: {
                                 fontSize: '14px' 
                             },
-                        text: 'Achievement '+longMonth+'  '+longYear
+                        text: 'Pencapaian '+longMonth+'  '+longYear
                     },
                     xAxis: {
                         categories: sales
@@ -1275,7 +1275,7 @@
                     yAxis: {
                         //max: 150,
                         title: {
-                            text: 'Percentage'
+                            text: 'Persentase'
                         },
                         labels: {
                         formatter: function() {
@@ -1299,7 +1299,7 @@
                         name: 'Target',
                         data: target
                     },*/{
-                        name: 'Percentage (%)',
+                        name: 'Persentase (%)',
                         data: achievement,
                     }
                     ]
@@ -1315,7 +1315,7 @@
                         style: {
                                 fontSize: '14px' 
                             },
-                        text: 'Achievement '+longMonth+'  '+longYear,
+                        text: 'Pencapaian '+longMonth+'  '+longYear,
                         
                     },
                     xAxis: {
@@ -1324,7 +1324,7 @@
                     yAxis: {
                         //max: 150,
                         title: {
-                            text: 'Percentage'
+                            text: 'Persentase'
                         },
                         labels: {
                         formatter: function() {
@@ -1348,7 +1348,7 @@
                         name: 'Target',
                         data: target
                     },*/{
-                        name: 'Percentage (%)',
+                        name: 'Persentase (%)',
                         data: achievement_qty,
                     }
                     ]
