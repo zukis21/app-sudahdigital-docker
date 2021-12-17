@@ -39,7 +39,7 @@
     @endcan
     -->
     @can('isSpv')
-        <style>
+        <style type="text/css">
             
             .flex-nowrap {
                 -webkit-flex-wrap: nowrap!important;
@@ -119,6 +119,15 @@
 
             .highcharts-credits {
                 display: none !important;
+            }
+
+            @media (max-device-width: 991px){
+                 .col-chart-sales {
+                    margin-top:50rem;
+                }
+                .col-all-chart{
+                    padding-right: 0;
+                }
             }
 
         </style>
@@ -584,7 +593,7 @@
 
                         ?>
                         
-                        <div class="col-md-4" style="padding-left:0;">
+                        <div class="col-md-4 col-all-chart" style="padding-left:0;">
                             <div class="flip-box chart-all" @if($param_typeAll == 3) onclick="flipChartAll()" @endif>
                                 <div class="flip-box-inner">
                                     @if($param_typeAll == 1)
@@ -634,7 +643,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-8" style="padding-right:0;padding-left:0;">
+                        <div class="col-md-8 col-chart-sales" style="padding-right:0;padding-left:0;">
                             <div class="flip-box chart-sales" @if($param_typeAll == 3) onclick="flipChartSales()" @endif>
                                 <div class="flip-box-inner">
                                     @if($param_typeAll == 1)
