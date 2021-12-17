@@ -1525,15 +1525,15 @@
         //var colors2 = ['#08f3ff'];
 
         if ($(window).width() <= 600) {
-          var type = 'bar';
+          var type_ = 'bar';
         }else if($(window).width() > 600){
-          var type = 'column';
+          var type_ = 'column';
         }
         
         //all sales chart nominal
         $('#container').highcharts({
           chart: {
-            type: type,
+            type: type_,
             /*type: 'bar'*/
           },
           title: {
@@ -1565,7 +1565,7 @@
           },
           //colors:colors,
           plotOptions: {
-        	column: {
+        	type_: {
             	zones: [{
                 	value: param_line, // Values up to 10 (not including) ...
                     color:  '#08b1ff'// ... have the color blue.
@@ -1587,7 +1587,7 @@
         //all sales chart quantity
         $('#container_qty').highcharts({
           chart: {
-            type: type,
+            type: type_,
             /*type: 'bar'*/
           },
           title: {
@@ -1619,7 +1619,7 @@
           },
           //colors:colors,
           plotOptions: {
-        	column: {
+            type_: {
             	zones: [{
                 	value: param_line, // Values up to 10 (not including) ...
                     color:  '#08b1ff'// ... have the color blue.
