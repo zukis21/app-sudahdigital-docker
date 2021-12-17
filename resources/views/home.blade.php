@@ -1141,8 +1141,28 @@
 
                 if ($(window).width() <= 600) {
                 var type = 'bar';
+                var plot = {
+                        bar: {
+                            zones: [{
+                                value: param_line, // Values up to 10 (not including) ...
+                                color:  '#08b1ff'// ... have the color blue.
+                            },{
+                                color: '#1A4066' // Values from 10 (including) and up have the color red
+                            }]
+                        }
+                    }
                 }else if($(window).width() > 600){
                 var type = 'column';
+                var plot = {
+                        column: {
+                            zones: [{
+                                value: param_line, // Values up to 10 (not including) ...
+                                color:  '#08b1ff'// ... have the color blue.
+                            },{
+                                color: '#1A4066' // Values from 10 (including) and up have the color red
+                            }]
+                        }
+                    }
                 }
 
                 //chart all nominal
@@ -1182,16 +1202,7 @@
                         }]
                     },
                     //colors:colors,
-                    plotOptions: {
-                        column: {
-                            zones: [{
-                                value: param_line, // Values up to 10 (not including) ...
-                                color:  '#08b1ff'// ... have the color blue.
-                            },{
-                                color: '#1A4066' // Values from 10 (including) and up have the color red
-                            }]
-                        }
-                    },
+                    plotOptions:plot,
                     series: [/*{
                         name: 'Target',
                         data: target
@@ -1239,16 +1250,7 @@
                         }]
                     },
                     //colors:colors,
-                    plotOptions: {
-                        column: {
-                            zones: [{
-                                value: param_line, // Values up to 10 (not including) ...
-                                color:  '#08b1ff'// ... have the color blue.
-                            },{
-                                color: '#1A4066' // Values from 10 (including) and up have the color red
-                            }]
-                        }
-                    },
+                    plotOptions: plot,
                     series: [{
                         name: 'Percentage (%)',
                         data: [achievement_all_qty]
@@ -1292,16 +1294,7 @@
                         }]
                     },
                     //colors:colors,
-                    plotOptions: {
-                        column: {
-                            zones: [{
-                                value: param_line, // Values up to 10 (not including) ...
-                                color:  '#08b1ff'// ... have the color blue.
-                            },{
-                                color: '#1A4066' // Values from 10 (including) and up have the color red
-                            }]
-                        }
-                    },
+                    plotOptions:plot,
                     series: [/*{
                         name: 'Target',
                         data: target
@@ -1350,16 +1343,7 @@
                         }]
                     },
                     //colors:colors,
-                    plotOptions: {
-                        column: {
-                            zones: [{
-                                value: param_line, // Values up to 10 (not including) ...
-                                color:  '#08b1ff'// ... have the color blue.
-                            },{
-                                color: '#1A4066' // Values from 10 (including) and up have the color red
-                            }]
-                        }
-                    },
+                    plotOptions:plot,
                     series: [/*{
                         name: 'Target',
                         data: target
