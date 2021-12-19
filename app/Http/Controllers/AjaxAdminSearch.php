@@ -348,33 +348,65 @@ class AjaxAdminSearch extends Controller
                                        
                                             arsort($last_orders);
                                             $keys = array_keys($last_orders);
-                                       
+
                                           foreach($keys as $key){
-                                            $cust_id = $cust_not_exists[$key]->id;
-                                            echo'<li class="list-group-item">
-                                                <b>'.$cust_not_exists[$key]->store_code. '-' .$cust_not_exists[$key]->store_name.'</b>,';
-                                                if($last_orders[$key] != ''){
-                                                    echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="';if($last_orders[$key] == ''){ echo " ";}else{echo'Jumlah hari belum order';} echo'">'.$last_orders[$key].' Hari</span>'; 
-                                                }   
-                                                echo'<br><span>'.$cust_not_exists[$key]->address.'</span><br>';
+                                            if($last_orders[$key] == ''){
+                                              $cust_id = $cust_not_exists[$key]->id;
+                                              echo'<li class="list-group-item">
+                                                  <b>'.$cust_not_exists[$key]->store_code. '-' .$cust_not_exists[$key]->store_name.'</b>,';
+                                                  if($last_orders[$key] != ''){
+                                                      echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                      data-content="';if($last_orders[$key] == ''){ echo " ";}else{echo'Jumlah hari belum order';} echo'">'.$last_orders[$key].' Hari</span>'; 
+                                                  }   
+                                                  echo'<br><span>'.$cust_not_exists[$key]->address.'</span><br>';
+                                                  
+                                                      [$visit_off,$visit_on] = \App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
+                                                      $visit = $visit_off + $visit_on;
                                                 
-                                                    [$visit_off,$visit_on] = \App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
-                                                    $visit = $visit_off + $visit_on;
-                                               
-                                                if($visit_off > 0 ){
-                                                    
-                                                    echo'<i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">'.$visit_off.'</b>';
-                                                    
-                                                }
-                                                if($visit_on > 0){
-                                                    
-                                                    echo'<i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                    data-content="Checkout tanpa order & On location."></i><b class="text-danger">'.$visit_on.'</b>';
-                                                    
-                                                }
-                                            echo'</li>';
+                                                  if($visit_off > 0 ){
+                                                      
+                                                      echo'<i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
+                                                      data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">'.$visit_off.'</b>';
+                                                      
+                                                  }
+                                                  if($visit_on > 0){
+                                                      
+                                                      echo'<i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                      data-content="Checkout tanpa order & On location."></i><b class="text-danger">'.$visit_on.'</b>';
+                                                      
+                                                  }
+                                              echo'</li>';
+                                            }
+                                          }
+
+                                          foreach($keys as $key){
+                                            if($last_orders[$key] != ''){
+                                              $cust_id = $cust_not_exists[$key]->id;
+                                              echo'<li class="list-group-item">
+                                                  <b>'.$cust_not_exists[$key]->store_code. '-' .$cust_not_exists[$key]->store_name.'</b>,';
+                                                  if($last_orders[$key] != ''){
+                                                      echo'<span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                      data-content="';if($last_orders[$key] == ''){ echo " ";}else{echo'Jumlah hari belum order';} echo'">'.$last_orders[$key].' Hari</span>'; 
+                                                  }   
+                                                  echo'<br><span>'.$cust_not_exists[$key]->address.'</span><br>';
+                                                  
+                                                      [$visit_off,$visit_on] = \App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
+                                                      $visit = $visit_off + $visit_on;
+                                                
+                                                  if($visit_off > 0 ){
+                                                      
+                                                      echo'<i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
+                                                      data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">'.$visit_off.'</b>';
+                                                      
+                                                  }
+                                                  if($visit_on > 0){
+                                                      
+                                                      echo'<i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                      data-content="Checkout tanpa order & On location."></i><b class="text-danger">'.$visit_on.'</b>';
+                                                      
+                                                  }
+                                              echo'</li>';
+                                            }
                                           }
                                     }else{
                                         echo'<li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
