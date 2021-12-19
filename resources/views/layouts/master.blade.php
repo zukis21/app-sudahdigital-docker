@@ -48,6 +48,10 @@
        .merah{
             color: #F44336;
         }
+
+        .sidebar .user-info {
+            background: #607D8B;
+        }
     </style>
 </head>
 

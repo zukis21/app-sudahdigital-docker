@@ -356,36 +356,69 @@
                                                                                     array_push($last_orders, $last_order);
                                                                                     @endphp
                                                                                 @endforeach
-                                                                                @php 
+                                                                                @php
                                                                                     arsort($last_orders);
                                                                                     $keys = array_keys($last_orders);
                                                                                 @endphp
+
                                                                                 @foreach($keys as $key)
-                                                                                    <?php $cust_id = $cust_not_exists[$key]->id;?>
-                                                                                    <li class="list-group-item">
-                                                                                        <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
-                                                                                        @if($last_orders[$key] != '')
-                                                                                            <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}">{{$last_orders[$key]}} Hari</span> 
-                                                                                        @endif   
-                                                                                        <br><span>{{$cust_not_exists[$key]->address}}</span><br>
-                                                                                        @php
-                                                                                            [$visit_off,$visit_on] = App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
-                                                                                            $visit = $visit_off + $visit_on;
-                                                                                        @endphp
-                                                                                        @if($visit_off > 0 )
+                                                                                    @if($last_orders[$key] == '')
+                                                                                        <?php $cust_id = $cust_not_exists[$key]->id;?>
+                                                                                        <li class="list-group-item">
+                                                                                            <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                                                                            @if($last_orders[$key] != '')
+                                                                                                <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}">{{$last_orders[$key]}} Hari</span> 
+                                                                                            @endif   
+                                                                                            <br><span>{{$cust_not_exists[$key]->address}}</span><br>
+                                                                                            @php
+                                                                                                [$visit_off,$visit_on] = App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
+                                                                                                $visit = $visit_off + $visit_on;
+                                                                                            @endphp
+                                                                                            @if($visit_off > 0 )
+                                                                                                
+                                                                                                <i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">{{$visit_off}}</b>
                                                                                             
-                                                                                            <i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">{{$visit_off}}</b>
-                                                                                           
-                                                                                        @endif
-                                                                                        @if($visit_on > 0)
+                                                                                            @endif
+                                                                                            @if($visit_on > 0)
+                                                                                                
+                                                                                                <i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="Checkout tanpa order & On location."></i><b class="text-danger">{{$visit_on}}</b>
+                                                                                                
+                                                                                            @endif
+                                                                                        </li>
+                                                                                    @endif
+                                                                                @endforeach
+                                                                                
+                                                                                @foreach($keys as $key)
+                                                                                    @if($last_orders[$key] != '')
+                                                                                        <?php $cust_id = $cust_not_exists[$key]->id;?>
+                                                                                        <li class="list-group-item">
+                                                                                            <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                                                                            @if($last_orders[$key] != '')
+                                                                                                <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}">{{$last_orders[$key]}} Hari</span> 
+                                                                                            @endif   
+                                                                                            <br><span>{{$cust_not_exists[$key]->address}}</span><br>
+                                                                                            @php
+                                                                                                [$visit_off,$visit_on] = App\Http\Controllers\DashboardController::visitNoOrder($cust_id,$month,$year);
+                                                                                                $visit = $visit_off + $visit_on;
+                                                                                            @endphp
+                                                                                            @if($visit_off > 0 )
+                                                                                                
+                                                                                                <i class="fal fa-location-slash text-danger popoverData"  data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="Checkout tanpa order & Off location."></i><b class="text-danger m-r-10">{{$visit_off}}</b>
                                                                                             
-                                                                                            <i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
-                                                                                            data-content="Checkout tanpa order & On location."></i><b class="text-danger">{{$visit_on}}</b>
-                                                                                            
-                                                                                        @endif
-                                                                                    </li>
+                                                                                            @endif
+                                                                                            @if($visit_on > 0)
+                                                                                                
+                                                                                                <i class="fal fa-location text-danger popoverData" data-trigger="hover" data-container="body" data-placement="top" 
+                                                                                                data-content="Checkout tanpa order & On location."></i><b class="text-danger">{{$visit_on}}</b>
+                                                                                                
+                                                                                            @endif
+                                                                                        </li>
+                                                                                    @endif
                                                                                 @endforeach
                                                                             @else
                                                                                 <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
@@ -509,7 +542,7 @@
                                                                                         array_push($distances, $distance);
                                                                                         @endphp
                                                                                     @endforeach
-                                                                                    @php 
+                                                                                    @php
                                                                                         arsort($distances);
                                                                                         $keyDis = array_keys($distances);
                                                                                     @endphp
