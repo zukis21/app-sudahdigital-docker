@@ -667,4 +667,19 @@ class DashboardSalesController extends Controller
                 ->count();
         return $visit_on;
     }
+
+    public static function amountDayNotDelv($id){
+        $curDate = date('Y-m-d');
+        $newDate = new DateTime($curDate);
+        $lastOrder = \App\Order::where('id',$id)
+                    ->first();
+        if($lastOrder){
+            $date = date('Y-m-d', strtotime($lastOrder->created_at));
+            $newDate2 = new DateTime($date);
+            $jarak = $newDate->diff($newDate2)->days;
+        }else{
+            $jarak = '';
+        }
+        return $jarak;
+    }
 }  

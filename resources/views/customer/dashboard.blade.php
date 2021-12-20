@@ -1255,13 +1255,39 @@
                             <div class="tab-pane fade" id="nav-no-have-process" role="tabpanel" aria-labelledby="nav-no-have-process-tab">
                               <ul class="list-group w-100 ">
                                 @if(count($order_overday) > 0 )
+                                <?php $distances = Array(); ?>
                                   @foreach ($order_overday as $over)
+                                      @php
+                                      $distance = App\Http\Controllers\DashboardSalesController::amountDayNotDelv($over->id);
+                                      array_push($distances, $distance);
+                                      @endphp
+                                  @endforeach
+                                  @php
+                                      arsort($distances);
+                                      $keyDis = array_keys($distances);
+                                  @endphp
+                                  @foreach ($keyDis as $ky)
                                     <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
                                       border-bottom-left-radius:0;">
-                                        <b class="text-success mb-3">#{{$over->invoice_number}}</b><br>  
-                                          
-                                        <b>{{$over->customer_id ? $over->customers->store_name : ''}}</b>,<br>
-                                          {{$over->customer_id ? $over->customers->address :''}}
+                                        <div class="last-order-info">
+                                          <a class="pe-auto popoverData" data-container="body" 
+                                            data-toggle="popover" data-placement="top" 
+                                            data-content="{{$distances[$ky] == '' ? '': 'Jumlah hari order belum kirim'}}" 
+                                            data-trigger="hover">
+                                            @if($distances[$ky] != '')
+                                              <span class="badge badge-info" style="cursor: pointer">{{$distances[$ky]}} Hari</span>
+                                            @endif
+                                          </a>
+                                        
+                                        </div>
+                                        <div class="float-left ml-n3" style="margin-right:35%;">
+                                          <b class="text-success mb-3">#{{$order_overday[$ky]->invoice_number}}</b><br>  
+                                          <span class="badge badge-secondary" style="border-radius:10px;">{{$order_overday[$ky]->status}}</span><br>
+                                        
+                                        
+                                          <b>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->store_name : ''}}</b>,<br>
+                                          <span>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->address :''}}
+                                        </div>
                                     </li>
                                   @endforeach
                                 @else
