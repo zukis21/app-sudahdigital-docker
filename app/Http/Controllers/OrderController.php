@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExportMapping;
+use App\Exports\OrdersThisPeriod;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -223,9 +224,26 @@ class OrderController extends Controller
         return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list, 'vendor'=>$vendor,'order_cancel'=>$order_cancel]);
     }
 
-    public function export_mapping($vendor) {
+    /*public function export_mapping($vendor) {
         return Excel::download( new OrdersExportMapping(), 'Orders.xlsx') ;
+    }*/
+
+    public function export_mapping(Request $request, $vendor){
+        $period = $request->get('period');
+        $date_explode = explode('-',$period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+        //$type = $request->get('target_type');
+        
+        return Excel::download(new OrdersExportMapping($year,$month), 'Orders.xlsx');
+    } 
+    
+    public function exportThisPeriod($vendor){
+        $year = date('Y');
+        $month = date('m');
+        return Excel::download(new OrdersThisPeriod($year,$month), 'Orders.xlsx');
     }
+      
 
     public function new_customer($vendor, $id, $payment = null){
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){

@@ -35,11 +35,42 @@
 		</ul>
 	</div>
 	<div class="col-md-2">
-		
-		<a href="{{route('orders.export_mapping',[$vendor]) }}" 
-			class="btn btn-success pull-right {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}">
+		@if(\Auth::user()->roles == 'SUPERADMIN')
+			
+			<a class="btn btn-success pull-right" href="" data-toggle="modal" data-target="#exportOrderModal">
+				<i class="fas fa-file-excel fa-0x "></i> Export
+			</a>
+			<div class="modal fade" id="exportOrderModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<form id="form_validation" method="post" action="{{route('orders.export_mapping',[$vendor]) }}">
+							@csrf
+							<div class="modal-body">
+								
+									<h2 class="card-inside-title">Period</h2>
+									<div class="form-group">
+										<div class="form-line " >
+											<input type="text" name="period" autocomplete="off" required
+											id="bs_datepicker_container" class=" form-control" placeholder="Please choose a date...">
+										</div>
+									</div>
+									
+								
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
+								<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		@elseif(\Auth::user()->roles == 'ADMIN' || \Auth::user()->roles == 'SUPERVISOR')
+		<a href="{{route('orders.exportThisPeriod',[$vendor]) }}" 
+			class="btn btn-success pull-right ">
 			<i class="fas fa-file-excel fa-0x "></i> Export
 		</a>
+		@endif
 	</div>
 </div>
 	
@@ -147,5 +178,17 @@
 			"order": [[ 4, "desc" ]]
 		});
 	});
+
+	var dp=$("#bs_datepicker_container").datepicker( {
+		format: "yyyy-mm",
+		startView: "months", 
+		minViewMode: "months",
+	});
+
+	dp.on('changeMonth', function (e) {
+            //var dateObject = $("#datepicker").val();    
+            //do something here
+            $(".datepicker").hide();
+        });
 </script>
 @endsection

@@ -40,7 +40,9 @@
 				<th>Bonus Amount</th>
 				<th>Claim Date</th>
 				<th>Status</th>
-				<th>#</th>
+				@if(\Auth::user()->roles == 'ADMIN' || \Auth::user()->roles == 'SUPERADMIN')
+					<th>#</th>
+				@endif
 			</tr>
 		</thead>
 		<tbody>
@@ -65,18 +67,21 @@
 							<span class="badge bg-green text-light">{{$c->status}}</span>
 						@endif
 					</td>
-					<td>
-						@if ($c->status == 'SUBMIT')
-							@if(Request::get('status') == NULL && Request::path() == $vendor.'/points-claim')
-								<?php $status = null;?>
-							@elseif(Request::get('status') == 'submit')
-								<?php $status = 'SUBMIT';?>
-							@endif
-							<a href="{{route('claim.finish',[$vendor,$c->id,'status'=>$status])}}">
-								<i class="material-icons">check_circle</i>
-							</a>
-						@endif	
-					</td>
+					@if(\Auth::user()->roles == 'ADMIN' || \Auth::user()->roles == 'SUPERADMIN')
+						<td>
+							
+							@if ($c->status == 'SUBMIT')
+								@if(Request::get('status') == NULL && Request::path() == $vendor.'/points-claim')
+									<?php $status = null;?>
+								@elseif(Request::get('status') == 'submit')
+									<?php $status = 'SUBMIT';?>
+								@endif
+								<a href="{{route('claim.finish',[$vendor,$c->id,'status'=>$status])}}">
+									<i class="material-icons">check_circle</i>
+								</a>
+							@endif	
+						</td>
+					@endif
 				</tr>
 			@endforeach
 		</tbody>

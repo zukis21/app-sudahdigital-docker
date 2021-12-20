@@ -362,13 +362,15 @@
                                 <li class="{{request()->routeIs('orders.index') ? 'active' : '' }}">
                                     <a href="{{route('orders.index',[$vendor])}}">{{Gate::check('isSpv') ? 'Orders Lists' : 'Orders'}}</a>
                                 </li>
-                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
                                     <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
                                         <a href="{{route('customers_points.index',[$vendor])}}">Orders Points</a>
                                     </li>
                                     <li class="{{request()->routeIs('ClaimPoints.index') ? 'active' : '' }}">
                                         <a href="{{route('ClaimPoints.index',[$vendor])}}">Points Claim</a>
                                     </li>
+                                @endif
+                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                     <li class="{{request()->routeIs('reasons.index') ? 'active' : '' }}">
                                         <a href="{{route('reasons.index',[$vendor])}}">Checkout Reasons List</a>
                                     </li>
