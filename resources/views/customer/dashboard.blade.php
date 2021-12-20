@@ -1035,53 +1035,106 @@
                                     $keys = array_keys($last_orders);
                                   @endphp
                                   @foreach($keys as $key)
-                                    <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                      border-bottom-left-radius:0;">
-                                        <div class="float-left ml-n3" style="margin-right:35%;">
-                                          <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
-                                        </div>
-                                        <div class="last-order-info">
+                                    @if($last_orders[$key] == '')
+                                      <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                        border-bottom-left-radius:0;">
+                                          <div class="float-left ml-n3" style="margin-right:35%;">
+                                            <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                          </div>
+                                          <div class="last-order-info">
+                                            
+                                            <a class="pe-auto popoverData" data-container="body" 
+                                              data-toggle="popover" data-placement="top" 
+                                              data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}" 
+                                              data-trigger="hover">
+                                              @if($last_orders[$key] != '')
+                                                <span class="badge badge-info" style="cursor: pointer">{{$last_orders[$key]}} Hari</span>
+                                              @endif
+                                            </a>
                                           
+                                          </div>
+                                          <br><p class="mb-n3 ml-n3">{{$cust_not_exists[$key]->address}}</p><br>
+                                        @php
+                                            [$visit_off,$visit_on] = App\Http\Controllers\DashboardSalesController::visitNoOrder($cust_not_exists[$key]->id);
+                                            $visit = $visit_off + $visit_on;
+                                        @endphp
+                                        @if($visit_off > 0 )
+                                          <!--
                                           <a class="pe-auto popoverData" data-container="body" 
                                             data-toggle="popover" data-placement="top" 
-                                            data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}" 
+                                            data-content="Visit tanpa order." 
                                             data-trigger="hover">
-                                            @if($last_orders[$key] != '')
-                                              <span class="badge badge-info" style="cursor: pointer">{{$last_orders[$key]}} Hari</span>
-                                            @endif
+                                            <i class="fas fa-times-circle text-danger mr-1 ml-n3"></i><b class="text-secondary">{{$visit}}</b>
                                           </a>
-                                        
-                                        </div>
-                                        <br><p class="mb-n3 ml-n3">{{$cust_not_exists[$key]->address}}</p><br>
-                                      @php
-                                          [$visit_off,$visit_on] = App\Http\Controllers\DashboardSalesController::visitNoOrder($cust_not_exists[$key]->id);
-                                          $visit = $visit_off + $visit_on;
-                                      @endphp
-                                      @if($visit_off > 0 )
-                                        <!--
-                                        <a class="pe-auto popoverData" data-container="body" 
-                                          data-toggle="popover" data-placement="top" 
-                                          data-content="Visit tanpa order." 
-                                          data-trigger="hover">
-                                          <i class="fas fa-times-circle text-danger mr-1 ml-n3"></i><b class="text-secondary">{{$visit}}</b>
-                                        </a>
-                                        -->
-                                        <a class="pe-auto popoverData" data-container="body" 
-                                          data-toggle="popover" data-placement="top" 
-                                          data-content="Check out tanpa order & Off Location." 
-                                          data-trigger="hover">
-                                          <i class="fal fa-location-slash text-danger mr-1 ml-n3"></i><b class="text-danger">{{$visit_off}}</b>
-                                        </a>
-                                      @endif
-                                      @if($visit_on > 0)
-                                        <a class="pe-auto popoverData" data-container="body" 
-                                          data-toggle="popover" data-placement="top" 
-                                          data-content="Checkout tanpa order & On Location." 
-                                          data-trigger="hover">
-                                          <i class="fal fa-location text-danger mr-1 {{$visit_off > 0 ? 'ml-3' : 'ml-n3'}}"></i><b class="text-danger">{{$visit_on}}</b>
-                                        </a>
-                                      @endif 
-                                    </li>
+                                          -->
+                                          <a class="pe-auto popoverData" data-container="body" 
+                                            data-toggle="popover" data-placement="top" 
+                                            data-content="Check out tanpa order & Off Location." 
+                                            data-trigger="hover">
+                                            <i class="fal fa-location-slash text-danger mr-1 ml-n3"></i><b class="text-danger">{{$visit_off}}</b>
+                                          </a>
+                                        @endif
+                                        @if($visit_on > 0)
+                                          <a class="pe-auto popoverData" data-container="body" 
+                                            data-toggle="popover" data-placement="top" 
+                                            data-content="Checkout tanpa order & On Location." 
+                                            data-trigger="hover">
+                                            <i class="fal fa-location text-danger mr-1 {{$visit_off > 0 ? 'ml-3' : 'ml-n3'}}"></i><b class="text-danger">{{$visit_on}}</b>
+                                          </a>
+                                        @endif 
+                                      </li>
+                                    @endif
+                                  @endforeach
+                                  @foreach($keys as $key)
+                                    @if($last_orders[$key] != '')
+                                      <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                        border-bottom-left-radius:0;">
+                                          <div class="float-left ml-n3" style="margin-right:35%;">
+                                            <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                          </div>
+                                          <div class="last-order-info">
+                                            
+                                            <a class="pe-auto popoverData" data-container="body" 
+                                              data-toggle="popover" data-placement="top" 
+                                              data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}" 
+                                              data-trigger="hover">
+                                              @if($last_orders[$key] != '')
+                                                <span class="badge badge-info" style="cursor: pointer">{{$last_orders[$key]}} Hari</span>
+                                              @endif
+                                            </a>
+                                          
+                                          </div>
+                                          <br><p class="mb-n3 ml-n3">{{$cust_not_exists[$key]->address}}</p><br>
+                                        @php
+                                            [$visit_off,$visit_on] = App\Http\Controllers\DashboardSalesController::visitNoOrder($cust_not_exists[$key]->id);
+                                            $visit = $visit_off + $visit_on;
+                                        @endphp
+                                        @if($visit_off > 0 )
+                                          <!--
+                                          <a class="pe-auto popoverData" data-container="body" 
+                                            data-toggle="popover" data-placement="top" 
+                                            data-content="Visit tanpa order." 
+                                            data-trigger="hover">
+                                            <i class="fas fa-times-circle text-danger mr-1 ml-n3"></i><b class="text-secondary">{{$visit}}</b>
+                                          </a>
+                                          -->
+                                          <a class="pe-auto popoverData" data-container="body" 
+                                            data-toggle="popover" data-placement="top" 
+                                            data-content="Check out tanpa order & Off Location." 
+                                            data-trigger="hover">
+                                            <i class="fal fa-location-slash text-danger mr-1 ml-n3"></i><b class="text-danger">{{$visit_off}}</b>
+                                          </a>
+                                        @endif
+                                        @if($visit_on > 0)
+                                          <a class="pe-auto popoverData" data-container="body" 
+                                            data-toggle="popover" data-placement="top" 
+                                            data-content="Checkout tanpa order & On Location." 
+                                            data-trigger="hover">
+                                            <i class="fal fa-location text-danger mr-1 {{$visit_off > 0 ? 'ml-3' : 'ml-n3'}}"></i><b class="text-danger">{{$visit_on}}</b>
+                                          </a>
+                                        @endif 
+                                      </li>
+                                    @endif
                                   @endforeach
                                 @else
                                   <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
