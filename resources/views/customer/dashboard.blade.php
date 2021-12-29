@@ -1566,7 +1566,7 @@
             categories: sales
           },
           yAxis: {
-            max: 150,
+            max: 250,
               title: {
                 text: 'Persentase'
             },
@@ -1611,7 +1611,7 @@
             categories: sales
           },
           yAxis: {
-            max: 150,
+            max: 250,
               title: {
                 text: 'Persentase'
             },
