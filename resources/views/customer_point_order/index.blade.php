@@ -71,7 +71,7 @@
 							@endphp
 						</td>
 						<td>
-							{{number_format($c->grand_total,2)}}	
+							{{number_format($c->totalpoint,2)}}	
 						</td>
 						<td>
 							{{number_format($c->grand_total + $rest ,2)}}	
