@@ -366,4 +366,49 @@ $no=$count_nt_paket;
         return $alphabet;
     }
 
+    public static function cekDiscountVolume($order_id){
+        $amountVdisc = \App\order_product::where('order_id',$order_id)->get();
+        $amountNodisc = \App\order_product::where('order_id',$order_id)
+                      ->where('vol_disc_price',0)
+                      ->whereNull('bonus_cat')
+                      ->get();
+        $totalPriceDisc = 0;
+        $totalPriceNoDisc = 0;
+
+        foreach($amountVdisc as $amount){
+            $totalPriceDisc += $amount->quantity * $amount->vol_disc_price; 
+        }
+
+        foreach($amountNodisc as $amNoDisc){
+            $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item_promo;
+        }
+
+
+        return $totalPriceNoDisc + $totalPriceDisc;
+    }
+
+    public static function PriceNoPktTotal($order_id){
+        $amountVdisc = \App\order_product::where('order_id',$order_id)
+                     ->get();
+
+        $amountNodisc = \App\order_product::where('order_id',$order_id)
+                      ->where('vol_disc_price',0)
+                      ->whereNull('group_id')
+                      ->get();
+
+        $totalPriceDisc = 0;
+        $totalPriceNoDisc = 0;
+
+        foreach($amountVdisc as $amount){
+            $totalPriceDisc += $amount->quantity * $amount->vol_disc_price; 
+        }
+
+        foreach($amountNodisc as $amNoDisc){
+            $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item_promo;
+        }
+
+
+        return $totalPriceNoDisc + $totalPriceDisc;
+    }
+
 }

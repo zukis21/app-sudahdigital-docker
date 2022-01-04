@@ -175,8 +175,9 @@
                 
                 $per_par_type = App\Http\Controllers\DashboardController::PeriodType($period_par);
                 
-                $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
-                $total_ach_pareto = $total_ap[0];
+                //$total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
+                //$total_ach_pareto = $total_ap[0];
+                $total_ach_pareto = $ach_p / 1.1;
                 /*$total_ach_pareto_ppn = $total_ap[0];
                 if($target->ppn == 1){
                     $total_ach_pareto = $total_ach_pareto_ppn/1.1;

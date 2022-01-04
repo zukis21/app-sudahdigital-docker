@@ -150,5 +150,10 @@ class AuthServiceProvider extends ServiceProvider
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
             return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN' || $user->roles == 'SUPERVISOR');
         });
+
+        Gate::define('volume-discount', function($user){
+            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+        });
     }
 }

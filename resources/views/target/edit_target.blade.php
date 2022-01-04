@@ -78,10 +78,12 @@
                 </div>
             </div>
 
+            <!--
             <div class="form-group m-t-40">
                 <input type="checkbox" name="ppn" id="ppn" value="1" {{$target->ppn == '1' ? 'checked' : ''}}>
                 <label for="ppn">Apply VAT(PPN) For Sales</label>
             </div>
+            -->
             <button id="btnSubmit" class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
         </form>
         <!-- #END#  -->		

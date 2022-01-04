@@ -179,16 +179,24 @@ class DashboardSalesController extends Controller
                         ->where('status','!=','NO-ORDER')
                         ->whereMonth('created_at', $month)
                         ->whereYear('created_at', $year)
-                        ->selectRaw('sum(total_price) as sum')
-                        ->pluck('sum');
-            $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
-            $ach_value_ppn = $ach[0];
+                        ->get();
+                        /*->selectRaw('sum(total_price) as sum')
+                        ->pluck('sum');*/
+            $targ_ach_total = 0;       
+            foreach( $targ_ach as $orderTargAch){
+                $PriceTotal = \App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($orderTargAch->id);
+                $targ_ach_total +=  $PriceTotal;
+            }
 
+            $ach_value = $targ_ach_total/1.1;
+            //$ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+            //$ach_value_ppn = $ach[0];
+            /*$ach_value_ppn = $targ_ach_total;
             if($userval->ppn == 1){
                 $ach_value = $ach_value_ppn/1.1;
             }else{
                 $ach_value = $ach_value_ppn;
-            }
+            }*/
 
             
             if($userval->target_values > 0){
@@ -447,7 +455,7 @@ class DashboardSalesController extends Controller
 
     public static function achUserPareto($user_id,$month,$year,$pr,$period_par)
     {
-        $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+        /*$ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
                 {
                     return $q->where('version_pareto',$pr)
                     ->where('period',$period_par);
@@ -459,8 +467,27 @@ class DashboardSalesController extends Controller
                 ->where('status','!=','CANCEL')
                 ->where('status','!=','NO-ORDER')
                 ->selectRaw('sum(total_price) as sum')
-                ->pluck('sum');
-        return $ach_p;             
+                ->pluck('sum');*/
+
+        $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+                {
+                    return $q->where('version_pareto',$pr)
+                    ->where('period',$period_par);
+                })
+                ->where('user_id',$user_id)
+                ->whereNotNull('customer_id')
+                ->whereMonth('created_at', '=', $month)
+                ->whereYear('created_at', '=', $year)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->get(); 
+        $ach_p_total = 0;       
+        foreach( $ach_p as $order){
+            $PriceTotal = \App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($order->id);
+            $ach_p_total +=  $PriceTotal;
+        }       
+        
+        return $ach_p_total;             
     }
 
     public static function achQuantity(){

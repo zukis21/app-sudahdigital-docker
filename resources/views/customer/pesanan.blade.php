@@ -257,9 +257,11 @@
                                             @endif
                                             <!--<span class="data-list-order"><p class="mb-n1 mt-2">Total Quantity</p></span>
                                             <b class="data-list-order"> {{$order->totalQuantity}}</b><br>-->
-
+                                            @php
+                                                $PriceTotal = App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($order->id);
+                                            @endphp
                                             <span class="data-list-order"><p class="mb-n1 mt-2">Total Harga</p></span>
-                                            <b class="data-list-order"> Rp. {{number_format($order->total_price)}}</b><br>
+                                            <b class="data-list-order"> Rp. {{number_format($PriceTotal)}}</b><br>
                                             
                                             <a onclick="open_detail_list('{{$order->id}}')" style="cursor: pointer;">
                                                 <span class="style-badge badge text-light mt-2"

@@ -85,7 +85,7 @@ class AjaxDetailPesananSales extends Controller
                     $color_badge = 'bg-dark';
                 }
 
-                
+                $PriceTotal = \App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($order->id);
 
                 $output.='
                 <tr>
@@ -105,7 +105,7 @@ class AjaxDetailPesananSales extends Controller
                         <b class="data-list-order"></b><br>-->
 
                         <span class="data-list-order"><p class="mb-n1 mt-2">Total Harga</p></span>
-                        <b class="data-list-order"> Rp. '.number_format($order->total_price).'</b><br>
+                        <b class="data-list-order"> Rp. '.number_format($PriceTotal).'</b><br>
                         
                         <a onclick="open_detail_list('.$order->id.')" style="cursor: pointer;">
                             <span class="style-badge badge text-light mt-2"
@@ -326,6 +326,14 @@ class AjaxDetailPesananSales extends Controller
                                                 }
                                             }
                                         }
+                                        if($p->pivot->vol_disc_price > 0){
+                                            echo'<br>
+                                            <span>
+                                                <small>
+                                                    <small><b>@Rp. '.number_format($p->pivot->vol_disc_price, 0, ',', '.').'</b></small>
+                                                </small>
+                                            </span>';
+                                        }
                                     echo'</td>
                                     <td style="padding-bottom:0;">
                                         <small>
@@ -333,20 +341,24 @@ class AjaxDetailPesananSales extends Controller
                                         </small>
                                     </td>
                                     <td width="40%" align="right" style="padding-bottom:0;">';
+                                    if($p->pivot->vol_disc_price > 0){
+                                        echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->vol_disc_price * $p->pivot->quantity, 0, ',', '.').'</p></small>';
+                                    }else{
                                         if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
                                         echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
                                         }else{
-                                        echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                        echo '<small><p style="line-height:1.2;">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></small>';
                                         }
+                                    }
                                     echo'</td>
                                 </tr>';
                             }
                             echo '<tr>';
-                                $pirce_r = \App\order_product::where('order_id',$order->id)
+                                /*$pirce_r = \App\order_product::where('order_id',$order->id)
                                     ->whereNull('group_id')
                                     ->whereNull('paket_id')
                                     ->whereNull('bonus_cat')
-                                    ->sum(\DB::raw('price_item * quantity'));
+                                    ->sum(\DB::raw('price_item * quantity'));*/
                                 
                                 echo'<td colspan="2" align="right">
                                     <small>
@@ -357,8 +369,9 @@ class AjaxDetailPesananSales extends Controller
                                 </td>
                                 <td width="40%" align="right">
                                     <small>
-                                        <p style="line-height:1.2;">
-                                            <b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b>
+                                        <p style="line-height:1.2;">';
+                                            $PriceNoPktTotal = \App\Http\Controllers\TransaksiSalesController::PriceNoPktTotal($order->id);
+                                            echo '<b>Rp. '.number_format($PriceNoPktTotal, 0, ',', '.').'</b>
                                         </p>
                                     </small>
                                 </td>
@@ -454,12 +467,15 @@ class AjaxDetailPesananSales extends Controller
                     </table>';
                 }
             }
+            $PriceTotal = \App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($order->id);
             echo '<div class="grand-total" style="">
                 
                     <table width="100%" class="table table-hover">
                         <thead class="thead-light">
                             <th style="border-bottom:none;" width="" class="text-right"><small><p style="line-height:1.2;"><b>Grand Total :</p></small></th>
-                            <th style="border-bottom:none;" width="40%" class="text-right"><small><p style="line-height:1.2;"><b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></small></th>
+                            <th style="border-bottom:none;" width="40%" class="text-right"><small><p style="line-height:1.2;">
+                                <b>Rp. '.number_format($PriceTotal, 0, ',', '.').'</b></small>
+                            </th>
                         </thead>
                     </table>
                 

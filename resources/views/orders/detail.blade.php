@@ -75,20 +75,32 @@
                                     @endif
                                 </td>
                                 <td style="padding-top:5px;">{{$p->pivot->quantity}}</td>
-                                <td style="padding-top:5px;">Rp. {{number_format($p->pivot->price_item, 0, ',', '.')}}</td>
-                                <!--<td style="padding-top:5px;">{{$p->pivot->discount_item}}</td>
                                 <td style="padding-top:5px;">
-                                    @if(($p->pivot->price_item_promo != NULL) && ($p->pivot->price_item_promo > 0))
-                                    {{number_format($p->pivot->price_item_promo, 0, ',', '.')}}
+                                    @if($p->pivot->vol_disc_price > 0)
+                                        Rp. {{number_format($p->pivot->vol_disc_price, 0, ',', '.')}}
                                     @else
-                                    ---
+                                        Rp. {{number_format($p->pivot->price_item, 0, ',', '.')}}
                                     @endif
-                                </td>-->
+                                </td>
+                                <!--
+                                    <td style="padding-top:5px;">{{$p->pivot->discount_item}}</td>
+                                    <td style="padding-top:5px;">
+                                        @if(($p->pivot->price_item_promo != NULL) && ($p->pivot->price_item_promo > 0))
+                                        {{number_format($p->pivot->price_item_promo, 0, ',', '.')}}
+                                        @else
+                                        ---
+                                        @endif
+                                    </td>
+                                -->
                                 <td align="right">
-                                    @if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0))
-                                    Rp. {{number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.')}}
+                                    @if($p->pivot->vol_disc_price > 0)
+                                        Rp. {{number_format($p->pivot->vol_disc_price * $p->pivot->quantity, 0, ',', '.')}}
                                     @else
-                                    Rp. {{number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.')}}
+                                        @if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0))
+                                        Rp. {{number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.')}}
+                                        @else
+                                        Rp. {{number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.')}}
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -131,14 +143,15 @@
                         -->
                         <tr>
                             @php
-                                $pirce_r = \App\order_product::where('order_id',$order->id)
+                                /*$pirce_r = \App\order_product::where('order_id',$order->id)
                                 ->whereNull('group_id')
                                 ->whereNull('paket_id')
                                 ->whereNull('bonus_cat')
-                                ->sum(\DB::raw('price_item * quantity'));
+                                ->sum(\DB::raw('price_item * quantity'));*/
+                                $PriceNoPktTotal = App\Http\Controllers\OrderController::PriceNoPktTotal($order->id);
                             @endphp
                             <td colspan="3" align="right" width="85%"><b>Total Price :</b></td>
-                            <td align="right"><b>Rp. {{number_format($pirce_r, 0, ',', '.')}}</b></td>
+                            <td align="right"><b>Rp. {{number_format($PriceNoPktTotal, 0, ',', '.')}}</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -252,7 +265,12 @@
             <table width="100%" class="table">
                 <thead>
                     <th width="85%" class="text-right">Grand Total :</th>
-                    <th width="" class="text-right">Rp. {{number_format($order->total_price, 0, ',', '.')}}</th>
+                    <th width="" class="text-right">
+                        @php
+                            $PriceTotal = App\Http\Controllers\OrderController::cekDiscountVolume($order->id);
+                        @endphp
+                        Rp. {{number_format($PriceTotal, 0, ',', '.')}}
+                    </th>
                 </thead>
             </table>
         </div>

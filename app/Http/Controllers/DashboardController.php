@@ -366,7 +366,7 @@ class DashboardController extends Controller
     public static function achUserPareto($idSpv,$month,$year,$pr,$period_par)
     {
         $period = $year.'-'.$month.'-01';
-        $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+        $ach_p = \App\Order::select('id as orderId')->whereHas('store_target', function($q) use($period_par,$pr)
                 {
                     return $q->where('version_pareto',$pr)
                     ->where('period',$period_par);
@@ -386,9 +386,17 @@ class DashboardController extends Controller
                 ->whereYear('created_at', '=', $year)
                 ->where('status','!=','CANCEL')
                 ->where('status','!=','NO-ORDER')
-                ->selectRaw('sum(total_price) as sum')
-                ->pluck('sum');
-        return $ach_p;             
+                ->get();
+                //->selectRaw('sum(total_price) as sum')
+                //->pluck('sum');
+
+        $total_nml = 0;
+        foreach( $ach_p as $order){
+                $PriceTotal = \App\Http\Controllers\OrderController::cekDiscountVolume($order->orderId);
+                $total_nml += $PriceTotal;
+        }
+        
+        return $total_nml;             
     }
 
     public static function achUsrTgQtyPareto($idSpv,$month,$year,$pr,$period_par)
@@ -574,7 +582,7 @@ class DashboardController extends Controller
         foreach($sales as $sls){
             $target = $_this->salesTargetperSales($sls->sls_id,$month,$year);
             
-                $order_ach = \App\Order::whereHas('sales_targets',function($query) use ($month,$year){
+                $order_ach = \App\Order::select('id as orderId')->whereHas('sales_targets',function($query) use ($month,$year){
                                 $query->where('period',$year.'-'.$month.'-01')
                                       ->where(function($qr) {
                                             $qr->where('target_type','=',2)
@@ -587,28 +595,34 @@ class DashboardController extends Controller
                             ->whereYear('created_at', '=', $year)
                             ->where('status','!=','CANCEL')
                             ->where('status','!=','NO-ORDER')
-                            //->get();
-                            ->selectRaw('sum(total_price) as sum')
-                            ->pluck('sum');
-                $ach = json_decode($order_ach,JSON_NUMERIC_CHECK);
-                $ach_value_ppn = $ach[0];
-
+                            ->get();
+                            //->selectRaw('sum(total_price) as sum')
+                            //->pluck('sum');
+                //$ach = json_decode($order_ach,JSON_NUMERIC_CHECK);
+                //$ach_value_ppn = $ach[0];
+               
+                $total_nml = 0;
+                foreach( $order_ach as $order){
+                        $PriceTotal = \App\Http\Controllers\OrderController::cekDiscountVolume($order->orderId);
+                        $total_nml += $PriceTotal;
+                }
                 /*$total_ach_ppn = 0;
                 foreach($order_ach as $p){
                     $total_ach_ppn += $p->total_price;
                 }*/
-
-            if($target){
-                if($target->ppn == 1){
-                    $total_ach_ = $ach_value_ppn/1.1;
+                /*$ach_value_ppn = $total_nml;
+                if($target){
+                    if($target->ppn == 1){
+                        $total_ach_ = $ach_value_ppn/1.1;
+                    }else{
+                        $total_ach_ = $ach_value_ppn;
+                    }
                 }else{
-                    $total_ach_ = $ach_value_ppn;
+                    $total_ach_ = 0;
                 }
-            }else{
-                $total_ach_ = 0;
-            }
+                $total_ach += $total_ach_;*/
 
-            $total_ach += $total_ach_;
+            $total_ach += $total_nml;
         }
         
 
@@ -628,7 +642,7 @@ class DashboardController extends Controller
         return $order_ach;
         */
 
-        return $total_ach;
+        return $total_ach/1.1;
     }
 
     //sales dashboard
@@ -751,7 +765,7 @@ class DashboardController extends Controller
 
     public static function achUserParetoPerSales($user_id,$month,$year,$pr,$period_par)
     {
-        $ach_p = \App\Order::whereHas('store_target', function($q) use($period_par,$pr)
+        $ach_p = \App\Order::select('id as orderId')->whereHas('store_target', function($q) use($period_par,$pr)
                 {
                     return $q->where('version_pareto',$pr)
                     ->where('period',$period_par);
@@ -762,9 +776,16 @@ class DashboardController extends Controller
                 ->whereYear('created_at', '=', $year)
                 ->where('status','!=','CANCEL')
                 ->where('status','!=','NO-ORDER')
-                ->selectRaw('sum(total_price) as sum')
-                ->pluck('sum');
-        return $ach_p;             
+                ->get();
+                //->selectRaw('sum(total_price) as sum')
+                //->pluck('sum');
+        $total_price = 0;
+        foreach($ach_p as $order){
+            $PriceTotal = \App\Http\Controllers\OrderController::cekDiscountVolume($order->orderId);
+            $total_price += $PriceTotal;
+        }
+                
+        return $total_price / 1.1;             
     }
 
     public static function achUsrTgQtyParetoPerSales($user_id,$month,$year,$pr,$period_par)
@@ -1121,16 +1142,24 @@ class DashboardController extends Controller
                         ->where('status','!=','NO-ORDER')
                         ->whereMonth('created_at', $month)
                         ->whereYear('created_at', $year)
-                        ->selectRaw('sum(total_price) as sum')
-                        ->pluck('sum');
-            $ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
-            $ach_value_ppn = $ach[0];
+                        ->get();
+                        //->selectRaw('sum(total_price) as sum')
+                        //->pluck('sum');
+            //$ach = json_decode($targ_ach,JSON_NUMERIC_CHECK);
+            //$ach_value_ppn = $ach[0];
 
-            if($userval->ppn == 1){
+            $targ_ach_total = 0;       
+            foreach( $targ_ach as $orderTargAch){
+                $PriceTotal = \App\Http\Controllers\OrderController::cekDiscountVolume($orderTargAch->id);
+                $targ_ach_total +=  $PriceTotal;
+            }
+            $ach_value = $targ_ach_total/1.1;
+
+            /*if($userval->ppn == 1){
                 $ach_value = $ach_value_ppn/1.1;
             }else{
                 $ach_value = $ach_value_ppn;
-            }
+            }*/
 
             //nominal
             if($userval->target_values > 0){

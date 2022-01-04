@@ -240,7 +240,10 @@
                         </li>
 
                         <!--manage products-->
-                        <li class="{{request()->routeIs('products.index') || request()->routeIs('groups.index') || request()->routeIs('paket.index') ? 'active' : ''}}">
+                        <li class="{{request()->routeIs('products.index') || 
+                                    request()->routeIs('groups.index') || 
+                                    request()->routeIs('paket.index') || 
+                                    request()->routeIs('volume_discount.index') ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">hardware</i>
                                 <span>Manage Products</span>
@@ -248,6 +251,9 @@
                             <ul class="ml-menu">
                                 <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
                                     <a href="{{route('products.index',[$vendor])}}">Products</a>
+                                </li>
+                                <li class="{{request()->routeIs('volume_discount.index') ? 'active' : '' }}">
+                                    <a href="{{route('volume_discount.index',[$vendor])}}">Volume Discount</a>
                                 </li>
                                 <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
                                     <a href="{{route('groups.index',[$vendor])}}">Group</a>

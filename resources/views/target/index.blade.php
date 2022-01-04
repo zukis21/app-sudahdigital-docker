@@ -91,20 +91,20 @@
 										->whereMonth('created_at', '=', $month)
 										->whereYear('created_at', '=', $year)
 										->where('status','!=','CANCEL')->get();
-										$total_ach = 0;
-											foreach($order_ach as $p){
-												$total_ach += $p->total_price;
-											}
-										//return $total_ach;
-										
-										if($u->ppn == 1){
-											echo number_format($total_ach / 1.1);
-										}
-										else{
-											echo number_format($total_ach);
-										}
+								$total_ach = 0;
+								foreach($order_ach as $p){
+									$PriceTotal = App\Http\Controllers\OrderController::cekDiscountVolume($p->id);
+									$total_ach += $PriceTotal;
+								}
+								//return $total_ach;
+								echo number_format($total_ach / 1.1);
+								/*if($u->ppn == 1){
+									echo number_format($total_ach / 1.1);
+								}
+								else{
+									echo number_format($total_ach);
+								}*/
 							@endphp
-							<!--{{number_format($u->target_achievement)}}-->
 						</td>
 						<td>
 							

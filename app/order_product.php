@@ -21,5 +21,9 @@ class order_product extends Model
                             'preoder',
                             'deliveryQty',
                         ];
+
+    public function discountVolume(){
+        return $this->belongsTo('App\VolumeDiscountProduct','product_id','product_id');
+    }
     
 }

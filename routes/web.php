@@ -212,6 +212,17 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::put('/products/{id}/activate_or_deactivate', 'productController@actorderact')->name('products.actorderact');
     Route::get('/products_info/export', 'productController@exportProductInfo')->name('productsInfo.export');
 
+    //volume discount
+    Route::get('/volume-discount','volumeDiscountController@index')->name('volume_discount.index');
+    Route::get('/volume-discount/create', 'volumeDiscountController@create')->name('vDiscount.create');
+    Route::post('/volume-discount/store', 'volumeDiscountController@store')->name('vDiscount.store');
+    Route::get('/volume-discount/{id}/create-and-edit-product', 'volumeDiscountController@createEditProduct')->name('ProductDiscVolume.create');
+    Route::post('/volume_discount/item-import', 'volumeDiscountController@itemImport')->name('vDiscount.itemImport');
+    Route::get('/volume_discount/{itemId}/{volume_id}/delete', 'volumeDiscountController@deleteItem')->name('vDiscount.itemDelete');
+    Route::put('/volume_discount/{id}/update', 'volumeDiscountController@update')->name('vDiscount.update');
+    Route::get('/volume_discount_all_delete/{id}/delete', 'volumeDiscountController@deleteAllItem')->name('vDiscount.allItemDelete');
+    Route::get('/volume-discount-status/{id}/{status}', 'volumeDiscountController@editStatus')->name('vDiscount.status');
+
     //Group-paket
     Route::get('/groups', 'GroupController@index')->name('groups.index');
     Route::get('/groups/create', 'GroupController@create')->name('groups.create');

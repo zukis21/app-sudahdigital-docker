@@ -82,10 +82,14 @@
                 </div>
             </div>
             
+            <!--
             <div class="form-group m-t-40">
                 <input type="checkbox" name="ppn" id="ppn" value="1">
                 <label for="ppn">Apply VAT(PPN) For Sales</label>
             </div>
+            -->
+            <input type="hidden" name="ppn" value="0">
+
             <button id="btnSubmit" class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
         </form>
         <!-- #END#  -->		

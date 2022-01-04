@@ -154,7 +154,13 @@
 					{{$order->status == 'NO-ORDER' ? '' : 'DUS'}}
 				</td>
 				<td>{{$order->created_at}}</td>
-				<td>{{number_format($order->total_price)}}</td>
+				<td>
+					@php
+						$PriceTotal = App\Http\Controllers\OrderController::cekDiscountVolume($order->id);
+					@endphp
+					{{number_format($PriceTotal)}}
+					<!--{{number_format($order->total_price)}}-->
+				</td>
 				
 				<td>
 					<a class="btn btn-info btn-xs btn-block" href="{{route('orders.detail',[$vendor,Crypt::encrypt($order->id)])}}">Details</a>&nbsp;

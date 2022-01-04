@@ -41,5 +41,9 @@ class product extends Model
 
     public function products_rewards(){
         return $this->hasMany('App\ProductReward','product_id');
-    } 
+    }
+    
+    public function volumeDiscProduct (){
+        return $this->hasMany('App\VolumeDiscountProduct','product_id');
+    }
 }

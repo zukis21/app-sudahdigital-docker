@@ -259,16 +259,14 @@
 
             $total_ach_ppn = 0;
             foreach($order_ach as $p){
-              $PriceTotal = App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($p->id);
-              //$total_ach_ppn += $p->total_price;
-              $total_ach_ppn +=  $PriceTotal;
+              $total_ach_ppn += $p->total_price;
             }
-            $total_ach = $total_ach_ppn / 1.1;
-            /*if($target->ppn == 1){
+
+            if($target->ppn == 1){
               $total_ach = $total_ach_ppn/1.1;
             }else{
               $total_ach = $total_ach_ppn;
-            }*/
+            }
             
             //return $total_ach;
             //echo number_format($total_ach);
@@ -570,15 +568,13 @@
                         
                         $per_par_type = App\Http\Controllers\DashboardSalesController::PeriodType($period_par);
                         
-                        $total_ach_pareto = $ach_p / 1.1;
-                        //$total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
-                        //$total_ach_pareto_ppn = $total_ap[0];
-                        //$total_ach_pareto_ppn = $ach_p;
-                        /*if($target->ppn == 1){
+                        $total_ap = json_decode($ach_p,JSON_NUMERIC_CHECK);
+                        $total_ach_pareto_ppn = $total_ap[0];
+                        if($target->ppn == 1){
                           $total_ach_pareto = $total_ach_pareto_ppn/1.1;
                         }else{
                           $total_ach_pareto = $total_ach_pareto_ppn;
-                        }*/
+                        }
                       }
                       @endphp
                         <!--target/pencapaian pareto-->
@@ -1311,7 +1307,83 @@
               </div>
           </div>
         
-          
+          <!--
+          <div class="row justify-content-center" style="">
+              <div class="col-12" style="z-index: 2;">
+                  <section class="statistics">
+                      <div class="container-fluid">
+                        <div class="row">
+
+                          <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
+                            <div class="box w-100">
+                              <ul class="list-group w-100 " style="border-top-right-radius:20px;
+                              border-top-left-radius:20px;">
+                                <li class="list-group-item active border-right-0 border-left-0" 
+                                  style="background-color:#1A4066;
+                                        border-top-right-radius:20px;
+                                        border-top-left-radius:20px;
+                                        border-color:#1A4066;
+                                        color:#fff;">
+                                
+                                    <i class="fas fa-times bg-white py-1 px-2 mr-2 my-auto" 
+                                    style="color:#1A4066;border-radius:5px;float: left;"></i>
+                                  <span style="display: block; padding-left: 40px;">
+                                    <b>Toko Pareto Belum Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
+                                  </span>
+                                  
+                                </li>
+                                @if(count($cust_not_exists) > 0 )
+                                  @foreach ($cust_not_exists as $item)
+                                    <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                    border-bottom-left-radius:0;"><b>{{$item->store_name}}</b>,<br>{{$item->address}}</li>
+                                  @endforeach
+                                @else
+                                  <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                  border-bottom-left-radius:0;"><b>Nihil</b></li>
+                                @endif  
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 mb-4 d-flex" data-aos="fade-up">
+                            <div class="box w-100">
+                              <ul class="list-group w-100" style="border-top-right-radius:20px;
+                                border-top-left-radius:20px;">
+                                <li class="list-group-item active border-right-0 border-left-0" 
+                                  style="background-color:#1A4066;
+                                        border-top-right-radius:20px;
+                                        border-top-left-radius:20px;
+                                        border-color:#1A4066;
+                                        color:#fff;">
+                                <i class="fas fa-check bg-white py-1 mr-2" 
+                                style="color:#1A4066;border-radius:5px;float: left;padding-left:6px;padding-right:6px;"></i>
+                                <span style="display: block; padding-left: 40px;">
+                                  <b>Toko Pareto Sudah Order {{date('F Y', strtotime(\Carbon\Carbon::now()))}}</b>
+                                </span>
+                                </li>
+                                @if(count($cust_exists) > 0 )
+                                  @foreach ($cust_exists as $it)
+                                    <li class="list-group-item border-right-0 border-left-0" 
+                                    style="color: #1A4066;
+                                          border-bottom-right-radius:0;
+                                          border-bottom-left-radius:0;">
+                                          <b>{{$it->store_name}}</b>,<br>{{$it->address}} 
+                                      <//!--<span class="badge badge-warning">{{$it->pareto->pareto_code}}</span>--//>
+                                    </li>
+                                  @endforeach
+                                @else
+                                  <li class="list-group-item border-right-0 border-left-0" style="color: #1A4066;border-bottom-right-radius:0;
+                                  border-bottom-left-radius:0;"><b>Nihil</b></li>
+                                @endif  
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
+          -->
 
           <div class="row justify-content-center dashboard" style="">
             <div class="col-12 mt-2" style="z-index: 2;">
@@ -1570,7 +1642,7 @@
             categories: sales
           },
           yAxis: {
-            max: 250,
+            max: 150,
               title: {
                 text: 'Persentase'
             },
@@ -1615,7 +1687,7 @@
             categories: sales
           },
           yAxis: {
-            max: 250,
+            max: 150,
               title: {
                 text: 'Persentase'
             },

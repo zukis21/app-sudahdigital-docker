@@ -1093,57 +1093,57 @@
         }); 
 
         
-            $('#numberDay').on('keyup', function(){
+        $('#numberDay').on('keyup', function(){
             var token = $('meta[name="csrf-token"]').attr('content');
             var num = $('#numberDay').val();
             var date_now = <?php echo json_encode($date_now); ?>;
             var month = <?php echo json_encode($month); ?>;
             var year = <?php echo json_encode($year); ?>;
-                $.ajax({
-                    url: '{{URL::to('/ajax/deliveryDaySales')}}',
-                    type:'POST',
-                    data:{
-                        day : num,
-                        month : month,
-                        year : year,
-                        date_now : date_now,
-                        _token: token
-                    },
-                    success: function(data){
-                        $('#body_table').html(data);
-                        $('.popoverData').popover();
-                        console.log(num);
-                        //console.log($('#table_body_list').html(response));
-                        /*var len = 0;
-                        if(response['data'] != null){
-                            len = response['data'].length;
-                        }
-
-                        if(len > 0){
-                            
-                            for(var i=0; i<len; i++){
-                                var sls_id = response['data'][i].sls_id;
-                                var token = $('meta[name="csrf-token"]').attr('content');
-                                $.ajax({
-                                    url: '{{URL::to('/ajax/deliveryDaySales')}}',
-                                    type:'POST',
-                                    data:{
-                                        day : num,
-                                        sls_id : sls_id,
-                                        date_now : date_now,
-                                        _token: token
-                                    },
-                                    success: function(data){
-                                      $('#overD'+sls_id).text(data); 
-                                      console.log(len); 
-                                    }
-                                });
-                            }
-                            //$("#modal_validasi").modal('show');
-                        }*/ 
+            $.ajax({
+                url: '{{URL::to('/ajax/deliveryDaySales')}}',
+                type:'POST',
+                data:{
+                    day : num,
+                    month : month,
+                    year : year,
+                    date_now : date_now,
+                    _token: token
+                },
+                success: function(data){
+                    $('#body_table').html(data);
+                    $('.popoverData').popover();
+                    console.log(num);
+                    //console.log($('#table_body_list').html(response));
+                    /*var len = 0;
+                    if(response['data'] != null){
+                        len = response['data'].length;
                     }
-                });
+
+                    if(len > 0){
+                        
+                        for(var i=0; i<len; i++){
+                            var sls_id = response['data'][i].sls_id;
+                            var token = $('meta[name="csrf-token"]').attr('content');
+                            $.ajax({
+                                url: '{{URL::to('/ajax/deliveryDaySales')}}',
+                                type:'POST',
+                                data:{
+                                    day : num,
+                                    sls_id : sls_id,
+                                    date_now : date_now,
+                                    _token: token
+                                },
+                                success: function(data){
+                                    $('#overD'+sls_id).text(data); 
+                                    console.log(len); 
+                                }
+                            });
+                        }
+                        //$("#modal_validasi").modal('show');
+                    }*/ 
+                }
             });
+        });
         
     </script>
     @can('isSpv')

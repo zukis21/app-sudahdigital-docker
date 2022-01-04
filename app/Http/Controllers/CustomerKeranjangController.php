@@ -468,6 +468,27 @@ Email            : '.$customer->email.',
                         ->where('group_id','=',NULL)
                         ->where('paket_id','=',NULL)
                         ->get();
+
+                //if have discount volume
+                $cekCombineDisc = $this->volumeDiscCombineCek($orders->TotalQtyDiscVolume);
+                if(count($orders->products_nonpaket) > 0){
+                    foreach($orders->products_nonpaket as $p){
+                        $cekItemDisc = $this->volumeDiscPerItemCek($p->id,$p->pivot->quantity);
+                        if($cekItemDisc > 0){
+                            $pivotOrder = \App\order_product::findorFail($p->pivot->id);
+                            $pivotOrder->vol_disc_price = $cekItemDisc;
+                            $pivotOrder->save();
+
+                        }elseif($cekCombineDisc){
+                            $cekPriceDisc = $this->volumePriceDisc($p->id,$cekCombineDisc->id);
+                            if($cekPriceDisc){
+                                $pivotOrder = \App\order_product::findorFail($p->pivot->id);
+                                $pivotOrder->vol_disc_price = $cekPriceDisc->discount_price ;
+                                $pivotOrder->save();
+                            }
+                        }
+                    }
+                }
                 
 $ttle_nonpkt='*'.$message->o_tittle.'*
 ';              
@@ -1224,7 +1245,9 @@ $no=$count_nt_paket;
                 ->whereNull('bonus_cat')
                 ->distinct()
                 ->get(['paket_id','group_id']);
-                //dd($paket_list);
+        $cekCombineDisc = $this->volumeDiscCombineCek($order->TotalQtyDiscVolume);
+        //$cekCombineDisc = $this->cekTotalOrderDisc($id);
+        //dd($paket_list);
         //return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
         echo'
         <div id="PreviewToko_Produk" style="overflow: hidden;">
@@ -1255,11 +1278,11 @@ $no=$count_nt_paket;
             
             if(count($order->products_nonpaket) > 0){
                 echo'
-                <table width="100%" class="table table-hover ">
+                <table width="100%" class="table table-hover">
                     <thead style="background: #f0f1f2 !important;text-align:left;">
                         <th class="" width="50%" style="">
                             <small>
-                                <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;"><b>Produk (NonPaket)</b></p></small>
+                                <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;"><b>Produk</b></p></small>
                             </small>
                         </th>
                         <th width="10%" style="">
@@ -1281,6 +1304,10 @@ $no=$count_nt_paket;
                         </th>
                     </thead>
                     <tbody>';
+                        
+                        //echo dd ($cekCombineDisc);
+                        $totalPlusDiscItem = 0;
+                        $totl_param = 0;
                         foreach($order->products_nonpaket as $p){
                         echo'<tr>
                             <td width="50%" style="">
@@ -1291,7 +1318,19 @@ $no=$count_nt_paket;
                                         <span class="badge badge-info">Tersedia : '.$p->pivot->available.'</span>
                                         <span class="badge badge-warning">Pre-Order : '.$p->pivot->preorder.'</span>';
                                     }
+                                    $cekItemDisc = $this->volumeDiscPerItemCek($p->id,$p->pivot->quantity);
+                                    
+                                    if($cekItemDisc > 0){
+                                        echo'<br><span><small><b>@Rp. '.number_format($cekItemDisc, 0, ',', '.').'</b></small></span>';
+                                    }
+                                    if($cekCombineDisc){
+                                        $cekPriceDisc = $this->volumePriceDisc($p->id,$cekCombineDisc->id);
+                                        if($cekPriceDisc){
+                                            echo'<br><span><small><b>@Rp. '.number_format($cekPriceDisc->discount_price, 0, ',', '.').'</b></small></span>';
+                                       }
+                                    }
                                 echo'
+                                
                                 </small>
                             </td>
                             <td style="padding-bottom:0;">
@@ -1301,11 +1340,33 @@ $no=$count_nt_paket;
                                 </small>
                             </td>
                             <td width="40%" align="right" style="padding-bottom:0;" class="pl-0">';
-                                if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
-                                echo '<small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
+                                if($cekItemDisc > 0){
+                                    $paramDiscItem = $cekItemDisc * $p->pivot->quantity;
+                                    $PriceForSum = $cekItemDisc * $p->pivot->quantity;
+                                    echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($cekItemDisc * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                }elseif($cekCombineDisc){
+                                    if($cekPriceDisc){
+                                        $PriceForSum = $cekPriceDisc->discount_price * $p->pivot->quantity;
+                                        $paramDiscItem = 0;
+                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($cekPriceDisc->discount_price * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                    }else{
+                                        $PriceForSum = $p->pivot->price_item * $p->pivot->quantity;
+                                        $paramDiscItem = 0;
+                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                    }
                                 }else{
-                                echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                    if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
+                                        $PriceForSum = $p->pivot->price_item_promo * $p->pivot->quantity;
+                                        $paramDiscItem = 0;
+                                        echo '<small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
+                                    }else{
+                                        $PriceForSum = $p->pivot->price_item * $p->pivot->quantity;
+                                        $paramDiscItem = 0;
+                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                    }
                                 }
+                            $totalPlusDiscItem += $PriceForSum;
+                            $totl_param += $paramDiscItem;       
                             echo'</td>
                         </tr>';
                         }
@@ -1319,19 +1380,104 @@ $no=$count_nt_paket;
                                 ->whereNull('bonus_cat')
                                 ->sum(\DB::raw('price_item * quantity'));
                             
-                            echo'<td colspan="2" align="right">
+                            
+                            if($cekCombineDisc){
+                                $volume_id = $cekCombineDisc->id;
+                                /*$price_disc =  \App\order_product::whereHas('discountVolume',function($query) use ($volume_id){
+                                                    return $query->where('volume_id',$volume_id);
+                                                
+                                            })
+                                            ->where('order_id',$order->id)
+                                            ->whereNull('group_id')
+                                            ->whereNull('paket_id')
+                                            ->whereNull('bonus_cat')->get();*/
+
+                                $price_disc = \DB::select("SELECT * FROM order_product as op
+                                                            JOIN volume_discount_products as vdp
+                                                            ON op.product_id = vdp.product_id
+                                                            WHERE vdp.volume_id = '$volume_id'
+                                                            AND op.order_id = '$order->id'
+                                                            AND op.group_id IS NULL
+                                                            AND op. paket_id IS NULL
+                                                            AND op.bonus_cat IS NULL;");
+
+                                $priceVolume = 0;
+                                $priceNodisc = 0;
+                                foreach( $price_disc as $pd){
+                                    $priceVolume += $pd->quantity * $pd->discount_price;
+                                    $priceNodisc += $pd->quantity * $pd->price_item;
+                                }
+
+                                $minprice = $priceNodisc - $priceVolume;
+                                $price_rd = $pirce_r - $minprice;
+                                $grandDiscVolume = $order->total_price - $minprice;
+                                       
+                            }
+                            
+                            
+                            echo'
+                            <td width="50%" align="right">
                                 <small>
-                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Total Harga :</b></p></small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Total :</b></p></small>
                                 </small>
                             </td>
-                            <td align="right">
+                            <td align="left">
                                 <small>
-                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b></p></small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
+                                        <b>'.$order->TotalQtyDiscVolume.'</b></p>
+                                    </small>
+                                </small>
+                            </td>
+                            <td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
+                                        if($cekCombineDisc){
+                                            echo '<b>Rp. '.number_format($price_rd, 0, ',', '.').'</b></p>';
+                                        }elseif($totl_param > 0){
+                                            echo '<b>Rp. '.number_format($totalPlusDiscItem, 0, ',', '.').'</b></p>';
+                                        }
+                                        else{
+                                            echo '<b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b></p>';
+                                        }
+                                    echo '</small>
                                 </small>
                                 
                             </td>
-                        </tr>
-                    </tbody>
+                        </tr>';
+                        
+                        //grand total
+                    if(count( $paket_list) < 1){
+                        echo'
+                        <tr>
+                            <td width="50%" align="right">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Grand Total :</b></p></small>
+                                </small>
+                            </td>
+                            <td align="left">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
+                                        <b>'.$order->TotalQtyDiscVolume.'</b></p>
+                                    </small>
+                                </small>
+                            </td>
+                            <td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
+                                        if($cekCombineDisc){
+                                            echo '<b>Rp. '.number_format($grandDiscVolume, 0, ',', '.').'</b></p>';
+                                        }elseif($totl_param > 0){
+                                            echo '<b>Rp. '.number_format($totalPlusDiscItem, 0, ',', '.').'</b></p>';
+                                        }
+                                        else{
+                                            echo '<b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></p>';
+                                        }
+                                    echo'</small>
+                                </small>
+                            </td>
+                        </tr>';
+                    }
+                    echo'</tbody>
                 </table>';
             }
             
@@ -1375,6 +1521,7 @@ $no=$count_nt_paket;
                                             ->orderBy('bonus_cat','ASC')
                                             ->get();
                             foreach($cek_paket as $p){
+                            
                             echo'<tr>
                                 <td width="50%" style="padding-bottom:0;">';
                                     if($p->bonus_cat == NULL){
@@ -1416,9 +1563,16 @@ $no=$count_nt_paket;
                             }
                             
                             echo '<tr>
-                            <td colspan="2" align="right">
+                            <td width="50%" align="right">
                                 <small>
-                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Total Harga :</b></p></small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Total :</b></p></small>
+                                </small>
+                            </td>
+                            <td align="left">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
+                                        <b>'.$order->TotalQtyPaket.'</b></p>
+                                    </small>
                                 </small>
                             </td>';
                                     $pkt_pirce = \App\order_product::where('order_id',$order->id)
@@ -1426,32 +1580,49 @@ $no=$count_nt_paket;
                                     ->where('paket_id',$paket->paket_id)
                                     ->whereNull('bonus_cat')
                                     ->sum(\DB::raw('price_item * quantity'));
-                            echo'<td width="40%" align="right" class="pl-0">
+                            echo'<td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
                                     <small>
                                         <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($pkt_pirce, 0, ',', '.').'</b></p></small>
                                     </small>
                                 </td>
+                            </tr>';
+
+                            //grand total
+                            echo'<tr>
+                                <td width="50%" align="right">
+                                    <small>
+                                        <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Grand Total :</b></p></small>
+                                    </small>
+                                </td>
+                                <td align="left">
+                                    <small>
+                                        <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
+                                            <b>'.$order->TotalQtyDiscVolume+$order->TotalQtyPaket.'</b></p>
+                                        </small>
+                                    </small>
+                                </td>
+                                <td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
+                                    <small>
+                                        <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
+                                            if($cekCombineDisc){
+                                                echo '<b>Rp. '.number_format($grandDiscVolume, 0, ',', '.').'</b></p>';
+                                            }elseif((count($order->products_nonpaket) > 0) && ($totl_param > 0)){
+                                                $mingrandItem = $pirce_r - $totalPlusDiscItem;
+                                                $grandItem = $order->total_price - $mingrandItem;
+                                                echo '<b>Rp. '.number_format($grandItem, 0, ',', '.').'</b></p>';
+                                            }else{
+                                                echo '<b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></p>';
+                                            }
+                                        echo'</small>
+                                    </small>
+                                </td>
                             </tr>
+                            
                         </tbody>
                     </table>';
                 }
             }
-            echo '<div style="margin-top:-20px;">
-                <table width="100%" class="table table-hover">
-                    <thead >
-                        <th style="border-bottom:none;" width="62%" class="text-right">
-                            <small>
-                                <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Grand Total :</b></p></small>
-                            </small>
-                        </th>
-                        <th style="border-bottom:none;" width="" class="text-right pl-0">
-                            <small>
-                                <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></p></small>
-                            </small>
-                        </th>
-                    </thead>
-                </table>
-            </div>
+            echo '
         </div>';
 
         
@@ -1658,6 +1829,134 @@ $no=$count_nt_paket;
         }
                    
         return $totalQtyOrders;
+    }
+
+    public function volumeDiscPerItemCek($item_id,$total){
+        $cekVolumeDisc_ = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                ->where('max_order','=',0)
+                ->where('min_order','<=',$total)
+                ->where('type',2)
+                ->where('status','ACTIVE')
+                ->first();
+        if($cekVolumeDisc_){
+            $cekVolumeDiscP = \App\VolumeDiscountProduct::where('volume_id',$cekVolumeDisc_->id)
+                            ->where('product_id',$item_id)->first();
+            if($cekVolumeDiscP){
+                $priceVdisc = $cekVolumeDiscP->discount_price;
+            }else{
+                $priceVdisc = 0;
+            } 
+           
+
+        }else{
+            $cekVolumeDiscMinMax = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                    ->where('max_order','>=',$total)
+                    ->where('min_order','<=',$total)
+                    ->where('type',2)
+                    ->where('status','ACTIVE')
+                    ->first();
+            if($cekVolumeDiscMinMax){
+                $cekVolumeDiscP = \App\VolumeDiscountProduct::where('volume_id',$cekVolumeDiscMinMax->id)
+                            ->where('product_id',$item_id)->first();
+                if($cekVolumeDiscP){
+                    $priceVdisc = $cekVolumeDiscP->discount_price;
+                }else{
+                    $priceVdisc = 0;
+                } 
+            }else{
+                $cekVolumeDiscMax = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                        ->where('max_order','<=',$total)
+                        ->where('type',2)
+                        ->orderBy('max_order','DESC')
+                        ->where('status','ACTIVE')
+                        ->first();
+
+                if($cekVolumeDiscMax){
+                    $cekVolumeDiscP = \App\VolumeDiscountProduct::where('volume_id',$cekVolumeDiscMax->id)
+                                ->where('product_id',$item_id)->first();
+                    if($cekVolumeDiscP){
+                        $priceVdisc = $cekVolumeDiscP->discount_price;
+                    }else{
+                        $priceVdisc = 0;
+                    } 
+                }else{
+                    $priceVdisc = 0;
+                }
+            }
+
+        }
+
+        /*$cekVolumeDisc = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                        ->where('max_order','>=',$total)
+                        ->where('min_order','<=',$total)
+                        ->where('type',2)
+                        ->first();
+        if($cekVolumeDisc){
+            $cekVolumeDiscP = \App\VolumeDiscountProduct::where('volume_id',$cekVolumeDisc->id)
+                            ->where('product_id',$item_id)->first();
+            if($cekVolumeDiscP){
+                $priceVdisc = $cekVolumeDiscP->discount_price;
+            }else{
+                $priceVdisc = 0;
+            } 
+        }else{
+            $priceVdisc = 0;
+        }*/
+
+        return $priceVdisc;
+    }
+
+    public function volumeDiscCombineCek($total){
+        $cekVolumeDisc_ = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                        ->where('max_order','=',0)
+                        ->where('min_order','<=',$total)
+                        ->where('type',1)
+                        ->where('status','ACTIVE')
+                        ->first();
+        if($cekVolumeDisc_){
+            $cekVolumeDisc = $cekVolumeDisc_ ;
+            
+        }else{
+            $cekVolumeDiscMinMax = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                        ->where('max_order','>=',$total)
+                        ->where('min_order','<=',$total)
+                        ->where('type',1)
+                        ->where('status','ACTIVE')
+                        ->first();
+            if($cekVolumeDiscMinMax){
+                $cekVolumeDisc = $cekVolumeDiscMinMax ;
+            }else{
+                $cekVolumeDiscMax = \App\VolumeDiscount::where('client_id',\Auth::user()->client_id)
+                        ->where('max_order','<=',$total)
+                        ->where('type',1)
+                        ->orderBy('max_order','DESC')
+                        ->where('status','ACTIVE')
+                        ->first();
+                $cekVolumeDisc = $cekVolumeDiscMax ;
+            }
+            
+        }
+        
+    
+        return $cekVolumeDisc;
+    }
+
+    public function volumePriceDisc($item_id,$volume_id){
+        $cekVolumeDiscP = \App\VolumeDiscountProduct::where('volume_id',$volume_id)
+                            ->where('product_id',$item_id)->first();
+            
+
+        return $cekVolumeDiscP;
+    }
+
+    public function cekTotalOrderDisc($orderId){
+        $orderCek = \App\Order::with('products', function($query){
+                        $query->whereHas('volumDiscProduct');
+                    })
+                    ->where('id',$orderId)
+                    ->get();
+       
+        return $orderCek;
     }
     
 }

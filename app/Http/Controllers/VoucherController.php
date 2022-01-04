@@ -6,12 +6,30 @@ use Illuminate\Http\Request;
 
 class VoucherController extends Controller
 {
-    public function __construct(){
+    /*public function __construct(){
         $this->middleware(function($request, $next){
             
             if(Gate::allows('manage-vouchers')) return $next($request);
 
             abort(403, 'Anda tidak memiliki cukup hak akses');
+        });
+    }*/
+
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware(function($request, $next){
+            $param = \Route::current()->parameter('vendor');
+            $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+            if($client->client_slug == $param){
+                if(session()->get('client_sess')== null){
+                    \Request::session()->put('client_sess',
+                    ['client_name' => $client->client_name,'client_image' => $client->client_image]);
+                }
+                if(Gate::allows('manage-vouchers')) return $next($request);;
+                abort(403, 'Anda tidak memiliki cukup hak akses');
+            }else{
+                abort(404, 'Tidak ditemukan');
+            }
         });
     }
     /**

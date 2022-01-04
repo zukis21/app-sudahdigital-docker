@@ -10,13 +10,13 @@ class Order extends Model
     
     public function products(){
         return $this->belongsToMany('App\product')->withPivot('id','quantity','price_item',
-                'price_item_promo','discount_item','group_id','paket_id','bonus_cat',
+                'price_item_promo','vol_disc_price','discount_item','group_id','paket_id','bonus_cat',
                 'available','preorder','deliveryQty');
     }
 
     public function products_nonpaket(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo',
+        ->withPivot('id','quantity','price_item','price_item_promo','vol_disc_price',
                     'discount_item','group_id','paket_id','bonus_cat','available','preorder','deliveryQty')
         ->wherePivot('paket_id',null)
         ->wherePivot('group_id',null);
@@ -24,7 +24,7 @@ class Order extends Model
 
     public function products_pkt(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo',
+        ->withPivot('id','quantity','price_item','price_item_promo','vol_disc_price',
         'discount_item','group_id','paket_id','bonus_cat','available','preorder','deliveryQty')
         ->wherePivot('paket_id','!=',null)
         ->wherePivot('group_id','!=',null)
@@ -33,7 +33,7 @@ class Order extends Model
 
     public function products_bns(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo',
+        ->withPivot('id','quantity','price_item','price_item_promo','vol_disc_price',
         'discount_item','group_id','paket_id','bonus_cat','available','preorder','deliveryQty')
         ->wherePivot('group_id','!=',null)
         ->wherePivot('bonus_cat','!=',null);
@@ -41,7 +41,7 @@ class Order extends Model
 
     public function products_pktbns(){
         return $this->belongsToMany('App\product')
-        ->withPivot('id','quantity','price_item','price_item_promo',
+        ->withPivot('id','quantity','price_item','price_item_promo','vol_disc_price',
         'discount_item','group_id','paket_id','bonus_cat','available','preorder','deliveryQty')
         ->wherePivot('paket_id','!=',null)
         ->wherePivot('group_id','!=',null);
@@ -117,5 +117,21 @@ class Order extends Model
         $total_nominal += $p->pivot->price_item_promo;
         }
         return $total_nominal;
+    }
+
+    public function getTotalQtyDiscVolumeAttribute(){
+        $total = 0;
+        foreach($this->products_nonpaket as $p){
+        $total += $p->pivot->quantity;
+        }
+        return $total;
+    }
+
+    public function getTotalQtyPaketAttribute(){
+        $total = 0;
+        foreach($this->products_pktbns as $p){
+        $total += $p->pivot->quantity;
+        }
+        return $total;
     }
 }
