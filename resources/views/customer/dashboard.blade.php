@@ -722,7 +722,7 @@
                                       $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
                                     @endphp
                                   @endif
-                                  {{($target && $work_plan) ? $prediksi_qty : '0'}} / {{$target ? $target->target_quantity : '0'}}
+                                  {{($target && $work_plan) ? number_format($prediksi_qty,1) : '0'}} / {{$target ? $target->target_quantity : '0'}}
                                 </span>
                                   
                                   <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -871,7 +871,7 @@
                             <div class="media-body align-self-center">
                               <div class="text-right mt-1">
                                   <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                    {{($target && $work_plan) ? $ach_quantity/$hari_berjalan : '0'}} / {{$max_av_qty}}
+                                    {{($target && $work_plan) ? number_format($ach_quantity/$hari_berjalan, 1) : '0'}} / {{$max_av_qty}}
                                   </span>
                                   <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                               </div>

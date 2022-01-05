@@ -40,6 +40,11 @@
 				data-toggle="modal" data-target="#ExportModal">
 				<i class="fas fa-file-excel fa-1x"></i> 
 			</a>
+			
+			<a href="{{route('orders.exportThisPeriod',[$vendor]) }}" 
+				class="btn btn-success  waves-effect pull-right m-t-10">
+				<i class="fas fa-file-excel fa-0x "></i> Export
+			</a>
 			-->
 		</div>
 	</form>
