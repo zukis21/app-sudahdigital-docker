@@ -51,6 +51,7 @@
 				<th>Sales</th>
 				<th>Starting Points</th>
 				<th>Points In Periods</th>
+				<th>Points Claim</th>
 				<th>Total Points</th>
 			</tr>
 		</thead>
@@ -72,6 +73,9 @@
 						</td>
 						<td>
 							{{number_format($c->totalpoint,2)}}	
+						</td>
+						<td>
+							{{number_format($c->totalpoint-($c->grand_total + $rest),2)}}	
 						</td>
 						<td>
 							{{number_format($c->grand_total + $rest ,2)}}	
