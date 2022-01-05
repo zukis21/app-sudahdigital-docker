@@ -40,12 +40,19 @@
 				data-toggle="modal" data-target="#ExportModal">
 				<i class="fas fa-file-excel fa-1x"></i> 
 			</a>
-			
-			<a href="{{route('orders.exportThisPeriod',[$vendor]) }}" 
-				class="btn btn-success  waves-effect pull-right m-t-10">
-				<i class="fas fa-file-excel fa-0x "></i> Export
-			</a>
 			-->
+			
+			@if (\Route::currentRouteName() == 'periodpoint.getfilter')
+				<a href="{{route('PointFilterPeriod.Export',[$vendor, $period]) }}" 
+					class="btn btn-success  waves-effect pull-right m-t-10">
+					<i class="fas fa-file-excel fa-0x m-t--10"></i> Export
+				</a>
+			@else
+				<a href="{{route('PointThisPeriod.Export',[$vendor]) }}" 
+					class="btn btn-success  waves-effect pull-right m-t-10">
+					<i class="fas fa-file-excel fa-0x m-t--10"></i> Export
+				</a>
+			@endif
 		</div>
 	</form>
 </div>

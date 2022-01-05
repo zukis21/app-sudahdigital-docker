@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PointThisPeriodExport;
+use App\Exports\PointFilterPeriodExport;
 
 class CustomerPointOrderController extends Controller
 {
@@ -279,4 +282,20 @@ class CustomerPointOrderController extends Controller
         
         return $total_start_point;
     }*/
+
+    public function exportThisPeriod($vendor){
+        $date = date('Y-m-d');
+        $client_id = \Auth::user()->client_id;
+
+        $period = \App\PointPeriod::where('client_id',$client_id)
+                    ->whereDate('starts_at', '<=', $date)
+                    ->whereDate('expires_at', '>=', $date)->first();
+        return Excel::download(new PointThisPeriodExport(), $period->name.'.xlsx');
+    }
+
+    public function exportFilterPeriod($vendor, $period_id){
+        $period = \App\PointPeriod::findOrFail($period_id);
+        //dd($period);
+        return Excel::download(new PointFilterPeriodExport($period_id), $period->name.'.xlsx');
+    }
 }

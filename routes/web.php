@@ -322,6 +322,9 @@ Route::group(['prefix' => '/{vendor}'], function()
         return redirect()->route('periodpoint.getfilter', [$vendor,'period_name'=>$replace_name,'period_id'=>\Crypt::encrypt($request['period'])]);
     })->name('periodpoint.postfilter');
     Route::get('/orders/customer-point/period/{period_name?}/{period_id}', 'CustomerPointOrderController@filter_period')->name('periodpoint.getfilter');
+    Route::get('/orders/points-this-period-export','CustomerPointOrderController@exportThisPeriod')->name('PointThisPeriod.Export');
+    Route::get('/orders/points-filter-period-export/{period_id}','CustomerPointOrderController@exportFilterPeriod')->name('PointFilterPeriod.Export');
+
     //reasons
     Route::get('/orders/checkout-reason/list', 'CheckoutReasonsController@index')->name('reasons.index');
     Route::get('/orders/checkout-reason/create', 'CheckoutReasonsController@create')->name('reasons.create');
