@@ -295,36 +295,49 @@
                             </ul>
                         </li>
                         
-                        @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                        @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
                             <!--Voucher points-->
                             <li class="{{request()->routeIs('points.index') ||
                                          request()->routeIs('points_periods.index') ||
                                          request()->routeIs('CustomerPoints.index') ||
-                                         request()->routeIs('pr_points.index') ? 'active' : ''}}">
+                                         request()->routeIs('pr_points.index') ||
+                                         request()->routeIs('ClaimPoints.index') ||
+                                         request()->routeIs('customers_points.index') ? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="fas fa-gift-card " style="font-size:18px;margin-top:6px;margin-left:3px;"></i>
                                     <span>Point Vouchers</span>
                                 </a>
                                 <ul class="ml-menu">
-                                    <li class="{{request()->routeIs('points_periods.index') ? 'active' : '' }}">
-                                        <a href="{{route('points_periods.index',[$vendor])}}">Point Periods</a>
-                                    </li>
-                                    <!--
-                                    <li class="{{request()->routeIs('points.index') ? 'active' : '' }}">
-                                        <a href="{{route('points.index',[$vendor])}}">Point Cash Back</a>
-                                    </li>
-                                    -->
-                                    <li class="{{request()->routeIs('pr_points.index') ? 'active' : '' }}">
-                                        <a href="{{route('pr_points.index',[$vendor])}}">Product Points</a>
-                                    </li>
-                                    <!--
-                                    <li class="{{request()->routeIs('CustomerPoints.index') ? 'active' : '' }}">
-                                        <a href="{{route('CustomerPoints.index',[$vendor])}}">Customer Points</a>
-                                    </li>
-                                    -->
+                                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                        <li class="{{request()->routeIs('points_periods.index') ? 'active' : '' }}">
+                                            <a href="{{route('points_periods.index',[$vendor])}}">Point Periods</a>
+                                        </li>
+                                        <!--
+                                        <li class="{{request()->routeIs('points.index') ? 'active' : '' }}">
+                                            <a href="{{route('points.index',[$vendor])}}">Point Cash Back</a>
+                                        </li>
+                                        -->
+                                        <li class="{{request()->routeIs('pr_points.index') ? 'active' : '' }}">
+                                            <a href="{{route('pr_points.index',[$vendor])}}">Product Points</a>
+                                        </li>
+                                        <!--
+                                        <li class="{{request()->routeIs('CustomerPoints.index') ? 'active' : '' }}">
+                                            <a href="{{route('CustomerPoints.index',[$vendor])}}">Customer Points</a>
+                                        </li>
+                                        -->
+                                    @endif
+                                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                                        <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
+                                            <a href="{{route('customers_points.index',[$vendor])}}">Customer Points</a>
+                                        </li>
+                                        <li class="{{request()->routeIs('ClaimPoints.index') ? 'active' : '' }}">
+                                            <a href="{{route('ClaimPoints.index',[$vendor])}}">Points Claim</a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </li>
-
+                        @endif
+                        @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                             <!--work calender-->
                             <li class="{{request()->routeIs('workplan.index') || request()->routeIs('sales_login.index')? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
@@ -357,9 +370,7 @@
                         
                         <!--manage order-->
                         <li class="{{(request()->routeIs('orders.index')) || 
-                                    (request()->routeIs('reasons.index')) ||
-                                    (request()->routeIs('ClaimPoints.index')) ||
-                                    (request()->routeIs('customers_points.index')) ? 'active' : ''}}">
+                                    (request()->routeIs('reasons.index')) ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">shopping_cart</i>
                                 <span>{{Gate::check('isSpv') ? 'Orders' : 'Manage Orders'}}</span>
@@ -368,6 +379,7 @@
                                 <li class="{{request()->routeIs('orders.index') ? 'active' : '' }}">
                                     <a href="{{route('orders.index',[$vendor])}}">{{Gate::check('isSpv') ? 'Orders Lists' : 'Orders'}}</a>
                                 </li>
+                                <!--
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
                                     <li class="{{request()->routeIs('customers_points.index') ? 'active' : '' }}">
                                         <a href="{{route('customers_points.index',[$vendor])}}">Orders Points</a>
@@ -376,6 +388,7 @@
                                         <a href="{{route('ClaimPoints.index',[$vendor])}}">Points Claim</a>
                                     </li>
                                 @endif
+                                -->
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                     <li class="{{request()->routeIs('reasons.index') ? 'active' : '' }}">
                                         <a href="{{route('reasons.index',[$vendor])}}">Checkout Reasons List</a>

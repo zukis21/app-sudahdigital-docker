@@ -27,7 +27,7 @@
 				<th>Type</th>
 				<th>Min Order</th>
 				<th>Max Order</th>
-				<th width="18%">Product Amount</th>
+				<th width="18%">Product</th>
 				<th>Status</th>
 				<th>#</th>
 			</tr>

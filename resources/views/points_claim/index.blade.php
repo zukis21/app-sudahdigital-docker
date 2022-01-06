@@ -69,7 +69,7 @@
 		<thead>
 			<tr>
 				<th>Customer</th>
-				<th>Claim Amount</th>
+				<th>Points Claim</th>
 				<th>Bonus Amount</th>
 				<th>Claim Date</th>
 				<th>Status</th>
