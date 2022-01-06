@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClaimExport;
 
 class ClaimPointsOrderController extends Controller
 {
@@ -26,6 +28,7 @@ class ClaimPointsOrderController extends Controller
     }
 
     public function index(Request $request, $vendor){
+        $period_list = \App\PointPeriod::where('client_id',\Auth::user()->client_id)->get();
         $status = $request->get('status');
         $client_id = \Auth::user()->client_id;
         if($status){
@@ -54,7 +57,7 @@ class ClaimPointsOrderController extends Controller
         }
         
 
-        return view('points_claim.index',['claim'=>$claim,'vendor'=>$vendor]);
+        return view('points_claim.index',['claim'=>$claim,'vendor'=>$vendor, 'period_list'=>$period_list]);
     }
 
     public function finishClaim($vendor, $id, $status = null)
@@ -70,5 +73,12 @@ class ClaimPointsOrderController extends Controller
             return redirect()->route('ClaimPoints.index', [$vendor, 'status' =>$status])
             ->with('status','Claim status is finish ');
         }
+    }
+
+    public function exportClaim(Request $request, $vendor){
+        $period_id = $request->get('period');
+        $period = \App\PointPeriod::findOrFail($period_id);
+
+        return Excel::download(new ClaimExport($period_id), 'Claim - '.$period->name.'.xlsx');
     }
 }

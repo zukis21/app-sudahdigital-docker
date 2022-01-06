@@ -26,8 +26,41 @@
 			<li role="presentation" class="{{Request::get('status') == 'finish' ?'active' : '' }}">
 				<a href="{{route('ClaimPoints.index', [$vendor,'status' =>'finish'])}}">FINISH</a>
 			</li>
-			
 		</ul>
+
+		<a class="btn btn-success pull-right" href="" data-toggle="modal" data-target="#exportOrderModal">
+			<i class="fas fa-file-excel fa-0x "></i> Export
+		</a>
+		<div class="modal fade" id="exportOrderModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<form id="form_validation" method="post" action="{{route('claim.Export',[$vendor]) }}">
+						@csrf
+						<div class="modal-body">
+							
+								<h2 class="card-inside-title">Period</h2>
+								<div class="form-group">
+									<select name="period"  id="period_list" 
+										class="form-control" style="width:100%;" required>
+										<option></option>
+										@foreach($period_list as $pl)
+											<option value="{{$pl->id}}">
+												{{$pl->name}}
+											</option>
+										@endforeach
+									</select>
+								</div>
+								
+							
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
+							<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
 	
 </div>
@@ -99,5 +132,9 @@
 			"order": [[ 3, "desc" ]]
 		});
 	});
+
+	$('#period_list').select2({
+        placeholder: 'Select Period',
+    });
 </script>
 @endsection

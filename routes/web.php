@@ -324,7 +324,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/customer-point/period/{period_name?}/{period_id}', 'CustomerPointOrderController@filter_period')->name('periodpoint.getfilter');
     Route::get('/orders/points-this-period-export','CustomerPointOrderController@exportThisPeriod')->name('PointThisPeriod.Export');
     Route::get('/orders/points-filter-period-export/{period_id}','CustomerPointOrderController@exportFilterPeriod')->name('PointFilterPeriod.Export');
-
+    
     //reasons
     Route::get('/orders/checkout-reason/list', 'CheckoutReasonsController@index')->name('reasons.index');
     Route::get('/orders/checkout-reason/create', 'CheckoutReasonsController@create')->name('reasons.create');
@@ -372,10 +372,12 @@ Route::group(['prefix' => '/{vendor}'], function()
     //claim points order
     Route::get('/points-claim', 'ClaimPointsOrderController@index')->name('ClaimPoints.index');
     Route::get('/points-finish/{id}/{status?}', 'ClaimPointsOrderController@finishClaim')->name('claim.finish');
+    Route::post('/points-claim-export', 'ClaimPointsOrderController@exportClaim')->name('claim.Export');
     
     //Change Password
     Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
     Route::post('/users/post/change_password', 'changePasswordController@changepassword')->name('post.changepass');
+    
 
 });
 
