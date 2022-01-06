@@ -1754,13 +1754,14 @@ $no=$count_nt_paket;
     public static function targetItemInfo($item,$customer_id){
         $month = date('m');
         $year = date('Y');
+        $date_now = date('Y-m-d');
         $targetItem = \App\Store_Targets::with('product_target')
                     ->whereHas('product_target', function($q) use($item){
                             $q->where('productId',$item);
                      })
                      ->where('customer_id',$customer_id)
-                     ->whereMonth('period', $month)
-                     ->whereYear('created_at', $year)
+                     ->where('period','<=',$date_now)
+                     ->orderBy('period','DESC')
                      ->first();
         return $targetItem;
     }
