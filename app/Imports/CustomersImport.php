@@ -42,6 +42,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
 
                 $customer->lat = $lat;
                 $customer->lng = $lng;
+            }else{
+                $customer->lat = NULL;
+                $customer->lng = NULL;
             }
             if(!empty( $rows['customer_type'])){
                 $customer->cust_type = $rows['customer_type'];

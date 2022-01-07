@@ -388,6 +388,9 @@ class CustomerController extends Controller
 
                 $cust->lat = $lat;
                 $cust->lng = $lng;
+            }else{
+                $cust->lat = NULL;
+                $cust->lng = NULL;
             }
             
             $cust->cust_type = $request->get('cust_type');

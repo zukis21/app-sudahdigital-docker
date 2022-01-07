@@ -222,6 +222,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::put('/volume_discount/{id}/update', 'volumeDiscountController@update')->name('vDiscount.update');
     Route::get('/volume_discount_all_delete/{id}/delete', 'volumeDiscountController@deleteAllItem')->name('vDiscount.allItemDelete');
     Route::get('/volume-discount-status/{id}/{status}', 'volumeDiscountController@editStatus')->name('vDiscount.status');
+    Route::get('/volume-discount-item-export/{id}', 'volumeDiscountController@itemExport')->name('vDiscItemExport');
 
     //Group-paket
     Route::get('/groups', 'GroupController@index')->name('groups.index');

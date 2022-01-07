@@ -26,12 +26,33 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
 
     public function collection()
     {
-        return Order::where('client_id','=',auth()->user()->client_id)
-        ->whereNotNull('customer_id')
-        ->whereMonth('created_at',$this->month)
-        ->whereYear('created_at',$this->year)
-        ->orderBy('created_at', 'DESC')->get();
-        
+        $day = date('d');
+        if($day <= 5){
+            if($this->month == 1){
+                $prevYear = $this->year-1;
+                $prevMonth = 12;
+                $dateS = $prevYear.'-'.$prevMonth.'-01';
+                $dateE = $this->year.'-'.$this->month.'-'.$day;
+                return Order::where('client_id','=',auth()->user()->client_id)
+                    ->whereNotNull('customer_id')
+                    ->whereBetween('created_at',[$dateS,$dateE])
+                    ->orderBy('created_at', 'DESC')->get();
+            }else{
+                $prevMonth = $this->month-1;
+                $dateS = $this->year.'-'.$prevMonth.'-01';
+                $dateE = $this->year.'-'.$this->month.'-'.$day;
+                return Order::where('client_id','=',auth()->user()->client_id)
+                    ->whereNotNull('customer_id')
+                    ->whereBetween('created_at',[$dateS,$dateE])
+                    ->orderBy('created_at', 'DESC')->get();
+            }
+        }else{
+            return Order::where('client_id','=',auth()->user()->client_id)
+                    ->whereNotNull('customer_id')
+                    ->whereMonth('created_at',$this->month)
+                    ->whereYear('created_at',$this->year)
+                    ->orderBy('created_at', 'DESC')->get();
+        }
     }
 
     public function map($order) : array {
@@ -81,6 +102,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                 $product_name,
                 $p->pivot->quantity,
                 $price,
+                $order->payment_method,
                 $p->pivot->paket_id,
                 $p->pivot->group_id,
                 $p->pivot->bonus_cat,
@@ -112,6 +134,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'Product',
            'Quantity',
            'Price',
+           'Payment',
            'Paket Id',
            'Group Id',
            'Bonus Product',

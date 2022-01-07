@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\VolumeDiscountProductImport;
+use App\Exports\DiscountVolumeItem;
 
 class volumeDiscountController extends Controller
 {
@@ -161,5 +162,12 @@ class volumeDiscountController extends Controller
         $volume_discount->status = $status;
         $volume_discount->save();
         return redirect()->back()->with('status', 'Status changed successfully!');
+    }
+
+    public function itemExport($vendor, $id){
+        $vDiscount = \App\VolumeDiscount::findOrFail($id);
+
+        return Excel::download(new DiscountVolumeItem($id), 
+              'Volume Discount '.$vDiscount->name.'.xlsx');
     }
 }

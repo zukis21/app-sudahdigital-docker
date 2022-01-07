@@ -83,17 +83,23 @@
         
             
         <button type="button" class="btn bg-green waves-effect m-b-20" data-toggle="modal" 
-            data-target="#importModal" id="popoverData" data-trigger="hover" data-container="body" data-placement="right" 
+            data-target="#importModal" id="popoverData" data-trigger="hover" data-container="body" data-placement="bottom" 
             data-content="Import for add or change item discount">
             <i class="fas fa-file-excel"></i> Import
         </button>
         
         @if($vDiscounts->TotalItem > 1)
-            <button type="button" class="btn bg-red waves-effect m-b-20" data-toggle="modal" 
+            <!--<button type="button" class="btn bg-red waves-effect m-b-20" data-toggle="modal" 
                 data-target="#allDeleteModal" id="popoverData" data-trigger="hover" data-container="body" data-placement="right" 
                 data-content="Delete for all item">
                 <i class="fas fa-trash"></i> Delete All Item
-            </button>
+            </button>-->
+            <a href="{{route('vDiscItemExport',[$vendor,$vDiscounts->id]) }}" 
+                class="btn bg-green waves-effect m-b-20" id="popoverData" 
+                data-trigger="hover" data-container="body" data-placement="right" 
+                data-content="Export Item">
+                <i class="fas fa-file-excel fa-0x "></i> Export
+            </a>
         @endif
 
         <div class="pull-right">
