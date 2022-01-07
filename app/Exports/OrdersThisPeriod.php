@@ -27,7 +27,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
     public function collection()
     {
         $day = date('d');
-        if($day <= 8){
+        if($day <= 5){
             if($this->month == 1){
                 $prevYear = $this->year-1;
                 $prevMonth = 12;
