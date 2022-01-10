@@ -55,7 +55,7 @@
                     class="form-control" id="min_order" name="min_order" 
                     min="{{$vDiscounts && $vDiscounts->max_order > 0 ? $vDiscounts->max_order + 1 : 1}}" 
                     autocomplete="off" maxlength="9" required 
-                    {{$vDiscounts && $vDiscounts->max_order > 0 ? 'max='.($vDiscounts->max_order + 1).'' : 'max=1'}}
+                    {{$vDiscounts && $vDiscounts->max_order > 0 ? 'max='.($vDiscounts->max_order + 1).'' : ''}}
                     {{$vDiscounts && $vDiscounts->max_order == 0 ? 'readonly' : ''}}>
                 <label class="form-label">Min. Order</label>
             </div>
