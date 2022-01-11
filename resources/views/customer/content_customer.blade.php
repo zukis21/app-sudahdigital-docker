@@ -249,7 +249,7 @@ Home
                                             if($totalQty > 0){
                                                 $targetOrderTop = ((int)$pt->quantityValues - (int)$totalQty);
                                             }else{
-                                                $targetOrderTop = $pt->quantityValues;
+                                                $targetOrderTop = (int)$pt->quantityValues;
                                             }
                                         }
                                     array_push($targetOrderTops, $targetOrderTop);
@@ -264,7 +264,7 @@ Home
                            
                         @endforeach
                         @php 
-                            rsort($targetOrderTops);
+                            arsort($targetOrderTops);
                             $keys = array_keys($targetOrderTops);
                         @endphp
                         
