@@ -1764,6 +1764,8 @@ $no=$count_nt_paket;
                      ->orderBy('period','DESC')
                      ->first();
         return $targetItem;
+        
+        
     }
 
     public static function achTargetItem($item,$customer_id){

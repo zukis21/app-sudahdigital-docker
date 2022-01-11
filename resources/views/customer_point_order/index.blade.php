@@ -48,8 +48,8 @@
 					<i class="fas fa-file-excel fa-0x m-t--10"></i> Export
 				</a>
 			@else
-				<a href="{{route('PointThisPeriod.Export',[$vendor]) }}" 
-					class="btn btn-success  waves-effect pull-right m-t-10">
+				<a href="{{$period ? route('PointThisPeriod.Export',[$vendor]) : '#' }}" 
+					class="btn btn-success  waves-effect pull-right m-t-10 {{$period ? '' : 'disabled'}}">
 					<i class="fas fa-file-excel fa-0x m-t--10"></i> Export
 				</a>
 			@endif
