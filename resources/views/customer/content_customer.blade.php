@@ -241,13 +241,13 @@ Home
                                 <?php $store_name = session()->get('ses_order');?>
                                 @if($store_name->customer_id != null)
                                 <?php
-                                    $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
-                                    [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
-                                    if($target != null){
+                                    $targets = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
+                                    [$totalQtys,$totalNmls]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
+                                    if($targets != null){
                                         $targetOrderTop = 0;
-                                        foreach($target->product_target as $pt){
-                                            if(($value_top->id == $pt->productId) && ($totalQty > 0)){
-                                                $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQty);
+                                        foreach($targets->product_target as $pt){
+                                            if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
+                                                $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQtys);
                                             }elseif($value_top->id == $pt->productId){
                                                 $targetOrderTop = (int)$pt->quantityValues + 0.1;
                                             }
@@ -287,7 +287,10 @@ Home
                                                 @if(session()->has('ses_order'))
                                                     <?php $store_name = session()->get('ses_order');?>
                                                     @if($store_name->customer_id != null)
-                                                       
+                                                       <?php
+                                                        $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($top_product[$key]->id,$store_name->customer_id);
+                                                        [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($top_product[$key]->id,$store_name->customer_id);
+                                                       ?>
                                                         @if($target != null)
                                                             @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                 @foreach ($target->product_target as $pt)
