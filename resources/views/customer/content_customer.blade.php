@@ -264,12 +264,12 @@ Home
                            
                         @endforeach
                         @php 
-                            krsort($targetOrderTops);
+                            rsort($targetOrderTops);
                             $keys = array_keys($targetOrderTops);
                         @endphp
                         
                         @foreach($keys as $key)
-                            
+                             
                             <div id="product_list"  class="col-6 col-md-3 d-flex mx-0 item" style="z-index: 1">
                                 <div class="card mx-auto d-flex item_product">
                                     @if($top_product[$key]->discount > 0)
