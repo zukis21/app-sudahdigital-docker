@@ -323,7 +323,10 @@ Home
                                             @if(session()->has('ses_order'))
                                                 <?php $store_name = session()->get('ses_order');?>
                                                 @if($store_name->customer_id != null)
-                                                    
+                                                <?php
+                                                    $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($top_product[$key]->id,$store_name->customer_id);
+                                                    [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($top_product[$key]->id,$store_name->customer_id);
+                                                ?>
                                                     @if($target != null)
                                                         @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                             <span class="badge badge-stok py-1" >
