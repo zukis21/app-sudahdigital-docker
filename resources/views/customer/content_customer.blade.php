@@ -237,57 +237,29 @@ Home
                     <div class="row section_content flex-row flex-nowrap menu" style="overflow-x:auto;overflow-y:hidden;z-index:2222; ">
                         <?php $targetOrderTops = Array(); ?>
                         @foreach($top_product as $value_top)
-                            @if(session()->has('ses_order'))
-                                <?php $store_name = session()->get('ses_order');?>
-                                @if($store_name->customer_id != null)
-                                <?php
-                                    $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
-                                    [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
-                                    if($target != null){
-                                        $targetOrderTop = 0;
-                                        foreach($target->product_target as $pt){
-                                            if(($value_top->id == $pt->productId) && ($totalQty > 0)){
-                                                $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQty);
-                                            }elseif($value_top->id == $pt->productId){
-                                                $targetOrderTop = (int)$pt->quantityValues + 0.1;
-                                            }
-                                        }
-                                    array_push($targetOrderTops, $targetOrderTop);
-                                    }else{
-                                        $targetOrderTop = 0;
-                                        array_push($targetOrderTops, $targetOrderTop);
-                                    }
-                                    
-                                ?>
-                                @endif
-                            @endif
-                           
-                        @endforeach
-                        @php 
-                            arsort($targetOrderTops);
-                            $keys = array_keys($targetOrderTops);
-                        @endphp
+                            
                         
-                        @foreach($keys as $key)
-                             
                             <div id="product_list"  class="col-6 col-md-3 d-flex mx-0 item" style="z-index: 1">
                                 <div class="card mx-auto d-flex item_product">
-                                    @if($top_product[$key]->discount > 0)
-                                    <div class="ribbon"><span class="span-ribbon">{{$top_product[$key]->discount}}% OFF</span></div>
+                                    @if($value_top->discount > 0)
+                                    <div class="ribbon"><span class="span-ribbon">{{$value_top->discount}}% OFF</span></div>
                                     @endif
                                     <a>
-                                        <img style="" src="{{ asset('storage/'.(($top_product[$key]->image!='') ? $top_product[$key]->image : 'no_image_availabl.png').'') }}" class="img-fluid h-100 w-100 img-responsive" alt="...">
+                                        <img style="" src="{{ asset('storage/'.(($value_top->image!='') ? $value_top->image : 'no_image_availabl.png').'') }}" class="img-fluid h-100 w-100 img-responsive" alt="...">
                                     </a>
                                     <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                         @if($stock_status->stock_status == 'ON')
                                             @php
-                                                $stockValueTop = App\Http\Controllers\CustomerKeranjangController::stockInfo($top_product[$key]->id);
+                                                $stockValueTop = App\Http\Controllers\CustomerKeranjangController::stockInfo($value_top->id);
                                             @endphp
                                             <span class="badge badge-stok py-1" >
                                                 @if(session()->has('ses_order'))
                                                     <?php $store_name = session()->get('ses_order');?>
                                                     @if($store_name->customer_id != null)
-                                                       
+                                                        <?php
+                                                            $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
+                                                            [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id)
+                                                        ?>
                                                         @if($target != null)
                                                             @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                                 @foreach ($target->product_target as $pt)
@@ -301,16 +273,16 @@ Home
                                                                                 $leftTr = $leftT;
                                                                             }*/
                                                                         ?>
-                                                                        {{$top_product[$key]->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
+                                                                        {{$value_top->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
                                                                     </span>
                                                                 @endforeach
                                                                 <span class="float-right">
-                                                                    STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{$top_product[$key]->stock - $stockValueTop > 0 ? $top_product[$key]->stock - $stockValueTop : 0}}</span>
+                                                                    STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
                                                                 </span>
                                                             @endif
                                                         @else
                                                             <span class="float-left">
-                                                                STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{$top_product[$key]->stock - $stockValueTop > 0 ? $top_product[$key]->stock - $stockValueTop : 0}}</span>
+                                                                STOK&nbsp; : <span id="stok_top{{$value_top->id}}">{{$value_top->stock - $stockValueTop > 0 ? $value_top->stock - $stockValueTop : 0}}</span>
                                                             </span>
                                                         @endif
                                                     @endif
@@ -320,7 +292,10 @@ Home
                                             @if(session()->has('ses_order'))
                                                 <?php $store_name = session()->get('ses_order');?>
                                                 @if($store_name->customer_id != null)
-                                                    
+                                                    <?php
+                                                        $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
+                                                        [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id)
+                                                    ?>
                                                     @if($target != null)
                                                         @if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3)
                                                             <span class="badge badge-stok py-1" >
@@ -336,7 +311,7 @@ Home
                                                                                 $leftTr = $leftT;
                                                                             }*/
                                                                         ?>
-                                                                        {{$top_product[$key]->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
+                                                                        {{$value_top->id == $pt->productId ? 'T : '.$pt->quantityValues .' / '. $totalQty : ''}}
                                                                     </span>
                                                                 @endforeach
                                                             </span>
@@ -348,43 +323,43 @@ Home
                                         
                                         <div class="float-left px-1 py-2" style="width: 100%;">
                                             <p class="product-price-header mb-0" style="">
-                                                {{$top_product[$key]->Product_name}}
+                                                {{$value_top->Product_name}}
                                             </p>
                                         </div>
-                                        @if($top_product[$key]->discount > 0)
+                                        @if($value_top->discount > 0)
                                             <div class="d-inline-block">
                                                 <div class="text-left">
-                                                    <p class="product-price mt-0 mb-0 ml-1" style="color:#ffff;"><del><b><i>Rp. {{ number_format($top_product[$key]->price, 0, ',', '.') }}'-</i></b> </del></p>
+                                                    <p class="product-price mt-0 mb-0 ml-1" style="color:#ffff;"><del><b><i>Rp. {{ number_format($value_top->price, 0, ',', '.') }}'-</i></b> </del></p>
                                                 </div>
                                             </div>
                                             <div class="float-left px-1 py-2" style="">
-                                                <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice_top{{$top_product[$key]->id}}" style="">Rp. {{ number_format($top_product[$key]->price_promo, 0, ',', '.') }}'-</p>
+                                                <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice_top{{$value_top->id}}" style="">Rp. {{ number_format($value_top->price_promo, 0, ',', '.') }}'-</p>
                                             </div>
                                         @else
                                             <div class="float-left px-1 py-2" style="">
-                                                <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice_top{{$top_product[$key]->id}}" style="">Rp. {{ number_format($top_product[$key]->price, 0, ',', '.') }},-</p>
+                                                <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice_top{{$value_top->id}}" style="">Rp. {{ number_format($value_top->price, 0, ',', '.') }},-</p>
                                             </div>
                                         @endif
                                         <table width="100%" class="hdr_tbl_cart mt-auto">
                                             <tbody>
                                             <tr>
                                                 <td class="tbl_cart" valign="middle" style="" rowspan="2">
-                                                    <input type="hidden" id="jumlah_top{{$top_product[$key]->id}}" name="quantity" value="1">
-                                                    <input type="hidden" id="harga_top{{$top_product[$key]->id}}" name="price" value="{{ $top_product[$key]->price }}">
-                                                    <input type="hidden" id="top{{$top_product[$key]->id}}" name="Product_id" value="{{$top_product[$key]->id}}">
-                                                    <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_top('{{$top_product[$key]->id}}')" {{($top_product[$key]->stock == 0) && ($stock_status->stock_status == 'ON') ? 'disabled' : ''}}>Tambah</button>
+                                                    <input type="hidden" id="jumlah_top{{$value_top->id}}" name="quantity" value="1">
+                                                    <input type="hidden" id="harga_top{{$value_top->id}}" name="price" value="{{ $value_top->price }}">
+                                                    <input type="hidden" id="top{{$value_top->id}}" name="Product_id" value="{{$value_top->id}}">
+                                                    <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_top('{{$value_top->id}}')" {{($value_top->stock == 0) && ($stock_status->stock_status == 'ON') ? 'disabled' : ''}}>Tambah</button>
                                                     
                                                 </td>
                                                 <td width="30%" align="left" id="td-text-quantity" class="td-text-quantity" valign="middle" rowspan="2" >
-                                                    <input type="number" id="show_top{{$top_product[$key]->id}}" onkeyup="input_qty_top('{{$top_product[$key]->id}}')" class="form-control input-sm mr-0 px-1 font-weight-bold" value="1" style="color:#000;font-weight:300;text-align:center;">
+                                                    <input type="number" id="show_top{{$value_top->id}}" onkeyup="input_qty_top('{{$value_top->id}}')" class="form-control input-sm mr-0 px-1 font-weight-bold" value="1" style="color:#000;font-weight:300;text-align:center;">
                                                 </td>
                                                 <td width="10%" class="td-btn-plus" align="center" valign="middle" bgcolor="#ffffff" style="border-top-left-radius:5px;border-top-right-radius:5px;">
-                                                    <a class="button_plus" onclick="button_plus_top('{{$top_product[$key]->id}}')"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                    <a class="button_plus" onclick="button_plus_top('{{$value_top->id}}')"><i class="fa fa-plus" aria-hidden="true"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td width="10%" align="center" valign="middle" bgcolor="#ffffff" style="border-bottom-left-radius:5px;border-bottom-right-radius:5px;">
-                                                    <a class="button_minus" onclick="button_minus_top('{{$top_product[$key]->id}}')" id="btn_min" style=""><i class="fa fa-minus" aria-hidden="true"></i></a>
+                                                    <a class="button_minus" onclick="button_minus_top('{{$value_top->id}}')" id="btn_min" style=""><i class="fa fa-minus" aria-hidden="true"></i></a>
                                                 </td>
                                             </tr>
                                             </tbody>
