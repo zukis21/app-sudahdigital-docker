@@ -247,7 +247,7 @@ Home
                                         $targetOrderTop = 0;
                                         foreach($target->product_target as $pt){
                                             if($totalQty > 0){
-                                                $targetOrderTop = $pt->quantityValues-$totalQty;
+                                                $targetOrderTop = ((int)$pt->quantityValues - (int)$totalQty);
                                             }else{
                                                 $targetOrderTop = $pt->quantityValues;
                                             }
