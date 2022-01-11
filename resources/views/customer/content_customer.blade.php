@@ -246,10 +246,10 @@ Home
                                     if($target != null){
                                         $targetOrderTop = 0;
                                         foreach($target->product_target as $pt){
-                                            if($totalQty > 0){
-                                                $targetOrderTop = ((int)$pt->quantityValues - (int)$totalQty);
-                                            }else{
-                                                $targetOrderTop = (int)$pt->quantityValues;
+                                            if(($value_top->id == $pt->productId) && ($totalQty > 0)){
+                                                $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQty);
+                                            }elseif($value_top->id == $pt->productId){
+                                                $targetOrderTop = (int)$pt->quantityValues + 0.1;
                                             }
                                         }
                                     array_push($targetOrderTops, $targetOrderTop);
