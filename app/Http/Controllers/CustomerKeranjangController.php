@@ -1597,7 +1597,7 @@ $no=$count_nt_paket;
                                 <td align="left">
                                     <small>
                                         <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
-                                            <b>'.$order->TotalQtyDiscVolume+$order->TotalQtyPaket.'</b></p>
+                                            <b>'.((int)$order->TotalQtyDiscVolume+(int)$order->TotalQtyPaket).'</b></p>
                                         </small>
                                     </small>
                                 </td>
