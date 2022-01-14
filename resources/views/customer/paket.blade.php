@@ -732,8 +732,10 @@ Paket
                                                                                     <div id="product_list_bns">
                                                                                         <button id="disabled_button_bonus{{$p_group->id}}_{{$value->id}}" 
                                                                                             class="btn btn-block button_add_to_cart respon" 
-                                                                                            onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" 
-                                                                                            {{($stock_status->stock_status == 'ON') && ($p_group->stock - $stockValueBonus <= 0) ? 'disabled' : ''}}>
+                                                                                            onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')"
+                                                                                            @if($stock_status->stock_status == 'ON') 
+                                                                                                {{$p_group->stock - $stockValueBonus <= 0 ? 'disabled' : ''}}
+                                                                                            @endif>
                                                                                             Simpan
                                                                                         </button>
                                                                                     </div>
@@ -902,7 +904,9 @@ Paket
                                                                                         <button id="disabled_button_bonus{{$p_group->id}}_{{$value->id}}" 
                                                                                             class="btn btn-block button_add_to_cart respon" 
                                                                                             onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" 
-                                                                                            {{$p_group->stock - $stockValueBonus <= 0 ? 'disabled' : ''}}>
+                                                                                            @if($stock_status->stock_status == 'ON')
+                                                                                                {{$p_group->stock - $stockValueBonus <= 0 ? 'disabled' : ''}}
+                                                                                            @endif>
                                                                                             Simpan
                                                                                         </button>
                                                                                     </div>
