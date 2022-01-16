@@ -905,6 +905,7 @@
             #beli_sekarang{
                 margin-bottom: 0;
             }
+
         }
 
         @media (max-width: 480px){
@@ -3588,7 +3589,7 @@
             }
         }
 
-        //----------EDIT--//
+        
         $("#validStockCart").on("hidden.bs.modal", function () {
             $("#body_alert_cart").text('');
         });
@@ -4581,9 +4582,7 @@
                     
             }
         }
-        //---endEDIT---//
         
-        //edit
         function add_tocart_pkt(id,group_id)
         {
             var Product_id = $('#product_pkt'+id+'_'+group_id).val();
@@ -5086,7 +5085,7 @@
             }
         }
 
-        //edit
+        
         function add_tocart_bns(id,group_id)
         {
             var Product_id = $('#product_bns'+id+'_'+group_id).val();
@@ -5589,7 +5588,7 @@
 
         }    
 
-        //Edit
+        
         function button_minus_kr(id)
         {   
             
@@ -5746,7 +5745,7 @@
             }
         }
 
-        //EDIT
+        
         function button_plus_kr(id)
         {
             var getStock = $('#stok'+id).text();
@@ -5951,7 +5950,7 @@
             }
         }
 
-        //edit
+        
         function delete_kr(id)
         {   
             $.ajaxSetup({
@@ -6069,7 +6068,7 @@
             });
         }
 
-        //delete paket ==> edit
+        
         function delete_pkt(id,group_id)
         {   
             var orderid_delete =  $('#orderid_delete_pkt'+id+'_'+group_id).val();
@@ -6395,7 +6394,7 @@
             }
         }
 
-        //delete bonus ==>edit
+        //delete bonus 
         function delete_bns(id,group_id)
         {   
             var orderid_delete =  $('#orderid_delete_bns'+id+'_'+group_id).val();
@@ -6506,7 +6505,7 @@
                 });
         }
 
-        //edit
+        
         function show_modal()
         {
             //$( "#collapse-4" ).load(window.location.href + " #collapse-4" );

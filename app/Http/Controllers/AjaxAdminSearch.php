@@ -276,6 +276,7 @@ class AjaxAdminSearch extends Controller
       $orderId = $request->get('order_id');
       $order = \App\order_product::where('order_id','=',$orderId)
               ->whereRaw('deliveryQty < quantity')
+              ->orWhereRaw('preorder > 0 AND deliveryQty IS NULL')
               ->count();
       if ($order > 0) {
         echo "taken";	
@@ -305,10 +306,25 @@ class AjaxAdminSearch extends Controller
     $year = $request->get('year');
     $date_now = $request->get('date_now');
 
-      foreach($sales as $sls){
-        $user_id = $sls->id;
+    $dateCurrent = date('Y-m');
+    $dateThisPeriod = date('Y-m',strtotime($date_now));
+    $date_minus = date('Y-m-d');
+
+    if($dateCurrent == $dateThisPeriod){
+        $from = date('2021-06-01');
+        $order_minday = date('Y-m-d', strtotime("-$day day", strtotime($date_minus))); 
+    }else{
         $from = date('Y-m-01',strtotime($date_now));
         $order_minday = date('Y-m-d', strtotime("-$day day", strtotime($date_now)));
+    }
+      foreach($sales as $sls){
+        $user_id = $sls->id;
+        
+       
+        /*
+        $from = date('Y-m-01',strtotime($date_now));
+        $order_minday = date('Y-m-d', strtotime("-$day day", strtotime($date_now)));
+        */
         $order_overday = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])

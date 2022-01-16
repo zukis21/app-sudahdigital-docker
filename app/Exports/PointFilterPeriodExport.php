@@ -24,7 +24,10 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
                     FROM
                     (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                 /*cp.id,*/ 
-                                sum(case when o.finish_time between '$period->starts_at' and '$period->expires_at' 
+                                sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
+                                         AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                OR
+                                               date(o.finish_time) between '$period->starts_at' AND '$period->expires_at') 
                                 then 
                                 (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                                 FROM orders as o 
@@ -40,7 +43,7 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
                                 pr.created_at = (SELECT MAX(created_at) FROM 
                                                 product_rewards GROUP BY product_id HAVING 
                                                 product_id = pr.product_id) AND  
-                                o.created_at between '$period->starts_at' and '$period->expires_at' AND
+                                date(o.created_at) between '$period->starts_at' and '$period->expires_at' AND
                                 o.status != 'CANCEL' AND o.status != 'NO-ORDER'
                                 GROUP by o.customer_id 
                     ) as points
@@ -60,11 +63,11 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
     public function map($pn) : array {
        
         $period = \App\PointPeriod::where('id',$this->period_id)->first();
-        
+        $claim = \App\Http\Controllers\CustomerPointOrderController::pointsClaim($period->starts_at,$pn->csid);
         $rest = \App\Http\Controllers\CustomerPointOrderController::starting_point($period->starts_at,$pn->csid);
         $start_point = number_format($rest,2);
-        $pointInPeriod = number_format($pn->totalpoint,2);
-        $pointClaim = number_format($pn->totalpoint-($pn->grand_total + $rest),2);
+        $pointInPeriod = number_format($pn->grand_total + $claim,2);
+        $pointClaim = number_format($claim,2);
         $pointTotal = number_format($pn->grand_total + $rest ,2);
         return[
             $pn->store_name,

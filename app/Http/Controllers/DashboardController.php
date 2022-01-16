@@ -1006,8 +1006,20 @@ class DashboardController extends Controller
 
         //===========order > 5 days============/
         //$from = date('2021-06-01');
+        $dateCurrent = date('Y-m');
+        $dateThisPeriod = date('Y-m',strtotime($date_now));
+
+        if($dateCurrent == $dateThisPeriod){
+            $from = date('2021-06-01');
+            $order_minday = date('Y-m-d', strtotime("-5 day", strtotime(date("Y-m-d")))); 
+        }else{
+            $from = date('Y-m-01',strtotime($date_now));
+            $order_minday = date('Y-m-d', strtotime("-5 day", strtotime($date_now)));
+        }
+        /*
         $from = date('Y-m-01',strtotime($date_now));
         $order_minday = date('Y-m-d', strtotime("-5 day", strtotime($date_now)));
+        */
         $order_overday = \App\Order::where('user_id',$user_id)
                         ->whereNotNull('customer_id')
                         ->whereBetween('created_at', [$from,$order_minday])

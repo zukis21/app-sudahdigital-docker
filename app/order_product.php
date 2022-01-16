@@ -13,6 +13,7 @@ class order_product extends Model
                             'quantity',
                             'price_item',
                             'price_item_promo',
+                            'vol_disc_price',
                             'discount_item',
                             'group_id',
                             'paket_id',

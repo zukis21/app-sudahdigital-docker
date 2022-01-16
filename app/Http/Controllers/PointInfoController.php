@@ -34,7 +34,10 @@ class PointInfoController extends Controller
                 $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                 FROM
                 (SELECT o.id as oid, cs.id csid, pr.created_at,
-                            sum(case when o.finish_time between '$last_period->starts_at' and '$last_period->expires_at' 
+                            sum(case when (date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at')
+                                     AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                            OR
+                                           date(o.finish_time) between '$last_period->starts_at' AND '$last_period->expires_at') 
                             then 
                             (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                             FROM orders as o 
@@ -50,7 +53,7 @@ class PointInfoController extends Controller
                             pr.created_at = (SELECT MAX(created_at) FROM 
                                             product_rewards GROUP BY product_id HAVING 
                                             product_id = pr.product_id) AND  
-                            o.created_at between '$last_period->starts_at' and '$last_period->expires_at' AND
+                            date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at' AND
                             o.status != 'CANCEL' AND o.status != 'NO-ORDER'AND
                             o.customer_id = '$customer_id'
                 ) as points
@@ -96,7 +99,10 @@ class PointInfoController extends Controller
                         $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                         FROM
                         (SELECT o.id as oid, cs.id csid, pr.created_at,
-                            sum(case when o.finish_time between '$prev_period->starts_at' and '$prev_period->expires_at' 
+                            sum(case when (date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at')
+                                     AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                            OR
+                                           date(o.finish_time) between '$prev_period->starts_at' AND '$prev_period->expires_at') 
                             then 
                             (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                             FROM orders as o 
@@ -112,7 +118,7 @@ class PointInfoController extends Controller
                             pr.created_at = (SELECT MAX(created_at) FROM 
                                             product_rewards GROUP BY product_id HAVING 
                                             product_id = pr.product_id) AND  
-                            o.created_at between '$prev_period->starts_at' and '$prev_period->expires_at' AND
+                            date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at' AND
                             o.status != 'CANCEL' AND o.status != 'NO-ORDER'AND
                             o.customer_id = '$customer_id'
                         ) as points
@@ -182,7 +188,10 @@ class PointInfoController extends Controller
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
-                                            sum(case when o.finish_time between '$period_cek->starts_at' and '$period_cek->expires_at' 
+                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                                     AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                            OR
+                                                          date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at') 
                                             then 
                                             (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                                             FROM orders as o 
@@ -198,7 +207,7 @@ class PointInfoController extends Controller
                                             pr.created_at = (SELECT MAX(created_at) FROM 
                                                             product_rewards GROUP BY product_id HAVING 
                                                             product_id = pr.product_id) AND  
-                                            o.created_at between '$period_cek->starts_at' and '$period_cek->expires_at' AND
+                                            date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at' AND
                                             o.status != 'CANCEL' AND o.status != 'NO-ORDER' AND
                                             o.customer_id = '$customer'
                                 ) as points
@@ -262,7 +271,10 @@ class PointInfoController extends Controller
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
-                                            sum(case when o.finish_time between '$period_cek->starts_at' and '$period_cek->expires_at' 
+                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                                     AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                            OR
+                                                           date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at') 
                                             then 
                                             (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                                             FROM orders as o 
@@ -278,7 +290,7 @@ class PointInfoController extends Controller
                                             pr.created_at = (SELECT MAX(created_at) FROM 
                                                             product_rewards GROUP BY product_id HAVING 
                                                             product_id = pr.product_id) AND  
-                                            o.created_at between '$period_cek->starts_at' and '$period_cek->expires_at' AND
+                                            date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at' AND
                                             o.status != 'CANCEL' AND o.status != 'NO-ORDER' AND
                                             o.customer_id = '$customer'
                                 ) as points

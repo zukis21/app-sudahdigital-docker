@@ -447,7 +447,7 @@
             var prevStatus = $('#prevStatus').val();
             var orderId = $('#paramOrderId').val();
             $('input[type=radio][name=status]').change(function() {
-                if ((this.value == 'FINISH') && (prevStatus == 'PARTIAL-SHIPMENT')) {
+                if (this.value == 'FINISH')/* && (prevStatus == 'PARTIAL-SHIPMENT'))*/ {
                     $.ajax({
                         url: '{{URL::to('/ajax/cekForFinish/order')}}',
                         type: 'get',
@@ -465,7 +465,12 @@
                         }
                         
                     });
-                }else if((this.value == 'PARTIAL-SHIPMENT') || (this.value == 'CANCEL')){
+                }else if(
+                            (this.value == 'PARTIAL-SHIPMENT') 
+                            || (this.value == 'CANCEL')
+                            || (this.value == 'SUBMIT')
+                            || (this.value == 'PROCESS')
+                        ){
                     $('#update_status').prop('disabled', false);
                 }
             });

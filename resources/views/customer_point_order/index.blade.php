@@ -70,6 +70,10 @@
 		<tbody>
 			@if($period != null)
 				@foreach($customers as $c)
+					@php
+						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->csid);
+						$rest = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
+					@endphp
 					<tr>
 						<td>
 							{{$c->store_name ? "$c->store_name" : '-'}}
@@ -78,19 +82,16 @@
 							{{$c->sales_name}}
 						</td>
 						<td>
-							@php
-								$rest = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
-								echo number_format($rest,2);
-							@endphp
+							{{number_format($rest,2)}}
 						</td>
 						<td>
-							{{number_format($c->totalpoint,2)}}	
+							{{number_format(($c->grand_total + $claim),2)}}	
 						</td>
 						<td>
-							{{number_format($c->totalpoint-($c->grand_total + $rest),2)}}	
+							{{number_format($claim,2)}}
 						</td>
 						<td>
-							{{number_format($c->grand_total + $rest ,2)}}	
+							{{number_format(($c->grand_total + $rest) ,2)}}	
 						</td>
 					</tr>
 				@endforeach

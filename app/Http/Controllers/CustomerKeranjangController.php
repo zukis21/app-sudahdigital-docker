@@ -303,8 +303,9 @@ class CustomerKeranjangController extends Controller
                         if($delete){
                             //DB::table('orders')->where('id', $order_id)->delete();
                             $orders = Order::findOrFail($order_id);
-                            $orders->total_price = 0;
-                            $orders->save();
+                            $orders->forceDelete();
+                            /*$orders->total_price = 0;
+                            $orders->save();*/
                             }
                         }
                         else{
@@ -1250,6 +1251,7 @@ $no=$count_nt_paket;
         //dd($paket_list);
         //return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
         echo'
+        
         <div id="PreviewToko_Produk" style="overflow: hidden;">
             <div class="row px-3">
                 <div class="col-md-3 px-0 py-0">
@@ -1309,10 +1311,11 @@ $no=$count_nt_paket;
                         $totalPlusDiscItem = 0;
                         $totl_param = 0;
                         foreach($order->products_nonpaket as $p){
-                        echo'<tr>
+                        echo'
+                        <tr>
                             <td width="50%" style="">
                                 <small>
-                                    <small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">'.$p->Product_name.'</p></small>';
+                                    <small><p class="p-p" style="line-height:normal;color:#000;font-weight:400;text-align:left;">'.$p->Product_name.'</p></small>';
                                     if($p->pivot->preorder > 0){
                                         echo'
                                         <span class="badge badge-info">Tersedia : '.$p->pivot->available.'</span>
@@ -1321,12 +1324,12 @@ $no=$count_nt_paket;
                                     $cekItemDisc = $this->volumeDiscPerItemCek($p->id,$p->pivot->quantity);
                                     
                                     if($cekItemDisc > 0){
-                                        echo'<br><span><small><b>@Rp. '.number_format($cekItemDisc, 0, ',', '.').'</b></small></span>';
+                                        echo'<br><span><small><b>@Rp. '.number_format($cekItemDisc, 2, ',', '.').'</b></small></span>';
                                     }
                                     if($cekCombineDisc){
                                         $cekPriceDisc = $this->volumePriceDisc($p->id,$cekCombineDisc->id);
                                         if($cekPriceDisc){
-                                            echo'<br><span><small><b>@Rp. '.number_format($cekPriceDisc->discount_price, 0, ',', '.').'</b></small></span>';
+                                            echo'<br><span><small><b>@Rp. '.number_format($cekPriceDisc->discount_price, 2, ',', '.').'</b></small></span>';
                                        }
                                     }
                                 echo'
@@ -1343,26 +1346,26 @@ $no=$count_nt_paket;
                                 if($cekItemDisc > 0){
                                     $paramDiscItem = $cekItemDisc * $p->pivot->quantity;
                                     $PriceForSum = $cekItemDisc * $p->pivot->quantity;
-                                    echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($cekItemDisc * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                    echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($cekItemDisc * $p->pivot->quantity, 2, ',', '.').'</p></>';
                                 }elseif($cekCombineDisc){
                                     if($cekPriceDisc){
                                         $PriceForSum = $cekPriceDisc->discount_price * $p->pivot->quantity;
                                         $paramDiscItem = 0;
-                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($cekPriceDisc->discount_price * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($cekPriceDisc->discount_price * $p->pivot->quantity, 2, ',', '.').'</p></>';
                                     }else{
                                         $PriceForSum = $p->pivot->price_item * $p->pivot->quantity;
                                         $paramDiscItem = 0;
-                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 2, ',', '.').'</p></>';
                                     }
                                 }else{
                                     if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0)){
                                         $PriceForSum = $p->pivot->price_item_promo * $p->pivot->quantity;
                                         $paramDiscItem = 0;
-                                        echo '<small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.').'</p></small>';
+                                        echo '<small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">Rp. '.number_format($p->pivot->price_item_promo * $p->pivot->quantity, 2, ',', '.').'</p></small>';
                                     }else{
                                         $PriceForSum = $p->pivot->price_item * $p->pivot->quantity;
                                         $paramDiscItem = 0;
-                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.').'</p></>';
+                                        echo '<p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->pivot->price_item * $p->pivot->quantity, 2, ',', '.').'</p></>';
                                     }
                                 }
                             $totalPlusDiscItem += $PriceForSum;
@@ -1432,12 +1435,12 @@ $no=$count_nt_paket;
                                 <small>
                                     <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
                                         if($cekCombineDisc){
-                                            echo '<b>Rp. '.number_format($price_rd, 0, ',', '.').'</b></p>';
+                                            echo '<b>Rp. '.number_format($price_rd, 2, ',', '.').'</b></p>';
                                         }elseif($totl_param > 0){
-                                            echo '<b>Rp. '.number_format($totalPlusDiscItem, 0, ',', '.').'</b></p>';
+                                            echo '<b>Rp. '.number_format($totalPlusDiscItem, 2, ',', '.').'</b></p>';
                                         }
                                         else{
-                                            echo '<b>Rp. '.number_format($pirce_r, 0, ',', '.').'</b></p>';
+                                            echo '<b>Rp. '.number_format($pirce_r, 2, ',', '.').'</b></p>';
                                         }
                                     echo '</small>
                                 </small>
@@ -1465,12 +1468,12 @@ $no=$count_nt_paket;
                                 <small>
                                     <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
                                         if($cekCombineDisc){
-                                            echo '<b>Rp. '.number_format($grandDiscVolume, 0, ',', '.').'</b></p>';
+                                            echo '<b>Rp. '.number_format($grandDiscVolume, 2, ',', '.').'</b></p>';
                                         }elseif($totl_param > 0){
-                                            echo '<b>Rp. '.number_format($totalPlusDiscItem, 0, ',', '.').'</b></p>';
+                                            echo '<b>Rp. '.number_format($totalPlusDiscItem, 2, ',', '.').'</b></p>';
                                         }
                                         else{
-                                            echo '<b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></p>';
+                                            echo '<b>Rp. '.number_format($order->total_price, 2, ',', '.').'</b></p>';
                                         }
                                     echo'</small>
                                 </small>
@@ -1550,11 +1553,11 @@ $no=$count_nt_paket;
                                     if($p->bonus_cat == NULL){
                                         if(($p->discount_item != NULL) && ($p->discount_item > 0)){
                                             echo '
-                                                <small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">Rp. '.number_format($p->price_item_promo * $p->quantity, 0, ',', '.').'</p></small>
+                                                <small><p style="line-height:1.3;color:#000;font-weight:400;text-align:left">Rp. '.number_format($p->price_item_promo * $p->quantity, 2, ',', '.').'</p></small>
                                             ';
                                         }else{
                                             echo '<small>
-                                                <p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->price_item * $p->quantity, 0, ',', '.').'</p>
+                                                <p style="line-height:1.3;color:#000;font-weight:400;text-align:right">Rp. '.number_format($p->price_item * $p->quantity, 2, ',', '.').'</p>
                                             </small>';
                                         }
                                     }
@@ -1582,7 +1585,7 @@ $no=$count_nt_paket;
                                     ->sum(\DB::raw('price_item * quantity'));
                             echo'<td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
                                     <small>
-                                        <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($pkt_pirce, 0, ',', '.').'</b></p></small>
+                                        <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($pkt_pirce, 2, ',', '.').'</b></p></small>
                                     </small>
                                 </td>
                             </tr>';
@@ -1605,13 +1608,13 @@ $no=$count_nt_paket;
                                     <small>
                                         <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
                                             if($cekCombineDisc){
-                                                echo '<b>Rp. '.number_format($grandDiscVolume, 0, ',', '.').'</b></p>';
+                                                echo '<b>Rp. '.number_format($grandDiscVolume, 2, ',', '.').'</b></p>';
                                             }elseif((count($order->products_nonpaket) > 0) && ($totl_param > 0)){
                                                 $mingrandItem = $pirce_r - $totalPlusDiscItem;
                                                 $grandItem = $order->total_price - $mingrandItem;
-                                                echo '<b>Rp. '.number_format($grandItem, 0, ',', '.').'</b></p>';
+                                                echo '<b>Rp. '.number_format($grandItem, 2, ',', '.').'</b></p>';
                                             }else{
-                                                echo '<b>Rp. '.number_format($order->total_price, 0, ',', '.').'</b></p>';
+                                                echo '<b>Rp. '.number_format($order->total_price, 2, ',', '.').'</b></p>';
                                             }
                                         echo'</small>
                                     </small>
@@ -1960,6 +1963,10 @@ $no=$count_nt_paket;
                     ->get();
        
         return $orderCek;
+    }
+
+    public function QtyPartship($item){
+        
     }
     
 }

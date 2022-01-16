@@ -44,7 +44,11 @@ class CustomerPointOrderController extends Controller
             FROM
             (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                         /*cp.id,*/ 
-                        sum(case when o.finish_time between '$period->starts_at' and '$period->expires_at' 
+                        sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
+                                 AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                      OR
+                                      date(o.finish_time) between '$period->starts_at' AND '$period->expires_at') 
+                                                           
                         then 
                         (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                         FROM orders as o 
@@ -60,7 +64,7 @@ class CustomerPointOrderController extends Controller
                         pr.created_at = (SELECT MAX(created_at) FROM 
                                         product_rewards GROUP BY product_id HAVING 
                                         product_id = pr.product_id) AND  
-                        o.created_at between '$period->starts_at' and '$period->expires_at' AND
+                        date(o.created_at) between '$period->starts_at' and '$period->expires_at' AND
                         o.status != 'CANCEL' AND o.status != 'NO-ORDER'
                         GROUP by o.customer_id 
             ) as points
@@ -106,7 +110,10 @@ class CustomerPointOrderController extends Controller
         FROM
         (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                     /*cp.id,*/ 
-                    sum(case when o.finish_time between '$period->starts_at' and '$period->expires_at' 
+                    sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
+                             AND (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                OR
+                                date(o.finish_time) between '$period->starts_at' AND '$period->expires_at') 
                      then 
                     (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                     FROM orders as o 
@@ -122,7 +129,7 @@ class CustomerPointOrderController extends Controller
                     pr.created_at = (SELECT MAX(created_at) FROM 
                                     product_rewards GROUP BY product_id HAVING 
                                     product_id = pr.product_id) AND  
-                    o.created_at between '$period->starts_at' and '$period->expires_at' AND
+                    date(o.created_at) between '$period->starts_at' and '$period->expires_at' AND
                     o.status != 'CANCEL' AND o.status != 'NO-ORDER'
                     GROUP by o.customer_id 
         ) as points
@@ -171,7 +178,10 @@ class CustomerPointOrderController extends Controller
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
-                                            sum(case when o.finish_time between '$period_cek->starts_at' and '$period_cek->expires_at' 
+                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                                     AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                            OR
+                                                           date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at') 
                                             then 
                                             (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
                                             FROM orders as o 
@@ -187,7 +197,7 @@ class CustomerPointOrderController extends Controller
                                             pr.created_at = (SELECT MAX(created_at) FROM 
                                                             product_rewards GROUP BY product_id HAVING 
                                                             product_id = pr.product_id) AND  
-                                            o.created_at between '$period_cek->starts_at' and '$period_cek->expires_at' AND
+                                            date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at' AND
                                             o.status != 'CANCEL' AND o.status != 'NO-ORDER' AND
                                             o.customer_id = '$customer'
                                 ) as points
@@ -297,5 +307,31 @@ class CustomerPointOrderController extends Controller
         $period = \App\PointPeriod::findOrFail($period_id);
         //dd($period);
         return Excel::download(new PointFilterPeriodExport($period_id), $period->name.'.xlsx');
+    }
+
+    public static function pointsClaim($periodStart,$customerId){
+        $client_id = \Auth::user()->client_id;
+        $period = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
+                    ->whereDate('starts_at',$periodStart)
+                    ->first();
+
+        $claim = \DB::select("SELECT pc.id, pc.custpoint_id, pc.reward_id, pc.type,
+                                pc.created_at, pr.point_rule, pr.bonus_amount, 
+                                cs.store_name, cs.client_id
+                                FROM point_claims as pc 
+                                JOIN point_rewards as pr ON pc.reward_id = pr.id
+                                JOIN customers as cs ON cs.id = pc.custpoint_id
+                                WHERE cs.client_id = '$client_id'
+                                AND pr.period_id = '$period->id'
+                                AND pc.custpoint_id = '$customerId'
+                                AND pc.type = 1;"
+                            );
+        
+        $total_claim = 0;
+        foreach($claim as $cm){
+            $total_claim += $cm->point_rule;
+        }
+
+        return $total_claim;
     }
 }

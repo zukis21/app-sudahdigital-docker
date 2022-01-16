@@ -113,11 +113,11 @@ class CustomerPaketController extends Controller
 
         $cek_order = \App\Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
-        if($cek_order !== null){
+        if($cek_order != null){
             $order_product = \App\Order_paket_temp::where('order_id','=',$cek_order->id)
             ->where('product_id','=',$id_product)
             ->whereNull('bonus_cat')->first();
-            if($order_product!== null){
+            if($order_product != null){
                 
                 $qtyOrder = $quantity;
                 $readyStock = $cek_promo->stock - $stockValue;
@@ -361,12 +361,12 @@ class CustomerPaketController extends Controller
         $dateNow = date('Y-m-d H:i:s');
         foreach($paket_tmp as $tmp){
             $cek_harga = \App\product::findOrFail($tmp->product_id);
-            $order_product = \App\order_product::where('order_id','=', $tmp->order_id)
-                ->where('product_id','=',$tmp->product_id)
+            $order_product = \App\order_product::where('order_id', $tmp->order_id)
+                ->where('product_id',$tmp->product_id)
                 ->where('group_id',$tmp->group_id)
                 ->where('paket_id',$paket_id)
                 ->where('bonus_cat',$tmp->bonus_cat)->first();
-                if($order_product!== null){
+                if($order_product != null){
                     DB::table('order_product')->where('id', $order_product->id)->update([
                         'order_id' => $tmp->order_id, 
                         'product_id'=>$tmp->product_id,
@@ -414,8 +414,6 @@ class CustomerPaketController extends Controller
         if($paket_tmp){
             $orders = \App\Order::findOrfail($order_id);
             $order_product = \App\order_product::where('order_id',$order_id)
-                            ->where('paket_id',$paket_id)
-                            ->where('group_id',$group_id)
                             ->whereNull('bonus_cat')->get();
             $total_price= 0;
             foreach($order_product as $or){
@@ -423,7 +421,7 @@ class CustomerPaketController extends Controller
                 $total_price += $price * $or->quantity;
             }
             //return $total_price;
-            $orders->total_price += $total_price;
+            $orders->total_price = $total_price;
             $orders->save();
         }
     }
@@ -447,17 +445,20 @@ class CustomerPaketController extends Controller
         $order_id = $request->get('order_id');
         $paket_id = $request->get('paket_id');
         $group_id = $request->get('group_id');
-        $orders = \App\Order::findOrfail($order_id);
+        
         $order_product = \App\order_product::where('order_id',$order_id)
                         ->where('paket_id',$paket_id)
                         ->where('group_id',$group_id)
                         ->whereNull('bonus_cat')->get();
-        $total_price= 0;
+
+        $total_price = 0;
         foreach($order_product as $or){
-            $price = $or->price_item;
-            $total_price += $price * $or->quantity;
+            //$price = $or->price_item;
+            $total_price += ($or->price_item * $or->quantity);
         }
+        $orders = \App\Order::where('id',$order_id)->first();
         $orders->total_price -= $total_price;
+        $orders->save();
 
         $data_orderpkt = \App\order_product::where('order_id',$order_id)
                         ->where('paket_id',$paket_id)
@@ -478,6 +479,14 @@ class CustomerPaketController extends Controller
                         ->where('paket_id',$paket_id)
                         ->where('group_id',$group_id)
                         ->delete();
+        if($order_product){
+            $odr_prd = \App\order_product::where('order_id',$order_id)
+                      ->count();
+            if($odr_prd < 1){
+                $orders = \App\Order::findOrFail($order_id);
+                $orders->forceDelete();
+            }
+        }
         
     }
 

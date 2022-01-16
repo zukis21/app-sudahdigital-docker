@@ -522,7 +522,6 @@
                                                     </td>
                                                     <div id="body_overday">
                                                         <td>
-                                                        
                                                             <a href="" data-toggle="modal" data-target="#overdayModal{{$sls->sls_id}}">
                                                                 <span class="badge bg-orange" id="overD{{$sls->sls_id}}">{{count($order_overday)}}</span>
                                                             </a>
@@ -1112,7 +1111,7 @@
                 success: function(data){
                     $('#body_table').html(data);
                     $('.popoverData').popover();
-                    console.log(num);
+                    //console.log(data);
                     //console.log($('#table_body_list').html(response));
                     /*var len = 0;
                     if(response['data'] != null){
