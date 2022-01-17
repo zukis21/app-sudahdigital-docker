@@ -926,7 +926,7 @@
                                 <div class="media-body align-self-center">
                                   <div class="text-right mt-1">
                                       <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                        {{($target && $work_plan) ? round($ach_quantity/$hari_berjalan,1) : '0'}} / {{round($max_av_qty,0)}}
+                                        {{($target && $work_plan) ? round($ach_quantity/$hari_berjalan,0) : '0'}} / {{round($max_av_qty,0)}}
                                       </span>
                                       <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                                   </div>
