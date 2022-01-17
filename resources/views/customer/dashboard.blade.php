@@ -722,7 +722,7 @@
                                       $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
                                     @endphp
                                   @endif
-                                  {{($target && $work_plan) ? round($prediksi_qty,0) : '0'}} / {{$target ? round($target->target_quantity,0) : '0'}}
+                                  {{($target && $work_plan) ? round($prediksi_qty) : '0'}} / {{$target ? round($target->target_quantity) : '0'}}
                                 </span>
                                   
                                   <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -796,7 +796,7 @@
                                   <div class="media-body align-self-center">
                                     <div class="text-right mt-1">
                                       <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                        {{($target && $work_plan) ? round($prediksi_qty,0) : '0'}} / {{$target ? round($target->target_quantity,0) : '0'}}
+                                        {{($target && $work_plan) ? round($prediksi_qty) : '0'}} / {{$target ? round($target->target_quantity) : '0'}}
                                       </span>
                                         
                                         <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
@@ -871,7 +871,7 @@
                             <div class="media-body align-self-center">
                               <div class="text-right mt-1">
                                   <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                    {{($target && $work_plan) ? round($ach_quantity/$hari_berjalan, 0) : '0'}} / {{round($max_av_qty,0)}}
+                                    {{($target && $work_plan) ? round($ach_quantity/$hari_berjalan) : '0'}} / {{round($max_av_qty)}}
                                   </span>
                                   <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                               </div>
@@ -926,7 +926,7 @@
                                 <div class="media-body align-self-center">
                                   <div class="text-right mt-1">
                                       <span class="border px-2 py-1 font-weight-bold h4" style="border-radius: 10px;">
-                                        {{($target && $work_plan) ? round($ach_quantity/$hari_berjalan,0) : '0'}} / {{round($max_av_qty,0)}}
+                                        {{($target && $work_plan) ? round($ach_quantity/$hari_berjalan) : '0'}} / {{round($max_av_qty)}}
                                       </span>
                                       <p class="mb-0 mt-1 text-truncate">&nbsp;</p>
                                   </div>
