@@ -554,7 +554,7 @@ Home
                                                             </span>
                                                         @endforeach
                                                         <span class="float-right">
-                                                            STOK&nbsp; : <span id="stok{{$value->id}}">{{($value->stock+$orderFinish) - $stockValue > 0 ? ($value->stock+$orderFinish) : 0}}</span>
+                                                            STOK&nbsp; : <span id="stok{{$value->id}}">{{($value->stock+$orderFinish) - $stockValue > 0 ? ($value->stock+$orderFinish) - $stockValue: 0}}</span>
                                                         </span>
                                                     @endif
                                                 @else
