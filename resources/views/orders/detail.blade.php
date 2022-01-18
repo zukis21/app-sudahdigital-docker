@@ -447,9 +447,27 @@
             var prevStatus = $('#prevStatus').val();
             var orderId = $('#paramOrderId').val();
             $('input[type=radio][name=status]').change(function() {
-                if (this.value == 'FINISH')/* && (prevStatus == 'PARTIAL-SHIPMENT'))*/ {
+                if ((this.value == 'FINISH') && (prevStatus == 'PARTIAL-SHIPMENT')) {
                     $.ajax({
                         url: '{{URL::to('/ajax/cekForFinish/order')}}',
+                        type: 'get',
+                        data: {
+                            'order_id' : orderId,
+                        },
+                        success: function(response){
+                            console.log(response);
+                            if (response == 'taken') {
+                                $('#update_status').prop('disabled', true);
+                            }else if (response == 'not_taken') {
+                                $('#update_status').prop('disabled', false);
+                            }
+
+                        }
+                        
+                    });
+                }else if((this.value == 'FINISH') && (prevStatus == 'SUBMIT' || prevStatus == 'PROCESS')){
+                    $.ajax({
+                        url: '{{URL::to('/ajax/cekFinish/notPreorder')}}',
                         type: 'get',
                         data: {
                             'order_id' : orderId,

@@ -285,6 +285,18 @@ class AjaxAdminSearch extends Controller
       }        
   }
 
+  public function cekFinishNotPreorder(Request $request){
+    $orderId = $request->get('order_id');
+    $order = \App\order_product::where('order_id','=',$orderId)
+            ->where('preorder','>', 0)
+            ->count();
+    if ($order > 0) {
+      echo "taken";	
+    }else{
+      echo "not_taken";
+    }        
+}
+
   public function salesCheckDelivery(){
     $idSpv = \Auth::user()->id;
     $sales = \App\Spv_sales::with('sales')
