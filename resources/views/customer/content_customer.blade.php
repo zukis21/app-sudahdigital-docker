@@ -282,7 +282,7 @@ Home
                                         @if($stock_status->stock_status == 'ON')
                                             @php
                                                 $stockValueTop = App\Http\Controllers\CustomerKeranjangController::stockInfo($top_product[$key]->id);//total order
-                                                $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($top_product[$key]->id);
+                                                $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($top_product[$key]->id);//finish order
                                             @endphp
                                             <span class="badge badge-stok py-1" >
                                                 @if(session()->has('ses_order'))
