@@ -112,7 +112,7 @@
                                     <input type="hidden" class="valEmpty" id="valEmpty{{$p->pivot->id}}">
                                     <div class="form-group form-float">
                                         <div class="form-line" id="div{{$p->pivot->id}}">
-                                            <input type="number" min="0" name="deliveryQty[{{$p->pivot->id}}]" 
+                                            <input type="number" min="0" max="{{$p->pivot->quantity}}" name="deliveryQty[{{$p->pivot->id}}]" 
                                             value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->pivot->id}}')"
                                             autocomplete="off" id="dlv{{$p->pivot->id}}" required/>
                                             <label for="dlv{{$p->pivot->id}}" class="form-label">Delivery Quantity</label>
@@ -231,7 +231,7 @@
                                     <input type="hidden" class="valEmpty" id="valEmpty{{$p->id}}">
                                     <div class="form-group form-float">
                                         <div class="form-line">
-                                            <input type="number" min="0" name="deliveryQty[{{$p->id}}]" 
+                                            <input type="number" min="0" max="{{$p->quantity}}" name="deliveryQty[{{$p->id}}]" 
                                             value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')"
                                             autocomplete="off" id="dlv{{$p->id}}" required/>
                                             <label for="dlv{{$p->id}}" class="form-label">Delivery Quantity</label>

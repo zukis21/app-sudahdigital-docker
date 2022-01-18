@@ -219,7 +219,8 @@ Paket
                                                                         <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">
                                                                             @if($stock_status->stock_status == 'ON')
                                                                                 @php
-                                                                                    $stockValuePaket = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                    $stockValuePaket = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);//total order
+                                                                                    $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p_group->id);
                                                                                 @endphp
                                                                                 <span class="badge badge-stok py-1" >
                                                                                     @if(session()->has('ses_order'))
@@ -247,12 +248,12 @@ Paket
                                                                                                         </span>
                                                                                                     @endforeach
                                                                                                     <span class="float-right">
-                                                                                                        STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
                                                                                             @else
                                                                                                 <span class="float-left">
-                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
                                                                                                 </span>
                                                                                             @endif
                                                                                         @else
@@ -380,7 +381,8 @@ Paket
                                                                     <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">
                                                                         @if($stock_status->stock_status == 'ON')
                                                                             @php
-                                                                                $stockValuePaket = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                $stockValuePaket = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);//order product
+                                                                                $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p_group->id);
                                                                             @endphp
                                                                             <span class="badge badge-stok py-1" >
                                                                                 @if(session()->has('ses_order'))
@@ -407,12 +409,12 @@ Paket
                                                                                                     </span>
                                                                                                 @endforeach
                                                                                                 <span class="float-right">
-                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                    STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
                                                                                                 </span>
                                                                                             @endif
                                                                                         @else
                                                                                             <span class="float-left">
-                                                                                                STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{$p_group->stock - $stockValuePaket > 0 ? $p_group->stock - $stockValuePaket : 0}}</span>
+                                                                                                STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
                                                                                             </span>
                                                                                         @endif
                                                                                     @endif
@@ -619,7 +621,8 @@ Paket
                                                                                 </div>
                                                                                 @if($stock_status->stock_status == 'ON')
                                                                                     @php
-                                                                                        $stockValueBonus = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                        $stockValueBonus = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);//total order
+                                                                                        $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p_group->id);
                                                                                     @endphp
                                                                                     <span class="badge badge-stok py-1 badge-bonus mb-1" >
                                                                                         @if(session()->has('ses_order'))
@@ -646,12 +649,12 @@ Paket
                                                                                                             </span>
                                                                                                         @endforeach
                                                                                                         <span class="float-right">
-                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
                                                                                                         </span>
                                                                                                     @endif
                                                                                                 @else
                                                                                                     <span class="float-left">
-                                                                                                        STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
                                                                                             @endif
@@ -734,7 +737,7 @@ Paket
                                                                                             class="btn btn-block button_add_to_cart respon" 
                                                                                             onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')"
                                                                                             @if($stock_status->stock_status == 'ON') 
-                                                                                                {{$p_group->stock - $stockValueBonus <= 0 ? 'disabled' : ''}}
+                                                                                                {{($p_group->stock+$orderFinish) - $stockValueBonus <= 0 ? 'disabled' : ''}}
                                                                                             @endif>
                                                                                             Simpan
                                                                                         </button>
@@ -789,7 +792,8 @@ Paket
                                                                                 </div>
                                                                                 @if($stock_status->stock_status == 'ON')
                                                                                     @php
-                                                                                        $stockValueBonus = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);
+                                                                                        $stockValueBonus = App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);//total order
+                                                                                        $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p_group->id);
                                                                                     @endphp
                                                                                     <span class="badge badge-stok py-1 mb-1 badge-bonus" >
                                                                                         @if(session()->has('ses_order'))
@@ -817,12 +821,12 @@ Paket
                                                                                                         @endforeach
                                                                                                         <span class="float-right">
                                                                                                             
-                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                            STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
                                                                                                         </span>
                                                                                                     @endif
                                                                                                 @else
                                                                                                     <span class="float-left">
-                                                                                                        STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{$p_group->stock - $stockValueBonus > 0 ? $p_group->stock - $stockValueBonus : 0}}</span>
+                                                                                                        STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
                                                                                             @endif
@@ -905,7 +909,7 @@ Paket
                                                                                             class="btn btn-block button_add_to_cart respon" 
                                                                                             onclick="add_tocart_bns('{{$p_group->id}}','{{$value->id}}')" 
                                                                                             @if($stock_status->stock_status == 'ON')
-                                                                                                {{$p_group->stock - $stockValueBonus <= 0 ? 'disabled' : ''}}
+                                                                                                {{($p_group->stock+$orderFinish) - $stockValueBonus <= 0 ? 'disabled' : ''}}
                                                                                             @endif>
                                                                                             Simpan
                                                                                         </button>

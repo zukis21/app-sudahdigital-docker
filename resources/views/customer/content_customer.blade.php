@@ -281,7 +281,8 @@ Home
                                     <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                         @if($stock_status->stock_status == 'ON')
                                             @php
-                                                $stockValueTop = App\Http\Controllers\CustomerKeranjangController::stockInfo($top_product[$key]->id);
+                                                $stockValueTop = App\Http\Controllers\CustomerKeranjangController::stockInfo($top_product[$key]->id);//total order
+                                                $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($top_product[$key]->id);
                                             @endphp
                                             <span class="badge badge-stok py-1" >
                                                 @if(session()->has('ses_order'))
@@ -308,12 +309,12 @@ Home
                                                                     </span>
                                                                 @endforeach
                                                                 <span class="float-right">
-                                                                    STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{$top_product[$key]->stock - $stockValueTop > 0 ? $top_product[$key]->stock - $stockValueTop : 0}}</span>
+                                                                    STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{($top_product[$key]->stock + $orderFinish) - $stockValueTop > 0 ? ($top_product[$key]->stock + $orderFinish) - $stockValueTop : 0}}</span>
                                                                 </span>
                                                             @endif
                                                         @else
                                                             <span class="float-left">
-                                                                STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{$top_product[$key]->stock - $stockValueTop > 0 ? $top_product[$key]->stock - $stockValueTop : 0}}</span>
+                                                                STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{($top_product[$key]->stock + $orderFinish) - $stockValueTop > 0 ? ($top_product[$key]->stock + $orderFinish) - $stockValueTop : 0}}</span>
                                                             </span>
                                                         @endif
                                                     @endif
@@ -525,7 +526,8 @@ Home
                             <div class="card-body d-flex flex-column" style="background-color:#1A4066;">
                                 @if($stock_status->stock_status == 'ON')
                                     @php
-                                        $stockValue = App\Http\Controllers\CustomerKeranjangController::stockInfo($value->id);
+                                        $stockValue = App\Http\Controllers\CustomerKeranjangController::stockInfo($value->id);//total order
+                                        $orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($value->id);
                                     @endphp
                                     <span class="badge badge-stok py-1" >
                                         @if(session()->has('ses_order'))
@@ -552,12 +554,12 @@ Home
                                                             </span>
                                                         @endforeach
                                                         <span class="float-right">
-                                                            STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
+                                                            STOK&nbsp; : <span id="stok{{$value->id}}">{{($value->stock+$orderFinish) - $stockValue > 0 ? ($value->stock+$orderFinish) : 0}}</span>
                                                         </span>
                                                     @endif
                                                 @else
                                                     <span class="float-left">
-                                                        STOK&nbsp; : <span id="stok{{$value->id}}">{{$value->stock - $stockValue > 0 ? $value->stock - $stockValue : 0}}</span>
+                                                        STOK&nbsp; : <span id="stok{{$value->id}}">{{($value->stock+$orderFinish) - $stockValue > 0 ? ($value->stock+$orderFinish) - $stockValue : 0}}</span>
                                                     </span>
                                                 @endif
                                             @endif

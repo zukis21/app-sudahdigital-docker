@@ -39,7 +39,7 @@ class CustomerKeranjangController extends Controller
                 $_this = new self;
                 
                 $qtyOrder = $order_product->quantity + $quantity;
-                $readyStock = $cek_promo->stock - $_this->stockInfo( $id_product);
+                $readyStock = $cek_promo->stock - ($_this->stockInfo( $id_product)-$_this->TotalQtyFinish($id_product));
                 $prevstock = $readyStock + $order_product->quantity;
                 if($prevstock <= 0){
                     $preOrder = $qtyOrder;
@@ -77,7 +77,7 @@ class CustomerKeranjangController extends Controller
                         $_this = new self;
                         
                         $qtyOrder = $quantity;
-                        $readyStock = $cek_promo->stock - $_this->stockInfo( $id_product);
+                        $readyStock = $cek_promo->stock - ($_this->stockInfo( $id_product)-$_this->TotalQtyFinish($id_product));
                         if($readyStock < 0){
                             $readyStock = 0 ;
                         }else{
@@ -119,7 +119,7 @@ class CustomerKeranjangController extends Controller
             if($order->save()){
                 $_this = new self;
                 $qtyOrder = $quantity;
-                $readyStock = $cek_promo->stock - $_this->stockInfo( $id_product);
+                $readyStock = $cek_promo->stock - ($_this->stockInfo( $id_product)-$_this->TotalQtyFinish($id_product));
                 if($readyStock < 0){
                     $readyStock = 0 ;
                 }else{
@@ -206,7 +206,7 @@ class CustomerKeranjangController extends Controller
         $_this = new self;
         
         $qtyOrder = $order_product->quantity + 1;
-        $readyStock = $cek_promo->stock - $_this->stockInfo( $order_product->product_id);
+        $readyStock = $cek_promo->stock - ($_this->stockInfo($order_product->product_id)-$_this->TotalQtyFinish( $order_product->product_id));
         $prevstock = $readyStock + $order_product->quantity;
         if($prevstock <= 0){
             $preOrder = $qtyOrder;
@@ -263,7 +263,7 @@ class CustomerKeranjangController extends Controller
 
             $_this = new self;
             $qtyOrder = $order_product->quantity - 1;
-            $readyStock = $cek_promo->stock - $_this->stockInfo( $order_product->product_id);
+            $readyStock = $cek_promo->stock -  ($_this->stockInfo($order_product->product_id)-$_this->TotalQtyFinish( $order_product->product_id));
             $prevstock = $readyStock + $order_product->quantity;
             if($prevstock <= 0){
                 $preOrder = $qtyOrder;
@@ -1738,7 +1738,7 @@ $no=$count_nt_paket;
         $itemId = $request->get('ProductId');
         //$quantity = $request->get('quantity');
         $item = \App\product::findOrfail($itemId);
-        $restStock = $item->stock - $this->stockInfo($itemId);
+        $restStock = $item->stock - ($this->stockInfo($itemId)-$this->TotalQtyFinish($itemId));
         
         /*
         if($stock_status->stock_status == 'ON'){
@@ -1801,15 +1801,15 @@ $no=$count_nt_paket;
                     SUM(op.quantity) AS totalQuantity
                     FROM orders o
                     INNER JOIN order_product op ON op.order_id = o.id
-                    WHERE op.product_id = '$item' AND o.status = 'SUBMIT'
-                    OR o.status = 'PROCESS'
+                    WHERE op.product_id = '$item' AND o.status != 'CANCEL'
+                    OR o.status != 'NO-ORDER'
                     AND o.client_id = '$client_id' ");
         $totalQtyOrders = 0;
         foreach($orders as $odr){
             $totalQtyOrders =  $odr->totalQuantity;
         }
         $_this = new self;
-        return $totalQtyOrders + $_this->stockInfoPaket($item);
+        return $totalQtyOrders + $_this->stockInfoPaket($item) ;/*+ $_this->QtyLeftPartShip($item);*/
     }
 
     public static function stockInfoPaket($item){
@@ -1827,7 +1827,7 @@ $no=$count_nt_paket;
                     FROM orders o
                     INNER JOIN order_paket_tmp op ON op.order_id = o.id
                     WHERE op.product_id = '$item' AND o.status = 'SUBMIT'
-                    OR o.status = 'PROCESS'
+                    /*OR o.status = 'PROCESS'*/
                     AND o.client_id = '$client_id' ");
         $totalQtyOrders = 0;
         foreach($orders as $odr){
@@ -1965,8 +1965,60 @@ $no=$count_nt_paket;
         return $orderCek;
     }
 
-    public function QtyPartship($item){
-        
+    public function QtyLeftPartShip($item){
+        $client_id = \Auth::user()->client_id;
+        $orders = \DB::select("SELECT o.id , o.status, op.product_id, op.quantity, 
+                                    op.deliveryQty, op.preorder, 
+                                    SUM(CASE WHEN op.preorder > 0 
+                                    THEN (op.quantity - IFNULL(op.deliveryQty,0)) ELSE 0 END )
+                                    AS totalQuantity
+                                    FROM orders o
+                                    INNER JOIN order_product op 
+                                    ON op.order_id = o.id
+                                    WHERE op.product_id = '$item' 
+                                    AND o.status = 'PARTIAL-SHIPMENT'
+                                    AND o.client_id = '$client_id' ");
+        $totalQtyOrders = 0;
+        foreach($orders as $odr){
+            $totalQtyOrders =  $odr->totalQuantity;
+        }
+
+        return $totalQtyOrders;
+    }
+
+    public static function TotalQtyFinish ($item){
+        $client_id = \Auth::user()->client_id;
+        $orders = \DB::select("SELECT o.id , o.status, op.product_id, op.quantity, 
+                    SUM(op.quantity) AS totalQuantity
+                    FROM orders o
+                    INNER JOIN order_paket_tmp op ON op.order_id = o.id
+                    WHERE op.product_id = '$item' AND o.status = 'FINISH'
+                    AND o.client_id = '$client_id' ");
+        $totalQtyOrders = 0;
+        foreach($orders as $odr){
+            $totalQtyOrders =  $odr->totalQuantity;
+        }
+        $_this = new self;
+        return $totalQtyOrders + $_this->TotalDelvPart($item);
+    }
+
+    public function TotalDelvPart($item){
+        $client_id = \Auth::user()->client_id;
+        $orders = \DB::select("SELECT o.id , o.status, op.product_id,op.deliveryQty,
+                                SUM(IFNULL(op.deliveryQty,0))
+                                AS totalQuantity
+                                FROM orders o
+                                INNER JOIN order_product op 
+                                ON op.order_id = o.id
+                                WHERE op.product_id = '$item' 
+                                AND o.status = 'PARTIAL-SHIPMENT'
+                                AND o.client_id = '$client_id' ");
+        $totalQtyOrders = 0;
+        foreach($orders as $odr){
+            $totalQtyOrders =  $odr->totalQuantity;
+        }
+
+        return $totalQtyOrders;
     }
     
 }

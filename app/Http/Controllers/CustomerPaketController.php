@@ -94,8 +94,9 @@ class CustomerPaketController extends Controller
         $cek_promo = \App\product::findOrFail($id_product);
         
         $stockValue = \App\Http\Controllers\CustomerKeranjangController::stockInfo($id_product);
+        $OrderFinish= \App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($id_product);
         $qtyOrder = $quantity;
-        $readyStock = $cek_promo->stock - $stockValue;
+        $readyStock = $cek_promo->stock - ($stockValue-$OrderFinish);
         if($readyStock < 0){
             $readyStock = 0 ;
         }else{
@@ -209,8 +210,9 @@ class CustomerPaketController extends Controller
         $cek_promo = \App\product::findOrFail($id_product);
 
         $stockValue = \App\Http\Controllers\CustomerKeranjangController::stockInfo($id_product);
+        $OrderFinish= \App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($id_product);
         $qtyOrder = $quantity;
-        $readyStock = $cek_promo->stock - $stockValue;
+        $readyStock = $cek_promo->stock - ($stockValue-$OrderFinish);
         if($readyStock < 0){
             $readyStock = 0 ;
         }else{
@@ -571,8 +573,6 @@ class CustomerPaketController extends Controller
                         $info_stock ='';
                     }
 
-                    
-                    
                     $output.= '<div id="product_list"  class="col-6 col-md-4 mx-0 d-flex item_pop" style="">
                         <div class="card mx-auto  item_product_pop ">                        
                             <input type="hidden" id="orderid_delete_pkt'.$p_group->id.'_'.$group_id.'" value="'.$c_orderid_delete.'">
