@@ -1991,7 +1991,7 @@ $no=$count_nt_paket;
         $orders = \DB::select("SELECT o.id , o.status, op.product_id, op.quantity, 
                     SUM(op.quantity) AS totalQuantity
                     FROM orders o
-                    INNER JOIN order_paket_tmp op ON op.order_id = o.id
+                    INNER JOIN order_product op ON op.order_id = o.id
                     WHERE op.product_id = '$item' AND o.status = 'FINISH'
                     AND o.client_id = '$client_id' ");
         $totalQtyOrders = 0;
