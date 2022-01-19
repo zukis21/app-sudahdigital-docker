@@ -77,10 +77,12 @@ class AjaxCitySearch extends Controller
             if($search == ''){
                 $store = \App\Customer::where('client_id',$client_id)
                         ->where('user_id',$user_id)
+                        ->where('status','!=','NONACTIVE')
                         ->get();
             }else{
                 $store = \App\Customer::where('client_id',$client_id)
                         ->where('user_id',$user_id)
+                        ->where('status','!=','NONACTIVE')
                         ->where(function($q) use($search) {
                             $q->where('store_name','LIKE',"%$search%")
                               ->orWhere('store_code','LIKE',"%$search%");
@@ -95,9 +97,11 @@ class AjaxCitySearch extends Controller
             if($search == ''){
                 $store = \App\Customer::where('client_id',$client_id)
                         ->where('user_id',$user_id)
+                        ->where('status','!=','NONACTIVE')
                         ->where('city_id',$city_id)->get();
             }else{
                     $store = \App\Customer::where('client_id',$client_id)
+                    ->where('status','!=','NONACTIVE')
                     ->where('user_id',$user_id)
                     ->where('city_id','=',$city_id)
                     ->where(function($q) use($search) {
