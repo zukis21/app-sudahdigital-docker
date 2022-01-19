@@ -86,18 +86,22 @@
 		<thead>
 			<tr>
 				<!--<th>No</th>-->
+				<!--
 				<th>Product Image</th>
 				<th>Product Code</th>
 				<th>Product Name</th>
+				-->
+				<th>Product</th>
 				<!--<th>Descritption</th>-->
 				<th>Category</th>
 				@if($stock_status && $stock_status->stock_status == 'ON')
-					<th>Stock</th>
-					<th>Low Stock Treshold</th>
+					<th>Inv. Stock</th>
+					<th>Avail. for Sale</th>
+					<th>Treshold</th>
 				@endif
 				<th>Price</th>
 				<th>Status</th>
-				<th>Action</th>
+				<th>#</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -107,13 +111,18 @@
 			<tr>
 				<!--<td>{{$no}}</td>-->
 				<td>@if($p->image)
-					<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
+						<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
 					@else
-					N/A
+						<b>Image</b> : N/A
 					@endif
+					<br>
+					<b>Code</b> : {{$p->product_code}}<br>
+					<b>Name</b> : {{$p->Product_name}}
 				</td>
+				<!--
 				<td>{{$p->product_code}}</td>
 				<td>{{$p->Product_name}}</td>
+				-->
 				<td>
 					@foreach($p->categories as $category)
 						{{$category->name}}
@@ -123,6 +132,13 @@
 				@if($stock_status->stock_status == 'ON')
 					<td>
 						{{$p->stock}}
+					</td>
+					<td>
+						@php
+							$totalOrder = App\Http\Controllers\CustomerKeranjangController::stockInfo($p->id);//total order
+							$orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p->id);//finish order
+						@endphp
+						{{($p->stock+$orderFinish)-$totalOrder}}
 					</td>
 					<td>
 						{{$p->low_stock_treshold}}
