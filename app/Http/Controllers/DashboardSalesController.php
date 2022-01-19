@@ -148,7 +148,10 @@ class DashboardSalesController extends Controller
         //$work_current = $current_day - $day_off;
         //dd($work_plan->working_days);
 
-        $cartuser = \App\Sales_Targets::where('client_id',\Auth::user()->client_id)
+        $cartuser = \App\Sales_Targets::whereHas('users', function($q){
+                            $q->where('status','ACTIVE');
+                        })
+                        ->where('client_id',\Auth::user()->client_id)
                         ->whereMonth('period', '=', $month)
                         ->whereYear('period', '=', $year)
                         ->orderBy('user_id', 'ASC')->get();
