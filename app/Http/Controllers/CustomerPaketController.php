@@ -795,8 +795,8 @@ class CustomerPaketController extends Controller
                     $c_jml_val = 0;
                 }
                 if(($stock_status->stock_status == 'ON')&&($p_group->stock == 0)){
-                    $dsbld_btn .= 'disabled';
-                    $info_stock.= '<span class="badge badge-warning ">Sisa stok 0</span>';
+                    $dsbld_btn = 'disabled';
+                    $info_stock = '<span class="badge badge-warning ">Sisa stok 0</span>';
                 }
                 echo' 
                 <div class="col-12 col-md-6 d-flex item_pop_bonus pb-4" style="">
@@ -934,7 +934,7 @@ class CustomerPaketController extends Controller
                                     <button class="btn btn-block button_add_to_cart respon"
                                     id="disabled_button_bonus'.$p_group->id.'_'.$group_id.'" 
                                     onclick="add_tocart_bns('.$p_group->id.','.$group_id.')" 
-                                    style="" '.$dsbld_btn;
+                                    style=""';
                                     if($stock_status->stock_status == 'ON') 
                                         if(($p_group->stock+$orderFinish) - $stockValueBonus <= 0){
                                             echo 'disabled';
