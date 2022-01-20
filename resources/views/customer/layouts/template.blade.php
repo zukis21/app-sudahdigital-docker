@@ -3382,7 +3382,7 @@
             }
         }
 
-        //Edit
+        
         function add_tocart_top(id)
         {
             var Product_id = $('#top'+id).val();

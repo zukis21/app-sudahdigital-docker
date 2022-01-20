@@ -25,6 +25,9 @@ class CustomerKeranjangController extends Controller
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
         $price=$request->get('price');
+        $stock_status= \DB::table('product_stock_status')
+                            ->where('client_id','=',$client_id)
+                            ->first();
         $cek_promo = product::findOrFail($id_product);
         $cek_order = Order::where('user_id','=',"$id_user")
         ->where('status','=','SUBMIT')->whereNull('customer_id')->first();
@@ -65,10 +68,14 @@ class CustomerKeranjangController extends Controller
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity += $quantity;
                 
-                $order_product->available = $avail;
-                $order_product->preorder = $preOrder;
+                if($stock_status->stock_status == 'ON'){
+                    $order_product->available = $avail;
+                    $order_product->preorder = $preOrder;
+                }else{
+                    $order_product->available = 0;
+                    $order_product->preorder = 0;
+                }
                 
-                    
                 $order_product->save();
                 $cek_order->total_price += $price * $quantity;
                 $cek_order->save();
@@ -99,8 +106,13 @@ class CustomerKeranjangController extends Controller
                         $new_order_product->price_item_promo = $cek_promo->price_promo;
                         $new_order_product->discount_item = $cek_promo->discount;
                         $new_order_product->quantity = $quantity;
-                        $new_order_product->available = $avail;
-                        $new_order_product->preorder = $preOrder;
+                        if($stock_status->stock_status == 'ON'){
+                            $new_order_product->available = $avail;
+                            $new_order_product->preorder = $preOrder;
+                        }else{
+                            $new_order_product->available = 0;
+                            $new_order_product->preorder = 0;
+                        }
                         $new_order_product->save();
                         $cek_order->total_price += $price * $quantity;
                         $cek_order->save();
@@ -141,8 +153,13 @@ class CustomerKeranjangController extends Controller
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity = $request->get('quantity');
-                $order_product->available = $avail;
-                $order_product->preorder = $preOrder;
+                if($stock_status->stock_status == 'ON'){
+                    $order_product->available = $avail;
+                    $order_product->preorder = $preOrder;
+                }else{
+                    $order_product->available = 0;
+                    $order_product->preorder = 0;
+                }
                 $order_product->save();
             }
 
@@ -197,12 +214,14 @@ class CustomerKeranjangController extends Controller
     }*/
 
     public function tambah(Request $request){
-           
+        $client_id =  \Auth::user()->client_id;  
         $id = $request->get('id_detil');
         $order_id = $request->get('order_id');
         $order_product = order_product::findOrFail($id);
         $cek_promo = product::findOrFail($order_product->product_id);
-        
+        $stock_status= \DB::table('product_stock_status')
+                            ->where('client_id','=',$client_id)
+                            ->first();
         $_this = new self;
         
         $qtyOrder = $order_product->quantity + 1;
@@ -217,8 +236,13 @@ class CustomerKeranjangController extends Controller
         }
 
         $order_product->quantity += 1;
-        $order_product->available = $avail;
-        $order_product->preorder = $preOrder;
+        if($stock_status->stock_status == 'ON'){
+            $order_product->available = $avail;
+            $order_product->preorder = $preOrder;
+        }else{
+            $order_product->available = 0;
+            $order_product->preorder = 0;
+        }
         $order_product->price_item = $cek_promo->price;
         $order_product->price_item_promo = $cek_promo->price_promo;
         $order_product->discount_item = $cek_promo->discount;
@@ -236,10 +260,13 @@ class CustomerKeranjangController extends Controller
     }
 
     public function kurang(Request $request){
+        $client_id =  \Auth::user()->client_id;
         $id = $request->get('id_detil');
         $order_id = $request->get('order_id');
         $order_product = order_product::findOrFail($id);
-
+        $stock_status= \DB::table('product_stock_status')
+                            ->where('client_id','=',$client_id)
+                            ->first();
         if($order_product->quantity < 2){
             $delete = DB::table('order_product')->where('id', $id)->delete();   
             if($delete)
@@ -276,8 +303,13 @@ class CustomerKeranjangController extends Controller
             $order_product->price_item = $cek_promo->price;
             $order_product->price_item_promo = $cek_promo->price_promo;
             $order_product->discount_item = $cek_promo->discount;
-            $order_product->available = $avail;
-            $order_product->preorder = $preOrder;
+            if($stock_status->stock_status == 'ON'){
+                $order_product->available = $avail;
+                $order_product->preorder = $preOrder;
+            }else{
+                $order_product->available = 0;
+                $order_product->preorder = 0;
+            }
             $order_product->quantity -= 1;
             $order_product->save();
             if($order_product->save()){
@@ -1736,9 +1768,14 @@ $no=$count_nt_paket;
                        ->first();
         
         $itemId = $request->get('ProductId');
-        //$quantity = $request->get('quantity');
-        $item = \App\product::findOrfail($itemId);
-        $restStock = $item->stock - ($this->stockInfo($itemId)-$this->TotalQtyFinish($itemId));
+        $quantity = $request->get('quantity');
+        if($stock_status->stock_status == 'ON'){
+            $item = \App\product::findOrfail($itemId);
+            $restStock = $item->stock - ($this->stockInfo($itemId)-$this->TotalQtyFinish($itemId));
+        }else{
+            $restStock = (int)$quantity + 1;
+        }
+        
         
         /*
         if($stock_status->stock_status == 'ON'){
