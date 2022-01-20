@@ -519,8 +519,10 @@ class CustomerPaketController extends Controller
                     ->get();
                 }
                 else{
-                    $product = DB::select("SELECT * FROM products WHERE client_id = $client_id AND 
-                                Product_name LIKE '%$query%' AND EXISTS (SELECT group_id,status,product_id 
+                    $product = DB::select("SELECT * FROM products WHERE client_id = $client_id 
+                                AND products.status = 'PUBLISH'
+                                AND Product_name LIKE '%$query%' 
+                                AND EXISTS (SELECT group_id,status,product_id 
                                 FROM group_product WHERE group_product.product_id = products.id AND 
                                 status='ACTIVE' AND group_id='$group_id')");
                 }
@@ -531,7 +533,9 @@ class CustomerPaketController extends Controller
                     ->where('client_id','=',$client_id)
                     ->get();
                 }else{
-                    $product = DB::select("SELECT * FROM products WHERE client_id = $client_id AND EXISTS 
+                    $product = DB::select("SELECT * FROM products WHERE client_id = $client_id 
+                                AND products.status = 'PUBLISH'
+                                AND EXISTS 
                                 (SELECT group_id,status,product_id FROM group_product WHERE 
                                 group_product.product_id = products.id AND status='ACTIVE' AND group_id='$group_id')");
                 }
@@ -700,7 +704,7 @@ class CustomerPaketController extends Controller
                                                 padding-left:0;
                                                 height:25px" onclick="button_plus_pkt('.$p_group->id.','.$group_id.')">+</button> 
                                     </div>
-                                    <button class="btn bt-add-paket btn-block button_add_to_cart respon mt-1" onclick="add_tocart_pkt('.$p_group->id.','.$group_id.')" style="" '.$dsbld_btn.'>Simpan</button> 
+                                    <button class="btn bt-add-paket btn-block button_add_to_cart respon mt-1" onclick="add_tocart_pkt('.$p_group->id.','.$group_id.')">Simpan</button> 
                                 </div>
                             </div>
                         </div>
