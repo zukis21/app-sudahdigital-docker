@@ -226,7 +226,7 @@ Paket
                                                                                     @if(session()->has('ses_order'))
                                                                                         <?php $store_name = session()->get('ses_order');?>
                                                                                         @if($store_name->customer_id != null)
-                                                                                        <input type="hidden" id="ses_order" value="{{$store_name->customer_id}}">
+                                                                                            <input type="hidden" id="ses_order" value="{{$store_name->customer_id}}">
                                                                                             <?php
                                                                                                 $target = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($p_group->id,$store_name->customer_id);
                                                                                                 [$totalQty,$totalNml]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id)

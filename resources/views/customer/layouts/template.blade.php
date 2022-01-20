@@ -6839,10 +6839,11 @@
                         order_id:order_id,
                         customer_id:$('#ses_order').val(),
                      },
-                dataType:'json',
-                success:function(data)
+                //dataType:'json',
+                //success:function(data)
+                success:function(response)
                 {
-                    $('#paket_cari'+group_id).html(data.table_data);
+                    $('#paket_cari'+group_id).html(response);
                     //$('#total_records').text(data.total_data);
                 }
             });
@@ -6866,10 +6867,12 @@
                         gr_cat:gr_cat,
                         order_id:order_id
                      },
-                dataType:'json',
-                success:function(data)
+                //dataType:'json',
+                //success:function(data)
+                success:function(response)
                 {
-                    $('#bonus_cari'+group_id).html(data.table_data);
+                    //console.log(order_id);
+                    $('#bonus_cari'+group_id).html(response);
                     //$('#total_records').text(data.total_data);
                 }
             });

@@ -494,7 +494,7 @@ class CustomerPaketController extends Controller
 
     public function search_paket(Request $request){
         
-            //$output = '';
+            $output = '';
             $client_id = \Auth::user()->client_id;
             $stock_status= DB::table('product_stock_status')
                             ->where('client_id','=',$client_id)
@@ -573,7 +573,7 @@ class CustomerPaketController extends Controller
                         $info_stock ='';
                     }
 
-                    echo '<div id="product_list"  class="col-6 col-md-4 mx-0 d-flex item_pop" style="">
+                    $output.= '<div id="product_list"  class="col-6 col-md-4 mx-0 d-flex item_pop" style="">
                         <div class="card mx-auto  item_product_pop ">                        
                             <input type="hidden" id="orderid_delete_pkt'.$p_group->id.'_'.$group_id.'" value="'.$c_orderid_delete.'">
                                 <div class="round">
@@ -584,77 +584,9 @@ class CustomerPaketController extends Controller
                                 <img style="" src="'.asset('storage/'.(($p_group->image!='') ? $p_group->image : 'no_image_availabl.png').'').'" class="img-fluid h-100 w-100 img-responsive" alt="...">
                             </a>
                             
-                            <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">';
-                                if($stock_status->stock_status == 'ON'){
-                                    $stockValuePaket = \App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);//total order
-                                    $orderFinish = \App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p_group->id);
-                                    echo'<span class="badge badge-stok py-1">';
-                                        if(session()->has('ses_order')){
-                                            $store_name = session()->get('ses_order');
-                                            if($store_name->customer_id != null){
-                                                echo'<input type="hidden" id="ses_order" value="'.$store_name->customer_id.'">';
-                                                $target = \App\Http\Controllers\CustomerKeranjangController::targetItemInfo($p_group->id,$store_name->customer_id);
-                                                [$totalQty,$totalNml]= \App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id);
-                                                
-                                                if($target != null){
-                                                    if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3){
-                                                        foreach ($target->product_target as $pt){
-                                                            echo'<span class="float-left">';
-                                                                if($p_group->id == $pt->productId){
-                                                                    echo 'T :'.$pt->quantityValues .' / '. $totalQty;
-                                                                }
-                                                            echo'</span>';
-                                                        }
-                                                        echo'<span class="float-right">
-                                                            STOK&nbsp; : <span class="stok_pkt'.$p_group->id.'" id="stok_pkt'.$p_group->id.'">';
-                                                                            if(($p_group->stock+$orderFinish) - $stockValuePaket > 0){
-                                                                                echo ($p_group->stock+$orderFinish) - $stockValuePaket;
-                                                                            }else{
-                                                                                echo 0;
-                                                                            }
-                                                                        echo'</span>
-                                                        </span>';
-                                                    }
-                                                }else{
-                                                    echo'<span class="float-left">
-                                                        STOK&nbsp; : <span class="stok_pkt'.$p_group->id.'" id="stok_pkt'.$p_group->id.'">';
-                                                                        if(($p_group->stock+$orderFinish) - $stockValuePaket > 0){
-                                                                            echo ($p_group->stock+$orderFinish) - $stockValuePaket;
-                                                                        }else{
-                                                                            echo 0;
-                                                                        }
-                                                                    echo'</span>
-                                                    </span>';
-                                                }
-                                            }else{
-                                                echo '<input type="hidden" id="ses_order" value="">';
-                                            }
-                                        }
-                                    echo'</span>';
-                                }else{
-                                    if(session()->has('ses_order')){
-                                        $store_name = session()->get('ses_order');
-                                        if($store_name->customer_id != null){
-                                            $target = \App\Http\Controllers\CustomerKeranjangController::targetItemInfo($p_group->id,$store_name->customer_id);
-                                            [$totalQty,$totalNml]= \App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id);
-                                            if($target != null){
-                                                if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3){
-                                                    echo '<span class="badge badge-stok py-1" >';
-                                                        foreach ($target->product_target as $pt){
-                                                            
-                                                            echo'<span class="float-left">';
-                                                                if($p_group->id == $pt->productId){
-                                                                    echo 'T : '.$pt->quantityValues .' / '. $totalQty;
-                                                                }
-                                                            echo'</span>';
-                                                        }
-                                                    echo'</span>';
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                echo'<div class="float-left px-1 py-2" style="width: 100%;">
+                            <div class="card-body crd-body-pkt d-flex flex-column mt-n3" style="">
+                            
+                                <div class="float-left px-1 py-2" style="width: 100%;">
                                     <p class="product-price-header_pop mb-0" style="">
                                         '.$p_group->Product_name.'
                                     </p>
@@ -710,17 +642,23 @@ class CustomerPaketController extends Controller
                 
             }
             else{
-                echo'<div id="product_list"  class="col-12  mx-0 d-flex item_pop mt-4" style="">
+                $output = '<div id="product_list"  class="col-12  mx-0 d-flex item_pop mt-4" style="">
                                 <div class="card mx-auto  item_product_pop py-5">
                                     <h5 class="head_pop_prod mb-3 mx-auto" style="">Data tidak ditemukan...</h5>
                                 </div>
                             </div>';
             }
+            $product = array(
+            'table_data'  => $output
+            );
+         
+            echo json_encode($product);
+        
     }
 
     public function search_bonus(Request $request){
         
-        //$output = '';
+        $output = '';
         $client_id = \Auth::user()->client_id;
         $stock_status= DB::table('product_stock_status')
                     ->where('client_id','=',$client_id)
@@ -769,7 +707,7 @@ class CustomerPaketController extends Controller
         }
         if($total_row > 0){
             foreach($product as $p_group){
-                if($order_id != ''){
+                if($order_id != NULL){
                     $qty_on_bonus = \App\Order_paket_temp::where('order_id',$order_id)
                                     ->where('product_id',$p_group->id)
                                    //->where('paket_id',$paket_id->id)
@@ -779,7 +717,7 @@ class CustomerPaketController extends Controller
                             $harga_on_bonus = $p_group->price * $qty_on_bonus->quantity; 
                         }
                 }
-                if(($order_id != '') && ($qty_on_bonus)){
+                if(($order_id != NULL) && ($qty_on_bonus != NULL)){
                     $c_orderid_delete =  $order_id;
                     $c_check = 'checked';
                     $c_price = $harga_on_bonus;
@@ -794,12 +732,11 @@ class CustomerPaketController extends Controller
                     $dsbld_btn .= 'disabled';
                     $info_stock.= '<span class="badge badge-warning ">Sisa stok 0</span>';
                 }
-                echo' 
-                <div class="col-12 col-md-6 d-flex item_pop_bonus pb-4" style="">
+                $output.= '<div class="col-12 col-md-6 d-flex item_pop_bonus pb-4" style="">
                 <div class="card card_margin_bonus" style="border-radius: 20px;">
                     <div class="card-horizontal py-0">
                         
-                    <input type="hidden" id="orderid_delete_bns'.$p_group->id.'_'.$group_id.'" value="'.$c_orderid_delete.'">
+                       <input type="hidden" id="orderid_delete_bns'.$p_group->id.'_'.$group_id.' value="'.$c_orderid_delete.'">
                         <div class="round_bns">
                             <input type="checkbox" onclick="delete_bns('.$p_group->id.','.$group_id.')" id="checkbox_bns'.$p_group->id.'_'.$group_id.'" '.$c_check.' style="display:none;"/>
                             <label for="checkbox_bns'.$p_group->id.'_'.$group_id.'"></label>
@@ -817,76 +754,9 @@ class CustomerPaketController extends Controller
                             </div>
                             <div class="float-left pl-0 pt-1 pb-0" style="">
                                 <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns'.$p_group->id.'_'.$group_id.'" style="">Rp. '.number_format($c_price, 0, ',', '.') .',-</p>
-                            </div>';
-                            
-                                if($stock_status->stock_status == 'ON'){
-                                    $stockValueBonus = \App\Http\Controllers\CustomerKeranjangController::stockInfo($p_group->id);//total order
-                                    $orderFinish = \App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p_group->id);
-                                   
-                                    echo'<span class="badge badge-stok py-1 badge-bonus mb-1" >';
-                                        if(session()->has('ses_order')){
-                                            $store_name = session()->get('ses_order');
-                                            if($store_name->customer_id != null){
-                                                $target = \App\Http\Controllers\CustomerKeranjangController::targetItemInfo($p_group->id,$store_name->customer_id);
-                                                [$totalQty,$totalNml]= \App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id);
-                                                if($target != null){
-                                                    if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3){
-                                                        foreach ($target->product_target as $pt){
-                                                            echo '<span class="float-left">';
-                                                               if($p_group->id == $pt->productId){
-                                                                    echo 'T : '.$pt->quantityValues .' / '. $totalQty;
-                                                               }
-                                                            echo '</span>';
-                                                        }
-                                                        echo '<span class="float-right">
-                                                            STOK&nbsp; : <span class="stok_bns'.$p_group->id.'" id="stok_bns'.$p_group->id.'">';
-                                                            if(($p_group->stock+$orderFinish) - $stockValueBonus > 0){
-                                                                echo ($p_group->stock+$orderFinish) - $stockValueBonus;
-                                                            }else{
-                                                                echo 0 ;
-                                                            }
-                                                            echo'</span>
-                                                        </span>';
-                                                    }
-                                                }else{
-                                                    echo'<span class="float-left">
-                                                        STOK&nbsp; : <span class="stok_bns'.$p_group->id.'" id="stok_bns'.$p_group->id.'">';
-                                                            if(($p_group->stock+$orderFinish) - $stockValueBonus > 0){
-                                                                echo ($p_group->stock+$orderFinish) - $stockValueBonus;
-                                                            }else{
-                                                                echo 0;
-                                                            }
-                                                        echo '</span>
-                                                    </span>';
-                                                }
-                                            }
-                                        }
-                                    echo'</span>';
-                                }else{
-                                    if(session()->has('ses_order')){
-                                        $store_name = session()->get('ses_order');
-                                        if($store_name->customer_id != null){
-                                            $target = \App\Http\Controllers\CustomerKeranjangController::targetItemInfo($p_group->id,$store_name->customer_id);
-                                            [$totalQty,$totalNml]= \App\Http\Controllers\CustomerKeranjangController::achTargetItem($p_group->id,$store_name->customer_id);
-                                            if($target != null){
-                                                if($target->target_type == 1 || $target->target_type == 2 || $target->target_type == 3){
-                                                    echo'<span class="badge badge-stok py-1 badge-bonus mb-1" >';
-                                                        foreach ($target->product_target as $pt){
-                                                            
-                                                            echo'<span class="float-left">';
-                                                                if($p_group->id == $pt->productId){
-                                                                    echo 'T : '.$pt->quantityValues .' / '. $totalQty;
-                                                                }
-                                                            echo '</span>';
-                                                        }
-                                                    echo'</span>';
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            echo'<div class="float-left pl-0 mt-auto">
+                            </div>
+                            '.$info_stock.'
+                            <div class="float-left pl-0 mt-auto">
                                 <div class="input-group mb-0">
                                     <input type="hidden" id="jumlah_val_bns'.$p_group->id.'_'.$group_id.'" name="" value="'.$c_jml_val.'">
                                     <input type="hidden" id="jumlah_bns'.$p_group->id.'_'.$group_id.'" name="quantity_bns" value="'.$c_jml_val.'">
@@ -927,15 +797,7 @@ class CustomerPaketController extends Controller
                             </div>
                             <div class="float-right mt-2">
                                 <div id="product_list_bns">
-                                    <button class="btn btn-block button_add_to_cart respon"
-                                    id="disabled_button_bonus'.$p_group->id.'_'.$group_id.'" 
-                                    onclick="add_tocart_bns('.$p_group->id.','.$group_id.')" 
-                                    style="" '.$dsbld_btn;
-                                    if($stock_status->stock_status == 'ON') 
-                                        if(($p_group->stock+$orderFinish) - $stockValueBonus <= 0){
-                                            echo 'disabled';
-                                        }
-                                    echo'>Simpan</button>
+                                    <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_bns('.$p_group->id.','.$group_id.')" style="" '.$dsbld_btn.'>Simpan</button>
                                 </div>
                                 
                             </div>
@@ -947,12 +809,18 @@ class CustomerPaketController extends Controller
             
         }
         else{
-            echo'<div id="product_list"  class="col-12  mx-0 d-flex item_pop mt-4" style="">
+            $output = '<div id="product_list"  class="col-12  mx-0 d-flex item_pop mt-4" style="">
                             <div class="card mx-auto  item_product_pop py-5">
                                 <h5 class="head_pop_prod mb-3 mx-auto" style="">Data tidak ditemukan...</h5>
                             </div>
                         </div>';
         }
+        $product = array(
+        'table_data'  => $output
+        );
+     
+        echo json_encode($product);
+    
     }
 
     public function cekBeforeSave_tmp(Request $request){
