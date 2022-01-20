@@ -330,4 +330,27 @@ class OrderController extends Controller
 
         return $totalPriceNoDisc + $totalPriceDisc;
     }
+
+    public static function checkCountPartShip($order_id){
+        $order = \DB::select("SELECT COUNT(id) AS jml  FROM order_product WHERE order_id = '$order_id' 
+                                AND (deliveryQty < quantity OR (preorder > 0 AND deliveryQty is NULL));");
+        
+        $odr = 0;
+        foreach($order as $o){
+            $odr = $o->jml;
+        }
+        
+        return $odr;       
+    }
+
+    public static function checkCountDelivQty($order_id){
+        $order = \DB::select("SELECT COUNT(id) AS jml  FROM order_product WHERE order_id = '$order_id' 
+                                AND deliveryQty IS NOT NULL AND deliveryQty > 0;");
+        $odr = 0;
+        foreach($order as $o){
+            $odr = $o->jml;
+        }
+        
+        return $odr; 
+    }
 }

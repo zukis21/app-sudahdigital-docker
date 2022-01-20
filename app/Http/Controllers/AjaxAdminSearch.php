@@ -272,13 +272,19 @@ class AjaxAdminSearch extends Controller
       }
   }
 
+  
+
   public function cekForFinishOrder(Request $request){
       $orderId = $request->get('order_id');
-      $order = \App\order_product::where('order_id','=',$orderId)
-              ->whereRaw('deliveryQty < quantity')
-              ->orWhereRaw('preorder > 0 AND deliveryQty IS NULL')
-              ->count();
-      if ($order > 0) {
+      $order = \DB::select("SELECT COUNT(id) AS jml  FROM order_product WHERE order_id = '$orderId' 
+                            AND (deliveryQty < quantity OR (preorder > 0 AND deliveryQty is NULL));");
+      
+      $odr = 0;
+      foreach($order as $o){
+        $odr = $o->jml;
+      }
+      
+      if ($odr > 0) {
         echo "taken";	
       }else{
         echo "not_taken";

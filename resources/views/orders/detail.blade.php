@@ -7,9 +7,14 @@
 			{{session('status')}}
 		</div>
 	@endif
+    <?php
+        $countPartial = App\Http\Controllers\OrderController::checkCountPartShip($order->id);
+        $countforCancel = App\Http\Controllers\OrderController::checkCountDelivQty($order->id);
+    ?>
 	<!-- Form Create -->
     <form id="form_validation" method="POST" action="{{route('orders.update', [$vendor,$order->id])}}">
         @csrf
+
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" id="paramOrderId" value="{{$order->id}}">
         <div class="form-group form-float">
@@ -112,7 +117,9 @@
                                     <input type="hidden" class="valEmpty" id="valEmpty{{$p->pivot->id}}">
                                     <div class="form-group form-float">
                                         <div class="form-line" id="div{{$p->pivot->id}}">
-                                            <input type="number" min="0" max="{{$p->pivot->quantity}}" name="deliveryQty[{{$p->pivot->id}}]" 
+                                            <input type="number" min="0" 
+                                            max="{{$p->pivot->deliveryQty > 0 ? ($p->pivot->quantity - $p->pivot->deliveryQty) : $p->pivot->quantity}}" 
+                                            name="deliveryQty[{{$p->pivot->id}}]" 
                                             value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->pivot->id}}')"
                                             autocomplete="off" id="dlv{{$p->pivot->id}}" required/>
                                             <label for="dlv{{$p->pivot->id}}" class="form-label">Delivery Quantity</label>
@@ -231,7 +238,9 @@
                                     <input type="hidden" class="valEmpty" id="valEmpty{{$p->id}}">
                                     <div class="form-group form-float">
                                         <div class="form-line">
-                                            <input type="number" min="0" max="{{$p->quantity}}" name="deliveryQty[{{$p->id}}]" 
+                                            <input type="number" min="0" 
+                                            max="{{$p->deliveryQty > 0 ? ($p->quantity - $p->deliveryQty) : $p->quantity}}" 
+                                            name="deliveryQty[{{$p->id}}]" 
                                             value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')"
                                             autocomplete="off" id="dlv{{$p->id}}" required/>
                                             <label for="dlv{{$p->id}}" class="form-label">Delivery Quantity</label>
@@ -301,11 +310,15 @@
             &nbsp;
             <input type="radio" value="FINISH" name="status" id="FINISH" {{$order->status == 'FINISH' ? 'checked' : ''}}
             {{$order->status == 'CANCEL' || 
-              $order->status == 'NO-ORDER' ? 'disabled' : ''}}>
+              $order->status == 'NO-ORDER' ||
+              (($order->status == 'PARTIAL-SHIPMENT') && ($countPartial > 0)) ? 'disabled' : ''}}>
             <label for="FINISH">FINISH</label>
             &nbsp;
-            <input type="radio" value="CANCEL" name="status" id="CANCEL" {{$order->status == 'CANCEL' ? 'checked' : ''}}
-            {{$order->status == 'NO-ORDER' || $order->status == 'FINISH' ? 'disabled' : ''}}>
+            <input type="radio" value="CANCEL" name="status" id="CANCEL" 
+            {{$order->status == 'CANCEL' ? 'checked' : ''}}
+            {{$order->status == 'NO-ORDER' || 
+            $order->status == 'FINISH' ||
+            (($order->status == 'PARTIAL-SHIPMENT') && ($countforCancel > 0))? 'disabled' : ''}}>
             <label for="CANCEL">CANCEL</label>
             &nbsp;
             <input type="radio" value="NO-ORDER" name="status" id="NO-ORDER" {{$order->status == 'NO-ORDER' ? 'checked' : ''}}
@@ -455,7 +468,7 @@
                             'order_id' : orderId,
                         },
                         success: function(response){
-                            console.log(response);
+                            //console.log(orderId);
                             if (response == 'taken') {
                                 $('#update_status').prop('disabled', true);
                             }else if (response == 'not_taken') {
@@ -466,6 +479,7 @@
                         
                     });
                 }else if((this.value == 'FINISH') && (prevStatus == 'SUBMIT' || prevStatus == 'PROCESS')){
+                    $('#update_status').prop('disabled', true);
                     $.ajax({
                         url: '{{URL::to('/ajax/cekFinish/notPreorder')}}',
                         type: 'get',
@@ -473,7 +487,7 @@
                             'order_id' : orderId,
                         },
                         success: function(response){
-                            console.log(response);
+                            //console.log(response);
                             if (response == 'taken') {
                                 $('#update_status').prop('disabled', true);
                             }else if (response == 'not_taken') {
