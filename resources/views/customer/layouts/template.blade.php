@@ -3508,6 +3508,7 @@
                                                     ProductId: Product_id,
                                                 },
                                                 success: function(dataStok){
+                                                    //console.log(dataStok);
                                                     if(dataStok != null){
                                                         if(parseInt(dataStok) > 0){
                                                             var viewStockItem = dataStok;
@@ -5294,7 +5295,7 @@
                                                     type: 'POST',
                                                     data:{
                                                         ProductId: Product_id,
-                                                        quantity : quantity,
+                                                        //quantity : quantity,
                                                     },
                                                     success: function(dataStok){
                                                         if(dataStok != null){
@@ -6398,7 +6399,7 @@
             }
         }
 
-        //delete bonus 
+        //delete bonus edit s/d februari
         function delete_bns(id,group_id)
         {   
             var orderid_delete =  $('#orderid_delete_bns'+id+'_'+group_id).val();
@@ -6443,7 +6444,6 @@
                             type: 'POST',
                             data:{
                                 ProductId: product_id,
-                                quantity : bonus_qty,
                             },
                             success: function(dataStok){
                                 if(dataStok != null){

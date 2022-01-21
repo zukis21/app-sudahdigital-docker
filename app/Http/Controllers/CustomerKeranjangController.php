@@ -1773,8 +1773,14 @@ $no=$count_nt_paket;
             $item = \App\product::findOrfail($itemId);
             $restStock = $item->stock - ($this->stockInfo($itemId)-$this->TotalQtyFinish($itemId));
         }else{
-            $quantity = $request->get('quantity');
-            $restStock = (int)$quantity + 1;
+            if($request->get('quantity') != ''){
+                $quantity = $request->get('quantity');
+                $restStock = (int)$quantity + 1;
+            }
+            else{
+                $restStock = null;
+            }
+            
         }
         
         

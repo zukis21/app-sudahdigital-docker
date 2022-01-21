@@ -85,7 +85,10 @@ class CustomerPaketController extends Controller
         $id = $ses_id.$clientIP;*/
         $id_user = \Auth::user()->id;
         $client_id = \Auth::user()->client_id; 
-        //$id = $request->header('User-Agent'); 
+        //$id = $request->header('User-Agent');
+        $stock_status= \DB::table('product_stock_status')
+                            ->where('client_id','=',$client_id)
+                            ->first(); 
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
         $price=$request->get('price');
@@ -135,8 +138,15 @@ class CustomerPaketController extends Controller
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity = $quantity;
-                $order_product->available = $avail;
-                $order_product->preorder = $preOrder;
+
+                if($stock_status->stock_status == 'ON'){
+                    $order_product->available = $avail;
+                    $order_product->preorder = $preOrder;
+                }else{
+                    $order_product->available = 0;
+                    $order_product->preorder = 0;
+                }
+
                 $order_product->group_id = $group_id;
                 //$order_product->paket_id = $paket_id;
                 $order_product->save();
@@ -151,8 +161,15 @@ class CustomerPaketController extends Controller
                         $new_order_product->price_item = $cek_promo->price;
                         $new_order_product->price_item_promo = $cek_promo->price_promo;
                         $new_order_product->discount_item = $cek_promo->discount;
-                        $new_order_product->available = $avail;
-                        $new_order_product->preorder = $preOrder;
+
+                        if($stock_status->stock_status == 'ON'){
+                            $new_order_product->available = $avail;
+                            $new_order_product->preorder = $preOrder;
+                        }else{
+                            $new_order_product->available = 0;
+                            $new_order_product->preorder = 0;
+                        }
+
                         $new_order_product->quantity = $quantity;
                         $new_order_product->group_id = $group_id;
                         //$new_order_product->paket_id = $paket_id;
@@ -179,8 +196,14 @@ class CustomerPaketController extends Controller
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
-                $order_product->available = $avail;
-                $order_product->preorder = $preOrder;
+
+                if($stock_status->stock_status == 'ON'){
+                    $order_product->available = $avail;
+                    $order_product->preorder = $preOrder;
+                }else{
+                    $order_product->available = 0;
+                    $order_product->preorder = 0;
+                }
                 $order_product->quantity = $request->get('quantity');
                 $order_product->group_id = $group_id;
                 //$order_product->paket_id = $paket_id;
@@ -201,7 +224,10 @@ class CustomerPaketController extends Controller
         $id = $ses_id.$clientIP;*/
         $id_user = \Auth::user()->id;
         $client_id = \Auth::user()->client_id;
-        //$id = $request->header('User-Agent'); 
+        //$id = $request->header('User-Agent');
+        $stock_status= \DB::table('product_stock_status')
+                            ->where('client_id','=',$client_id)
+                            ->first(); 
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
         $price=$request->get('price');
@@ -250,8 +276,15 @@ class CustomerPaketController extends Controller
                 $order_product->price_item = $cek_promo->price;
                 $order_product->price_item_promo = $cek_promo->price_promo;
                 $order_product->discount_item = $cek_promo->discount;
-                $order_product->available = $avail;
-                $order_product->preorder = $preOrder;
+
+                if($stock_status->stock_status == 'ON'){
+                    $order_product->available = $avail;
+                    $order_product->preorder = $preOrder;
+                }else{
+                    $order_product->available = 0;
+                    $order_product->preorder = 0;
+                }
+                
                 $order_product->quantity = $quantity;
                 $order_product->group_id = $group_id;
                 $order_product->paket_id = $paket_id;
@@ -267,8 +300,15 @@ class CustomerPaketController extends Controller
                         $new_order_product->price_item = $cek_promo->price;
                         $new_order_product->price_item_promo = $cek_promo->price_promo;
                         $new_order_product->discount_item = $cek_promo->discount;
-                        $new_order_product->available = $avail;
-                        $new_order_product->preorder = $preOrder;
+                        
+                        if($stock_status->stock_status == 'ON'){
+                            $new_order_product->available = $avail;
+                            $new_order_product->preorder = $preOrder;
+                        }else{
+                            $new_order_product->available =0;
+                            $new_order_product->preorder = 0;
+                        }
+                        
                         $new_order_product->quantity = $quantity;
                         $new_order_product->group_id = $group_id;
                         $new_order_product->paket_id = $paket_id;
