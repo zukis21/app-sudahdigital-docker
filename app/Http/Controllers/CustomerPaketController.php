@@ -930,6 +930,7 @@ class CustomerPaketController extends Controller
                                 </div> 
                             </div>
                             <div class="float-right mt-2">
+                                <!--
                                 <div id="product_list_bns">
                                     <button class="btn btn-block button_add_to_cart respon"
                                     id="disabled_button_bonus'.$p_group->id.'_'.$group_id.'" 
@@ -941,7 +942,13 @@ class CustomerPaketController extends Controller
                                         }
                                     echo'>Simpan</button>
                                 </div>
-                                
+                                -->
+                                <div id="product_list_bns">
+                                    <button class="btn btn-block button_add_to_cart respon"
+                                    id="disabled_button_bonus'.$p_group->id.'_'.$group_id.'" 
+                                    onclick="add_tocart_bns('.$p_group->id.','.$group_id.')" 
+                                    style="">Simpan</button>
+                                </div>
                             </div>
                         </div>
                     </div>

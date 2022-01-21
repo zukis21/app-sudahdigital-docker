@@ -4205,6 +4205,7 @@
             
         }
 
+        //edit s/d februari
         function continueCartBonus()
         {
             var id = $('#paramItemBonus').val();
@@ -4316,7 +4317,8 @@
                                         var viewStockItem = 0;
                                     }
                                     if(viewStockItem <= 0){
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                       // $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                     }
                                     $('.stok_pkt'+id).text(viewStockItem);
                                     $('.stok_bns'+id).text(viewStockItem);
@@ -5085,7 +5087,7 @@
             }
         }
 
-        
+        //edit s/d februari
         function add_tocart_bns(id,group_id)
         {
             var Product_id = $('#product_bns'+id+'_'+group_id).val();
@@ -5292,6 +5294,7 @@
                                                     type: 'POST',
                                                     data:{
                                                         ProductId: Product_id,
+                                                        quantity : quantity,
                                                     },
                                                     success: function(dataStok){
                                                         if(dataStok != null){
@@ -5301,7 +5304,8 @@
                                                                 var viewStockItem = 0;
                                                             }
                                                             if(viewStockItem <= 0){
-                                                                $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                                                //$( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                                                $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                                             }
                                                             $('.stok_pkt'+id).text(viewStockItem);
                                                             $('.stok_bns'+id).text(viewStockItem);
@@ -6439,6 +6443,7 @@
                             type: 'POST',
                             data:{
                                 ProductId: product_id,
+                                quantity : bonus_qty,
                             },
                             success: function(dataStok){
                                 if(dataStok != null){
@@ -6448,7 +6453,8 @@
                                         var viewStockItem = 0;
                                     }
                                     if(viewStockItem <= 0){
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                        //$( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                     }else{
                                         $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
                                     }
