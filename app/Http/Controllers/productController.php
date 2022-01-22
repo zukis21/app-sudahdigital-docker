@@ -400,4 +400,55 @@ class productController extends Controller
     public function exportProductInfo($vendor) {
         return Excel::download( new ProductListInfo(), 'ProductLists.xlsx') ;
     }
+
+    public static function OrderSubmit($item){
+        $client_id = \Auth::user()->client_id;
+        $orders = \DB::select("SELECT o.id , o.status, op.product_id, op.quantity, 
+                    SUM(op.quantity) AS totalQuantity
+                    FROM orders o
+                    INNER JOIN order_product op ON op.order_id = o.id
+                    WHERE op.product_id = '$item' AND o.status = 'SUBMIT'
+                    AND o.client_id = '$client_id' ");
+        $totalQtyOrders = 0;
+        foreach($orders as $odr){
+            $totalQtyOrders =  $odr->totalQuantity;
+        }
+       
+        return $totalQtyOrders ;
+    }
+
+    public static function OrderProcess($item){
+        $client_id = \Auth::user()->client_id;
+        $orders = \DB::select("SELECT o.id , o.status, op.product_id, op.quantity, 
+                    SUM(op.quantity) AS totalQuantity
+                    FROM orders o
+                    INNER JOIN order_product op ON op.order_id = o.id
+                    WHERE op.product_id = '$item' AND o.status = 'PROCESS'
+                    AND o.client_id = '$client_id' ");
+        $totalQtyOrders = 0;
+        foreach($orders as $odr){
+            $totalQtyOrders =  $odr->totalQuantity;
+        }
+       
+        return $totalQtyOrders ;
+    }
+
+    public static function OrderPartialOutstanding($item){
+        $client_id = \Auth::user()->client_id;
+        $orders = \DB::select("SELECT o.id , o.status, op.product_id,op.deliveryQty,
+                                SUM((op.quantity) - IFNULL(op.deliveryQty,0))
+                                AS totalQuantity
+                                FROM orders o
+                                INNER JOIN order_product op 
+                                ON op.order_id = o.id
+                                WHERE op.product_id = '$item' 
+                                AND o.status = 'PARTIAL-SHIPMENT'
+                                AND o.client_id = '$client_id' ");
+        $totalQtyOrders = 0;
+        foreach($orders as $odr){
+            $totalQtyOrders =  $odr->totalQuantity;
+        }
+
+        return $totalQtyOrders;
+    }
 }

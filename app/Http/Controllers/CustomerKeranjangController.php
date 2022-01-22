@@ -1845,8 +1845,11 @@ $no=$count_nt_paket;
                     SUM(op.quantity) AS totalQuantity
                     FROM orders o
                     INNER JOIN order_product op ON op.order_id = o.id
-                    WHERE op.product_id = '$item' AND (o.status != 'CANCEL'
-                    OR o.status != 'NO-ORDER')
+                    WHERE op.product_id = '$item' 
+                    AND (o.status = 'FINISH'
+                    OR o.status = 'SUBMIT'
+                    OR o.status = 'PROCESS'
+                    OR o.status = 'PARTIAL-SHIPMENT')
                     AND o.client_id = '$client_id' ");
         $totalQtyOrders = 0;
         foreach($orders as $odr){
