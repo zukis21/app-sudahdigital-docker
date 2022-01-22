@@ -81,7 +81,7 @@ class AllProductExport implements FromCollection, WithMapping, WithHeadings
                 'Description',
                 'category_id',
                 'Price',
-                'Inv_Stock',
+                'Stock',
                 'Available_For_Sale',
                 'order_Submit',
                 'Order_process',
