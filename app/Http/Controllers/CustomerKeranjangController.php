@@ -468,6 +468,7 @@ Sales Area    : '.$user->sales_area.',
 
 *'.$message->c_tittle.'*
 Nama Toko  : '.$customer->store_name.',
+Kode Toko   : '.$customer->store_code.',
 Alamat         : '.$customer->address.',
 Nama           : '.$customer->name.',
 No. WA        : '.$customer->phone.',

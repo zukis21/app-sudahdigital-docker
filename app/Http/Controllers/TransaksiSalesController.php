@@ -102,6 +102,7 @@ Sales Area    : '.$user->sales_area.',
 
 *'.$message->c_tittle.'*
 Nama Toko  : '.$customer->store_name.',
+Kode Toko   : '.$customer->store_code.',
 Alamat         : '.$customer->address.',
 Nama           : '.$customer->name.',
 No. WA        : '.$customer->phone.',
@@ -268,6 +269,11 @@ $no=$count_nt_paket;
                             <td height="22">Nama Toko</td>
                             <td width="4">:</td>
                             <td width="680">'.$customer->store_name.'</td>
+                        </tr>
+                        <tr>
+                            <td height="22">Kode Toko</td>
+                            <td width="4">:</td>
+                            <td width="680">'.$customer->store_code.'</td>
                         </tr>
                         <tr>
                             <td height="22">Alamat</td>

@@ -259,9 +259,14 @@ Home
                                     }
                                     
                                 ?>
+                                @else
+                                <?php
+                                    $targetOrderTop = 0;
+                                    array_push($targetOrderTops, $targetOrderTop);
+                                ?>
                                 @endif
                             @endif
-                           
+                            
                         @endforeach
                         @php 
                             arsort($targetOrderTops);
@@ -317,6 +322,10 @@ Home
                                                                 STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{($top_product[$key]->stock + $orderFinish) - $stockValueTop > 0 ? ($top_product[$key]->stock + $orderFinish) - $stockValueTop : 0}}</span>
                                                             </span>
                                                         @endif
+                                                    @else
+                                                        <span class="float-left">
+                                                            STOK&nbsp; : <span id="stok_top{{$top_product[$key]->id}}">{{($top_product[$key]->stock + $orderFinish) - $stockValueTop > 0 ? ($top_product[$key]->stock + $orderFinish) - $stockValueTop : 0}}</span>
+                                                        </span>
                                                     @endif
                                                 @endif
                                             </span>
@@ -562,6 +571,10 @@ Home
                                                         STOK&nbsp; : <span id="stok{{$value->id}}">{{($value->stock+$orderFinish) - $stockValue > 0 ? ($value->stock+$orderFinish) - $stockValue : 0}}</span>
                                                     </span>
                                                 @endif
+                                            @else
+                                                <span class="float-left">
+                                                    STOK&nbsp; : <span id="stok{{$value->id}}">{{($value->stock+$orderFinish) - $stockValue > 0 ? ($value->stock+$orderFinish) - $stockValue : 0}}</span>
+                                                </span>
                                             @endif
                                         @endif
                                     </span>

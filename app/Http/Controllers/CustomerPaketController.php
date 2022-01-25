@@ -671,7 +671,17 @@ class CustomerPaketController extends Controller
                                                     </span>';
                                                 }
                                             }else{
-                                                echo '<input type="hidden" id="ses_order" value="">';
+                                                echo '<input type="hidden" id="ses_order" value="">
+                                                <span class="float-left">
+                                                        STOK&nbsp; : <span class="stok_pkt'.$p_group->id.'" id="stok_pkt'.$p_group->id.'">';
+                                                                        if(($p_group->stock+$orderFinish) - $stockValuePaket > 0){
+                                                                            echo ($p_group->stock+$orderFinish) - $stockValuePaket;
+                                                                        }else{
+                                                                            echo 0;
+                                                                        }
+                                                                    echo'</span>
+                                                    </span>';
+
                                             }
                                         }
                                     echo'</span>';
@@ -903,6 +913,16 @@ class CustomerPaketController extends Controller
                                                         echo '</span>
                                                     </span>';
                                                 }
+                                            }else{
+                                                echo'<span class="float-left">
+                                                        STOK&nbsp; : <span class="stok_bns'.$p_group->id.'" id="stok_bns'.$p_group->id.'">';
+                                                            if(($p_group->stock+$orderFinish) - $stockValueBonus > 0){
+                                                                echo ($p_group->stock+$orderFinish) - $stockValueBonus;
+                                                            }else{
+                                                                echo 0;
+                                                            }
+                                                        echo '</span>
+                                                    </span>';
                                             }
                                         }
                                     echo'</span>';

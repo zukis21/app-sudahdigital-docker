@@ -257,6 +257,9 @@ Paket
                                                                                                 </span>
                                                                                             @endif
                                                                                         @else
+                                                                                            <span class="float-left">
+                                                                                                STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
+                                                                                            </span>
                                                                                             <input type="hidden" id="ses_order" value="">
                                                                                         @endif
                                                                                     @endif
@@ -417,6 +420,10 @@ Paket
                                                                                                 STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
                                                                                             </span>
                                                                                         @endif
+                                                                                    @else
+                                                                                        <span class="float-left">
+                                                                                            STOK&nbsp; : <span class="stok_pkt{{$p_group->id}}" id="stok_pkt{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValuePaket > 0 ? ($p_group->stock+$orderFinish) - $stockValuePaket : 0}}</span>
+                                                                                        </span>
                                                                                     @endif
                                                                                 @endif
                                                                             </span>
@@ -657,6 +664,10 @@ Paket
                                                                                                         STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
+                                                                                            @else
+                                                                                                <span class="float-left">
+                                                                                                    STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
+                                                                                                </span>    
                                                                                             @endif
                                                                                         @endif
                                                                                     </span>
@@ -836,6 +847,10 @@ Paket
                                                                                                         STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
                                                                                                     </span>
                                                                                                 @endif
+                                                                                            @else
+                                                                                                <span class="float-left">
+                                                                                                    STOK&nbsp; : <span class="stok_bns{{$p_group->id}}" id="stok_bns{{$p_group->id}}">{{($p_group->stock+$orderFinish) - $stockValueBonus > 0 ? ($p_group->stock+$orderFinish) - $stockValueBonus : 0}}</span>
+                                                                                                </span>    
                                                                                             @endif
                                                                                         @endif
                                                                                     </span>
