@@ -304,7 +304,7 @@
                            padding:2px;">
                   @if($target && $work_plan)
                     @php
-                    //$current_day = date('d');
+                   
                     $hari_berjalan = ((int)$current_day) - $day_off;
                     $hari_kerja = $work_plan->working_days;
                     $prediksi_qty = ($ach_quantity/((int)$hari_berjalan)) * $hari_kerja;
