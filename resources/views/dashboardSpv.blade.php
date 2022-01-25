@@ -251,7 +251,6 @@
                            padding:2px;">
                   @if($target && $work_plan)
                     @php
-                    //$current_day = date('d');
                     $hari_berjalan = ((int)$current_day) - $day_off;
                     $hari_kerja = $work_plan->working_days;
                     $prediksi_qty = ($ach_quantity/((int)$hari_berjalan)) * $hari_kerja;
@@ -294,7 +293,7 @@
                            right:10px;
                            top:0;
                            padding:2px;">
-                {{($target && $work_plan) ? number_format(($ach_quantity/(int)$hari_berjalan), 2) : '0'}} / {{$max_av_qty}}
+                {{$max_av_qty}}
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>
