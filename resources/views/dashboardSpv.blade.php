@@ -254,7 +254,7 @@
                     //$current_day = date('d');
                     $hari_berjalan = ((int)$current_day) - $day_off;
                     $hari_kerja = $work_plan->working_days;
-                    $prediksi_qty = ($ach_quantity/$hari_berjalan) * $hari_kerja;
+                    $prediksi_qty = ($ach_quantity/((int)$hari_berjalan)) * $hari_kerja;
                     @endphp
                 @endif
                 {{($target && $work_plan) ? round($prediksi_qty) : '0'}} / {{$target ? $trQtyTotal : '0'}}
@@ -294,7 +294,7 @@
                            right:10px;
                            top:0;
                            padding:2px;">
-                {{($target && $work_plan) ? number_format($ach_quantity/$hari_berjalan, 2) : '0'}} / {{number_format($max_av_qty,2)}}
+                {{($target && $work_plan) ? number_format($ach_quantity/((int)$hari_berjalan), 2) : '0'}} / {{number_format($max_av_qty,2)}}
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>

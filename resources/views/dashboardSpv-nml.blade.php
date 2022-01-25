@@ -245,7 +245,7 @@
                     //$current_day = date('d');
                     $hari_berjalan = ((int)$current_day) - $day_off;
                     $hari_kerja = $work_plan->working_days;
-                    $prediksi = ($total_ach/$hari_berjalan) * $hari_kerja;
+                    $prediksi = ($total_ach/((int)$hari_berjalan)) * $hari_kerja;
                     @endphp
                 @endif
                 {{($target && $work_plan) ? singkat_angka($prediksi) : '0'}} / {{$target ? singkat_angka($trNmnlTotal) : '0'}}
@@ -285,7 +285,7 @@
                            right:10px;
                            top:0;
                            padding:2px;">
-                {{($target && $work_plan) ? singkat_angka($total_ach/$hari_berjalan) : '0'}} / {{singkat_angka($max_av)}}
+                {{($target && $work_plan) ? singkat_angka($total_ach/((int)$hari_berjalan)) : '0'}} / {{singkat_angka($max_av)}}
                 </span>
                 <p class="m-t-20 text-truncate">&nbsp;</p>
               </div>
