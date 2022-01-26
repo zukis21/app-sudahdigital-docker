@@ -304,10 +304,9 @@
                            padding:2px;">
                   @if($target && $work_plan)
                     @php
-                   
-                    $hari_berjalan = ((int)$current_day) - $day_off;
+                    $hari_berjalan = ((int)$current_day) - (int)$day_off;
                     $hari_kerja = $work_plan->working_days;
-                    $prediksi_qty = ($ach_quantity/((int)$hari_berjalan)) * $hari_kerja;
+                    $prediksi_qty = ($ach_quantity/((int)$hari_berjalan)) * (int)$hari_kerja;
                     @endphp
                 @endif
                 {{($target && $work_plan) ? round($prediksi_qty) : '0'}} / {{$target ? $target->target_quantity : '0'}}
