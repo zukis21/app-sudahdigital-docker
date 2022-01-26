@@ -855,7 +855,7 @@ class DashboardController extends Controller
             $max_q = $mx->total_average;
         }
         
-        return number_format($max_q,0);
+        return number_format($max_q,2);
     }
 
     public static function MaxYearNominalPerSales($user_id,$year){
