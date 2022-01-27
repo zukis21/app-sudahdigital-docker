@@ -308,17 +308,20 @@
               $order->status == 'FINISH' ? 'disabled' : ''}}>
             <label for="PARTIAL-SHIPMENT">PARTIAL-SHIPMENT</label>
             &nbsp;
+            
             <input type="radio" value="FINISH" name="status" id="FINISH" {{$order->status == 'FINISH' ? 'checked' : ''}}
             {{$order->status == 'CANCEL' || 
               $order->status == 'NO-ORDER' ||
-              (($order->status == 'PARTIAL-SHIPMENT') && ($countPartial > 0)) ? 'disabled' : ''}}>
+              (($order->status == 'PARTIAL-SHIPMENT') && ($countPartial > 0)) ||
+              (Gate::check('isCounter')) ? 'disabled' : ''}}>
             <label for="FINISH">FINISH</label>
             &nbsp;
             <input type="radio" value="CANCEL" name="status" id="CANCEL" 
             {{$order->status == 'CANCEL' ? 'checked' : ''}}
             {{$order->status == 'NO-ORDER' || 
             $order->status == 'FINISH' ||
-            (($order->status == 'PARTIAL-SHIPMENT') && ($countforCancel > 0))? 'disabled' : ''}}>
+            (($order->status == 'PARTIAL-SHIPMENT') && ($countforCancel > 0)) ||
+            (Gate::check('isCounter')) ? 'disabled' : ''}}>
             <label for="CANCEL">CANCEL</label>
             &nbsp;
             <input type="radio" value="NO-ORDER" name="status" id="NO-ORDER" {{$order->status == 'NO-ORDER' ? 'checked' : ''}}

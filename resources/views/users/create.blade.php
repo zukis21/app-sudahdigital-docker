@@ -36,6 +36,7 @@
             <div class="form-group">
                 <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" type="radio" name="roles" id="ADMIN" value="SUPERADMIN" required> <label for="ADMIN">Super Admin</label>
                 <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" type="radio" name="roles" id="STAFF" value="ADMIN"> <label for="STAFF">Admin</label>
+                <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" type="radio" name="roles" id="SLSCT" value="SALES-COUNTER"> <label for="SLSCT">Sales Counter</label>
                 <div class="invalid-feedback">
                     {{$errors->first('roles')}}
                 </div>

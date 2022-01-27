@@ -51,7 +51,11 @@ class LoginController extends Controller
         return '/';
         */
         
-        if ((auth()->user()->roles == 'SUPERADMIN') || (auth()->user()->roles == 'ADMIN') || (auth()->user()->roles == 'SUPERVISOR')) {
+        if ((auth()->user()->roles == 'SUPERADMIN') || 
+            (auth()->user()->roles == 'ADMIN') || 
+            (auth()->user()->roles == 'SUPERVISOR') ||
+            (auth()->user()->roles == 'SALES-COUNTER')
+            ) {
             return '/home';
         }else if (auth()->user()->roles == 'SALES') {
             return '/main_home';

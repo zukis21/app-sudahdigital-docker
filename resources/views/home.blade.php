@@ -27,17 +27,23 @@
         }
     </style>
     @endif
-    <!--
-    Hi <strong>{{ auth()->user()->name }}</strong>,
-    {{ __('You are logged in as') }}
-    @can('isSuperadmin')
-        <span class="badge bg-green">Superadmin</span>
-    @elsecan('isAdmin')
-        <span class="badge bg-green">Admin</span>
-    @elsecan('isSpv')
-        <span class="badge bg-green">Supervisor</span>
+    
+    @can('isCounter')
+        Hi <strong>{{ auth()->user()->name }}</strong>,
+        {{ __('You are logged in as') }}
+        <span class="badge bg-green">Sales Counter</span>
+        
+        <!--
+        @can('isSuperadmin')
+            <span class="badge bg-green">Superadmin</span>
+        @elsecan('isAdmin')
+            <span class="badge bg-green">Admin</span>
+        @elsecan('isSpv')
+            <span class="badge bg-green">Supervisor</span>
+        @endcan
+        -->
     @endcan
-    -->
+    
     @can('isSpv')
         <style type="text/css">
             

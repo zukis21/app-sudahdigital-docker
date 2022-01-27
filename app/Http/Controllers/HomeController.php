@@ -23,7 +23,12 @@ class HomeController extends Controller
      */
     public function index()
     {   
-        if ((auth()->user()->roles == 'SUPERADMIN') || (auth()->user()->roles == 'ADMIN') || (auth()->user()->roles == 'SUPERVISOR') || (auth()->user()->roles == 'OWNER')) {
+        if ((auth()->user()->roles == 'SUPERADMIN') || 
+            (auth()->user()->roles == 'ADMIN') || 
+            (auth()->user()->roles == 'SUPERVISOR') || 
+            (auth()->user()->roles == 'OWNER') || 
+            (auth()->user()->roles == 'SALES-COUNTER')
+            ) {
             //return view('home');
             $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
             if(session()->get('client_sess')== null){
