@@ -61,9 +61,10 @@
 		<thead>
 			<tr><th>Customer</th>
 				<th>Sales</th>
-				<th>Starting Points</th>
-				<th>Points In Periods</th>
-				<th>Points Claim</th>
+				<th>Starting <!--Points--></th>
+				<th><!--Points--> In Periods</th>
+				<th>(+) Potential <!--Points--></th>
+				<th><!--Points--> Claim</th>
 				<th>Total Points</th>
 			</tr>
 		</thead>
@@ -72,7 +73,7 @@
 				@foreach($customers as $c)
 					@php
 						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->csid);
-						$rest = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
+						[$rest,$totalPotency] = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
 					@endphp
 					<tr>
 						<td>
@@ -86,6 +87,9 @@
 						</td>
 						<td>
 							{{number_format(($c->grand_total + $claim),2)}}	
+						</td>
+						<td>
+							<p class="col-teal">{{number_format(($c->potentcyPoint + $totalPotency),2)}}</p>
 						</td>
 						<td>
 							{{number_format($claim,2)}}

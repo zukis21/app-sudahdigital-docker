@@ -1192,9 +1192,10 @@
         <?php $store_name = session()->get('ses_order');
             if($store_name->store_name != null){
                 $point = 0;
-                $amount_claim = 0; 
+                $amount_claim = 0;
+                $totalPotencyPoints = 0; 
             }else{
-                $point = App\Http\Controllers\PointInfoController::PointInfo($store_name->customer_id);
+                [$point,$totalPotencyPoints]= App\Http\Controllers\PointInfoController::PointInfo($store_name->customer_id);
                 [$paramPeriod,$amount_claim] = App\Http\Controllers\PointInfoController::amountClaim($store_name->customer_id);
             }
         ?>
@@ -1218,6 +1219,10 @@
                         <li class="list-group-item d-flex list-group-item-primary justify-content-between align-items-center">
                             Total Poin 
                             <span class="badge badge-primary badge-pill">{{$point}}</span>
+                        </li>
+                        <li class="list-group-item d-flex list-group-item-warning justify-content-between align-items-center">
+                            Potensi Tambahan Poin 
+                            <span class="badge badge-warning badge-pill">{{$totalPotencyPoints}}</span>
                         </li>
                         <li class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
                             Poin yang dapat diklaim 

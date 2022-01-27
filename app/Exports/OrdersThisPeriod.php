@@ -65,6 +65,11 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                 $diskon = 0;
                 $total= $p->pivot->price_item * $p->pivot->quantity;
             }*/
+            if($order->status == 'FINISH'){
+                $delivered = $p->pivot->quantity;
+            }else{
+                $delivered = $p->pivot->deliveryQty;
+            }
 
             if($p->pivot->vol_disc_price > 0){
                 $price = $p->pivot->vol_disc_price;
@@ -101,6 +106,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                 $order->user_loc,
                 $product_name,
                 $p->pivot->quantity,
+                $delivered,
                 $price,
                 $order->payment_method,
                 $p->pivot->paket_id,
@@ -133,6 +139,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'On/Off Loc.',
            'Product',
            'Quantity',
+           'Delivered',
            'Price',
            'Payment',
            'Paket Id',

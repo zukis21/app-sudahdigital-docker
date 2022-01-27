@@ -26,5 +26,9 @@ class order_product extends Model
     public function discountVolume(){
         return $this->belongsTo('App\VolumeDiscountProduct','product_id','product_id');
     }
+
+    public function partialDelivery(){
+        return $this->hasMany('App\PartialDelivery','op_id');
+    }
     
 }

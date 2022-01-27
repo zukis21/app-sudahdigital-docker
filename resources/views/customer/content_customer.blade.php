@@ -254,7 +254,7 @@ Home
                                         }
                                     array_push($targetOrderTops, $targetOrderTop);
                                     }else{
-                                        $targetOrderTop = 0;
+                                        $targetOrderTop = 1.2;
                                         array_push($targetOrderTops, $targetOrderTop);
                                     }
                                     

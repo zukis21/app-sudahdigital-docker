@@ -952,10 +952,11 @@
                 data:{
                         query:query,
                      },
-                dataType:'json',
+                //dataType:'json',
                 success:function(data)
                 {
-                    $('tbody').html(data.table_data);
+                    //$('tbody').html(data.table_data);
+                    $('tbody').html(data);
                     //$('#total_records').text(data.total_data);
                 }
             });

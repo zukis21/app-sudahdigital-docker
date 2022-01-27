@@ -175,10 +175,18 @@ class OrderController extends Controller
                 $new_dtl = \App\order_product::where('id',$request->order_productId[$i])->first();
                 $new_dtl->deliveryQty += $request->deliveryQty[$v];
                 $new_dtl->save();
+
                 if($new_dtl->save()){
                     $prd = \App\product::findOrfail($request->productId[$i]);
                     $prd->stock -= $request->deliveryQty[$v];
                     $prd->save();
+
+                    $partDel = new \App\PartialDelivery();
+                    /*$partDel->orderProduct()->associate($)*/
+                    $partDel->op_id = $new_dtl->id;
+                    $partDel->partial_qty = $request->deliveryQty[$v];
+                    $partDel->save();
+
                 }
             }
         }

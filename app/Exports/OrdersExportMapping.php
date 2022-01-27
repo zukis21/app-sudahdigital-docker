@@ -45,6 +45,12 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $total= $p->pivot->price_item * $p->pivot->quantity;
             }*/
 
+            if($order->status == 'FINISH'){
+                $delivered = $p->pivot->quantity;
+            }else{
+                $delivered = $p->pivot->deliveryQty;
+            }
+
             if($p->pivot->vol_disc_price > 0){
                 $price = $p->pivot->vol_disc_price;
             }else{
@@ -81,6 +87,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
                 $order->user_loc,
                 $product_name,
                 $p->pivot->quantity,
+                $delivered,
                 $price,
                 $order->payment_method,
                 $p->pivot->paket_id,
@@ -113,6 +120,7 @@ class OrdersExportMapping implements FromCollection, WithMapping, WithHeadings, 
            'On/Off Loc.',
            'Product',
            'Quantity',
+           'Delivered',
            'Price',
            'Payment',
            'Paket Id',

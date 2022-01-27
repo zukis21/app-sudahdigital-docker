@@ -34,18 +34,43 @@ class PointInfoController extends Controller
                 $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                 FROM
                 (SELECT o.id as oid, cs.id csid, pr.created_at,
-                            sum(case when (date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at')
+                            /*sum(case when (date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at')
                                      AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
                                             OR
                                            date(o.finish_time) between '$last_period->starts_at' AND '$last_period->expires_at') 
                             then 
-                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
+                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint*/
+
+                            sum(case when (date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at')
+                                    AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+                                                OR
+                                            (date(o.finish_time) between '$last_period->starts_at' AND '$last_period->expires_at')
+                                        )
+                                then 
+                                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
+                                )
+                            + sum(case when date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at'
+                                        AND o.status = 'PARTIAL-SHIPMENT'
+                                        AND ( date(pd.created_at) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                OR
+                                            date(pd.created_at) between '$last_period->starts_at' AND '$last_period->expires_at'
+                                            )
+                                then
+                                    (pr.prod_point_val/pr.quantity_rule) * (IFNULL(pd.partial_qty,0)) else 0 end
+                                ) totalpoint,
+                            
+                            sum(case when date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at'
+                                    AND (o.status = 'SUBMIT' OR o.status = 'PROCESS' OR o.status = 'PARTIAL-SHIPMENT')
+                                then
+                                    (pr.prod_point_val/pr.quantity_rule) * (op.quantity - IFNULL(op.deliveryQty,0)) else 0 end
+                                ) potentcyPoint
                             FROM orders as o 
                             JOIN order_product as op ON o.id = op.order_id 
                             JOIN products on products.id = op.product_id 
                             JOIN product_rewards as pr on pr.product_id = products.id
                             JOIN customers as cs on cs.id = o.customer_id
                             JOIN users as u on u.id = cs.user_id
+                            LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                             /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                             WHERE
                             /*EXISTS ( SELECT * FROM customer_points WHERE period_id = $last_period->id AND
@@ -68,14 +93,19 @@ class PointInfoController extends Controller
                 on points.csid = pointsRewards.custpoint_id;");
 
                 $c_point = $customers[0]->grand_total;
+                
                 if($c_point == null){
                     $total = 0;
+                    $pPoints = 0;
                 }else{
                     $total = $c_point;
+                    $pPoints = $customers[0]->potentcyPoint;
                 }
 
                 $_this = new self;
-                $total_point = $total + ($_this->starting_point($last_period->starts_at,$customer_id));
+                [$total_start_point,$totalPotency] = $_this->starting_point($last_period->starts_at,$customer_id);
+                $total_point = $total + $total_start_point;
+                $totalPotencyPoints = $pPoints + $totalPotency;
                 $period = $last_period->starts_at;
             }else{
                 $month = date('m', strtotime($last_period->starts_at));
@@ -99,18 +129,43 @@ class PointInfoController extends Controller
                         $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                         FROM
                         (SELECT o.id as oid, cs.id csid, pr.created_at,
-                            sum(case when (date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at')
+                            /*sum(case when (date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at')
                                      AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
                                             OR
                                            date(o.finish_time) between '$prev_period->starts_at' AND '$prev_period->expires_at') 
                             then 
-                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
+                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint*/
+
+                            sum(case when (date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at')
+                                    AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+                                                OR
+                                            (date(o.finish_time) between '$prev_period->starts_at' AND '$prev_period->expires_at')
+                                        )
+                                then 
+                                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
+                                )
+                            + sum(case when date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at'
+                                        AND o.status = 'PARTIAL-SHIPMENT'
+                                        AND ( date(pd.created_at) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                OR
+                                            date(pd.created_at) between '$prev_period->starts_at' AND '$prev_period->expires_at'
+                                            )
+                                then
+                                    (pr.prod_point_val/pr.quantity_rule) * (IFNULL(pd.partial_qty,0)) else 0 end
+                                ) totalpoint,
+                            
+                            sum(case when date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at'
+                                    AND (o.status = 'SUBMIT' OR o.status = 'PROCESS' OR o.status = 'PARTIAL-SHIPMENT')
+                                then
+                                    (pr.prod_point_val/pr.quantity_rule) * (op.quantity - IFNULL(op.deliveryQty,0)) else 0 end
+                                ) potentcyPoint
                             FROM orders as o 
                             JOIN order_product as op ON o.id = op.order_id 
                             JOIN products on products.id = op.product_id 
                             JOIN product_rewards as pr on pr.product_id = products.id
                             JOIN customers as cs on cs.id = o.customer_id
                             JOIN users as u on u.id = cs.user_id
+                            LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                             /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                             WHERE
                             /*EXISTS ( SELECT * FROM customer_points WHERE period_id = $prev_period->id AND
@@ -133,30 +188,39 @@ class PointInfoController extends Controller
                         on points.csid = pointsRewards.custpoint_id;");
 
                         $c_point = $customers[0]->grand_total;
+                        
                         if($c_point == null){
                             $total = 0;
+                            $pPoints = 0;
                         }else{
                             $total = $c_point;
+                            $pPoints = $customers[0]->potentcyPoint;
                         }
 
                         $_this = new self;
-                        $total_point = $total + ($_this->starting_point($prev_period->starts_at,$customer_id));
-                        
+                        [$total_start_point,$totalPotency] = $_this->starting_point($last_period->starts_at,$customer_id);
+                        $total_point = $total + $total_start_point;
+                        $totalPotencyPoints = $pPoints + $totalPotency;
+                        $period = $last_period->starts_at;
+                    
                     }
                     else{
                         $total_point = 0;
+                        $totalPotencyPoints = 0;
                     }
                 }else{
                     $total_point = 0;
+                    $totalPotencyPoints = 0;
                 }
                     
             }
         }
         else{
             $total_point = 0;
+            $totalPotencyPoints = 0;
         }
-
-        return $total_point;
+        //dd($customers[0]->totalpoint);
+        return [$total_point,$totalPotencyPoints];
         
     }
 
@@ -176,7 +240,8 @@ class PointInfoController extends Controller
                     ->get();
             if($prd_cek){
                 $total_start_point = 0;
-                foreach($prd_cek as $period_cek){
+                $totalPotency = 0;
+                foreach($prd_cek as $key => $period_cek){
                     /*
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
@@ -188,18 +253,42 @@ class PointInfoController extends Controller
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
-                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                            /*sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
                                                      AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
                                                             OR
                                                           date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at') 
                                             then 
-                                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
+                                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint*/
+                                            
+                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                                    AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+                                                                OR
+                                                            (date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at')
+                                                        )
+                                                then 
+                                                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
+                                                )
+                                            + sum(case when date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at'
+                                                        AND o.status = 'PARTIAL-SHIPMENT'
+                                                        AND ( date(pd.created_at) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                                OR
+                                                            date(pd.created_at) between '$period_cek->starts_at' AND '$period_cek->expires_at'
+                                                            )
+                                                then
+                                                    (pr.prod_point_val/pr.quantity_rule) * (IFNULL(pd.partial_qty,0)) else 0 end
+                                                ) totalpoint,
+                                                sum(case when date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at'
+                                                    AND (o.status = 'SUBMIT' OR o.status = 'PROCESS' OR o.status = 'PARTIAL-SHIPMENT')
+                                                then
+                                                    (pr.prod_point_val/pr.quantity_rule) * (op.quantity - IFNULL(op.deliveryQty,0)) else 0 end
+                                                ) potentcyPoint
                                             FROM orders as o 
                                             JOIN order_product as op ON o.id = op.order_id 
                                             JOIN products on products.id = op.product_id 
                                             JOIN product_rewards as pr on pr.product_id = products.id
                                             JOIN customers as cs on cs.id = o.customer_id
                                             JOIN users as u on u.id = cs.user_id
+                                            LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                                             /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                                             WHERE
                                             
@@ -220,24 +309,30 @@ class PointInfoController extends Controller
                                         WHERE prpc.period_id = '$period_cek->id'
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
-                    $restpoints = $customers_cek[0]->grand_total;
+                    $restpoints[$key] = $customers_cek[$key]->grand_total;
+                    
                     if($restpoints == null){
                         $pointstart = 0;
+                        $potencyPoint = 0;
                     }else{
                         $pointstart = $restpoints;
+                        $potencyPoint[$key] = $customers_cek[$key]->potentcyPoint;
                     }
-                
-                    $total_start_point += $pointstart; 
+                    $total_start_point += $pointstart[$key]; 
+                    $totalPotency += $potencyPoint[$key];
                 }
+                
             }else{
                 $total_start_point = 0;
+                $totalPotency = 0;
             }
 
         }
         else{
-            $total_start_point = 0; 
+            $total_start_point = 0;
+            $totalPotency = 0; 
         }
-        return $total_start_point;
+        return [$total_start_point,$totalPotency];
     }
 
     public static function amountClaim($customer){
@@ -271,18 +366,37 @@ class PointInfoController extends Controller
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
-                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                            /*sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
                                                      AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
                                                             OR
                                                            date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at') 
                                             then 
-                                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
+                                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint*/
+
+                                            sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
+                                                    AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+                                                                OR
+                                                            (date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at')
+                                                        )
+                                                then 
+                                                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
+                                                )
+                                            + sum(case when date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at'
+                                                        AND o.status = 'PARTIAL-SHIPMENT'
+                                                        AND ( date(pd.created_at) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
+                                                                OR
+                                                            date(pd.created_at) between '$period_cek->starts_at' AND '$period_cek->expires_at'
+                                                            )
+                                                then
+                                                    (pr.prod_point_val/pr.quantity_rule) * (IFNULL(pd.partial_qty,0)) else 0 end
+                                                ) totalpoint
                                             FROM orders as o 
                                             JOIN order_product as op ON o.id = op.order_id 
                                             JOIN products on products.id = op.product_id 
                                             JOIN product_rewards as pr on pr.product_id = products.id
                                             JOIN customers as cs on cs.id = o.customer_id
                                             JOIN users as u on u.id = cs.user_id
+                                            LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                                             /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                                             WHERE
                                             

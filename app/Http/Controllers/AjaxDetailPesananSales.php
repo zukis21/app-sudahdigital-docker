@@ -8,42 +8,38 @@ class AjaxDetailPesananSales extends Controller
 {
     public function search_order(Request $request){
         
-        $output = '';
+        //$output = '';
         $user_id = \Auth::user()->id;
         $query = $request->get('query');
         $datefrom = date('2021-06-01');
         if($query != '' ){
-            $orders = \DB::select("SELECT orders.* ,customers.id as cs_id, customers.store_name, customers.status as cs
-                                FROM orders INNER JOIN customers ON orders.customer_id=customers.id
-                                WHERE orders.user_id='$user_id' AND orders.created_at >= $datefrom AND (customers.store_name LIKE '%$query%'
-                                OR orders.status LIKE '%$query%' OR orders.created_at LIKE '%$query%') ORDER BY orders.created_at DESC");
-                    /*DB::table('orders')
-                    ->join('customers','orders.customer_id','=','customers.id')
-                    ->whereNotNull('customer_id')
-                    ->where('orders.user_id','=',"$user_id")
-                    ->Where('orders.status','LIKE',"%$query%")
-                    ->orWhere('orders.created_at','LIKE',"%$query%")
-                    ->orWhere('customers.store_name','LIKE',"%$query%")
-                    ->get();*/
+            $orders = \DB::select("SELECT orders.* ,order_product.deliveryQty, order_product.preorder,
+                                   order_product.quantity, 
+                                 customers.id as cs_id, customers.store_name, customers.status as cs
+                                FROM orders 
+                                INNER JOIN customers ON orders.customer_id=customers.id
+                                JOIN order_product ON orders.id = order_product.order_id
+                                WHERE orders.user_id='$user_id' 
+                                AND orders.created_at >= $datefrom 
+                                AND (customers.store_name LIKE '%$query%'
+                                    OR orders.status LIKE '%$query%' 
+                                    OR orders.created_at LIKE '%$query%')
+                                GROUP BY orders.id 
+                                ORDER BY orders.created_at DESC");
             
-                    /*\App\Order::with('products')
-                    ->with(['customers'=>function($q) use ($query){
-                        $q->where('store_name','LIKE',"%$query%");
-                    }])
-                    ->orWhere('user_id','=',"$user_id")
-                    ->orWhere('status','LIKE',"%$query%")
-                    ->orWhere('created_at','LIKE',"%$query%")
-                    //->orWhere('customers.store_name','LIKE',"%$query%")
-                    ->get();
-                    */
         }
         else{
-            $orders = \App\Order::with('customers')->whereNotNull('customer_id')
+            $orders = \App\Order::with('products')
+                    ->with('customers')->whereNotNull('customer_id')
                     ->where('user_id','=',"$user_id")
                     ->where('created_at','>=',$datefrom)
                     ->orderBy('created_at', 'desc')
                     ->get();
         }
+
+        
+        
+
         if($orders != null ){
             $total_row = count($orders);
         }
@@ -52,7 +48,43 @@ class AjaxDetailPesananSales extends Controller
         }
         if($total_row > 0){
             foreach($orders as $order){
-                
+                if($query != '' ){
+                    $total_delivery_sum = \App\order_product::where('order_id',$order->id)
+                                        ->groupBy('order_id')
+                                        ->selectRaw('sum(deliveryQty) as sum')
+                                        ->pluck('sum');
+                    $total_delivery_arr = json_decode($total_delivery_sum,JSON_NUMERIC_CHECK); 
+                    $total_delivery =  $total_delivery_arr[0];
+                                      
+                    $total_preorder_sum = \App\order_product::where('order_id',$order->id)
+                                        ->groupBy('order_id')
+                                        ->selectRaw('sum(preorder) as sum')
+                                        ->pluck('sum');
+                    $total_preorder_arr = json_decode($total_preorder_sum,JSON_NUMERIC_CHECK); 
+                    $total_preorder =  $total_preorder_arr[0];
+
+                    $total_quantity_sum = \App\order_product::where('order_id',$order->id)
+                                    ->groupBy('order_id')
+                                    ->selectRaw('sum(quantity) as sum')
+                                    ->pluck('sum');
+                    $total_quantity_arr = json_decode($total_quantity_sum,JSON_NUMERIC_CHECK); 
+                    $total_quantity =  $total_quantity_arr[0];
+
+                    $cekpartial = \App\order_product::where('order_id',$order->id)
+                                  ->whereNotNull('deliveryQty')->count();
+                     
+                }else{
+                    $cekpartial = $order->products()->whereNotNull('deliveryQty')->count();
+                    $total_delivery = 0;
+                    $total_preorder = 0;
+                    $total_quantity = 0;
+                    foreach($order->products as $p){
+                        $total_delivery += $p->pivot->deliveryQty;
+                        $total_preorder += $p->pivot->preorder;
+                        $total_quantity += $p->pivot->quantity;
+                    }
+                }
+
                 if($query != ''){
                     $customer_store = $order->store_name;
                     if($order->cs == 'NEW'){
@@ -75,6 +107,9 @@ class AjaxDetailPesananSales extends Controller
                 else if($order->status == "PROCESS"){
                     $color_badge = 'bg-info';
                 }
+                else if($order->status == "PARTIAL-SHIPMENT"){
+                    $color_badge = 'bg-info';
+                }
                 else if($order->status == "FINISH"){
                     $color_badge = 'bg-success';
                 }
@@ -87,7 +122,7 @@ class AjaxDetailPesananSales extends Controller
 
                 $PriceTotal = \App\Http\Controllers\TransaksiSalesController::cekDiscountVolume($order->id);
 
-                $output.='
+                echo'
                 <tr>
                     <!--
                     <td width="20%" style="padding-left:7px;">
@@ -97,7 +132,13 @@ class AjaxDetailPesananSales extends Controller
                         <span class="data-list-order"><p class="mb-n1">Nmr. Order</p></span>
                         <b class="data-list-order">'.$order->invoice_number.'</b><br>
                         <span class="data-list-order"><p class="mb-n1 mt-2">Status</p></span>
-                        <span class="status-style badge '.$color_badge.' text-white status-order">'.$order->status.'</span>
+                        <span class="status-style badge '.$color_badge.' text-white status-order">';
+                            if(($order->status == "PARTIAL-SHIPMENT") && ($total_delivery <= 0)){
+                                echo 'PENDING-SHIPMENT';
+                            }else{
+                                echo $order->status;
+                            }
+                        echo'</span>
                         <span class="data-list-order"><p class="mb-n1">Tanggal Order</p></span>
                         <b class="data-list-order mb-4">'.$order->created_at.'</b><br>
 
@@ -116,22 +157,31 @@ class AjaxDetailPesananSales extends Controller
                     </td>
                     <td width="40%">
                         <span class="data-list-order">'.$customer_store.'</span>
-                        '.$c_bdge_new.'
-                    </td>
+                        '.$c_bdge_new;
+                        if(($total_preorder > 0) && ($order->status == "PARTIAL-SHIPMENT")){
+                            echo'<br>
+                            <span class="badge badge-warning">Outstanding :'. ($total_quantity - $total_delivery).'</span><br>
+                            <span class="badge badge-info">Delivered : '.$total_delivery.'</span>';
+                        }elseif(($cekpartial > 0) && ($order->status == "PARTIAL-SHIPMENT")){
+                            echo'<br>
+                            <span class="badge badge-warning">Outstanding : '.($total_quantity - $total_delivery).'</span><br>
+                            <span class="badge badge-info">Delivered : '.$total_delivery.'</span>';
+                        }
+                    echo'</td>
                     
                 </tr>';
             }
         }
         else{
-            $output = '<tr>
+            echo '<tr>
                             <td align="center" colspan="3">Data tidak ditemukan</td>
                        </tr>';
         }
-        $orders = array(
+        /*$orders = array(
         'table_data'  => $output
         );
      
-        echo json_encode($orders);
+        echo json_encode($orders);*/
     
     }
 
@@ -309,23 +359,23 @@ class AjaxDetailPesananSales extends Controller
                                         <small>
                                             <p style="line-height:1.2;">'.$p->Product_name.'</p>';
                                          echo'</small>';
-                                        if($p->pivot->preorder > 0){
-                                            if(($order->status == 'SUBMIT') || ($order->status == 'PROCESS') || ($order->status == 'CANCEL'))
+                                        
+                                            if(($p->pivot->preorder > 0) && (($order->status == 'SUBMIT') || ($order->status == 'PROCESS') || ($order->status == 'CANCEL')))
                                             {
                                                 echo'
                                                 <small>
                                                     <span class="badge badge-info">Tersedia : '.$p->pivot->available.'</span>
                                                     <span class="badge badge-warning">Pre-Order : '.$p->pivot->preorder.'</span>
                                                 </small>';
-                                            }else if(($order->status == 'PARTIAL-SHIPMENT') || ($order->status == 'FINISH')){
-                                                if($p->pivot->deliveryQty !== null){
+                                            }else if($order->status == 'PARTIAL-SHIPMENT'){
+                                                
                                                     echo'<small>
                                                         <span class="badge badge-warning">Outstanding : '.($p->pivot->quantity - $p->pivot->deliveryQty).'</span>
                                                         <span class="badge badge-info">Delivered : '.$p->pivot->deliveryQty.'</span>
                                                     </small>';
-                                                }
+                                                
                                             }
-                                        }
+                                        
                                         if($p->pivot->vol_disc_price > 0){
                                             echo'<br>
                                             <span>
@@ -418,24 +468,21 @@ class AjaxDetailPesananSales extends Controller
                                         echo '<small><p style="line-height:1.2;">'.$p->Product_name.'&nbsp;(<small><b>BONUS</b></small>)</p></small>';
                                     }
 
-                                    if($p->preorder > 0){
-                                        if(($order->status == 'SUBMIT') || ($order->status == 'PROCESS') || ($order->status == 'CANCEL'))
-                                        {
-                                            echo'
-                                            <br>
-                                            <small>
-                                                <span class="badge badge-info">Tersedia : '.$p->available.'</span>
-                                                <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
-                                            </small>';
-                                        }else if(($order->status == 'PARTIAL-SHIPMENT') || ($order->status == 'FINISH')){
-                                            if($p->deliveryQty !== null){
-                                                echo'<br>
-                                                <small>
-                                                    <span class="badge badge-warning">Outstanding : '.($p->quantity - $p->deliveryQty).'</span>
-                                                    <span class="badge badge-info">Delivered : '.$p->deliveryQty.'</span>
-                                                </small>';
-                                            }
-                                        }
+                                    if(($p->preorder > 0) && (($order->status == 'SUBMIT') || ($order->status == 'PROCESS') || ($order->status == 'CANCEL')))
+                                    {
+                                        echo'
+                                        <br>
+                                        <small>
+                                            <span class="badge badge-info">Tersedia : '.$p->available.'</span>
+                                            <span class="badge badge-warning">Pre-Order : '.$p->preorder.'</span>
+                                        </small>';
+                                    }else if($order->status == 'PARTIAL-SHIPMENT'){
+                                        echo'<br>
+                                        <small>
+                                            <span class="badge badge-warning">Outstanding : '.($p->quantity - $p->deliveryQty).'</span>
+                                            <span class="badge badge-info">Delivered : '.$p->deliveryQty.'</span>
+                                        </small>';
+                                        
                                     }
                                 echo 
                                 '</td>
