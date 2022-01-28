@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('manage-products', function($user){
             //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN' || $user->roles == 'SUPERVISOR');
         });
 
         Gate::define('manage-vouchers', function($user){
@@ -77,7 +77,12 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('change-password', function($user){
            // return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN' || $user->roles == 'OWNER' || $user->roles == 'SUPERVISOR');
+            return ($user->roles == 'SUPERADMIN' || 
+                    $user->roles == 'ADMIN' || 
+                    $user->roles == 'OWNER' || 
+                    $user->roles == 'SUPERVISOR' || 
+                    $user->roles == 'SALES-COUNTER'
+                );
         });
 
         Gate::define('manage-banner', function($user){

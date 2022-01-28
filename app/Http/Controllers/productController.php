@@ -301,13 +301,18 @@ class productController extends Controller
     }
 
     public function trash($vendor){
-        $products = \App\product::where('client_id','=',auth()->user()->client_id)
-        ->onlyTrashed()
-        ->get();//->paginate(10);
-        $stock_status= DB::table('product_stock_status')
-            ->where('product_stock_status.client_id','=',auth()->user()->client_id)
-            ->first();
-        return view('products.trash', ['products' => $products,'vendor'=>$vendor,'stock_status'=>$stock_status]);
+        
+        if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $products = \App\product::where('client_id','=',auth()->user()->client_id)
+            ->onlyTrashed()
+            ->get();//->paginate(10);
+            $stock_status= DB::table('product_stock_status')
+                ->where('product_stock_status.client_id','=',auth()->user()->client_id)
+                ->first();
+            return view('products.trash', ['products' => $products,'vendor'=>$vendor,'stock_status'=>$stock_status]);
+        }else{
+            abort(404, 'Tidak ditemukan');
+        }
     }
 
     public function restore($vendor,$id){

@@ -212,33 +212,34 @@
                         </li>
                     @endif
 
-                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-                        <!--manage banners-->
-                        <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                            <a href="javascript:void(0);" class="menu-toggle">
-                                <i class="material-icons">insert_photo</i>
-                                <span>Manage Banner</span>
-                            </a>
-                            <ul class="ml-menu">
-                                <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                                    <a href="{{route('banner.index',[$vendor])}}">List Slide Banner</a>
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        <!--manage categories-->
-                        <li class="{{request()->routeIs('categories.index') ? 'active' : ''}}">
-                            <a href="javascript:void(0);" class="menu-toggle">
-                                <i class="material-icons">label</i>
-                                <span>Manage Categories</span>
-                            </a>
-                            <ul class="ml-menu">
-                                <li class="{{request()->routeIs('categories.index') ? 'active' : '' }}">
-                                    <a href="{{route('categories.index',[$vendor])}}">Categories</a>
-                                </li>
-                            </ul>
-                        </li>
-
+                    @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
+                        @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                            <!--manage banners-->
+                            <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="material-icons">insert_photo</i>
+                                    <span>Manage Banner</span>
+                                </a>
+                                <ul class="ml-menu">
+                                    <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
+                                        <a href="{{route('banner.index',[$vendor])}}">List Slide Banner</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            
+                            <!--manage categories-->
+                            <li class="{{request()->routeIs('categories.index') ? 'active' : ''}}">
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="material-icons">label</i>
+                                    <span>Manage Categories</span>
+                                </a>
+                                <ul class="ml-menu">
+                                    <li class="{{request()->routeIs('categories.index') ? 'active' : '' }}">
+                                        <a href="{{route('categories.index',[$vendor])}}">Categories</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
                         <!--manage products-->
                         <li class="{{request()->routeIs('products.index') || 
                                     request()->routeIs('groups.index') || 
@@ -246,21 +247,23 @@
                                     request()->routeIs('volume_discount.index') ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">hardware</i>
-                                <span>Manage Products</span>
+                                <span>{{Gate::check('isSpv') ? 'Pruducts' : 'Manage Products'}}</span>
                             </a>
                             <ul class="ml-menu">
                                 <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
-                                    <a href="{{route('products.index',[$vendor])}}">Products</a>
+                                    <a href="{{route('products.index',[$vendor])}}">Product Lists</a>
                                 </li>
-                                <li class="{{request()->routeIs('volume_discount.index') ? 'active' : '' }}">
-                                    <a href="{{route('volume_discount.index',[$vendor])}}">Volume Discount</a>
-                                </li>
-                                <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
-                                    <a href="{{route('groups.index',[$vendor])}}">Group</a>
-                                </li>
-                                <li class="{{request()->routeIs('paket.index') ? 'active' : '' }}">
-                                    <a href="{{route('paket.index',[$vendor])}}">Paket</a>
-                                </li>
+                                @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+                                    <li class="{{request()->routeIs('volume_discount.index') ? 'active' : '' }}">
+                                        <a href="{{route('volume_discount.index',[$vendor])}}">Volume Discount</a>
+                                    </li>
+                                    <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
+                                        <a href="{{route('groups.index',[$vendor])}}">Group</a>
+                                    </li>
+                                    <li class="{{request()->routeIs('paket.index') ? 'active' : '' }}">
+                                        <a href="{{route('paket.index',[$vendor])}}">Paket</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
