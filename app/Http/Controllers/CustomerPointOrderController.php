@@ -200,15 +200,17 @@ class CustomerPointOrderController extends Controller
 
     public static function starting_point($period, $customer){
         $date =date('Y-m-d', strtotime($period));
+        $yPeriodPrev = date('Y',strtotime($period));
         $PrevPeriodCheck = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
                             ->whereDate('expires_at', '<', $date)
+                            ->whereYear('expires_at',$yPeriodPrev)
                             ->orderBy('expires_at','DESC')
                             ->first();
         if($PrevPeriodCheck){
-            $Year =date('Y', strtotime($PrevPeriodCheck->starts_at));
+            //$Year =date('Y', strtotime($PrevPeriodCheck->starts_at));
             $prd_cek = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
                     ->whereDate('expires_at', '<', $date)
-                    ->whereYear('expires_at',$Year)
+                    ->whereYear('expires_at',$yPeriodPrev)
                     ->orderBy('expires_at','DESC')
                     ->get();
             if($prd_cek){

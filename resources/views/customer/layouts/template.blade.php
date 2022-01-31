@@ -1218,15 +1218,15 @@
                     <ul class="list-group" style="border-radius: 18px;">
                         <li class="list-group-item d-flex list-group-item-primary justify-content-between align-items-center">
                             Total Poin 
-                            <span class="badge badge-primary badge-pill">{{$point}}</span>
+                            <span class="badge badge-primary badge-pill">{{number_format($point,1)}}</span>
                         </li>
                         <li class="list-group-item d-flex list-group-item-warning justify-content-between align-items-center">
                             Potensi Tambahan Poin 
-                            <span class="badge badge-warning badge-pill">{{$totalPotencyPoints}}</span>
+                            <span class="badge badge-warning badge-pill">{{number_format($totalPotencyPoints,1)}}</span>
                         </li>
                         <li class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
                             Poin yang dapat diklaim 
-                            <span class="badge badge-success badge-pill">{{$amount_claim}}</span>
+                            <span class="badge badge-success badge-pill">{{number_format($amount_claim,1)}}</span>
                         </li>
                     </ul>
                 </div>
@@ -1782,7 +1782,7 @@
                                     </div>
                                     <div class="col-lg-10 col-sm-8 col-8 ml-0">
                                         @if(session()->has('ses_order'))
-                                            <strong class="text-info">{{$amount_claim}} / {{$point}}</strong>
+                                            <strong class="text-info">{{number_format($amount_claim,1)}} / {{number_format($point,1)}}</strong>
                                             <a href="#" data-toggle="modal" data-target="#DetailPoinModal">
                                                 <i class="fas fa-info-circle" style="color: turquoise"></i>
                                             </a>

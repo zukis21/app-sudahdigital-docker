@@ -17,6 +17,7 @@ class PointInfoController extends Controller
         //$total_point = 0;
         
         $date = date('Y-m-d');
+        $currentYear = date('Y');
         $client_id = \Auth::user()->client_id;
 
         /*$curr_period = \App\PointPeriod::where('client_id',$client_id)
@@ -25,7 +26,7 @@ class PointInfoController extends Controller
         $last_period = \App\PointPeriod::where('client_id',$client_id)
                     ->whereDate('starts_at', '<=', $date)
                     ->orderBy('starts_at','DESC')->first();
-
+        
         if($last_period){
             $cust_exists = \DB::select("SELECT * FROM customer_points 
                         WHERE period_id = $last_period->id AND
@@ -103,10 +104,52 @@ class PointInfoController extends Controller
                 }
 
                 $_this = new self;
-                [$total_start_point,$totalPotency] = $_this->starting_point($last_period->starts_at,$customer_id);
-                $total_point = $total + $total_start_point;
-                $totalPotencyPoints = $pPoints + $totalPotency;
-                $period = $last_period->starts_at;
+                [$Year,$periodExpires,$total_start_point,$totalPotency] = $_this->starting_point($last_period->starts_at,$customer_id);
+                if($Year != null){
+                    $y = date('Y', strtotime($last_period->starts_at));
+                    if($Year == $y){
+                        if($y == $currentYear){
+                            $total_point = $total + $total_start_point;
+                            $totalPotencyPoints = $pPoints + $totalPotency;
+                            $period = $last_period->starts_at; 
+                        }else{
+                            $dateExpired =  strtotime("+14 day", $last_period->expires_at);
+                            if($date <= $dateExpired) {
+                                $total_point = $total + $total_start_point;
+                                $totalPotencyPoints = $pPoints + $totalPotency;
+                                $period = $last_period->starts_at;
+                            }else{
+                                $total_point = 0;
+                                $totalPotencyPoints = 0;
+                            }
+                        }
+                    }else{
+                        if($periodExpires != null){
+                            //dd($periodExpires);
+                            $prExp = \Carbon\Carbon::parse($periodExpires)->format('Y-m-d');
+                            $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($prExp)));
+                            //dd($dateExpired);
+                            if($date <= $dateExpired) {
+                                $total_point = $total + $total_start_point;
+                                $totalPotencyPoints = $pPoints + $totalPotency;
+                                $period = $last_period->starts_at;
+                            }else{
+                                $total_point = $total;
+                                $totalPotencyPoints = $pPoints;
+                                $period = $last_period->starts_at;
+                            }
+                        }else{
+                            $total_point = $total + $total_start_point;
+                                $totalPotencyPoints = $pPoints + $totalPotency;
+                                $period = $last_period->starts_at;
+                            }
+                        }
+                        
+                }else{
+                    $total_point = $total + $total_start_point;
+                    $totalPotencyPoints = $pPoints + $totalPotency;
+                    $period = $last_period->starts_at;
+                }
             }else{
                 $month = date('m', strtotime($last_period->starts_at));
                 $year = date('Y', strtotime($last_period->starts_at));
@@ -198,11 +241,50 @@ class PointInfoController extends Controller
                         }
 
                         $_this = new self;
-                        [$total_start_point,$totalPotency] = $_this->starting_point($last_period->starts_at,$customer_id);
-                        $total_point = $total + $total_start_point;
-                        $totalPotencyPoints = $pPoints + $totalPotency;
-                        $period = $last_period->starts_at;
-                    
+                        [$Year,$periodExpires,$total_start_point,$totalPotency] = $_this->starting_point($prev_period->starts_at,$customer_id);
+                        if($Year != null){
+                            $y = date('Y', strtotime($prev_period->starts_at));
+                            if($Year == $y){
+                                if($y == $currentYear){
+                                    $total_point = $total + $total_start_point;
+                                    $totalPotencyPoints = $pPoints + $totalPotency;
+                                    $period = $last_period->starts_at; 
+                                }else{
+                                    $dateExpired =  strtotime("+14 day", $prev_period->expires_at);
+                                    if($date <= $dateExpired) {
+                                        $total_point = $total + $total_start_point;
+                                        $totalPotencyPoints = $pPoints + $totalPotency;
+                                        $period = $last_period->starts_at;
+                                    }else{
+                                        $total_point = 0;
+                                        $totalPotencyPoints = 0;
+                                    }
+                                }
+                            }else{
+                                if($periodExpires != null){
+                                    $prExp = \Carbon\Carbon::parse($periodExpires)->format('Y-m-d');
+                                    $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($prExp)));
+                                    if($date <= $dateExpired) {
+                                        $total_point = $total + $total_start_point;
+                                        $totalPotencyPoints = $pPoints + $totalPotency;
+                                        $period = $last_period->starts_at;
+                                    }else{
+                                        $total_point = $total;
+                                        $totalPotencyPoints = $pPoints;
+                                        $period = $last_period->starts_at;
+                                    }
+                                }else{
+                                    $total_point = $total + $total_start_point;
+                                    $totalPotencyPoints = $pPoints + $totalPotency;
+                                    $period = $last_period->starts_at;
+                                }
+                                
+                            }
+                        }else{
+                            $total_point = $total + $total_start_point;
+                            $totalPotencyPoints = $pPoints + $totalPotency;
+                            $period = $last_period->starts_at;
+                        }
                     }
                     else{
                         $total_point = 0;
@@ -231,8 +313,10 @@ class PointInfoController extends Controller
                             ->whereDate('expires_at', '<', $date)
                             ->orderBy('expires_at','DESC')
                             ->first();
+
         if($PrevPeriodCheck){
             $Year =date('Y', strtotime($PrevPeriodCheck->starts_at));
+            $periodExpires = date('Y-m-d', strtotime($PrevPeriodCheck->expires_at));
             $prd_cek = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
                     ->whereDate('expires_at', '<', $date)
                     ->whereYear('expires_at',$Year)
@@ -321,7 +405,6 @@ class PointInfoController extends Controller
                     $total_start_point += $pointstart[$key]; 
                     $totalPotency += $potencyPoint[$key];
                 }
-                
             }else{
                 $total_start_point = 0;
                 $totalPotency = 0;
@@ -330,13 +413,16 @@ class PointInfoController extends Controller
         }
         else{
             $total_start_point = 0;
-            $totalPotency = 0; 
+            $totalPotency = 0;
+            $Year = null;
+            $periodExpires = null;
         }
-        return [$total_start_point,$totalPotency];
+        return [$Year,$periodExpires,$total_start_point,$totalPotency];
     }
 
     public static function amountClaim($customer){
         $date = date('Y-m-d');
+        $thisYear = date('Y');
         $checkPeriod = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
                                 ->whereDate('expires_at', '<', $date)
                                 ->orderBy('expires_at','DESC')
@@ -345,6 +431,7 @@ class PointInfoController extends Controller
         if($checkPeriod){
             $paramPeriod = $checkPeriod->id;
             $Year =date('Y', strtotime($checkPeriod->starts_at));
+            $lastExpPeriod = date('Y-m-d',strtotime($checkPeriod->expires_at));
             $prd_cek = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
                     ->whereDate('expires_at', '<', $date)
                     ->whereYear('expires_at',$Year)
@@ -352,7 +439,7 @@ class PointInfoController extends Controller
                     ->get();
             if($prd_cek){
                 $total_start_point = 0;
-                foreach($prd_cek as $period_cek){
+                foreach($prd_cek as $key=>$period_cek){
                     
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
@@ -418,18 +505,22 @@ class PointInfoController extends Controller
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
                         //$restpoints = $customers_cek[0]->grand_total;
-                        $pointstart = $customers_cek[0]->grand_total;
+                        $pointstart[$key] = $customers_cek[$key]->grand_total;
                     }else{
                         $pointstart = 0;
                     }
-                        /*if($restpoints == null){
-                            
-                        }else{
-                            $pointstart = $restpoints;
-                        }*/
-                    
-                        $total_start_point += $pointstart;
-                     
+                    $total_start_point += $pointstart[$key];
+                }
+                if($thisYear != $Year){
+                    $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($lastExpPeriod)));
+                    //dd($dateExpired);
+                    if($date <= $dateExpired){
+                        $total_start_point = $total_start_point;
+                    }else{
+                        $total_start_point = 0;
+                    }
+                }else{
+                    $total_start_point = $total_start_point;
                 }
             }else{
                 $total_start_point = 0;
