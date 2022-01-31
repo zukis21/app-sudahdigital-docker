@@ -246,22 +246,25 @@ Home
                                     if($targets != null){
                                         $targetOrderTop = 0;
                                         foreach($targets->product_target as $pt){
-                                            if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
+                                            /*if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
                                                 $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQtys);
                                             }elseif($value_top->id == $pt->productId){
                                                 $targetOrderTop = (int)$pt->quantityValues + 0.1;
+                                            }*/
+                                            if($value_top->id == $pt->productId){
+                                                $targetOrderTop = ((int)$totalQtys - (int)$pt->quantityValues );
                                             }
                                         }
                                     array_push($targetOrderTops, $targetOrderTop);
                                     }else{
-                                        $targetOrderTop = 1.2;
+                                        $targetOrderTop = 0;
                                         array_push($targetOrderTops, $targetOrderTop);
                                     }
                                     
                                 ?>
                                 @else
                                 <?php
-                                    $targetOrderTop = 0;
+                                    $targetOrderTop > 10000;
                                     array_push($targetOrderTops, $targetOrderTop);
                                 ?>
                                 @endif
@@ -269,7 +272,7 @@ Home
                             
                         @endforeach
                         @php 
-                            arsort($targetOrderTops);
+                            asort($targetOrderTops);
                             $keys = array_keys($targetOrderTops);
                         @endphp
                         
