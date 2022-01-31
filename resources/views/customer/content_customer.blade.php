@@ -258,14 +258,14 @@ Home
                                         }
                                     //array_push($targetOrderTops, $targetOrderTop);
                                     }else{
-                                        $targetOrderTop = 0;
+                                        $targetOrderTop > 10000;
                                         
                                     }
                                     array_push($targetOrderTops, $targetOrderTop);
                                 ?>
                                 @else
                                 <?php
-                                    $targetOrderTop > 10000;
+                                    $targetOrderTop = 0;
                                     array_push($targetOrderTops, $targetOrderTop);
                                 ?>
                                 @endif
