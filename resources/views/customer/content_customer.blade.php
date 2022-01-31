@@ -243,8 +243,9 @@ Home
                                 <?php
                                     $targets = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
                                     [$totalQtys,$totalNmls]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
+                                    $targetOrderTop = 0;
                                     if($targets != null){
-                                        $targetOrderTop = 0;
+                                        
                                         foreach($targets->product_target as $pt){
                                             /*if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
                                                 $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQtys);
@@ -255,16 +256,16 @@ Home
                                                 $targetOrderTop = ((int)$totalQtys - (int)$pt->quantityValues );
                                             }
                                         }
-                                    array_push($targetOrderTops, $targetOrderTop);
+                                    //array_push($targetOrderTops, $targetOrderTop);
                                     }else{
                                         $targetOrderTop = 0;
-                                        array_push($targetOrderTops, $targetOrderTop);
+                                        
                                     }
-                                    
+                                    array_push($targetOrderTops, $targetOrderTop);
                                 ?>
                                 @else
                                 <?php
-                                    $targetOrderTop = null;
+                                    $targetOrderTop > 10000;
                                     array_push($targetOrderTops, $targetOrderTop);
                                 ?>
                                 @endif
