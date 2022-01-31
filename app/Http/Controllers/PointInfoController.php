@@ -507,7 +507,7 @@ class PointInfoController extends Controller
                         //$restpoints = $customers_cek[0]->grand_total;
                         $pointstart[$key] = $customers_cek[$key]->grand_total;
                     }else{
-                        $pointstart = 0;
+                        $pointstart[$key] = 0;
                     }
                     $total_start_point += $pointstart[$key];
                 }

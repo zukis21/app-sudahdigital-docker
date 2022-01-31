@@ -289,8 +289,8 @@ class CustomerPointOrderController extends Controller
                             $restpoints[$key] = $customers_cek[$key]->grand_total;
                                 
                             if($restpoints == null){
-                                $pointstart = 0;
-                                $potencyPoint = 0;
+                                $pointstart[$key] = 0;
+                                $potencyPoint[$key] = 0;
                             }else{
                                 $pointstart = $restpoints;
                                 $potencyPoint[$key] = $customers_cek[$key]->potentcyPoint;
