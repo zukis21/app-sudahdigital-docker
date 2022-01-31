@@ -264,7 +264,7 @@ Home
                                 ?>
                                 @else
                                 <?php
-                                    $targetOrderTop > 10000;
+                                    $targetOrderTop = null;
                                     array_push($targetOrderTops, $targetOrderTop);
                                 ?>
                                 @endif
