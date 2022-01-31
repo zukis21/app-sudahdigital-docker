@@ -245,7 +245,6 @@ Home
                                     [$totalQtys,$totalNmls]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
                                     $targetOrderTop = 0;
                                     if($targets != null){
-                                        
                                         foreach($targets->product_target as $pt){
                                             /*if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
                                                 $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQtys);
@@ -253,13 +252,12 @@ Home
                                                 $targetOrderTop = (int)$pt->quantityValues + 0.1;
                                             }*/
                                             if($value_top->id == $pt->productId){
-                                                $targetOrderTop = ((int)$totalQtys - (int)$pt->quantityValues );
+                                                $targetOrderTop = ((int)$totalQtys - (int)$pt->quantityValues);
                                             }
                                         }
                                     //array_push($targetOrderTops, $targetOrderTop);
                                     }else{
-                                        $targetOrderTop > 10000;
-                                        
+                                        $targetOrderTop = 10000;
                                     }
                                     array_push($targetOrderTops, $targetOrderTop);
                                 ?>
