@@ -393,17 +393,17 @@ class PointInfoController extends Controller
                                         WHERE prpc.period_id = '$period_cek->id'
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
-                    $restpoints = $customers_cek[$key]->grand_total;
+                    $restpoints[$key] = $customers_cek[0]->grand_total;
                     
-                    if($restpoints == null){
-                        $pointstart = 0;
-                        $potencyPoint = 0;
+                    if($restpoints[$key] == null){
+                        $pointstart[$key] = 0;
+                        $potencyPoint[$key] = 0;
                     }else{
-                        $pointstart = $restpoints;
-                        $potencyPoint = $customers_cek[$key]->potentcyPoint;
+                        $pointstart[$key] = $restpoints[$key];
+                        $potencyPoint[$key] = $customers_cek[0]->potentcyPoint;
                     }
-                    $total_start_point += $pointstart; 
-                    $totalPotency += $potencyPoint;
+                    $total_start_point += $pointstart[$key]; 
+                    $totalPotency += $potencyPoint[$key];
                 }
             }else{
                 $total_start_point = 0;
