@@ -449,7 +449,7 @@ class PointInfoController extends Controller
                     }*/
                     if($cust_exists){
 
-                        $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
+                        $customers_cek=\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                             /*cp.id,*/ 
@@ -505,11 +505,11 @@ class PointInfoController extends Controller
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
                         //$restpoints = $customers_cek[0]->grand_total;
-                        $pointstart = $customers_cek[$key]->grand_total;
+                        $pointstart[$key] = $customers_cek[0]->grand_total;
                     }else{
-                        $pointstart = 0;
+                        $pointstart[$key] = 0;
                     }
-                    $total_start_point += $pointstart;
+                    $total_start_point += $pointstart[$key];
                 }
                 if($thisYear != $Year){
                     $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($lastExpPeriod)));
