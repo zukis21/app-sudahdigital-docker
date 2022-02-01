@@ -286,17 +286,17 @@ class CustomerPointOrderController extends Controller
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
                    
-                            $restpoints[$key] = $customers_cek[$key]->grand_total;
+                            $restpoints = $customers_cek[$key]->grand_total;
                                 
                             if($restpoints == null){
-                                $pointstart[$key] = 0;
-                                $potencyPoint[$key] = 0;
+                                $pointstart = 0;
+                                $potencyPoint = 0;
                             }else{
                                 $pointstart = $restpoints;
-                                $potencyPoint[$key] = $customers_cek[$key]->potentcyPoint;
+                                $potencyPoint = $customers_cek[$key]->potentcyPoint;
                             }
-                            $total_start_point += $pointstart[$key]; 
-                            $totalPotency += $potencyPoint[$key];
+                            $total_start_point += $pointstart; 
+                            $totalPotency += $potencyPoint;
                 }
             }else{
                 $total_start_point = 0;

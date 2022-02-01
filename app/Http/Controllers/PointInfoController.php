@@ -393,17 +393,17 @@ class PointInfoController extends Controller
                                         WHERE prpc.period_id = '$period_cek->id'
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
-                    $restpoints[$key] = $customers_cek[$key]->grand_total;
+                    $restpoints = $customers_cek[$key]->grand_total;
                     
                     if($restpoints == null){
                         $pointstart = 0;
                         $potencyPoint = 0;
                     }else{
                         $pointstart = $restpoints;
-                        $potencyPoint[$key] = $customers_cek[$key]->potentcyPoint;
+                        $potencyPoint = $customers_cek[$key]->potentcyPoint;
                     }
-                    $total_start_point += $pointstart[$key]; 
-                    $totalPotency += $potencyPoint[$key];
+                    $total_start_point += $pointstart; 
+                    $totalPotency += $potencyPoint;
                 }
             }else{
                 $total_start_point = 0;
@@ -439,7 +439,7 @@ class PointInfoController extends Controller
                     ->get();
             if($prd_cek){
                 $total_start_point = 0;
-                foreach($prd_cek as $key=>$period_cek){
+                foreach($prd_cek as $key => $period_cek){
                     
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
@@ -505,11 +505,11 @@ class PointInfoController extends Controller
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
                         //$restpoints = $customers_cek[0]->grand_total;
-                        $pointstart[$key] = $customers_cek[$key]->grand_total;
+                        $pointstart = $customers_cek[$key]->grand_total;
                     }else{
-                        $pointstart[$key] = 0;
+                        $pointstart = 0;
                     }
-                    $total_start_point += $pointstart[$key];
+                    $total_start_point += $pointstart;
                 }
                 if($thisYear != $Year){
                     $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($lastExpPeriod)));
