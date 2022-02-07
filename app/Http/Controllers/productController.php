@@ -42,23 +42,23 @@ class productController extends Controller
         $status = $request->get('status');
         $keyword = $request->get('keyword') ? $request->get('keyword') : '';
         if($status){
-        $products = \App\product::with('categories')
-        ->where('client_id','=',auth()->user()->client_id)
-        ->where('Product_name','LIKE',"%$keyword%")
-        ->where('status',strtoupper($status))->get();//->paginate(10);
-        $stock_status= DB::table('product_stock_status')
-        ->where('product_stock_status.client_id','=',auth()->user()->client_id)
-        ->first();
-        }
-        else
-            {
             $products = \App\product::with('categories')
             ->where('client_id','=',auth()->user()->client_id)
-            ->where('Product_name','LIKE',"%$keyword%")->get();
-            //->paginate(10);
+            ->where('Product_name','LIKE',"%$keyword%")
+            ->where('status',strtoupper($status))->get();//->paginate(10);
             $stock_status= DB::table('product_stock_status')
             ->where('product_stock_status.client_id','=',auth()->user()->client_id)
             ->first();
+        }
+        else
+            {
+                $products = \App\product::with('categories')
+                ->where('client_id','=',auth()->user()->client_id)
+                ->where('Product_name','LIKE',"%$keyword%")->get();
+                //->paginate(10);
+                $stock_status= DB::table('product_stock_status')
+                ->where('product_stock_status.client_id','=',auth()->user()->client_id)
+                ->first();
             }
         return view('products.index', ['products'=> $products, 'stock_status'=>$stock_status, 'vendor'=>$vendor]);
     }
@@ -344,9 +344,12 @@ class productController extends Controller
     }
 
     public function low_stock($vendor){
-        $products = \App\product::with('categories')
+        /*$products = \App\product::with('categories')
                     ->where('products.client_id','=',auth()->user()->client_id)
-                    ->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
+                    ->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);*/
+        $products = \App\product::with('categories')
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->where('status','PUBLISH')->get();
         $stock_status= DB::table('product_stock_status')
                     ->where('product_stock_status.client_id','=',auth()->user()->client_id)
                     ->first();

@@ -1169,6 +1169,37 @@
                 var red_line = <?php echo $red_line ?>;
                 var param_line = <?php echo $param_line ?>;
                 var months = <?php echo json_encode($dateJs) ?>;
+
+                var maxaAhievement= Math.max.apply(null, achievement);
+                var maxaAhievementQty= Math.max.apply(null, achievement_qty);
+
+                //var max chart ach nml all
+                if(achievement_all > 0){
+                    var maxChartNmlAll = achievement_all_qty+50;
+                }else{
+                    var maxChartNmlAll = 0;
+                }
+
+                //var max chart ach qty all
+                if(achievement_all_qty > 0){
+                    var maxChartQtyAll = achievement_all_qty+50;
+                }else{
+                    var maxChartQtyAll = 0;
+                }
+
+                //var max nml sls
+                if(maxaAhievement > 0){
+                    var maxChartNml = maxaAhievement+50;
+                }else{
+                    var maxChartNml = 0;
+                }
+
+                //var max qty sls
+                if(maxaAhievementQty > 0){
+                    var maxChartQty = maxaAhievementQty+50;
+                }else{
+                    var maxChartQty = 0;
+                }
                 
             
                 let d = new Date(months); // 2020-06-21
@@ -1219,7 +1250,7 @@
                         categories: ['Pencapaian Keseluruhan']
                     },
                     yAxis: {
-                        //max: 150,
+                        max: maxChartNmlAll,
                         title: {
                             text: 'Persentase'
                         },
@@ -1267,7 +1298,7 @@
                         categories: ['Pencapaian Keseluruhan']
                     },
                     yAxis: {
-                        //max: 150,
+                        max: maxChartQtyAll,
                         title: {
                             text: 'Persentase'
                         },
@@ -1311,7 +1342,7 @@
                         categories: sales
                     },
                     yAxis: {
-                        //max: 150,
+                        max: maxChartNml,
                         title: {
                             text: 'Persentase'
                         },
@@ -1360,7 +1391,7 @@
                         categories: sales
                     },
                     yAxis: {
-                        //max: 150,
+                        max: maxChartQty,
                         title: {
                             text: 'Persentase'
                         },

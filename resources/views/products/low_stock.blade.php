@@ -33,7 +33,7 @@
 					<a href="{{route('products.index', [$vendor,'status' =>'draft'])}}">DRAFT</a>
 				</li>
 				<li role="presentation" class="active">
-					<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
+					<a href="{{route('products.low_stock',[$vendor])}}">STOCK TRESHOLD</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'inactive' ?'active' : '' }}">
 					<a href="{{route('products.index', [$vendor,'status' =>'inactive'])}}">INACTIVE</a>
@@ -73,16 +73,22 @@
 		<thead>
 			<tr>
 				<!--<th>No</th>-->
+				<!--
 				<th>Product Image</th>
 				<th>Product Code</th>
 				<th>Product Name</th>
+				-->
+				<th>Product</th>
 				<th>Category</th>
-				<th>Stock</th>
-				<th>Low Stock Treshold</th>
+				@if($stock_status && $stock_status->stock_status == 'ON')
+					<th>Inv. Stock</th>
+					<th>Avail. for Sale</th>
+					<th>Treshold</th>
+				@endif
 				<th>Price</th>
 				<th>Status</th>
 				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-					<th>Action</th>
+					<th>#</th>
 				@endif
 			</tr>
 		</thead>
@@ -90,223 +96,245 @@
 			<?php $no=0;?>
 			@foreach($products as $p)
 			<?php $no++;?>
-			<tr>
-				<!--<td>{{$no}}</td>-->
-				<td>@if($p->image)
-					<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
-					@else
-					N/A
-					@endif
-				</td>
-				<td>{{$p->product_code}}</td>
-				<td>{{$p->Product_name}}</td>
-				<td>
-					@foreach($p->categories as $category)
-						{{$category->name}}
-					@endforeach
-					
-				</td>
-				<td>
-					{{$p->stock}}
-				</td>
-				<td>
-					{{$p->low_stock_treshold}}
-				</td>
-				<td>
-					{{$p->price}}
-				</td>
-				<td>
-					@if($p->status=="DRAFT")
-						<span class="badge bg-dark text-white">{{$p->status}}</span>
-					@elseif($p->status=="INACTIVE")
-						<span class="badge bg-red">{{$p->status}}</span>
-					@else
-						<span class="badge bg-green">{{$p->status}}</span>	
-					@endif
-
-					@if($p->top_product==1)
-					<span class="badge bg-purple text-white">Top Product</span>
-					@else
-					@endif
-
-					@if($p->discount > 0)
-					<span class="badge bg-orange text-white">{{$p->discount}}% OFF</span>
-					@else
-					@endif
-				</td>
-				<!--
-				<td>
-					<a class="btn btn-info btn-xs" href="{{route('products.edit',[$vendor, Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
-				</td>
-				-->
-				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-					<td>
-						<div class="dropdown">
-							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
-								<i class="material-icons" >apps</i>
-							</a>
-							<ul class="dropdown-menu pull-right">
-								<li>
-									@if($p->status == 'PUBLISH')
-										<a href="javascript:void(0);" class=" waves-effect waves-block"
-										data-toggle="modal" data-target="#activeModal{{$p->id}}">Deactivate</a>
-									@elseif($p->status == 'INACTIVE')
-										<a href="javascript:void(0);" class=" waves-effect waves-block"
-										data-toggle="modal" data-target="#activeModal{{$p->id}}">Activate</a>
-									@endif
-								</li>
-								<li>
-									<a href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}" 
-									class=" waves-effect waves-block">
-										Edit
-									</a>
-								</li>
-								<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
-									data-toggle="modal" data-target="#deleteModal{{$p->id}}">
-									Delete
-									</a>
-								</li>
-								<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
-									data-toggle="modal" data-target="#detailModal{{$p->id}}">
-									Detail
-									</a>
-								</li>
-							</ul>
-						</div>
-						
+			@php
+				$totalOrder = App\Http\Controllers\CustomerKeranjangController::stockInfo($p->id);//total order
+				$orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p->id);//finish order
+			@endphp
+				@if((($p->stock+$orderFinish)-$totalOrder) <= $p->low_stock_treshold)
+					<tr>
+						<!--<td>{{$no}}</td>-->
+						<td>@if($p->image)
+								<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
+							@else
+								<b>Image</b> : N/A
+							@endif
+							<br>
+							<b>Code</b> : {{$p->product_code}}<br>
+							<b>Name</b> : {{$p->Product_name}}
+						</td>
 						<!--
-						<a class="btn btn-info btn-xs " href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
-						<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>
-						<button type="button" class="btn bg-grey waves-effect btn-xs" data-toggle="modal" data-target="#detailModal{{$p->id}}" ><i class="material-icons">list</i></button>
+						<td>{{$p->product_code}}</td>
+						<td>{{$p->Product_name}}</td>
 						-->
+						<td>
+							@foreach($p->categories as $category)
+								{{$category->name}}
+							@endforeach
+							
+						</td>
+						@if($stock_status->stock_status == 'ON')
+							<td>
+								{{$p->stock}}
+							</td>
+							<td>
+								
+								{{($p->stock+$orderFinish)-$totalOrder}}
+							</td>
+							<td>
+								{{$p->low_stock_treshold}}
+							</td>
+						@endif
+						<td>
+							@if($p->discount > 0)
+							<del>{{number_format($p->price)}}</del><br>
+							{{number_format($p->price_promo)}}
+							@else
+							{{number_format($p->price)}}
+							@endif
+						</td>
+						<td>
+							@if($p->status=="DRAFT")
+								<span class="badge bg-dark text-white">{{$p->status}}</span>
+							@elseif($p->status=="INACTIVE")
+								<span class="badge bg-red">{{$p->status}}</span>
+							@else
+								<span class="badge bg-green">{{$p->status}}</span>	
+							@endif
 
-						<!-- Modal Delete -->
-						<div class="modal fade" id="deleteModal{{$p->id}}" tabindex="-1" role="dialog">
-							<div class="modal-dialog modal-sm" role="document">
-								<div class="modal-content modal-col-red">
-									<div class="modal-header">
-										<h4 class="modal-title" id="deleteModalLabel">Delete Product</h4>
-									</div>
-									<div class="modal-body">
-									Delete this product ..? 
-									</div>
-									<div class="modal-footer">
-										<form action="{{route('products.destroy',[$vendor,$p->id])}}" method="POST">
-											@csrf
-											<input type="hidden" name="_method" value="DELETE">
-											<input type="hidden" name="status_page" value="low_stock">
-											<button type="submit" class="btn btn-link waves-effect">Delete</button>
-											<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
+							@if($p->top_product==1)
+							<span class="badge bg-purple text-white">Top Product</span>
+							@else
+							@endif
 
-						<!-- Modal Detail -->
-						<div class="modal fade" id="detailModal{{$p->id}}" tabindex="-1" role="dialog">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h4 class="modal-title" id="detailModalLabel">Detail Product</h4>
-									</div>
-									<div class="modal-body">
-										@if($p->image)
-										<img src="{{asset('storage/'.$p->image)}}" width="128px"/>
-										@else
-										No Image
-										@endif
-										<br/><br/>
-										<b>Product Code:</b>
-										<br/>
-										{{$p->product_code}}
-									<br/><br/>
-									<b>Product Name:</b>
-									<br/>
-									{{$p->Product_name}}
-									<br/><br/>
-									<b>Product Description:</b>
-									<br/>
-									{{$p->description}}
-									<br/><br/>
-									<b>Category:</b>
-									<br/>
-									@foreach($p->categories as $category)
-									
-											{{$category->name}}
-									
-										@endforeach
-									<br/><br/>
-									@if($stock_status->stock_status == 'ON')
-										<b>Stock:</b>
-										<br/>
-										{{$p->stock}}
-										<br/><br/>
-										<b>Low Stock Treshold:</b>
-										<br/>
-										{{$p->low_stock_treshold}}
-										<br/><br/>
-									@endif
-									<b>Price:</b>
-									<br/>
-									{{number_format($p->price)}}
-									<br/><br/>
-									<b>Status</b>
-									<br/>
-										@if($p->status=="DRAFT")
-											<span class="badge bg-dark text-white">{{$p->status}}</span>
-										@else
-											<span class="badge bg-green text-white">{{$p->status}}</span>
-										@endif
-										<br/><br/>
-										@if($p->top_product == 1)
-											<input disabled type="checkbox" name="top_product" id="top_product" value="1"  checked >
-											<label for="top_product">Top Product</label>
-											<br/><br/>
-									@endif
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
-									</div>
-									
-								</div>
-							</div>
-						</div>
-
-						<!-- Modal deactivate -->
-						<div class="modal fade" id="activeModal{{$p->id}}" tabindex="-1" role="dialog">
-							<div class="modal-dialog modal-sm" role="document">
-								<div class="modal-content modal-col-{{$p->status == 'PUBLISH' ? 'orange' : 'cyan'}}">
-									<div class="modal-header">
-										<h4 class="modal-title">{{$p->status == 'PUBLISH' ? 'Deactivate Product' : 'Activate Product'}}</h4>
-									</div>
-									<div class="modal-body">
-										{{$p->status == 'PUBLISH' ? 'Deactivate this product ?' : 'Activate this product ?'}}
-									</div>
-									<div class="modal-footer">
-										<form action="{{route('products.actorderact',[$vendor,$p->id])}}" method="POST">
-											@csrf
-											<input type="hidden" name="_method" value="PUT">
-											@if(Request::get('status') == NULL && Request::path() == $vendor.'/products')
-												<input type="hidden" name="status_page" value="">
-											@elseif(Request::path() == $vendor.'/products/low_stock')
-												<input type="hidden" name="status_page" value="low_stock">
-											@elseif(Request::get('status') == 'publish')
-												<input type="hidden" name="status_page" value="publish">
-											@elseif(Request::get('status') == 'inactive')
-												<input type="hidden" name="status_page" value="inactive">
+							@if($p->discount > 0)
+							<span class="badge bg-orange text-white">{{$p->discount}}% OFF</span>
+							@else
+							@endif
+						</td>
+						<!--
+						<td>
+							<a class="btn btn-info btn-xs" href="{{route('products.edit',[$vendor, Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
+						</td>
+						-->
+						@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+							<td>
+								<div class="dropdown">
+									<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+										<i class="material-icons" >apps</i>
+									</a>
+									<ul class="dropdown-menu pull-right">
+										<li>
+											@if($p->status == 'PUBLISH')
+												<a href="javascript:void(0);" class=" waves-effect waves-block"
+												data-toggle="modal" data-target="#activeModal{{$p->id}}">Deactivate</a>
+											@elseif($p->status == 'INACTIVE')
+												<a href="javascript:void(0);" class=" waves-effect waves-block"
+												data-toggle="modal" data-target="#activeModal{{$p->id}}">Activate</a>
 											@endif
-											<input type="hidden" name="status" value="{{$p->status == 'PUBLISH' ? 'INACTIVE' : 'PUBLISH'}}">
-											<button type="submit" name="save" value="{{$p->status == 'PUBLISH' ? 'DEACTIVATE' : 'ACTIVATE'}}" class="btn btn-link waves-effect">{{$p->status == 'PUBLISH' ? 'Deactivate' : 'Activate'}}</button>
-											<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
-										</form>
+										</li>
+										<li>
+											<a href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}" 
+											class=" waves-effect waves-block">
+												Edit
+											</a>
+										</li>
+										<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+											data-toggle="modal" data-target="#deleteModal{{$p->id}}">
+											Delete
+											</a>
+										</li>
+										<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+											data-toggle="modal" data-target="#detailModal{{$p->id}}">
+											Detail
+											</a>
+										</li>
+									</ul>
+								</div>
+								
+								<!--
+								<a class="btn btn-info btn-xs " href="{{route('products.edit',[$vendor,Crypt::encrypt($p->id)])}}"><i class="material-icons">edit</i></a>
+								<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$p->id}}"><i class="material-icons">delete</i></button>
+								<button type="button" class="btn bg-grey waves-effect btn-xs" data-toggle="modal" data-target="#detailModal{{$p->id}}" ><i class="material-icons">list</i></button>
+								-->
+
+								<!-- Modal Delete -->
+								<div class="modal fade" id="deleteModal{{$p->id}}" tabindex="-1" role="dialog">
+									<div class="modal-dialog modal-sm" role="document">
+										<div class="modal-content modal-col-red">
+											<div class="modal-header">
+												<h4 class="modal-title" id="deleteModalLabel">Delete Product</h4>
+											</div>
+											<div class="modal-body">
+											Delete this product ..? 
+											</div>
+											<div class="modal-footer">
+												<form action="{{route('products.destroy',[$vendor,$p->id])}}" method="POST">
+													@csrf
+													<input type="hidden" name="_method" value="DELETE">
+													<input type="hidden" name="status_page" value="low_stock">
+													<button type="submit" class="btn btn-link waves-effect">Delete</button>
+													<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
+												</form>
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-					</td>
+
+								<!-- Modal Detail -->
+								<div class="modal fade" id="detailModal{{$p->id}}" tabindex="-1" role="dialog">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title" id="detailModalLabel">Detail Product</h4>
+											</div>
+											<div class="modal-body">
+												@if($p->image)
+												<img src="{{asset('storage/'.$p->image)}}" width="128px"/>
+												@else
+												No Image
+												@endif
+												<br/><br/>
+												<b>Product Code:</b>
+												<br/>
+												{{$p->product_code}}
+											<br/><br/>
+											<b>Product Name:</b>
+											<br/>
+											{{$p->Product_name}}
+											<br/><br/>
+											<b>Product Description:</b>
+											<br/>
+											{{$p->description}}
+											<br/><br/>
+											<b>Category:</b>
+											<br/>
+											@foreach($p->categories as $category)
+											
+													{{$category->name}}
+											
+												@endforeach
+											<br/><br/>
+											@if($stock_status->stock_status == 'ON')
+												<b>Stock:</b>
+												<br/>
+												{{$p->stock}}
+												<br/><br/>
+												<b>Low Stock Treshold:</b>
+												<br/>
+												{{$p->low_stock_treshold}}
+												<br/><br/>
+											@endif
+											<b>Price:</b>
+											<br/>
+											{{number_format($p->price)}}
+											<br/><br/>
+											<b>Status</b>
+											<br/>
+												@if($p->status=="DRAFT")
+													<span class="badge bg-dark text-white">{{$p->status}}</span>
+												@else
+													<span class="badge bg-green text-white">{{$p->status}}</span>
+												@endif
+												<br/><br/>
+												@if($p->top_product == 1)
+													<input disabled type="checkbox" name="top_product" id="top_product" value="1"  checked >
+													<label for="top_product">Top Product</label>
+													<br/><br/>
+											@endif
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+
+								<!-- Modal deactivate -->
+								<div class="modal fade" id="activeModal{{$p->id}}" tabindex="-1" role="dialog">
+									<div class="modal-dialog modal-sm" role="document">
+										<div class="modal-content modal-col-{{$p->status == 'PUBLISH' ? 'orange' : 'cyan'}}">
+											<div class="modal-header">
+												<h4 class="modal-title">{{$p->status == 'PUBLISH' ? 'Deactivate Product' : 'Activate Product'}}</h4>
+											</div>
+											<div class="modal-body">
+												{{$p->status == 'PUBLISH' ? 'Deactivate this product ?' : 'Activate this product ?'}}
+											</div>
+											<div class="modal-footer">
+												<form action="{{route('products.actorderact',[$vendor,$p->id])}}" method="POST">
+													@csrf
+													<input type="hidden" name="_method" value="PUT">
+													@if(Request::get('status') == NULL && Request::path() == $vendor.'/products')
+														<input type="hidden" name="status_page" value="">
+													@elseif(Request::path() == $vendor.'/products/low_stock')
+														<input type="hidden" name="status_page" value="low_stock">
+													@elseif(Request::get('status') == 'publish')
+														<input type="hidden" name="status_page" value="publish">
+													@elseif(Request::get('status') == 'inactive')
+														<input type="hidden" name="status_page" value="inactive">
+													@endif
+													<input type="hidden" name="status" value="{{$p->status == 'PUBLISH' ? 'INACTIVE' : 'PUBLISH'}}">
+													<button type="submit" name="save" value="{{$p->status == 'PUBLISH' ? 'DEACTIVATE' : 'ACTIVATE'}}" class="btn btn-link waves-effect">{{$p->status == 'PUBLISH' ? 'Deactivate' : 'Activate'}}</button>
+													<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</td>
+						@endif
+					</tr>
 				@endif
-			</tr>
 			@endforeach
 		</tbody>
 	</table>

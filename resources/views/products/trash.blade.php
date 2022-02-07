@@ -39,7 +39,7 @@
 				@if($stock_status)
 					@if($stock_status->stock_status == 'ON')
 					<li role="presentation" class="">
-						<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
+						<a href="{{route('products.low_stock',[$vendor])}}">STOCK TRESHOLD</a>
 					</li>
 					@endif
 				@endif
@@ -71,17 +71,21 @@
 		<thead>
 			<tr>
 				<!--<th>No</th>-->
+				<!--
 				<th>Product Image</th>
 				<th>Product Code</th>
 				<th>Product Name</th>
+				-->
+				<th>Product</th>
 				<th>Category</th>
 				@if($stock_status && $stock_status->stock_status == 'ON')
-					<th>Stock</th>
-					<th>Low Stock Treshold</th>
+					<th>Inv. Stock</th>
+					<th>Avail. for Sale</th>
+					<th>Treshold</th>
 				@endif
 				<th>Price</th>
 				<th>Status</th>
-				<th >Action</th>
+				<th >#</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -91,13 +95,18 @@
 			<tr>
 				<!--<td>{{$no}}</td>-->
 				<td>@if($p->image)
-					<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
+						<img src="{{asset('storage/'.$p->image)}}" width="50px" height="50px" />
 					@else
-					N/A
+						<b>Image</b> : N/A
 					@endif
+					<br>
+					<b>Code</b> : {{$p->product_code}}<br>
+					<b>Name</b> : {{$p->Product_name}}
 				</td>
+				<!--
 				<td>{{$p->product_code}}</td>
 				<td>{{$p->Product_name}}</td>
+				-->
 				<td>
 					@foreach($p->categories as $category)
 						{{$category->name}}
@@ -109,11 +118,23 @@
 						{{$p->stock}}
 					</td>
 					<td>
+						@php
+							$totalOrder = App\Http\Controllers\CustomerKeranjangController::stockInfo($p->id);//total order
+							$orderFinish = App\Http\Controllers\CustomerKeranjangController::TotalQtyFinish($p->id);//finish order
+						@endphp
+						{{($p->stock+$orderFinish)-$totalOrder}}
+					</td>
+					<td>
 						{{$p->low_stock_treshold}}
 					</td>
 				@endif
 				<td>
-					{{$p->price}}
+					@if($p->discount > 0)
+					<del>{{number_format($p->price)}}</del><br>
+					{{number_format($p->price_promo)}}
+					@else
+					{{number_format($p->price)}}
+					@endif
 				</td>
 				<td>
 					@if($p->status=="DRAFT")

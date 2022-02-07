@@ -53,7 +53,7 @@
 				@if($stock_status)
 					@if($stock_status->stock_status == 'ON')
 						<li role="presentation" class="">
-							<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
+							<a href="{{route('products.low_stock',[$vendor])}}">STOCK TRESHOLD</a>
 						</li>
 					@endif
 				@endif
