@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 services:
   app:
     build:
@@ -16,22 +16,6 @@ services:
     networks:
       - sudahdigital
 
-  db:
-    image: mariadb:latest
-    container_name: sudahdigital-db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mariadb
-    volumes:
-      - ./docker-compose/mariadb:/docker-entrypoint-initdb.d
-    networks:
-      - sudahdigital
-
   nginx:
     image: nginx:alpine
     container_name: sudahdigital-nginx
@@ -43,20 +27,6 @@ services:
       - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
       - sudahdigital
-
-  phpmyadmin:
-        image: phpmyadmin/phpmyadmin:latest
-        restart: always
-        environment:
-          PMA_HOST: db
-          #PMA_USER: root
-          #PMA_PASSWORD: root
-        ports:
-          - "8081:80"
-        depends_on:
-          - db 
-        networks:
-          - sudahdigital
 
 networks:
   sudahdigital:
